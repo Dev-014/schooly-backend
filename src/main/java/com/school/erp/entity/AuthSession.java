@@ -1,18 +1,11 @@
 package com.school.erp.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import org.hibernate.annotations.JdbcTypeCode;    // <--- ADD THIS
+import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
 
 @Entity
@@ -41,6 +34,7 @@ public class AuthSession {
     private String refreshToken;
 
     @Column(name = "device_info", columnDefinition = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON) // This is the crucial fix for Hibernate 6+
     private String deviceInfo;
 
     @Column(name = "created_at", insertable = false, updatable = false)

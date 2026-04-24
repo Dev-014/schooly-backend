@@ -12,7 +12,7 @@ import com.school.erp.repository.UserRepository;
 import com.school.erp.repository.UserSchoolRoleRepository;
 import com.school.erp.security.JwtUtil;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
@@ -41,6 +41,7 @@ public class AuthService {
                 .orElseGet(() -> toUserResponse(userRepository.save(newUser(phone)), true));
     }
 
+    @Transactional(readOnly = true) // Add this for the Schools list
     public List<UserSchoolResponse> getUserSchools(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new ResourceNotFoundException("User not found for id " + userId);
@@ -51,8 +52,8 @@ public class AuthService {
                 .map(this::toSchoolResponse)
                 .toList();
     }
-
-    public AuthTokenResponse selectSchool(Long userId, Long schoolId, String deviceInfo) {
+    @Transactional // Add this!
+     public AuthTokenResponse selectSchool(Long userId, Long schoolId, String deviceInfo) {
         UserSchoolRole userSchoolRole = userSchoolRoleRepository
                 .findByUserIdAndSchoolIdAndStatusIgnoreCase(userId, schoolId, "ACTIVE")
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -67,7 +68,7 @@ public class AuthService {
         authSession.setSchool(userSchoolRole.getSchool());
         authSession.setAccessToken(accessToken);
         authSession.setRefreshToken(refreshToken);
-        authSession.setDeviceInfo(deviceInfo);
+        authSession.setDeviceInfo(null);
         authSessionRepository.save(authSession);
 
         return new AuthTokenResponse(
