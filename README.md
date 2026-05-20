@@ -1,5 +1,3 @@
-# Doc-api
-
 # Schooly Backend – Production Level API Documentation
 
 ## Document Information
@@ -436,3 +434,55 @@ This backend structure provides a strong foundation for production-scale educati
 * Authentication flow is handled through dedicated auth endpoints.
 * Docker configuration is available for deployment.
 * This document reflects the actual existing APIs implemented in the codebase.
+
+---
+
+## Short API Descriptions (brief)
+
+- `GET /health`: Returns service status (e.g., { "status": "UP" }).
+- `POST /auth/login`: Authenticate user by phone and return user details.
+- `GET /auth/schools?userId=`: List schools linked to the given user.
+- `POST /auth/select-school`: Set the active school for a user session; returns auth token.
+
+- `GET /api/dashboard/kpis?schoolId=`: Return KPIs/summary metrics for the school.
+- `GET /api/dashboard/chart/collection-vs-expenses?year=&schoolId=`: Return collection vs expense chart points for a year.
+- `GET /api/dashboard/activity-feed?size=`: Return recent activity feed entries.
+
+- `GET /api/schools`: List all schools.
+- `GET /api/schools/{id}`: Get details for a specific school.
+- `POST /api/schools`: Create a new school record.
+- `PUT /api/schools/{id}`: Update an existing school's details.
+- `DELETE /api/schools/{id}`: Remove a school.
+
+- `GET /api/classes?schoolId=`: List classes, optionally filtered by school.
+- `GET /api/classes/{id}`: Get details for a specific class.
+- `POST /api/classes`: Create a new class.
+- `PUT /api/classes/{id}`: Update class information.
+- `DELETE /api/classes/{id}`: Delete a class.
+
+- `GET /api/students?schoolId=&classId=`: List students with optional filters.
+- `GET /api/students/{id}`: Retrieve a student's profile.
+- `POST /api/students`: Create a new student record.
+- `PUT /api/students/{id}`: Update student details.
+- `DELETE /api/students/{id}`: Deactivate/delete a student.
+
+- `GET /api/staff?schoolId=`: List staff members, optionally by school.
+- `GET /api/staff/{id}`: Get staff member details.
+- `POST /api/staff`: Add a new staff member.
+- `PUT /api/staff/{id}`: Update staff details.
+- `DELETE /api/staff/{id}`: Delete a staff member.
+
+- `GET /api/fee-invoices?schoolId=&studentId=`: List fee invoices with optional filters.
+- `GET /api/fee-invoices/{id}`: Get a fee invoice by ID.
+- `POST /api/fee-invoices`: Create a new fee invoice.
+- `PUT /api/fee-invoices/{id}`: Update an existing invoice.
+- `DELETE /api/fee-invoices/{id}`: Delete an invoice.
+
+- `GET /api/payments?schoolId=&invoiceId=`: List payment records.
+- `POST /api/payments`: Record a new payment against an invoice.
+
+- `GET /api/attendance?schoolId=&studentId=`: Fetch attendance records.
+- `POST /api/attendance`: Create a new attendance entry for a student.
+
+- `GET /parent/children`: Return children linked to the authenticated parent user.
+
