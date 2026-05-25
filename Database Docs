@@ -6,8 +6,6 @@
 | ------------- | ----------------------------- |
 | Project       | Schooly WebApp                |
 | Document Type | Database Schema Documentation |
-| Prepared For  | Team Lead Review              |
-| Prepared By   | Tanishq Sejwar                |
 | Architecture  | Relational Database Design    |
 | Database Type | SQL-Based Relational Database |
 
@@ -356,28 +354,353 @@ Stores authentication session state.
 * Multi-school support via `school_id` scoping.
 * Normalized schema for reusable entity relationships.
 * Indexes on foreign keys and lookup columns.
-* Clear separation of auth, student, finance, attendance, and parent data.
+* Clear separation of auth, student, finance, attendance, academic, communication, and transport data.
 * Ready for caching and analytics extension.
+* Designed for future microservice or module-based expansion.
 
 ---
 
-# Suggested Future Tables
+# 12. sections Table
 
-| Table             | Purpose                           |
-| ----------------- | --------------------------------- |
-| exams             | Exam schedules and assessments    |
-| results           | Student grades and results        |
-| subjects          | Subject and curriculum mapping    |
-| timetable         | Class schedules and periods       |
-| notifications     | Alerts and messages               |
-| audit_logs        | Auditing and activity tracking    |
-| roles_permissions | Advanced RBAC                     |
-| transport         | Vehicle and route management      |
-| hostel            | Boarding and accommodation data   |
+Stores class sections for schools.
+
+| Column     | Type         | Constraints                                |
+| ---------- | ------------ | ------------------------------------------ |
+| id         | BIGINT       | PRIMARY KEY                                |
+| school_id  | BIGINT       | NOT NULL, FOREIGN KEY → `schools(id)`      |
+| name       | VARCHAR(100) | NOT NULL                                   |
+| created_at | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+| updated_at | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+
+### Indexes
+
+* `idx_sections_school_id` on `school_id`
+
+---
+
+# 13. academic_years Table
+
+Stores academic year definitions.
+
+| Column      | Type         | Constraints                                |
+| ----------- | ------------ | ------------------------------------------ |
+| id          | BIGINT       | PRIMARY KEY                                |
+| school_id   | BIGINT       | NOT NULL, FOREIGN KEY → `schools(id)`      |
+| name        | VARCHAR(100) | NOT NULL                                   |
+| start_date  | DATE         | NOT NULL                                   |
+| end_date    | DATE         | NOT NULL                                   |
+| status      | VARCHAR(50)  | NOT NULL DEFAULT 'ACTIVE'                  |
+| created_at  | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+| updated_at  | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+
+### Indexes
+
+* `idx_academic_years_school_id` on `school_id`
+
+---
+
+# 14. subjects Table
+
+Stores subject metadata for curricula.
+
+| Column      | Type         | Constraints                                |
+| ----------- | ------------ | ------------------------------------------ |
+| id          | BIGINT       | PRIMARY KEY                                |
+| school_id   | BIGINT       | NOT NULL, FOREIGN KEY → `schools(id)`      |
+| name        | VARCHAR(255) | NOT NULL                                   |
+| code        | VARCHAR(100) | NULL                                       |
+| description | TEXT         | NULL                                       |
+| created_at  | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+| updated_at  | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+
+### Indexes
+
+* `idx_subjects_school_id` on `school_id`
+* `idx_subjects_code` on `code`
+
+---
+
+# 15. teacher_subjects Table
+
+Links teachers to subjects and classes.
+
+| Column           | Type         | Constraints                                |
+| ---------------- | ------------ | ------------------------------------------ |
+| id               | BIGINT       | PRIMARY KEY                                |
+| teacher_id       | BIGINT       | NOT NULL, FOREIGN KEY → `staff(id)`        |
+| class_id         | BIGINT       | NOT NULL, FOREIGN KEY → `class(id)`        |
+| section_id       | BIGINT       | NULL, FOREIGN KEY → `sections(id)`         |
+| subject_id       | BIGINT       | NOT NULL, FOREIGN KEY → `subjects(id)`     |
+| academic_year_id | BIGINT       | NULL, FOREIGN KEY → `academic_years(id)`   |
+| created_at       | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+
+### Indexes
+
+* `idx_teacher_subjects_teacher_id` on `teacher_id`
+* `idx_teacher_subjects_class_id` on `class_id`
+
+---
+
+# 16. exams Table
+
+Stores exam definitions and schedules.
+
+| Column       | Type         | Constraints                                |
+| ------------ | ------------ | ------------------------------------------ |
+| id           | BIGINT       | PRIMARY KEY                                |
+| school_id    | BIGINT       | NOT NULL, FOREIGN KEY → `schools(id)`      |
+| name         | VARCHAR(255) | NOT NULL                                   |
+| exam_type    | VARCHAR(100) | NULL                                       |
+| class_id     | BIGINT       | NOT NULL, FOREIGN KEY → `class(id)`        |
+| section_id   | BIGINT       | NULL, FOREIGN KEY → `sections(id)`         |
+| starts_at    | TIMESTAMP    | NOT NULL                                   |
+| ends_at      | TIMESTAMP    | NOT NULL                                   |
+| status       | VARCHAR(50)  | NOT NULL DEFAULT 'SCHEDULED'               |
+| created_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+| updated_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+
+### Indexes
+
+* `idx_exams_school_id` on `school_id`
+* `idx_exams_class_id` on `class_id`
+
+---
+
+# 17. exam_results Table
+
+Stores student exam results.
+
+| Column         | Type          | Constraints                                |
+| -------------- | ------------  | ------------------------------------------ |
+| id             | BIGINT        | PRIMARY KEY                                |
+| exam_id        | BIGINT        | NOT NULL, FOREIGN KEY → `exams(id)`        |
+| student_id     | BIGINT        | NOT NULL, FOREIGN KEY → `student(id)`      |
+| subject_id     | BIGINT        | NOT NULL, FOREIGN KEY → `subjects(id)`     |
+| marks_obtained | NUMERIC(6,2)  | NULL                                       |
+| max_marks      | NUMERIC(6,2)  | NULL                                       |
+| grade          | VARCHAR(10)   | NULL                                       |
+| remarks        | TEXT          | NULL                                       |
+| status         | VARCHAR(50)   | NOT NULL DEFAULT 'PENDING'                 |
+| created_at     | TIMESTAMP     | DEFAULT CURRENT_TIMESTAMP                  |
+
+### Indexes
+
+* `idx_exam_results_exam_id` on `exam_id`
+* `idx_exam_results_student_id` on `student_id`
+
+---
+
+# 18. timetable Table
+
+Stores class schedules and period assignments.
+
+| Column       | Type         | Constraints                                |
+| ------------ | ------------ | ------------------------------------------ |
+| id           | BIGINT       | PRIMARY KEY                                |
+| school_id    | BIGINT       | NOT NULL, FOREIGN KEY → `schools(id)`      |
+| class_id     | BIGINT       | NOT NULL, FOREIGN KEY → `class(id)`        |
+| section_id   | BIGINT       | NULL, FOREIGN KEY → `sections(id)`         |
+| subject_id   | BIGINT       | NOT NULL, FOREIGN KEY → `subjects(id)`     |
+| teacher_id   | BIGINT       | NOT NULL, FOREIGN KEY → `staff(id)`        |
+| day_of_week  | VARCHAR(20)  | NOT NULL                                   |
+| start_time   | TIME         | NOT NULL                                   |
+| end_time     | TIME         | NOT NULL                                   |
+| room         | VARCHAR(100) | NULL                                       |
+| created_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+| updated_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+
+### Indexes
+
+* `idx_timetable_class_id` on `class_id`
+* `idx_timetable_teacher_id` on `teacher_id`
+
+---
+
+# 19. notifications Table
+
+Stores alerts and messages for users.
+
+| Column         | Type         | Constraints                                |
+| -------------- | ------------ | ------------------------------------------ |
+| id             | BIGINT       | PRIMARY KEY                                |
+| school_id      | BIGINT       | NOT NULL, FOREIGN KEY → `schools(id)`      |
+| sender_id      | BIGINT       | NULL                                       |
+| recipient_id   | BIGINT       | NULL                                       |
+| recipient_type | VARCHAR(50)  | NOT NULL                                   |
+| title          | VARCHAR(255) | NOT NULL                                   |
+| message        | TEXT         | NOT NULL                                   |
+| status         | VARCHAR(50)  | NOT NULL DEFAULT 'UNREAD'                  |
+| sent_at        | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+| read_at        | TIMESTAMP    | NULL                                       |
+
+### Indexes
+
+* `idx_notifications_school_id` on `school_id`
+* `idx_notifications_recipient_id` on `recipient_id`
+
+---
+
+# 20. audit_logs Table
+
+Stores activity and event audit history.
+
+| Column       | Type         | Constraints                                |
+| ------------ | ------------ | ------------------------------------------ |
+| id           | BIGINT       | PRIMARY KEY                                |
+| school_id    | BIGINT       | NULL, FOREIGN KEY → `schools(id)`          |
+| user_id      | BIGINT       | NULL, FOREIGN KEY → `users(id)`            |
+| action       | VARCHAR(255) | NOT NULL                                   |
+| entity_name  | VARCHAR(100) | NULL                                       |
+| entity_id    | VARCHAR(100) | NULL                                       |
+| details      | JSONB        | NULL                                       |
+| ip_address   | VARCHAR(100) | NULL                                       |
+| created_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+
+### Indexes
+
+* `idx_audit_logs_user_id` on `user_id`
+* `idx_audit_logs_school_id` on `school_id`
+
+---
+
+# 21. roles_permissions Table
+
+Stores advanced role-based permissions.
+
+| Column       | Type         | Constraints                                |
+| ------------ | ------------ | ------------------------------------------ |
+| id           | BIGINT       | PRIMARY KEY                                |
+| role_name    | VARCHAR(100) | NOT NULL                                   |
+| permission   | VARCHAR(255) | NOT NULL                                   |
+| description  | TEXT         | NULL                                       |
+| created_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+
+### Indexes
+
+* `idx_roles_permissions_role_name` on `role_name`
+
+---
+
+# 22. transport Table
+
+Stores transport vehicles and routes.
+
+| Column         | Type         | Constraints                                |
+| -------------- | ------------ | ------------------------------------------ |
+| id             | BIGINT       | PRIMARY KEY                                |
+| school_id      | BIGINT       | NOT NULL, FOREIGN KEY → `schools(id)`      |
+| vehicle_number | VARCHAR(100) | NOT NULL                                   |
+| driver_name    | VARCHAR(255) | NULL                                       |
+| driver_phone   | VARCHAR(20)  | NULL                                       |
+| route_name     | VARCHAR(255) | NULL                                       |
+| capacity       | INT          | NULL                                       |
+| status         | VARCHAR(50)  | NOT NULL DEFAULT 'ACTIVE'                  |
+| created_at     | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+| updated_at     | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+
+### Indexes
+
+* `idx_transport_school_id` on `school_id`
+
+---
+
+# 23. hostel Table
+
+Stores hostel and boarding data.
+
+| Column       | Type         | Constraints                                |
+| ------------ | ------------ | ------------------------------------------ |
+| id           | BIGINT       | PRIMARY KEY                                |
+| school_id    | BIGINT       | NOT NULL, FOREIGN KEY → `schools(id)`      |
+| name         | VARCHAR(255) | NOT NULL                                   |
+| block        | VARCHAR(100) | NULL                                       |
+| total_rooms  | INT          | NULL                                       |
+| capacity     | INT          | NULL                                       |
+| warden_name  | VARCHAR(255) | NULL                                       |
+| status       | VARCHAR(50)  | NOT NULL DEFAULT 'ACTIVE'                  |
+| created_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+| updated_at   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+
+### Indexes
+
+* `idx_hostel_school_id` on `school_id`
+
+---
+
+# 24. messages Table
+
+Stores internal communication between users.
+
+| Column        | Type         | Constraints                                |
+| ------------- | ------------ | ------------------------------------------ |
+| id            | BIGINT       | PRIMARY KEY                                |
+| school_id     | BIGINT       | NOT NULL, FOREIGN KEY → `schools(id)`      |
+| sender_id     | BIGINT       | NOT NULL, FOREIGN KEY → `users(id)`        |
+| recipient_id  | BIGINT       | NULL, FOREIGN KEY → `users(id)`            |
+| subject       | VARCHAR(255) | NULL                                       |
+| body          | TEXT         | NOT NULL                                   |
+| status        | VARCHAR(50)  | NOT NULL DEFAULT 'SENT'                    |
+| sent_at       | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP                  |
+| read_at       | TIMESTAMP    | NULL                                       |
+
+### Indexes
+
+* `idx_messages_sender_id` on `sender_id`
+* `idx_messages_recipient_id` on `recipient_id`
+
+---
+
+# Entity Relationship Summary
+
+| Table            | Related Tables                             |
+| ---------------- | ------------------------------------------ |
+| schools          | users, class, student, staff, fee_invoice, sections, academic_years, subjects, exams, timetable, notifications, transport, hostel |
+| users            | user_school_roles, auth_sessions, student_parents, staff, messages, audit_logs |
+| class            | student, timetable, teacher_subjects, exams  |
+| student          | student_attendance, fee_invoice, student_parents, exam_results, messages |
+| fee_invoice      | payment                                    |
+| student_parents  | users, student                             |
+| exams            | exam_results                               |
+| subjects         | teacher_subjects, timetable, exam_results  |
+
+---
+
+# Recommended Indexes
+
+| Table             | Indexed Column  |
+| ----------------- | --------------- |
+| users             | phone           |
+| class             | school_id       |
+| student           | class_id        |
+| student           | school_id       |
+| fee_invoice       | student_id      |
+| payment           | invoice_id      |
+| student_attendance| attendance_date |
+| subjects          | code            |
+| exams             | school_id       |
+| notifications     | recipient_id    |
+| audit_logs        | user_id         |
+
+---
+
+# Security Recommendations
+
+## Database Security
+
+* Store passwords securely using bcrypt or Argon2.
+* Use JWT for API authentication.
+* Apply role-based access control using `user_school_roles` and optionally `roles_permissions`.
+* Restrict direct database access to trusted application services.
+* Enable backup and point-in-time recovery for production databases.
+* Encrypt sensitive fields in transit and at rest where required.
 
 ---
 
 # Conclusion
+
+The Schooly WebApp database schema now covers both the currently implemented backend entities and the full proposed application schema. It supports student lifecycle management, attendance, finance tracking, exam administration, parent and staff collaboration, notifications, transport, hostel management, and auditability.
+
+This document is intended as the baseline database design for implementation, review, and production deployment.
 
 The Schooly WebApp database schema is designed to support the current backend architecture while providing a strong foundation for future expansion. The schema aligns with the projects REST APIs, entity models, and multi-school requirements.
 
