@@ -68,7 +68,7 @@ public class AuthService {
         authSession.setSchool(userSchoolRole.getSchool());
         authSession.setAccessToken(accessToken);
         authSession.setRefreshToken(refreshToken);
-        authSession.setDeviceInfo(null);
+        authSession.setDeviceInfo(deviceInfo);
         authSessionRepository.save(authSession);
 
         return new AuthTokenResponse(

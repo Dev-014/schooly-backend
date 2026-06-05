@@ -15,15 +15,19 @@ POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
 
 {
-  "email": "admin@schooly.com",
-  "password": "admin123"
+  "phone": "+1234567890"
 }
 
 ###
-### 3. SELECT SCHOOL (After login)
+### 3. SELECT SCHOOL (After login - gets token from login step)
 ###
-GET {{baseUrl}}/auth/select-school?schoolId=1
-Authorization: Bearer {{authToken}}
+POST {{baseUrl}}/auth/select-school
+Content-Type: {{contentType}}
+
+{
+  "userId": 1,
+  "schoolId": 1
+}
 
 ###
 ### 4. GET USER PROFILE
