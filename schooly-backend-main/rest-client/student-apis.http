@@ -1,0 +1,118 @@
+### Variables
+@baseUrl = http://localhost:8080
+@contentType = application/json
+@authToken = 
+
+###
+### 0. LOGIN FIRST (Run this first to get token)
+### Copy the token from response and paste it in @authToken above
+###
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@schooly.com",
+  "password": "admin123"
+}
+
+###
+### 1. GET ALL STUDENTS
+###
+GET {{baseUrl}}/api/students?schoolId=1&classId=1&status=ACTIVE&page=0&size=20&sort=id,asc
+Authorization: Bearer {{authToken}}
+
+###
+### 2. CREATE NEW STUDENT
+###
+POST {{baseUrl}}/api/students
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "userId": 1,
+  "name": "John Doe",
+  "admissionNo": "ADM-2024-001",
+  "rollNumber": "ROLL-001",
+  "status": "ACTIVE",
+  "admissionDate": "2024-01-15",
+  "schoolId": 1,
+  "classId": 1,
+  "sectionId": 1,
+  "academicYearId": 1
+}
+
+###
+### 3. GET STUDENT BY ID
+###
+GET {{baseUrl}}/api/students/1
+Authorization: Bearer {{authToken}}
+
+###
+### 4. UPDATE STUDENT
+###
+PUT {{baseUrl}}/api/students/1
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "userId": 1,
+  "name": "John Smith Updated",
+  "admissionNo": "ADM-2024-001",
+  "rollNumber": "ROLL-001",
+  "status": "ACTIVE",
+  "admissionDate": "2024-01-15",
+  "schoolId": 1,
+  "classId": 2,
+  "sectionId": 1,
+  "academicYearId": 1
+}
+
+###
+### 5. DELETE STUDENT
+###
+DELETE {{baseUrl}}/api/students/1
+Authorization: Bearer {{authToken}}
+
+###
+### 6. GET ALL STUDENTS (MINIMAL - NO FILTERS)
+###
+GET {{baseUrl}}/api/students?page=0&size=20
+Authorization: Bearer {{authToken}}
+
+###
+### 7. CREATE ANOTHER STUDENT (FOR TESTING)
+###
+POST {{baseUrl}}/api/students
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "userId": 1,
+  "name": "Jane Smith",
+  "admissionNo": "ADM-2024-002",
+  "rollNumber": "ROLL-002",
+  "status": "ACTIVE",
+  "admissionDate": "2024-01-16",
+  "schoolId": 1,
+  "classId": 1,
+  "sectionId": 1,
+  "academicYearId": 1
+}
+
+###
+### 8. SEARCH BY CLASS
+###
+GET {{baseUrl}}/api/students?schoolId=1&classId=1&page=0&size=20
+Authorization: Bearer {{authToken}}
+
+###
+### 9. GET INACTIVE STUDENTS
+###
+GET {{baseUrl}}/api/students?schoolId=1&status=INACTIVE&page=0&size=20
+Authorization: Bearer {{authToken}}
+
+###
+### 10. SORTED BY NAME DESCENDING
+###
+GET {{baseUrl}}/api/students?schoolId=1&page=0&size=20&sort=name,desc
+Authorization: Bearer {{authToken}}

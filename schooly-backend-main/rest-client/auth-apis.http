@@ -1,0 +1,32 @@
+### Variables
+@baseUrl = http://localhost:8080
+@contentType = application/json
+@authToken = 
+
+###
+### 1. GET SCHOOLS (Authentication step 1)
+###
+GET {{baseUrl}}/auth/schools?userId=1
+
+###
+### 2. LOGIN (Get token - Run this first!)
+###
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@schooly.com",
+  "password": "admin123"
+}
+
+###
+### 3. SELECT SCHOOL (After login)
+###
+GET {{baseUrl}}/auth/select-school?schoolId=1
+Authorization: Bearer {{authToken}}
+
+###
+### 4. GET USER PROFILE
+###
+GET {{baseUrl}}/api/users/profile
+Authorization: Bearer {{authToken}}

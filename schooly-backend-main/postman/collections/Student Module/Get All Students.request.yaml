@@ -1,0 +1,32 @@
+$kind: http-request
+method: GET
+url: '{{baseUrl}}/api/students'
+order: 4000
+headers:
+  - key: Authorization
+    value: 'Bearer {{authToken}}'
+queryParams:
+  - key: schoolId
+    value: '{{schoolId}}'
+  - key: classId
+    value: ''
+  - key: status
+    value: ''
+  - key: page
+    value: '0'
+  - key: size
+    value: '20'
+  - key: sort
+    value: 'id,asc'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Status code is 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      const jsonData = pm.response.json();
+      pm.test('Response exists', function () {
+        pm.expect(jsonData).to.exist;
+      });

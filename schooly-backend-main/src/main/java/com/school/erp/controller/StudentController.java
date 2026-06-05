@@ -30,7 +30,6 @@ public class StudentController {
     }
 
     @GetMapping
-    @GetMapping
     @Operation(summary = "List Students", description = "Returns student records with optional class and status filtering")
     public ResponseEntity<ApiResponse<List<StudentResponse>>> getAllStudents(
             @RequestParam(required = false) Long schoolId,

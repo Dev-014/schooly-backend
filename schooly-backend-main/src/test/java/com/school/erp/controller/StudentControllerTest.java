@@ -56,7 +56,7 @@ class StudentControllerTest {
                 1
         );
 
-        when(studentService.getAllStudents(10L, null, any())).thenReturn(page);
+        when(studentService.getAllStudents(any(), any(), any(), any())).thenReturn(page);
 
         mockMvc.perform(get("/api/students")
                         .param("page", "0")

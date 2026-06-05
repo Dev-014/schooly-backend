@@ -1,0 +1,584 @@
+{
+	"info": {
+		"_postman_id": "8f82ee91-4c12-4d8e-90f7-5cd14f08e453",
+		"name": "Schooly Student Module",
+		"description": "Collection to test the authentication and Student module REST APIs for the Schooly ERP system.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "1. Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Response status is success\", function () {",
+									"    pm.expect(jsonData.status).to.eql(\"success\");",
+									"});",
+									"if (jsonData.data && jsonData.data.id) {",
+									"    pm.environment.set(\"userId\", jsonData.data.id);",
+									"    console.log(\"Set userId to: \" + jsonData.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"{{phone}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Get Schools",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"User has schools\", function () {",
+									"    pm.expect(jsonData.data).to.be.an(\"array\");",
+									"    pm.expect(jsonData.data.length).to.be.above(0);",
+									"});",
+									"if (jsonData.data && jsonData.data.length > 0) {",
+									"    pm.environment.set(\"schoolId\", jsonData.data[0].schoolId);",
+									"    console.log(\"Set schoolId to: \" + jsonData.data[0].schoolId);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/schools?userId={{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"schools"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Select School",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Access token is present\", function () {",
+									"    pm.expect(jsonData.data.accessToken).to.not.be.undefined;",
+									"});",
+									"if (jsonData.data && jsonData.data.accessToken) {",
+									"    pm.environment.set(\"authToken\", jsonData.data.accessToken);",
+									"    console.log(\"Set authToken successfully!\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": {{userId}},\n    \"schoolId\": {{schoolId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/select-school",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"select-school"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Student Module",
+			"item": [
+				{
+					"name": "1. Create Student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Student ID is generated\", function () {",
+									"    pm.expect(jsonData.data.id).to.not.be.undefined;",
+									"});",
+									"if (jsonData.data && jsonData.data.id) {",
+									"    pm.environment.set(\"studentId\", jsonData.data.id);",
+									"    pm.environment.set(\"studentAdmissionNo\", jsonData.data.admissionNo);",
+									"    console.log(\"Created Student with ID: \" + jsonData.data.id + \" and Admission No: \" + jsonData.data.admissionNo);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": {{userId}},\n    \"name\": \"Postman Test Student\",\n    \"admissionNo\": \"ADM-{{$timestamp}}\",\n    \"rollNumber\": \"R-{{$timestamp}}\",\n    \"status\": \"ACTIVE\",\n    \"admissionDate\": \"2026-06-03\",\n    \"schoolId\": {{schoolId}},\n    \"classId\": 1,\n    \"sectionId\": 1,\n    \"academicYearId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/students",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Get All Students",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Students list fetched successfully\", function () {",
+									"    pm.expect(jsonData.status).to.eql(\"success\");",
+									"    pm.expect(jsonData.data).to.be.an(\"array\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/students?schoolId={{schoolId}}&page=0&size=20&sort=id,asc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"students"
+							],
+							"query": [
+								{
+									"key": "schoolId",
+									"value": "{{schoolId}}"
+								},
+								{
+									"key": "classId",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								},
+								{
+									"key": "sort",
+									"value": "id,asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Get Student By ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Student details match studentId\", function () {",
+									"    pm.expect(jsonData.data.id).to.eql(Number(pm.environment.get(\"studentId\")));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/students/{{studentId}}?schoolId={{schoolId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"students",
+								"{{studentId}}"
+							],
+							"query": [
+								{
+									"key": "schoolId",
+									"value": "{{schoolId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Get Student By Admission No",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Student admission number matches\", function () {",
+									"    pm.expect(jsonData.data.admissionNo).to.eql(pm.environment.get(\"studentAdmissionNo\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/students/admission/{{studentAdmissionNo}}?schoolId={{schoolId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"students",
+								"admission",
+								"{{studentAdmissionNo}}"
+							],
+							"query": [
+								{
+									"key": "schoolId",
+									"value": "{{schoolId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. Search Students by Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Search results returned successfully\", function () {",
+									"    pm.expect(jsonData.data).to.be.an(\"array\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/students/search?name=Postman&schoolId={{schoolId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"students",
+								"search"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Postman"
+								},
+								{
+									"key": "schoolId",
+									"value": "{{schoolId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. Get Students Paginated",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Paginated format is correct\", function () {",
+									"    pm.expect(jsonData.data.content).to.be.an(\"array\");",
+									"    pm.expect(jsonData.pagination).to.not.be.undefined;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/students/paginated?schoolId={{schoolId}}&page=0&size=20&sort=id,asc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"students",
+								"paginated"
+							],
+							"query": [
+								{
+									"key": "schoolId",
+									"value": "{{schoolId}}"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								},
+								{
+									"key": "sort",
+									"value": "id,asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7. Update Student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Student name was updated\", function () {",
+									"    pm.expect(jsonData.data.name).to.eql(\"Updated Postman Student\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": {{userId}},\n    \"name\": \"Updated Postman Student\",\n    \"admissionNo\": \"{{studentAdmissionNo}}\",\n    \"rollNumber\": \"R-{{studentId}}-UPD\",\n    \"status\": \"ACTIVE\",\n    \"admissionDate\": \"2026-06-03\",\n    \"schoolId\": {{schoolId}},\n    \"classId\": 1,\n    \"sectionId\": 1,\n    \"academicYearId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/students/{{studentId}}?schoolId={{schoolId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"students",
+								"{{studentId}}"
+							],
+							"query": [
+								{
+									"key": "schoolId",
+									"value": "{{schoolId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8. Deactivate Student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Student deactivated successfully\", function () {",
+									"    pm.expect(jsonData.message).to.contain(\"deactivated successfully\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/students/{{studentId}}?schoolId={{schoolId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"students",
+								"{{studentId}}"
+							],
+							"query": [
+								{
+									"key": "schoolId",
+									"value": "{{schoolId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
