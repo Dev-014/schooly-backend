@@ -14,4 +14,8 @@ public interface UserSchoolRoleRepository extends JpaRepository<UserSchoolRole, 
     Optional<UserSchoolRole> findByUserIdAndSchoolIdAndStatusIgnoreCase(Long userId, Long schoolId, String status);
 
     boolean existsByUserIdAndSchoolIdAndRoleAndStatusIgnoreCase(Long userId, Long schoolId, UserRole role, String status);
+
+    List<UserSchoolRole> findBySchoolIdAndRoleAndStatusIgnoreCase(Long schoolId, UserRole role, String status);
+
+    Optional<UserSchoolRole> findByUserIdAndSchoolIdAndRoleAndStatusIgnoreCase(Long userId, Long schoolId, UserRole role, String status);
 }

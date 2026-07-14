@@ -60,6 +60,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isPublicPath(String requestUri) {
+        // /auth/me and /auth/logout require authentication — they are NOT public
+        if (requestUri.equals("/auth/me") || requestUri.equals("/auth/logout")) {
+            return false;
+        }
         return requestUri.equals("/health")
                 || requestUri.startsWith("/auth/")
                 || requestUri.startsWith("/api/auth/")
