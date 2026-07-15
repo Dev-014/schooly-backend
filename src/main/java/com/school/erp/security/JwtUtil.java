@@ -38,21 +38,25 @@ public class JwtUtil {
     }
 
     public String generateAccessToken(Long userId, Long schoolId, UserRole role) {
-        return buildToken(Map.of(
-                "userId", userId,
-                "schoolId", schoolId,
-                "role", role.name(),
-                "tokenType", "ACCESS"
-        ), accessTokenExpirationMs);
+        Map<String, Object> claims = new LinkedHashMap<>();
+        claims.put("userId", userId);
+        if (schoolId != null) {
+            claims.put("schoolId", schoolId);
+        }
+        claims.put("role", role.name());
+        claims.put("tokenType", "ACCESS");
+        return buildToken(claims, accessTokenExpirationMs);
     }
 
     public String generateRefreshToken(Long userId, Long schoolId, UserRole role) {
-        return buildToken(Map.of(
-                "userId", userId,
-                "schoolId", schoolId,
-                "role", role.name(),
-                "tokenType", "REFRESH"
-        ), refreshTokenExpirationMs);
+        Map<String, Object> claims = new LinkedHashMap<>();
+        claims.put("userId", userId);
+        if (schoolId != null) {
+            claims.put("schoolId", schoolId);
+        }
+        claims.put("role", role.name());
+        claims.put("tokenType", "REFRESH");
+        return buildToken(claims, refreshTokenExpirationMs);
     }
 
     public AuthenticatedUser parseAccessToken(String token) {
@@ -61,9 +65,10 @@ public class JwtUtil {
         if (!"ACCESS".equals(tokenType)) {
             throw new IllegalArgumentException("Invalid access token");
         }
+        Long schoolId = claims.get("schoolId") != null ? ((Number) claims.get("schoolId")).longValue() : null;
         return new AuthenticatedUser(
                 ((Number) claims.get("userId")).longValue(),
-                ((Number) claims.get("schoolId")).longValue(),
+                schoolId,
                 UserRole.valueOf((String) claims.get("role"))
         );
     }

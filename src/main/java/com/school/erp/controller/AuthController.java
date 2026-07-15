@@ -7,12 +7,15 @@ import com.school.erp.dto.auth.AuthUserResponse;
 import com.school.erp.dto.auth.SelectSchoolRequest;
 import com.school.erp.dto.auth.UserSchoolResponse;
 import com.school.erp.service.AuthService;
+import com.school.erp.dto.auth.LoginVerifyResponse;
+import com.school.erp.dto.auth.OtpVerifyRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +38,24 @@ public class AuthController {
                 authService.loginOrSignup(request.phone()),
                 "Login/signup processed successfully"
         ));
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<ApiResponse<LoginVerifyResponse>> verifyOtp(
+            @Valid @RequestBody OtpVerifyRequest request,
+            HttpServletRequest httpServletRequest
+    ) {
+        String userAgent = httpServletRequest.getHeader("User-Agent");
+        String deviceInfo = userAgent == null ? null : "{\"userAgent\":\"" + userAgent.replace("\"", "\\\"") + "\"}";
+        return ResponseEntity.ok(ApiResponse.success(
+                authService.verifyOtp(request, deviceInfo),
+                "OTP verified successfully"
+        ));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(@RequestHeader(value = "Authorization", required = false) String authHeader) {
+        return ResponseEntity.ok(ApiResponse.success(null, "Logged out successfully"));
     }
 
     @GetMapping("/schools")

@@ -40,8 +40,8 @@ public class UserSchoolRole {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "school_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "school_id", nullable = true)
     private School school;
 
     @Enumerated(EnumType.STRING)

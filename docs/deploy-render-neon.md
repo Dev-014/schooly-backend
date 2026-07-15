@@ -551,16 +551,17 @@ All old access tokens and refresh tokens become invalid after changing the JWT s
 
 ## Local Development
 
-Set environment variables before running locally:
+The default database connection and password (`npg_rowJC37Isvuj`) are configured as fallback values in `application.properties`. You can run the application directly without setting environment variables:
 
 ```bash
-export SPRING_DATASOURCE_PASSWORD='npg_rowJC37Isvuj'
-export APP_JWT_SECRET='local-dev-secret-change-me-change-me-change-me'
+./mvnw spring-boot:run
 ```
 
-Run:
+If you wish to override the database password or JWT secret locally with custom environment variables, you can export them first:
 
 ```bash
+export SPRING_DATASOURCE_PASSWORD='your_custom_password'
+export APP_JWT_SECRET='local-dev-secret-change-me-change-me-change-me'
 ./mvnw spring-boot:run
 ```
 
@@ -578,16 +579,16 @@ Expected:
 
 ## Local Build And Tests
 
-Run tests:
+Because `application.properties` includes the default fallback, you can run tests directly:
 
 ```bash
-SPRING_DATASOURCE_PASSWORD='npg_rowJC37Isvuj' ./mvnw test
+./mvnw test
 ```
 
 Build jar:
 
 ```bash
-SPRING_DATASOURCE_PASSWORD='npg_rowJC37Isvuj' ./mvnw clean package
+./mvnw clean package
 ```
 
 The jar appears here:

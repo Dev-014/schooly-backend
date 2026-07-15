@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        if (isPublicPath(request.getRequestURI())) {
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod()) || isPublicPath(request.getRequestURI())) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -60,6 +60,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isPublicPath(String requestUri) {
-        return requestUri.equals("/health") || requestUri.startsWith("/auth/") || requestUri.startsWith("/api/auth/");
+        return requestUri.equals("/health") ||
+               requestUri.startsWith("/auth/") ||
+               requestUri.startsWith("/api/auth/") ||
+               requestUri.startsWith("/api/v1/auth/") ||
+               requestUri.startsWith("/onboarding/") ||
+               requestUri.startsWith("/api/onboarding/") ||
+               requestUri.startsWith("/api/v1/onboarding/");
     }
 }
