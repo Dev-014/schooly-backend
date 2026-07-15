@@ -1,0 +1,17 @@
+name: Schooly
+values:
+  - key: baseUrl
+    value: 'http://localhost:8080'
+    enabled: true
+  - key: authToken
+    value: ''
+    enabled: true
+  - key: userId
+    value: ''
+    enabled: true
+  - key: schoolId
+    value: ''
+    enabled: true
+  - key: studentId
+    value: ''
+    enabled: true

@@ -1,0 +1,30 @@
+$kind: http-request
+method: POST
+url: '{{baseUrl}}/auth/select-school'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "userId": {{userId}},
+      "schoolId": {{schoolId}}
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Status code is 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      const jsonData = pm.response.json();
+      pm.test('Access token exists', function () {
+        pm.expect(jsonData.accessToken).to.exist;
+      });
+
+      if (jsonData.accessToken) {
+        pm.environment.set('authToken', jsonData.accessToken);
+      }

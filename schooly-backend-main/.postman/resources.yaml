@@ -1,0 +1,9 @@
+# Use this workspace to collaborate
+workspace:
+  id: 82f30066-3b44-4473-8009-fe01981ef716
+
+localResources:
+  docs:
+    - ..\deploy\aws\README.md
+    - ..\API_DOCUMENTATION.md
+    - ..\DATABASE_SCHEMA.md

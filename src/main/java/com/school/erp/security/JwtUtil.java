@@ -78,6 +78,15 @@ public class JwtUtil {
         return true;
     }
 
+    public boolean isValidRefreshToken(String token) {
+        try {
+            Map<String, Object> claims = parseClaims(token);
+            return "REFRESH".equals(claims.get("tokenType"));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     private String buildToken(Map<String, Object> claims, long expirationMs) {
         try {
             Instant now = Instant.now();

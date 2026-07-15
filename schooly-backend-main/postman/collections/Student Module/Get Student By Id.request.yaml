@@ -1,0 +1,22 @@
+$kind: http-request
+method: GET
+url: '{{baseUrl}}/api/students/{{studentId}}'
+order: 6000
+headers:
+  - key: Authorization
+    value: 'Bearer {{authToken}}'
+queryParams:
+  - key: schoolId
+    value: '{{schoolId}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Status code is 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      const jsonData = pm.response.json();
+      pm.test('Returned student matches requested id', function () {
+        pm.expect(String(jsonData.id)).to.eql(String(pm.environment.get('studentId')));
+      });

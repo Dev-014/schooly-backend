@@ -42,7 +42,6 @@ public class School {
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     @Column(name = "metadata", columnDefinition = "jsonb")
     private java.util.Map<String, Object> metadata = new java.util.HashMap<>();
-
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 }

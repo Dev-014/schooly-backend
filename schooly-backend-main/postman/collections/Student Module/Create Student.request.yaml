@@ -1,0 +1,40 @@
+$kind: http-request
+method: POST
+url: '{{baseUrl}}/api/students'
+order: 5000
+headers:
+  - key: Authorization
+    value: 'Bearer {{authToken}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "userId": 1,
+      "name": "Postman Test Student",
+      "admissionNo": "ADM-{{$timestamp}}",
+      "rollNumber": "R-{{$timestamp}}",
+      "status": "ACTIVE",
+      "admissionDate": "2024-01-15",
+      "schoolId": {{schoolId}},
+      "classId": 1,
+      "sectionId": 1,
+      "academicYearId": 1
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Status code is 200 or 201', function () {
+        pm.expect(pm.response.code).to.be.oneOf([200, 201]);
+      });
+
+      const jsonData = pm.response.json();
+      pm.test('Student id exists', function () {
+        pm.expect(jsonData.id).to.exist;
+      });
+
+      if (jsonData.id) {
+        pm.environment.set('studentId', jsonData.id);
+      }

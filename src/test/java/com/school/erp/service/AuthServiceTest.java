@@ -9,6 +9,7 @@ import com.school.erp.entity.UserRole;
 import com.school.erp.entity.UserSchoolRole;
 import com.school.erp.exception.UnauthorizedException;
 import com.school.erp.repository.AuthSessionRepository;
+import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.StudentParentRepository;
 import com.school.erp.repository.StudentRepository;
 import com.school.erp.repository.UserRepository;
@@ -35,6 +36,7 @@ class AuthServiceTest {
     @Mock private UserSchoolRoleRepository userSchoolRoleRepository;
     @Mock private AuthSessionRepository authSessionRepository;
     @Mock private StudentParentRepository studentParentRepository;
+    @Mock private SchoolRepository schoolRepository;
     @Mock private StudentRepository studentRepository;
     @Mock private JwtUtil jwtUtil;
 
@@ -44,7 +46,7 @@ class AuthServiceTest {
     void setUp() {
         authService = new AuthService(
                 userRepository, userSchoolRoleRepository, authSessionRepository,
-                studentParentRepository, studentRepository, jwtUtil
+                studentParentRepository, schoolRepository, studentRepository, jwtUtil
         );
     }
 

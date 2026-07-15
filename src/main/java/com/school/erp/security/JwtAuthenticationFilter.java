@@ -60,12 +60,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isPublicPath(String requestUri) {
+        // /auth/me and /auth/logout require authentication — they are NOT public
+        if (requestUri.equals("/auth/me") || requestUri.equals("/auth/logout")) {
+            return false;
+        }
         return requestUri.equals("/health") ||
                requestUri.startsWith("/auth/") ||
                requestUri.startsWith("/api/auth/") ||
                requestUri.startsWith("/api/v1/auth/") ||
                requestUri.startsWith("/onboarding/") ||
                requestUri.startsWith("/api/onboarding/") ||
-               requestUri.startsWith("/api/v1/onboarding/");
+               requestUri.startsWith("/api/v1/onboarding/") ||
+               requestUri.startsWith("/swagger-ui/") ||
+               requestUri.equals("/swagger-ui.html") ||
+               requestUri.startsWith("/v3/api-docs");
     }
 }

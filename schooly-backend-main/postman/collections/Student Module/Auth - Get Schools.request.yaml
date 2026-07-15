@@ -1,0 +1,23 @@
+$kind: http-request
+method: GET
+url: '{{baseUrl}}/auth/schools'
+order: 2000
+queryParams:
+  - key: userId
+    value: '{{userId}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Status code is 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      const jsonData = pm.response.json();
+      pm.test('Response is an array', function () {
+        pm.expect(jsonData).to.be.an('array');
+      });
+
+      if (Array.isArray(jsonData) && jsonData.length > 0 && jsonData[0].id) {
+        pm.environment.set('schoolId', jsonData[0].id);
+      }

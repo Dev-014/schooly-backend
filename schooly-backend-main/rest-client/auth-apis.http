@@ -1,0 +1,36 @@
+### Variables
+@baseUrl = http://localhost:8080
+@contentType = application/json
+@authToken = 
+
+###
+### 1. GET SCHOOLS (Authentication step 1)
+###
+GET {{baseUrl}}/auth/schools?userId=1
+
+###
+### 2. LOGIN (Get token - Run this first!)
+###
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "phone": "+1234567890"
+}
+
+###
+### 3. SELECT SCHOOL (After login - gets token from login step)
+###
+POST {{baseUrl}}/auth/select-school
+Content-Type: {{contentType}}
+
+{
+  "userId": 1,
+  "schoolId": 1
+}
+
+###
+### 4. GET USER PROFILE
+###
+GET {{baseUrl}}/api/users/profile
+Authorization: Bearer {{authToken}}
