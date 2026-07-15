@@ -16,6 +16,12 @@ import java.time.LocalDateTime;
 @Table(name = "school_module_access")
 public class SchoolModuleAccess {
 
+    public SchoolModuleAccess(School school, PlatformModule module) {
+        this.school = school;
+        this.module = module;
+        this.enabled = true;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

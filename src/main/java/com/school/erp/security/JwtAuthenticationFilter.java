@@ -36,7 +36,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod()) || isPublicPath(request.getRequestURI())) {
+        String uri = request.getRequestURI();
+        String servletPath = request.getServletPath();
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod()) || isPublicPath(uri) || isPublicPath(servletPath)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -55,10 +57,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             AuthenticatedUser authenticatedUser = jwtUtil.parseAccessToken(token);
             AuthContextHolder.set(authenticatedUser);
 
-            List<SimpleGrantedAuthority> authorities = authenticatedUser.getRoles() != null
-                    ? authenticatedUser.getRoles().stream()
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                        .collect(Collectors.toList())
+            List<SimpleGrantedAuthority> authorities = authenticatedUser.role() != null
+                    ? List.of(new SimpleGrantedAuthority("ROLE_" + authenticatedUser.role().name()))
                     : List.of();
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     authenticatedUser, null, authorities);
@@ -76,19 +76,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isPublicPath(String requestUri) {
+        if (requestUri == null) {
+            return false;
+        }
         // /auth/me and /auth/logout require authentication — they are NOT public
-        if (requestUri.equals("/auth/me") || requestUri.equals("/auth/logout")) {
+        if (requestUri.equals("/auth/me") || requestUri.equals("/auth/logout") ||
+            requestUri.equals("/api/auth/me") || requestUri.equals("/api/auth/logout") ||
+            requestUri.equals("/api/v1/auth/me") || requestUri.equals("/api/v1/auth/logout")) {
             return false;
         }
         return requestUri.equals("/health") ||
                requestUri.startsWith("/auth/") ||
                requestUri.startsWith("/api/auth/") ||
                requestUri.startsWith("/api/v1/auth/") ||
-               requestUri.startsWith("/onboarding/") ||
-               requestUri.startsWith("/api/onboarding/") ||
-               requestUri.startsWith("/api/v1/onboarding/") ||
-               requestUri.startsWith("/swagger-ui/") ||
+               requestUri.startsWith("/onboarding") ||
+               requestUri.startsWith("/api/onboarding") ||
+               requestUri.startsWith("/api/v1/onboarding") ||
+               requestUri.startsWith("/swagger-ui") ||
                requestUri.equals("/swagger-ui.html") ||
-               requestUri.startsWith("/v3/api-docs");
+               requestUri.startsWith("/v3/api-docs") ||
+               requestUri.startsWith("/webjars") ||
+               requestUri.equals("/error") ||
+               requestUri.equals("/");
     }
 }

@@ -32,6 +32,14 @@ public class PlatformModule {
     @Column(name = "is_default")
     private Boolean isDefault = false;
 
+    public boolean isDefault() {
+        return Boolean.TRUE.equals(isDefault);
+    }
+
+    public void setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+    }
+
     @Column(name = "status", nullable = false)
     private String status = "ACTIVE";
 
