@@ -20,7 +20,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints (e.g., auth, health, onboarding, swagger)
-                .requestMatchers("/auth/**", "/onboarding/**", "/health", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/auth/**", "/onboarding/**", "/health", "/v3/api-docs", "/v3/api-docs/**", "/swagger-ui", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 // Super admin endpoints – require SUPER_ADMIN role
                 .requestMatchers("/super-admin/**").hasAuthority("ROLE_SUPER_ADMIN")
                 // All other endpoints require authentication
