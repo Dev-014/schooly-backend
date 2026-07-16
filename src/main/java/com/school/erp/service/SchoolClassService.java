@@ -9,10 +9,12 @@ import com.school.erp.repository.SchoolClassRepository;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.security.AuthContextService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class SchoolClassService {
 
     private final SchoolClassRepository schoolClassRepository;
@@ -40,6 +42,7 @@ public class SchoolClassService {
         return toResponse(findClass(id, authContextService.resolveSchoolId(schoolId)));
     }
 
+    @Transactional
     public SchoolClassResponse createClass(SchoolClassRequest request) {
         SchoolClass schoolClass = new SchoolClass();
         School school = getSchool(authContextService.resolveSchoolId(request.schoolId()));
@@ -47,6 +50,7 @@ public class SchoolClassService {
         return toResponse(schoolClassRepository.save(schoolClass));
     }
 
+    @Transactional
     public SchoolClassResponse updateClass(Long id, Long schoolId, SchoolClassRequest request) {
         authContextService.validateSameSchool(schoolId, request.schoolId());
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId != null ? schoolId : request.schoolId());
@@ -56,6 +60,7 @@ public class SchoolClassService {
         return toResponse(schoolClassRepository.save(schoolClass));
     }
 
+    @Transactional
     public void deleteClass(Long id, Long schoolId) {
         SchoolClass schoolClass = findClass(id, authContextService.resolveSchoolId(schoolId));
         schoolClassRepository.delete(schoolClass);

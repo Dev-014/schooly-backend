@@ -11,10 +11,12 @@ import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.StudentRepository;
 import com.school.erp.security.AuthContextService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class StudentService {
 
     private final StudentRepository studentRepository;
@@ -46,6 +48,7 @@ public class StudentService {
         return toResponse(findStudentByIdAndSchoolId(id, authContextService.resolveSchoolId(schoolId)));
     }
 
+    @Transactional
     public StudentResponse createStudent(StudentRequest request) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(request.schoolId());
         School school = getSchool(effectiveSchoolId);
@@ -55,6 +58,7 @@ public class StudentService {
         return toResponse(studentRepository.save(student));
     }
 
+    @Transactional
     public StudentResponse updateStudent(Long id, Long schoolId, StudentRequest request) {
         authContextService.validateSameSchool(schoolId, request.schoolId());
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId != null ? schoolId : request.schoolId());
@@ -65,6 +69,7 @@ public class StudentService {
         return toResponse(studentRepository.save(student));
     }
 
+    @Transactional
     public void deleteStudent(Long id, Long schoolId) {
         Student student = findStudentByIdAndSchoolId(id, authContextService.resolveSchoolId(schoolId));
         studentRepository.delete(student);

@@ -11,10 +11,12 @@ import com.school.erp.repository.PaymentRepository;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.security.AuthContextService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
@@ -42,6 +44,7 @@ public class PaymentService {
         return payments.stream().map(this::toResponse).toList();
     }
 
+    @Transactional
     public PaymentResponse createPayment(PaymentRequest request) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(request.schoolId());
         School school = getSchool(effectiveSchoolId);

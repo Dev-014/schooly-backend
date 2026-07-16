@@ -4,10 +4,12 @@ import com.school.erp.dto.parent.ParentChildResponse;
 import com.school.erp.entity.StudentParent;
 import com.school.erp.repository.StudentParentRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class ParentService {
 
     private final StudentParentRepository studentParentRepository;

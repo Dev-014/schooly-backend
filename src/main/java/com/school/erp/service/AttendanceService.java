@@ -11,10 +11,12 @@ import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.StudentRepository;
 import com.school.erp.security.AuthContextService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
@@ -42,6 +44,7 @@ public class AttendanceService {
         return records.stream().map(this::toResponse).toList();
     }
 
+    @Transactional
     public AttendanceResponse createAttendance(AttendanceRequest request) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(request.schoolId());
         School school = getSchool(effectiveSchoolId);

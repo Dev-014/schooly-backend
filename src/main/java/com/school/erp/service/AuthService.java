@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -47,6 +48,7 @@ public class AuthService {
     // ──────────────────────────────────────────────
     // LOGIN
     // ──────────────────────────────────────────────
+    @Transactional
     public AuthUserResponse loginOrSignup(String phone) {
         return userRepository.findByPhone(phone)
                 .map(user -> toUserResponse(user, false))
@@ -87,7 +89,8 @@ public class AuthService {
                 if (s != null) {
                     String className = s.getSchoolClass() != null ? s.getSchoolClass().getName() : "General";
                     Long schoolId = s.getSchool() != null ? s.getSchool().getId() : null;
-                    students.add(new StudentSummaryDto(s.getId(), s.getName(), s.getAdmissionNo(), className, schoolId));
+                    String schoolName = s.getSchool() != null ? s.getSchool().getName() : "Greenwood Academy";
+                    students.add(new StudentSummaryDto(s.getId(), s.getName(), s.getAdmissionNo(), className, schoolId, schoolName));
                 }
             }
             if (students.size() > 1) {
@@ -98,7 +101,8 @@ public class AuthService {
             for (Student s : studentRecords) {
                 String className = s.getSchoolClass() != null ? s.getSchoolClass().getName() : "General";
                 Long schoolId = s.getSchool() != null ? s.getSchool().getId() : null;
-                students.add(new StudentSummaryDto(s.getId(), s.getName(), s.getAdmissionNo(), className, schoolId));
+                String schoolName = s.getSchool() != null ? s.getSchool().getName() : "Greenwood Academy";
+                students.add(new StudentSummaryDto(s.getId(), s.getName(), s.getAdmissionNo(), className, schoolId, schoolName));
             }
             if (students.size() > 1) {
                 requiresStudentSelection = true;

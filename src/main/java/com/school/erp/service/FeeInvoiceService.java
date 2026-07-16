@@ -11,10 +11,12 @@ import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.StudentRepository;
 import com.school.erp.security.AuthContextService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class FeeInvoiceService {
 
     private final FeeInvoiceRepository feeInvoiceRepository;
@@ -46,6 +48,7 @@ public class FeeInvoiceService {
         return toResponse(findInvoice(id, authContextService.resolveSchoolId(schoolId)));
     }
 
+    @Transactional
     public FeeInvoiceResponse createInvoice(FeeInvoiceRequest request) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(request.schoolId());
         School school = getSchool(effectiveSchoolId);
@@ -55,6 +58,7 @@ public class FeeInvoiceService {
         return toResponse(feeInvoiceRepository.save(invoice));
     }
 
+    @Transactional
     public FeeInvoiceResponse updateInvoice(Long id, Long schoolId, FeeInvoiceRequest request) {
         authContextService.validateSameSchool(schoolId, request.schoolId());
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId != null ? schoolId : request.schoolId());
@@ -65,6 +69,7 @@ public class FeeInvoiceService {
         return toResponse(feeInvoiceRepository.save(invoice));
     }
 
+    @Transactional
     public void deleteInvoice(Long id, Long schoolId) {
         FeeInvoice invoice = findInvoice(id, authContextService.resolveSchoolId(schoolId));
         feeInvoiceRepository.delete(invoice);

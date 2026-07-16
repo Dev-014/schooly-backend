@@ -6,10 +6,12 @@ import com.school.erp.entity.School;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.SchoolRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class SchoolService {
 
     private final SchoolRepository schoolRepository;
@@ -26,18 +28,21 @@ public class SchoolService {
         return toResponse(findSchool(id));
     }
 
+    @Transactional
     public SchoolResponse createSchool(SchoolRequest request) {
         School school = new School();
         mapRequestToEntity(school, request);
         return toResponse(schoolRepository.save(school));
     }
 
+    @Transactional
     public SchoolResponse updateSchool(Long id, SchoolRequest request) {
         School school = findSchool(id);
         mapRequestToEntity(school, request);
         return toResponse(schoolRepository.save(school));
     }
 
+    @Transactional
     public void deleteSchool(Long id) {
         School school = findSchool(id);
         schoolRepository.delete(school);

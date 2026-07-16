@@ -112,4 +112,51 @@ class AuthServiceTest {
         OtpVerifyRequest request = new OtpVerifyRequest("9999999999", "1234");
         assertThrows(UnauthorizedException.class, () -> authService.verifyOtp(request, null));
     }
+
+    @Test
+    void loginOrSignup_existingUser_returnsUserWithSchools() {
+        User user = new User();
+        user.setId(1L);
+        user.setPhone("9999999999");
+        user.setName("Test Admin");
+
+        School school = new School();
+        school.setId(10L);
+        school.setName("Greenwood Academy");
+        school.setCode("GWA");
+
+        UserSchoolRole role = new UserSchoolRole();
+        role.setUser(user);
+        role.setSchool(school);
+        role.setRole(UserRole.ADMIN);
+        role.setStatus("ACTIVE");
+
+        when(userRepository.findByPhone("9999999999")).thenReturn(Optional.of(user));
+        when(userSchoolRoleRepository.findByUserIdAndStatusIgnoreCase(1L, "ACTIVE")).thenReturn(List.of(role));
+
+        var response = authService.loginOrSignup("9999999999");
+        assertNotNull(response);
+        assertEquals(1L, response.id());
+        assertFalse(response.newlyCreated());
+        assertEquals(1, response.schools().size());
+        assertEquals("Greenwood Academy", response.schools().get(0).schoolName());
+    }
+
+    @Test
+    void loginOrSignup_newUser_createsUserAndReturnsEmptySchools() {
+        User newUser = new User();
+        newUser.setId(100L);
+        newUser.setPhone("1234567890");
+        newUser.setStatus("ACTIVE");
+
+        when(userRepository.findByPhone("1234567890")).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenReturn(newUser);
+        when(userSchoolRoleRepository.findByUserIdAndStatusIgnoreCase(100L, "ACTIVE")).thenReturn(List.of());
+
+        var response = authService.loginOrSignup("1234567890");
+        assertNotNull(response);
+        assertEquals(100L, response.id());
+        assertTrue(response.newlyCreated());
+        assertTrue(response.schools().isEmpty());
+    }
 }

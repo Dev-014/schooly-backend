@@ -9,10 +9,12 @@ import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.StaffRepository;
 import com.school.erp.security.AuthContextService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class StaffService {
 
     private final StaffRepository staffRepository;
@@ -40,6 +42,7 @@ public class StaffService {
         return toResponse(findStaff(id, authContextService.resolveSchoolId(schoolId)));
     }
 
+    @Transactional
     public StaffResponse createStaff(StaffRequest request) {
         Staff staff = new Staff();
         School school = getSchool(authContextService.resolveSchoolId(request.schoolId()));
@@ -47,6 +50,7 @@ public class StaffService {
         return toResponse(staffRepository.save(staff));
     }
 
+    @Transactional
     public StaffResponse updateStaff(Long id, Long schoolId, StaffRequest request) {
         authContextService.validateSameSchool(schoolId, request.schoolId());
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId != null ? schoolId : request.schoolId());
@@ -56,6 +60,7 @@ public class StaffService {
         return toResponse(staffRepository.save(staff));
     }
 
+    @Transactional
     public void deleteStaff(Long id, Long schoolId) {
         Staff staff = findStaff(id, authContextService.resolveSchoolId(schoolId));
         staffRepository.delete(staff);

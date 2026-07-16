@@ -9,6 +9,7 @@ import com.school.erp.repository.StaffRepository;
 import com.school.erp.repository.StudentRepository;
 import com.school.erp.security.AuthContextService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional(readOnly = true)
 public class DashboardService {
 
     private final StudentRepository studentRepository;
