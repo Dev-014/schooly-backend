@@ -20,8 +20,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints (e.g., auth, health, onboarding, swagger)
-                .requestMatchers("/auth/**", "/onboarding/**", "/health", "/v3/api-docs", "/v3/api-docs/**", "/swagger-ui", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                // Public endpoints (e.g., auth, health, onboarding, import, students, staff, swagger)
+                .requestMatchers("/auth/**", "/onboarding/**", "/api/v1/onboarding/**", "/import/**", "/api/v1/import/**", "/api/students/**", "/api/staff/**", "/health", "/v3/api-docs", "/v3/api-docs/**", "/swagger-ui", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 // Super admin endpoints – require SUPER_ADMIN role
                 .requestMatchers("/super-admin/**").hasAuthority("ROLE_SUPER_ADMIN")
                 // All other endpoints require authentication
