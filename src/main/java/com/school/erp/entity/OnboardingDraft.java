@@ -52,6 +52,12 @@ public class OnboardingDraft {
     @Column(name = "step9_data", columnDefinition = "TEXT")
     private String step9Data;
 
+    @Column(name = "step10_data", columnDefinition = "TEXT")
+    private String step10Data;
+
+    @Column(name = "step11_data", columnDefinition = "TEXT")
+    private String step11Data;
+
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 

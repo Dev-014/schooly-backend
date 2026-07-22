@@ -95,8 +95,8 @@ public class OnboardingDraftService {
         OnboardingDraft draft = draftRepository.findById(request.schoolId())
                 .orElseThrow(() -> new ResourceNotFoundException("Onboarding draft not found with ID: " + request.schoolId()));
 
-        if (request.stepNumber() < 1 || request.stepNumber() > 9) {
-            throw new BadRequestException("Invalid step number: " + request.stepNumber() + ". Must be between 1 and 9.");
+        if (request.stepNumber() < 1 || request.stepNumber() > 11) {
+            throw new BadRequestException("Invalid step number: " + request.stepNumber() + ". Must be between 1 and 11.");
         }
 
         draft.setCurrentStep(request.stepNumber());
@@ -113,6 +113,8 @@ public class OnboardingDraftService {
                 case 7 -> draft.setStep7Data(jsonPayload);
                 case 8 -> draft.setStep8Data(jsonPayload);
                 case 9 -> draft.setStep9Data(jsonPayload);
+                case 10 -> draft.setStep10Data(jsonPayload);
+                case 11 -> draft.setStep11Data(jsonPayload);
             }
         } catch (Exception e) {
             throw new BadRequestException("Failed to serialize step " + request.stepNumber() + " data: " + e.getMessage());
@@ -192,6 +194,8 @@ public class OnboardingDraftService {
                 parseJson(draft.getStep7Data()),
                 parseJson(draft.getStep8Data()),
                 parseJson(draft.getStep9Data()),
+                parseJson(draft.getStep10Data()),
+                parseJson(draft.getStep11Data()),
                 updatedAtStr
         );
     }

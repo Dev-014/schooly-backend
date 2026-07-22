@@ -15,6 +15,8 @@ public record OnboardingDraftDTO(
         Map<String, Object> step7,
         Map<String, Object> step8,
         Map<String, Object> step9,
+        Map<String, Object> step10,
+        Map<String, Object> step11,
         String updatedAt
 ) {
 }

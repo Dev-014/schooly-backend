@@ -77,7 +77,7 @@ class OnboardingControllerTest {
         OnboardingDraftDTO draft = new OnboardingDraftDTO(
                 101L, "DRAFT", 1,
                 Map.of("schoolName", "Greenwood Academy", "schoolCode", "GA-101"),
-                Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(),
+                Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(),
                 "2026-07-20T10:00:00"
         );
         when(draftService.initDraft(any(OnboardingInitRequest.class))).thenReturn(draft);
@@ -106,7 +106,7 @@ class OnboardingControllerTest {
                 101L, "DRAFT", 3,
                 Map.of("schoolName", "Greenwood Academy"),
                 Map.of(), Map.of("academicYear", "2026-2027"),
-                Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(),
+                Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(),
                 "2026-07-20T10:15:00"
         );
         when(draftService.getDraft(101L)).thenReturn(draft);
@@ -125,7 +125,7 @@ class OnboardingControllerTest {
                 Map.of("schoolName", "Greenwood Academy"),
                 Map.of(), Map.of(), Map.of(),
                 Map.of("studentsStatus", "COMPLETED", "staffStatus", "COMPLETED"),
-                Map.of(), Map.of(), Map.of(), Map.of(),
+                Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(),
                 "2026-07-20T10:30:00"
         );
         when(draftService.saveStep(any(OnboardingStepRequest.class))).thenReturn(draft);
