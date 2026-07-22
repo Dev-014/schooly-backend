@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/super-admin/modules")
+@RequestMapping({"/super-admin/modules", "/api/v1/super-admin/modules"})
 public class SuperAdminModuleController {
 
     private final SuperAdminModuleService moduleService;
@@ -29,7 +29,6 @@ public class SuperAdminModuleController {
         return ResponseEntity.ok(ApiResponse.success(moduleService.createModule(dto), "Module created successfully"));
     }
 
-    // Enable/disable a specific module for a school
     @PostMapping("/school/{schoolId}/toggle")
     public ResponseEntity<ApiResponse<Void>> toggleModuleForSchool(
             @PathVariable Long schoolId,

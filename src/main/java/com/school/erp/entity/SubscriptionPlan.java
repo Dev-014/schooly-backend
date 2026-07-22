@@ -23,17 +23,29 @@ public class SubscriptionPlan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "code", unique = true)
+    private String code;
+
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "monthly_price", precision = 10, scale = 2)
     private BigDecimal monthlyPrice;
 
+    @Column(name = "annual_price", precision = 10, scale = 2)
+    private BigDecimal annualPrice;
+
     @Column(name = "max_students")
     private Integer maxStudents;
 
     @Column(name = "storage_gb")
     private Integer storageGb;
+
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
+
+    @Column(name = "features", columnDefinition = "TEXT")
+    private String features;
 
     @Column(name = "status", nullable = false)
     private String status = "ACTIVE";

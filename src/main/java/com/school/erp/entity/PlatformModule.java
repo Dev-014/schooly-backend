@@ -29,6 +29,12 @@ public class PlatformModule {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "category")
+    private String category = "CORE";
+
+    @Column(name = "add_on_price", precision = 10, scale = 2)
+    private java.math.BigDecimal addOnPrice = java.math.BigDecimal.ZERO;
+
     @Column(name = "is_default")
     private Boolean isDefault = false;
 

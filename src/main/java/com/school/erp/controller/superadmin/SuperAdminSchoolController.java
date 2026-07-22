@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/super-admin/schools")
+@RequestMapping({"/super-admin/schools", "/api/v1/super-admin/schools"})
 public class SuperAdminSchoolController {
 
     private final SuperAdminSchoolService schoolService;
@@ -21,8 +21,11 @@ public class SuperAdminSchoolController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<SchoolDto>>> getAllSchools() {
-        return ResponseEntity.ok(ApiResponse.success(schoolService.getAllSchools(), "Schools fetched successfully"));
+    public ResponseEntity<ApiResponse<List<SchoolDto>>> getAllSchools(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String plan,
+            @RequestParam(required = false) String search) {
+        return ResponseEntity.ok(ApiResponse.success(schoolService.getAllSchools(status, plan, search), "Schools fetched successfully"));
     }
 
     @GetMapping("/{id}")
