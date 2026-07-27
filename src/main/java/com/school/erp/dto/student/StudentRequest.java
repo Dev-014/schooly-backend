@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public record StudentRequest(
-        @NotNull(message = "userId is required")
         Long userId,
         String name,
         @NotBlank(message = "admissionNo is required")
@@ -19,9 +18,24 @@ public record StudentRequest(
         Long schoolId,
         @NotNull(message = "classId is required")
         Long classId,
-        @NotNull(message = "sectionId is required")
         Long sectionId,
-        @NotNull(message = "academicYearId is required")
-        Long academicYearId
+        Long academicYearId,
+        String firstName,
+        String lastName,
+        String gender,
+        LocalDate dateOfBirth,
+        String bloodGroup,
+        String religion,
+        String nationality,
+        String previousSchool,
+        String address,
+        String photoUrl,
+        String guardianName,
+        String guardianRelation,
+        String guardianPhone,
+        String guardianEmail,
+        String guardianOccupation,
+        Long categoryId,
+        Long houseId
 ) {
 }

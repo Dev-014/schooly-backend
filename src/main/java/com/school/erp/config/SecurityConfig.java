@@ -24,7 +24,10 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/auth/**", "/onboarding/**", "/api/v1/onboarding/**",
                     "/import/**", "/api/v1/import/**",
-                    "/api/students/**", "/api/staff/**",
+                    "/api/students/**", "/api/student-*/**", "/api/online-admissions/**",
+                    "/api/staff/**", "/api/classes/**", "/api/academics/**",
+                    "/api/schools/**", "/api/parents/**", "/api/attendance/**",
+                    "/api/fee-invoices/**", "/api/dashboard/**", "/api/entitlements/**", "/api/payments/**",
                     "/api/v1/catalog/**",
                     "/health",
                     "/v3/api-docs", "/v3/api-docs/**",

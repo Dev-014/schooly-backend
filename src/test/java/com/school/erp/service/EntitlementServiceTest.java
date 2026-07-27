@@ -10,6 +10,7 @@ import com.school.erp.repository.OnboardingDraftRepository;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.SubscriptionPlanRepository;
 import com.school.erp.repository.TenantEntitlementOverrideRepository;
+import com.school.erp.repository.StudentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +34,8 @@ class EntitlementServiceTest {
     private TenantEntitlementOverrideRepository overrideRepo;
     @Mock
     private OnboardingDraftRepository draftRepo;
+    @Mock
+    private StudentRepository studentRepo;
 
     private EntitlementService entitlementService;
     private School testSchool;
@@ -40,7 +43,7 @@ class EntitlementServiceTest {
 
     @BeforeEach
     void setUp() {
-        entitlementService = new EntitlementService(schoolRepo, planRepo, overrideRepo, draftRepo);
+        entitlementService = new EntitlementService(schoolRepo, planRepo, overrideRepo, draftRepo, studentRepo);
 
         testSchool = new School();
         testSchool.setId(101L);

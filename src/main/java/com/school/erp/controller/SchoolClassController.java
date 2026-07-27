@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/classes")
+@RequestMapping({"/api/classes", "/api/academics/classes", "/api/v1/admin/classes"})
 public class SchoolClassController {
 
     private final SchoolClassService schoolClassService;

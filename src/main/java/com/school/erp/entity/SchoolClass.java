@@ -22,4 +22,10 @@ public class SchoolClass {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "school_id", nullable = false)
     private School school;
+
+    @Column(name = "grade")
+    private Integer grade;
+
+    @Column(name = "level")
+    private String level;
 }

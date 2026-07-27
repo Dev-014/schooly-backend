@@ -81,13 +81,17 @@ public class SchoolClassService {
     private void mapRequestToEntity(SchoolClass schoolClass, SchoolClassRequest request, School school) {
         schoolClass.setName(request.name());
         schoolClass.setSchool(school);
+        schoolClass.setGrade(request.grade());
+        schoolClass.setLevel(request.level());
     }
 
     private SchoolClassResponse toResponse(SchoolClass schoolClass) {
         return new SchoolClassResponse(
                 schoolClass.getId(),
                 schoolClass.getName(),
-                schoolClass.getSchool().getId()
+                schoolClass.getSchool().getId(),
+                schoolClass.getGrade(),
+                schoolClass.getLevel()
         );
     }
 }

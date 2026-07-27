@@ -49,4 +49,57 @@ public class Student {
 
     @Column(name = "admission_date")
     private LocalDate admissionDate;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "gender")
+    private String gender;
+
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
+
+    @Column(name = "blood_group")
+    private String bloodGroup;
+
+    @Column(name = "religion")
+    private String religion;
+
+    @Column(name = "nationality")
+    private String nationality;
+
+    @Column(name = "previous_school")
+    private String previousSchool;
+
+    @Column(name = "address", columnDefinition = "TEXT")
+    private String address;
+
+    @Column(name = "photo_url")
+    private String photoUrl;
+
+    @Column(name = "guardian_name")
+    private String guardianName;
+
+    @Column(name = "guardian_relation")
+    private String guardianRelation;
+
+    @Column(name = "guardian_phone")
+    private String guardianPhone;
+
+    @Column(name = "guardian_email")
+    private String guardianEmail;
+
+    @Column(name = "guardian_occupation")
+    private String guardianOccupation;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private StudentCategory category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "house_id")
+    private StudentHouse house;
 }

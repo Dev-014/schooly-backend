@@ -42,7 +42,27 @@ public class SuperAdminModuleService {
         module.setName(dto.getName());
         module.setDescription(dto.getDescription());
         module.setDefault(dto.isDefault());
-        module.setStatus(dto.getStatus());
+        module.setStatus(dto.getStatus() != null ? dto.getStatus() : "ACTIVE");
+        if (dto.getCategory() != null) module.setCategory(dto.getCategory());
+        if (dto.getAddOnPrice() != null) module.setAddOnPrice(dto.getAddOnPrice());
+        if (dto.getTargetRoles() != null) module.setTargetRolesList(dto.getTargetRoles());
+        if (dto.getSubModules() != null) module.setSubModulesList(dto.getSubModules());
+        PlatformModule saved = moduleRepo.save(module);
+        return toDto(saved);
+    }
+
+    @Transactional
+    public ModuleDto updateModule(Long id, ModuleDto dto) {
+        PlatformModule module = moduleRepo.findById(id)
+                .orElseThrow(() -> new com.school.erp.exception.ResourceNotFoundException("Module not found for id " + id));
+        if (dto.getName() != null) module.setName(dto.getName());
+        if (dto.getDescription() != null) module.setDescription(dto.getDescription());
+        if (dto.getStatus() != null) module.setStatus(dto.getStatus());
+        if (dto.getCategory() != null) module.setCategory(dto.getCategory());
+        if (dto.getAddOnPrice() != null) module.setAddOnPrice(dto.getAddOnPrice());
+        if (dto.getTargetRoles() != null) module.setTargetRolesList(dto.getTargetRoles());
+        if (dto.getSubModules() != null) module.setSubModulesList(dto.getSubModules());
+        module.setDefault(dto.isDefault());
         PlatformModule saved = moduleRepo.save(module);
         return toDto(saved);
     }
@@ -66,7 +86,11 @@ public class SuperAdminModuleService {
                 module.getName(),
                 module.getDescription(),
                 module.isDefault(),
-                module.getStatus()
+                module.getStatus(),
+                module.getCategory(),
+                module.getAddOnPrice(),
+                module.getTargetRolesList(),
+                module.getSubModulesList()
         );
     }
 }

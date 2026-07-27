@@ -22,4 +22,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findByIdAndSchoolId(Long id, Long schoolId);
 
     long countBySchoolId(Long schoolId);
+
+    long countByHouseId(Long houseId);
 }

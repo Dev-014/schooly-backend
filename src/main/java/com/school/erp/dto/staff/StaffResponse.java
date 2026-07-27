@@ -11,6 +11,14 @@ public record StaffResponse(
         Long designationId,
         LocalDate joiningDate,
         BigDecimal salary,
-        String status
+        String status,
+        String firstName,
+        String lastName,
+        String department,
+        String designation,
+        String photoUrl,
+        String phone,
+        String email,
+        String assignedClassAndSection
 ) {
 }

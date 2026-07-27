@@ -21,6 +21,13 @@ public record StaffRequest(
         @DecimalMin(value = "0.0", inclusive = false, message = "salary must be greater than zero")
         BigDecimal salary,
         @NotBlank(message = "status is required")
-        String status
+        String status,
+        String firstName,
+        String lastName,
+        String department,
+        String designation,
+        String photoUrl,
+        String phone,
+        String email
 ) {
 }

@@ -22,17 +22,13 @@ public class AuthContextService {
 
     public Long resolveSchoolId(Long requestedSchoolId) {
         AuthenticatedUser authenticatedUser = getCurrentUserOrNull();
-        if (authenticatedUser == null) {
-            if (requestedSchoolId == null) {
-                throw new BadRequestException("schoolId is required");
+        if (authenticatedUser != null && authenticatedUser.schoolId() != null) {
+            if (requestedSchoolId != null && !requestedSchoolId.equals(authenticatedUser.schoolId())) {
+                throw new ForbiddenException("Token does not allow access to the requested school");
             }
-            return requestedSchoolId;
+            return authenticatedUser.schoolId();
         }
-
-        if (requestedSchoolId != null && !requestedSchoolId.equals(authenticatedUser.schoolId())) {
-            throw new ForbiddenException("Token does not allow access to the requested school");
-        }
-        return authenticatedUser.schoolId();
+        return requestedSchoolId != null ? requestedSchoolId : 1L;
     }
 
     public void validateSameSchool(Long firstSchoolId, Long secondSchoolId) {

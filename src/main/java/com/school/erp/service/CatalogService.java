@@ -100,7 +100,9 @@ public class CatalogService {
             module.getCategory() != null ? module.getCategory() : "CORE",
             module.getAddOnPrice(),
             module.isDefault(),
-            module.getStatus()
+            module.getStatus(),
+            module.getTargetRolesList(),
+            module.getSubModulesList()
         );
     }
 }

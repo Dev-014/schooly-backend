@@ -18,15 +18,18 @@ public class EntitlementService {
     private final SubscriptionPlanRepository planRepo;
     private final TenantEntitlementOverrideRepository overrideRepo;
     private final OnboardingDraftRepository draftRepo;
+    private final StudentRepository studentRepo;
 
     public EntitlementService(SchoolRepository schoolRepo,
                               SubscriptionPlanRepository planRepo,
                               TenantEntitlementOverrideRepository overrideRepo,
-                              OnboardingDraftRepository draftRepo) {
+                              OnboardingDraftRepository draftRepo,
+                              StudentRepository studentRepo) {
         this.schoolRepo = schoolRepo;
         this.planRepo = planRepo;
         this.overrideRepo = overrideRepo;
         this.draftRepo = draftRepo;
+        this.studentRepo = studentRepo;
     }
 
     @Transactional(readOnly = true)
@@ -116,7 +119,7 @@ public class EntitlementService {
             return true;
         }
         // Core mandatory modules are always granted
-        if ("ATTENDANCE".equalsIgnoreCase(moduleCode) || "COMMUNICATION".equalsIgnoreCase(moduleCode)) {
+        if ("ATTENDANCE".equalsIgnoreCase(moduleCode) || "COMMUNICATION".equalsIgnoreCase(moduleCode) || "ACADEMICS".equalsIgnoreCase(moduleCode)) {
             return true;
         }
         EntitlementEvaluationDto eval = evaluateEntitlements(schoolId);
@@ -131,5 +134,38 @@ public class EntitlementService {
                     "Access Denied (403): Module '" + moduleCode + "' is not enabled under school's active subscription plan or entitlement overrides."
             );
         }
+    }
+
+    @Transactional(readOnly = true)
+    public void enforceSchoolActive(Long schoolId) {
+        School school = schoolRepo.findById(schoolId)
+                .orElseThrow(() -> new ResourceNotFoundException("School not found with ID: " + schoolId));
+        if ("SUSPENDED".equalsIgnoreCase(school.getStatus()) || "DEACTIVATED".equalsIgnoreCase(school.getStatus())) {
+            throw new com.school.erp.exception.ForbiddenException(
+                    "Access Denied (403): School account status is SUSPENDED or DEACTIVATED. Please contact Super Admin."
+            );
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void enforceStudentQuota(Long schoolId) {
+        enforceSchoolActive(schoolId);
+        long currentStudents = studentRepo.countBySchoolId(schoolId);
+        int maxAllowed = getMaxAllowedStudents(schoolId);
+        if (maxAllowed > 0 && currentStudents >= maxAllowed) {
+            throw new com.school.erp.exception.BadRequestException(
+                    "Student enrollment quota exceeded (" + currentStudents + "/" + maxAllowed + "). Please contact Super Admin to upgrade subscription tier."
+            );
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public int getMaxAllowedStudents(Long schoolId) {
+        EntitlementEvaluationDto eval = evaluateEntitlements(schoolId);
+        SubscriptionPlan plan = planRepo.findByCode(eval.getActivePlanCode()).orElse(null);
+        if (plan != null && plan.getMaxStudents() != null) {
+            return plan.getMaxStudents();
+        }
+        return 2000; // default safe quota
     }
 }

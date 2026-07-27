@@ -56,7 +56,8 @@ class CatalogControllerTest {
     @Test
     void shouldReturnActiveModules() throws Exception {
         CatalogModuleDto module = new CatalogModuleDto(
-                1L, "ATTENDANCE", "Attendance Management", "Daily tracking", "CORE", BigDecimal.ZERO, true, "ACTIVE"
+                1L, "ATTENDANCE", "Attendance Management", "Daily tracking", "CORE", BigDecimal.ZERO, true, "ACTIVE",
+                Arrays.asList("ADMIN", "TEACHER"), Arrays.asList("Daily tracking", "Reports")
         );
         when(catalogService.getActiveModules()).thenReturn(Collections.singletonList(module));
 
@@ -64,6 +65,7 @@ class CatalogControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data[0].code").value("ATTENDANCE"))
-                .andExpect(jsonPath("$.data[0].category").value("CORE"));
+                .andExpect(jsonPath("$.data[0].category").value("CORE"))
+                .andExpect(jsonPath("$.data[0].targetRoles[0]").value("ADMIN"));
     }
 }

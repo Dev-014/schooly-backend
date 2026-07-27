@@ -29,6 +29,11 @@ public class SuperAdminModuleController {
         return ResponseEntity.ok(ApiResponse.success(moduleService.createModule(dto), "Module created successfully"));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<ModuleDto>> updateModule(@PathVariable Long id, @Valid @RequestBody ModuleDto dto) {
+        return ResponseEntity.ok(ApiResponse.success(moduleService.updateModule(id, dto), "Module updated successfully"));
+    }
+
     @PostMapping("/school/{schoolId}/toggle")
     public ResponseEntity<ApiResponse<Void>> toggleModuleForSchool(
             @PathVariable Long schoolId,
