@@ -18,6 +18,8 @@ public class PlanDto {
     private String name;
     private BigDecimal monthlyPrice;
     private BigDecimal annualPrice;
+    private BigDecimal pricePerStudent;
+    private String billingModel;
     private String description;
     private String status;
     private List<String> features;

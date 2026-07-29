@@ -82,6 +82,10 @@ public class SuperAdminPlanService {
         }
         plan.setMonthlyPrice(dto.getMonthlyPrice());
         plan.setAnnualPrice(dto.getAnnualPrice());
+        plan.setPricePerStudent(dto.getPricePerStudent());
+        if (dto.getBillingModel() != null) {
+            plan.setBillingModel(dto.getBillingModel());
+        }
         plan.setDescription(dto.getDescription());
         if (dto.getStatus() != null) {
             plan.setStatus(dto.getStatus());
@@ -127,6 +131,8 @@ public class SuperAdminPlanService {
                 .name(plan.getName())
                 .monthlyPrice(plan.getMonthlyPrice())
                 .annualPrice(plan.getAnnualPrice())
+                .pricePerStudent(plan.getPricePerStudent())
+                .billingModel(plan.getBillingModel())
                 .description(plan.getDescription())
                 .status(plan.getStatus())
                 .features(featureList)

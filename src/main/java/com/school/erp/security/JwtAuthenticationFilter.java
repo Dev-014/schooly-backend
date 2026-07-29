@@ -97,12 +97,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                requestUri.startsWith("/api/v1/import") ||
                requestUri.startsWith("/api/students") ||
                requestUri.startsWith("/api/student-") ||
+               requestUri.startsWith("/api/families") ||
+               requestUri.startsWith("/api/v1/admin/families") ||
                requestUri.startsWith("/api/staff") ||
                requestUri.startsWith("/api/schools") ||
                requestUri.startsWith("/api/academics") ||
                requestUri.startsWith("/api/v1/admin/academics") ||
                requestUri.startsWith("/api/classes") ||
                requestUri.startsWith("/api/v1/admin/classes") ||
+               requestUri.startsWith("/super-admin") ||
+               requestUri.startsWith("/api/v1/super-admin") ||
                requestUri.startsWith("/swagger-ui") ||
                requestUri.equals("/swagger-ui.html") ||
                requestUri.startsWith("/v3/api-docs") ||

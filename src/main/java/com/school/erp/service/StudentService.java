@@ -26,6 +26,7 @@ public class StudentService {
     private final AcademicYearRepository academicYearRepository;
     private final StudentCategoryRepository studentCategoryRepository;
     private final StudentHouseRepository studentHouseRepository;
+    private final FamilyRepository familyRepository;
 
     public StudentService(
             StudentRepository studentRepository,
@@ -36,7 +37,8 @@ public class StudentService {
             EntitlementService entitlementService,
             AcademicYearRepository academicYearRepository,
             StudentCategoryRepository studentCategoryRepository,
-            StudentHouseRepository studentHouseRepository
+            StudentHouseRepository studentHouseRepository,
+            FamilyRepository familyRepository
     ) {
         this.studentRepository = studentRepository;
         this.schoolRepository = schoolRepository;
@@ -47,14 +49,22 @@ public class StudentService {
         this.academicYearRepository = academicYearRepository;
         this.studentCategoryRepository = studentCategoryRepository;
         this.studentHouseRepository = studentHouseRepository;
+        this.familyRepository = familyRepository;
     }
 
-    public List<StudentResponse> getAllStudents(Long schoolId, Long classId) {
+    public List<StudentResponse> getAllStudents(Long schoolId, Long classId, Long sectionId) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
         entitlementService.enforceModuleAccess(effectiveSchoolId, "STUDENT_INFO");
-        List<Student> students = classId == null
-                ? studentRepository.findBySchoolId(effectiveSchoolId)
-                : studentRepository.findBySchoolIdAndSchoolClassId(effectiveSchoolId, classId);
+        List<Student> students;
+        if (classId != null && sectionId != null) {
+            students = studentRepository.findBySchoolIdAndSchoolClassIdAndSectionId(effectiveSchoolId, classId, sectionId);
+        } else if (classId != null) {
+            students = studentRepository.findBySchoolIdAndSchoolClassId(effectiveSchoolId, classId);
+        } else if (sectionId != null) {
+            students = studentRepository.findBySchoolIdAndSectionId(effectiveSchoolId, sectionId);
+        } else {
+            students = studentRepository.findBySchoolId(effectiveSchoolId);
+        }
         return students.stream().map(this::toResponse).toList();
     }
 
@@ -291,6 +301,12 @@ public class StudentService {
         } else {
             student.setHouse(null);
         }
+
+        if (request.familyId() != null) {
+            student.setFamily(familyRepository.findById(request.familyId()).orElse(null));
+        } else {
+            student.setFamily(null);
+        }
     }
 
     private StudentResponse toResponse(Student student) {
@@ -322,7 +338,8 @@ public class StudentService {
                 student.getGuardianEmail(),
                 student.getGuardianOccupation(),
                 student.getCategory() != null ? student.getCategory().getId() : null,
-                student.getHouse() != null ? student.getHouse().getId() : null
+                student.getHouse() != null ? student.getHouse().getId() : null,
+                student.getFamily() != null ? student.getFamily().getId() : null
         );
     }
 

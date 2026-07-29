@@ -3,6 +3,7 @@ package com.school.erp.controller.student;
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.student.StudentHouseRequest;
 import com.school.erp.dto.student.StudentHouseResponse;
+import com.school.erp.dto.student.StudentResponse;
 import com.school.erp.service.StudentHouseService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,14 @@ public class StudentHouseController {
             @RequestParam(required = false) Long schoolId
     ) {
         return ResponseEntity.ok(ApiResponse.success(houseService.getAllHouses(schoolId), "Student houses retrieved successfully"));
+    }
+
+    @GetMapping("/{id}/students")
+    public ResponseEntity<ApiResponse<List<StudentResponse>>> getStudentsByHouse(
+            @PathVariable Long id,
+            @RequestParam(required = false) Long schoolId
+    ) {
+        return ResponseEntity.ok(ApiResponse.success(houseService.getStudentsByHouse(id, schoolId), "Students retrieved successfully"));
     }
 
     @PostMapping

@@ -8,6 +8,8 @@ import com.school.erp.repository.SchoolModuleAccessRepository;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.StaffRepository;
 import com.school.erp.repository.StudentRepository;
+import com.school.erp.repository.SubscriptionPlanRepository;
+import com.school.erp.entity.SubscriptionPlan;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,15 +25,18 @@ public class SuperAdminSchoolService {
     private final StudentRepository studentRepository;
     private final StaffRepository staffRepository;
     private final SchoolModuleAccessRepository accessRepository;
+    private final SubscriptionPlanRepository planRepository;
 
     public SuperAdminSchoolService(SchoolRepository schoolRepository,
                                    StudentRepository studentRepository,
                                    StaffRepository staffRepository,
-                                   SchoolModuleAccessRepository accessRepository) {
+                                   SchoolModuleAccessRepository accessRepository,
+                                   SubscriptionPlanRepository planRepository) {
         this.schoolRepository = schoolRepository;
         this.studentRepository = studentRepository;
         this.staffRepository = staffRepository;
         this.accessRepository = accessRepository;
+        this.planRepository = planRepository;
     }
 
     @Transactional(readOnly = true)
@@ -45,7 +50,7 @@ public class SuperAdminSchoolService {
                 .filter(school -> status == null || status.equalsIgnoreCase("All") || status.isEmpty() || status.equalsIgnoreCase(school.getStatus()))
                 .filter(school -> {
                     if (plan == null || plan.equalsIgnoreCase("All") || plan.isEmpty()) return true;
-                    String schoolPlan = getSchoolPlan(school);
+                    String schoolPlan = school.getPlan() != null ? school.getPlan().getName() : "Professional";
                     return schoolPlan.equalsIgnoreCase(plan);
                 })
                 .filter(school -> {
@@ -122,23 +127,20 @@ public class SuperAdminSchoolService {
             school.getMetadata().putAll(dto.getMetadata());
         }
         if (dto.getPlan() != null) {
-            school.getMetadata().put("plan", dto.getPlan());
-        } else if (school.getMetadata().get("plan") == null) {
-            school.getMetadata().put("plan", "Professional");
+            SubscriptionPlan subPlan = planRepository.findAll().stream()
+                    .filter(p -> p.getName().equalsIgnoreCase(dto.getPlan()))
+                    .findFirst()
+                    .orElse(null);
+            if (subPlan != null) {
+                school.setPlan(subPlan);
+            }
         }
-        if (dto.getHealthStatus() != null) {
-            school.getMetadata().put("healthStatus", dto.getHealthStatus());
-        }
+        
         if (dto.getOnboardingStep() != null) {
-            school.getMetadata().put("onboardingStep", dto.getOnboardingStep());
+            school.setOnboardingStatus(dto.getOnboardingStep());
+        } else if (school.getOnboardingStatus() == null) {
+            school.setOnboardingStatus("LIVE");
         }
-    }
-
-    private String getSchoolPlan(School school) {
-        if (school.getMetadata() != null && school.getMetadata().get("plan") != null) {
-            return school.getMetadata().get("plan").toString();
-        }
-        return "Professional";
     }
 
     private SchoolDto toDto(School school) {
@@ -150,21 +152,23 @@ public class SuperAdminSchoolService {
 
         String subdomain = school.getSubdomain() != null ? school.getSubdomain() : (school.getCode() != null ? school.getCode().toLowerCase() : "campus");
         String domain = subdomain + ".schooly.io";
-        String plan = getSchoolPlan(school);
+        String plan = school.getPlan() != null ? school.getPlan().getName() : "Basic Plan";
+
+        Double monthlyAmount = 0.0;
+        if (school.getPlan() != null) {
+            double price = school.getCustomPrice() != null ? school.getCustomPrice().doubleValue() : (school.getPlan().getPricePerStudent() != null ? school.getPlan().getPricePerStudent().doubleValue() : 0.0);
+            monthlyAmount = studentCount * price;
+        }
 
         String healthStatus = "Healthy";
         if ("Suspended".equalsIgnoreCase(school.getStatus()) || "Inactive".equalsIgnoreCase(school.getStatus())) {
             healthStatus = "Critical";
         } else if ("Trial".equalsIgnoreCase(school.getStatus()) || "Draft".equalsIgnoreCase(school.getStatus())) {
             healthStatus = "Warning";
-        } else if (school.getMetadata() != null && school.getMetadata().get("healthStatus") != null) {
-            healthStatus = school.getMetadata().get("healthStatus").toString();
         }
 
-        String onboardingStep = "Step 8: Activated";
-        if (school.getMetadata() != null && school.getMetadata().get("onboardingStep") != null) {
-            onboardingStep = school.getMetadata().get("onboardingStep").toString();
-        }
+        String onboardingStep = school.getOnboardingStatus() != null ? school.getOnboardingStatus() : "Step 8: Activated";
+        String renewalDate = school.getRenewalDate() != null ? school.getRenewalDate().toString() : "2027-01-01";
 
         String createdAtStr = school.getCreatedAt() != null ? school.getCreatedAt().toString() : "2026-07-01T10:00:00";
 
@@ -186,6 +190,8 @@ public class SuperAdminSchoolService {
                 .onboardingStep(onboardingStep)
                 .createdAt(createdAtStr)
                 .metadata(school.getMetadata())
+                .monthlyAmount(monthlyAmount)
+                .renewalDate(renewalDate)
                 .build();
     }
 }

@@ -16,6 +16,12 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findBySchoolIdAndSchoolClassId(Long schoolId, Long classId);
 
     @EntityGraph(attributePaths = {"school", "schoolClass"})
+    List<Student> findBySchoolIdAndSectionId(Long schoolId, Long sectionId);
+
+    @EntityGraph(attributePaths = {"school", "schoolClass"})
+    List<Student> findBySchoolIdAndSchoolClassIdAndSectionId(Long schoolId, Long classId, Long sectionId);
+
+    @EntityGraph(attributePaths = {"school", "schoolClass"})
     List<Student> findByUserId(Long userId);
 
     @EntityGraph(attributePaths = {"school", "schoolClass"})
@@ -24,4 +30,12 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     long countBySchoolId(Long schoolId);
 
     long countByHouseId(Long houseId);
+
+    List<Student> findBySchoolIdAndHouseId(Long schoolId, Long houseId);
+
+    List<Student> findByFamilyId(Long familyId);
+
+    long countByFamilyId(Long familyId);
+
+    long countByHouseIdAndGender(Long houseId, String gender);
 }

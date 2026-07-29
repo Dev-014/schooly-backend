@@ -25,16 +25,15 @@ public class SecurityConfig {
                     "/auth/**", "/onboarding/**", "/api/v1/onboarding/**",
                     "/import/**", "/api/v1/import/**",
                     "/api/students/**", "/api/student-*/**", "/api/online-admissions/**",
+                    "/api/families", "/api/families/**", "/api/v1/admin/families/**",
                     "/api/staff/**", "/api/classes/**", "/api/academics/**",
                     "/api/schools/**", "/api/parents/**", "/api/attendance/**",
                     "/api/fee-invoices/**", "/api/dashboard/**", "/api/entitlements/**", "/api/payments/**",
-                    "/api/v1/catalog/**",
+                    "/api/v1/catalog/**", "/api/v1/super-admin/**", "/super-admin/**",
                     "/health",
                     "/v3/api-docs", "/v3/api-docs/**",
                     "/swagger-ui", "/swagger-ui/**", "/swagger-ui.html"
                 ).permitAll()
-                // Super admin endpoints – accessible by authenticated users (ADMIN/SUPER_ADMIN)
-                .requestMatchers("/super-admin/**", "/api/v1/super-admin/**").authenticated()
                 // All other endpoints require authentication
                 .anyRequest().authenticated()
             );

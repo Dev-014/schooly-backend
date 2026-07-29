@@ -24,10 +24,11 @@ public class StudentController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<StudentResponse>>> getAllStudents(
             @RequestParam(required = false) Long schoolId,
-            @RequestParam(required = false) Long classId
+            @RequestParam(required = false) Long classId,
+            @RequestParam(required = false) Long sectionId
     ) {
         return ResponseEntity.ok(ApiResponse.success(
-                studentService.getAllStudents(schoolId, classId),
+                studentService.getAllStudents(schoolId, classId, sectionId),
                 "Students fetched successfully"
         ));
     }

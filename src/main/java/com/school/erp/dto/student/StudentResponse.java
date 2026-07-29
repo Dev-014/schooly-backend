@@ -30,6 +30,7 @@ public record StudentResponse(
         String guardianEmail,
         String guardianOccupation,
         Long categoryId,
-        Long houseId
+        Long houseId,
+        Long familyId
 ) {
 }

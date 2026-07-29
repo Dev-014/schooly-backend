@@ -29,6 +29,8 @@ public class SchoolDto {
     private String onboardingStep;
     private String createdAt;
     private Map<String, Object> metadata;
+    private Double monthlyAmount;
+    private String renewalDate;
 
     // Backward compatible constructor for existing calls
     public SchoolDto(Long id, String name, String code, String address, String contactEmail, String contactPhone, String status) {

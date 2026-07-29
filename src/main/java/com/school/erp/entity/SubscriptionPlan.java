@@ -35,6 +35,12 @@ public class SubscriptionPlan {
     @Column(name = "annual_price", precision = 10, scale = 2)
     private BigDecimal annualPrice;
 
+    @Column(name = "price_per_student", precision = 10, scale = 2)
+    private BigDecimal pricePerStudent;
+
+    @Column(name = "billing_model")
+    private String billingModel = "PER_STUDENT";
+
     @Column(name = "max_students")
     private Integer maxStudents;
 

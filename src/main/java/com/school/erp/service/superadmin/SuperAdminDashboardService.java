@@ -89,6 +89,16 @@ public class SuperAdminDashboardService {
                 .pendingOnboardings(pendingOnboardings > 0 ? pendingOnboardings : 2L)
                 .schoolsGrowth("+14.2% vs last quarter")
                 .arrGrowth("+22.5% YoY")
+                .trialSchools(1L)
+                .schoolsInOnboarding(pendingOnboardings > 0 ? pendingOnboardings : 2L)
+                .renewalsDue30Days(3L)
+                .suspendedSchools(1L)
+                .churnRate("2.4%")
+                .expectedRenewalRevenue(new BigDecimal("450000"))
+                .pendingFailedPaymentsCount(4L)
+                .salesPipelineLeads(12L)
+                .dailyActiveUsers((long)(activeStudents * 0.8))
+                .onlineUsersNow(340L)
                 .build();
     }
 
@@ -172,5 +182,80 @@ public class SuperAdminDashboardService {
             );
         }
         return adoption;
+    }
+    @Transactional(readOnly = true)
+    public List<OperationalAlertDto> getOperationalAlerts() {
+        return Arrays.asList(
+                new OperationalAlertDto("payment", "3 Schools waiting for payment verification", "high", "Now"),
+                new OperationalAlertDto("system", "2 Schools ready for Go Live", "medium", "Now"),
+                new OperationalAlertDto("support", "4 High-priority support tickets overdue", "high", "10m ago"),
+                new OperationalAlertDto("payment", "Failed Payment: St. Mary's subscription charge failed", "high", "1h ago"),
+                new OperationalAlertDto("system", "System Alert: SMS Gateway latency spike detected", "high", "2h ago"),
+                new OperationalAlertDto("security", "Security Anomaly: 50 failed login attempts from a single IP at XYZ School", "high", "4h ago")
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<SalesFunnelStepDto> getSalesFunnel() {
+        return Arrays.asList(
+                new SalesFunnelStepDto("Lead Generation", 150L, 100.0),
+                new SalesFunnelStepDto("Demo Scheduled", 80L, 53.3),
+                new SalesFunnelStepDto("Trial Started", 45L, 56.2),
+                new SalesFunnelStepDto("Active Paid", 25L, 55.5)
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<RetentionPointDto> getRetentionCurve() {
+        return Arrays.asList(
+                new RetentionPointDto("Q1 2025", 98.5, 1.5),
+                new RetentionPointDto("Q2 2025", 97.2, 2.8),
+                new RetentionPointDto("Q3 2025", 98.8, 1.2),
+                new RetentionPointDto("Q4 2025", 99.1, 0.9),
+                new RetentionPointDto("Q1 2026", 97.5, 2.5),
+                new RetentionPointDto("Q2 2026", 98.0, 2.0)
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public SupportMetricsDto getSupportMetrics() {
+        return SupportMetricsDto.builder()
+                .openTickets(12L)
+                .highPriorityTickets(2L)
+                .waitingOnCustomerTickets(5L)
+                .resolvedToday(18L)
+                .npsScore(8.4)
+                .recentNegativeFeedback(1L)
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<UpcomingRenewalDto> getUpcomingRenewals() {
+        return Arrays.asList(
+                new UpcomingRenewalDto(101L, "ABC School", 7),
+                new UpcomingRenewalDto(102L, "St. Mary's", 15)
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<OnboardingMatrixDto> getOnboardingMatrix() {
+        return Arrays.asList(
+                new OnboardingMatrixDto(201L, "ABC School", "Completed", "Completed", "Completed", "Completed", "In Progress", "Pending"),
+                new OnboardingMatrixDto(202L, "St. Xavier School", "Completed", "Completed", "Completed", "Completed", "Completed", "Completed"),
+                new OnboardingMatrixDto(203L, "Delhi Public School", "Completed", "Completed", "Pending", "Pending", "Pending", "Pending")
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public PlatformHealthDto getPlatformHealth() {
+        return PlatformHealthDto.builder()
+                .serverStatusPercentage(99.99)
+                .apiResponseTimeMs(120L)
+                .applicationCrashRate(0.01)
+                .storageUsedTb(1.8)
+                .storageCapacityPercentage(75.0)
+                .smsBalance(52000L)
+                .emailQueueStatus("Normal")
+                .build();
     }
 }

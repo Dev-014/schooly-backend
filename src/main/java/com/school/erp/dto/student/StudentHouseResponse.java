@@ -6,6 +6,9 @@ public record StudentHouseResponse(
         String name,
         String colorCode,
         String description,
-        Long studentCount
+        Long totalStudents,
+        Long boysCount,
+        Long girlsCount,
+        String status
 ) {
 }

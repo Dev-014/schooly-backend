@@ -2,7 +2,9 @@ package com.school.erp.service;
 
 import com.school.erp.dto.student.StudentHouseRequest;
 import com.school.erp.dto.student.StudentHouseResponse;
+import com.school.erp.dto.student.StudentResponse;
 import com.school.erp.entity.School;
+import com.school.erp.entity.Student;
 import com.school.erp.entity.StudentHouse;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.SchoolRepository;
@@ -73,15 +75,65 @@ public class StudentHouseService {
         houseRepository.delete(house);
     }
 
+    public List<StudentResponse> getStudentsByHouse(Long houseId, Long schoolId) {
+        Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
+        StudentHouse house = houseRepository.findByIdAndSchoolId(houseId, effectiveSchoolId)
+                .orElseThrow(() -> new ResourceNotFoundException("House not found"));
+        
+        return studentRepository.findBySchoolIdAndHouseId(effectiveSchoolId, houseId).stream()
+                .map(this::toStudentResponse)
+                .toList();
+    }
+
+    private StudentResponse toStudentResponse(Student student) {
+        return new StudentResponse(
+                student.getId(),
+                student.getUserId(),
+                student.getName(),
+                student.getAdmissionNo(),
+                student.getRollNumber(),
+                student.getStatus(),
+                student.getAdmissionDate(),
+                student.getSchool().getId(),
+                student.getSchoolClass() != null ? student.getSchoolClass().getId() : null,
+                student.getSectionId(),
+                student.getAcademicYearId(),
+                student.getFirstName(),
+                student.getLastName(),
+                student.getGender(),
+                student.getDateOfBirth(),
+                student.getBloodGroup(),
+                student.getReligion(),
+                student.getNationality(),
+                student.getPreviousSchool(),
+                student.getAddress(),
+                student.getPhotoUrl(),
+                student.getGuardianName(),
+                student.getGuardianRelation(),
+                student.getGuardianPhone(),
+                student.getGuardianEmail(),
+                student.getGuardianOccupation(),
+                student.getCategory() != null ? student.getCategory().getId() : null,
+                student.getHouse() != null ? student.getHouse().getId() : null,
+                student.getFamily() != null ? student.getFamily().getId() : null
+        );
+    }
+
     private StudentHouseResponse toResponse(StudentHouse house) {
-        long count = studentRepository.countByHouseId(house.getId());
+        long totalStudents = studentRepository.countByHouseId(house.getId());
+        long boysCount = studentRepository.countByHouseIdAndGender(house.getId(), "MALE");
+        long girlsCount = studentRepository.countByHouseIdAndGender(house.getId(), "FEMALE");
+        
         return new StudentHouseResponse(
                 house.getId(),
                 house.getSchool().getId(),
                 house.getName(),
                 house.getColorCode(),
                 house.getDescription(),
-                count
+                totalStudents,
+                boysCount,
+                girlsCount,
+                "ACTIVE"
         );
     }
 }

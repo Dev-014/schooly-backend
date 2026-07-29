@@ -23,4 +23,16 @@ public class SuperAdminDashboardMetricsDto {
     private Long pendingOnboardings;
     private String schoolsGrowth;
     private String arrGrowth;
+    
+    // New Fields
+    private Long trialSchools;
+    private Long schoolsInOnboarding;
+    private Long renewalsDue30Days;
+    private Long suspendedSchools;
+    private String churnRate;
+    private BigDecimal expectedRenewalRevenue;
+    private Long pendingFailedPaymentsCount;
+    private Long salesPipelineLeads;
+    private Long dailyActiveUsers;
+    private Long onlineUsersNow;
 }

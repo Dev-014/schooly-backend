@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.math.BigDecimal;
 
 @Entity
 @Getter
@@ -42,6 +44,26 @@ public class School {
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     @Column(name = "metadata", columnDefinition = "jsonb")
     private java.util.Map<String, Object> metadata = new java.util.HashMap<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "plan_id")
+    private SubscriptionPlan plan;
+
+    @Column(name = "custom_price", precision = 10, scale = 2)
+    private BigDecimal customPrice;
+
+    @Column(name = "subscription_start")
+    private LocalDate subscriptionStart;
+
+    @Column(name = "renewal_date")
+    private LocalDate renewalDate;
+
+    @Column(name = "payment_status")
+    private String paymentStatus = "PAID";
+
+    @Column(name = "onboarding_status")
+    private String onboardingStatus = "LIVE";
+
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 }

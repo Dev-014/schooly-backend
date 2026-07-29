@@ -39,4 +39,40 @@ public class SuperAdminDashboardController {
     public ResponseEntity<ApiResponse<List<ModuleAdoptionDto>>> getModuleAdoption() {
         return ResponseEntity.ok(ApiResponse.success(dashboardService.getModuleAdoption(), "Module adoption rates fetched successfully"));
     }
+
+    @GetMapping("/operational-alerts")
+    public ResponseEntity<ApiResponse<List<OperationalAlertDto>>> getOperationalAlerts() {
+        return ResponseEntity.ok(ApiResponse.success(dashboardService.getOperationalAlerts(), "Operational alerts fetched successfully"));
+    }
+
+    @GetMapping("/sales-funnel")
+    public ResponseEntity<ApiResponse<List<SalesFunnelStepDto>>> getSalesFunnel() {
+        return ResponseEntity.ok(ApiResponse.success(dashboardService.getSalesFunnel(), "Sales funnel fetched successfully"));
+    }
+
+    @GetMapping("/retention-curve")
+    public ResponseEntity<ApiResponse<List<RetentionPointDto>>> getRetentionCurve() {
+        return ResponseEntity.ok(ApiResponse.success(dashboardService.getRetentionCurve(), "Retention curve fetched successfully"));
+    }
+
+    @GetMapping("/support-metrics")
+    public ResponseEntity<ApiResponse<SupportMetricsDto>> getSupportMetrics() {
+        return ResponseEntity.ok(ApiResponse.success(dashboardService.getSupportMetrics(), "Support metrics fetched successfully"));
+    }
+
+    @GetMapping("/upcoming-renewals")
+    public ResponseEntity<ApiResponse<List<UpcomingRenewalDto>>> getUpcomingRenewals() {
+        return ResponseEntity.ok(ApiResponse.success(dashboardService.getUpcomingRenewals(), "Upcoming renewals fetched successfully"));
+    }
+
+    @GetMapping("/onboarding-matrix")
+    public ResponseEntity<ApiResponse<List<OnboardingMatrixDto>>> getOnboardingMatrix() {
+        return ResponseEntity.ok(ApiResponse.success(dashboardService.getOnboardingMatrix(), "Onboarding matrix fetched successfully"));
+    }
+
+    @GetMapping("/platform-health")
+    public ResponseEntity<ApiResponse<PlatformHealthDto>> getPlatformHealth() {
+        return ResponseEntity.ok(ApiResponse.success(dashboardService.getPlatformHealth(), "Platform health fetched successfully"));
+    }
 }
+

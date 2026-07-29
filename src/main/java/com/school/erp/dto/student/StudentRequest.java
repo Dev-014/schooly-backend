@@ -36,6 +36,7 @@ public record StudentRequest(
         String guardianEmail,
         String guardianOccupation,
         Long categoryId,
-        Long houseId
+        Long houseId,
+        Long familyId
 ) {
 }
