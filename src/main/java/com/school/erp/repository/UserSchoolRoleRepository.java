@@ -21,4 +21,7 @@ public interface UserSchoolRoleRepository extends JpaRepository<UserSchoolRole, 
 
     @EntityGraph(attributePaths = {"school"})
     Optional<UserSchoolRole> findByUserIdAndSchoolIdAndRoleAndStatusIgnoreCase(Long userId, Long schoolId, UserRole role, String status);
+
+    @EntityGraph(attributePaths = {"user"})
+    List<UserSchoolRole> findByRole(UserRole role);
 }
