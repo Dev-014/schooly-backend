@@ -42,6 +42,8 @@ class AuthControllerTest {
 
     @MockitoBean
     private AuthService authService;
+    @MockitoBean
+    private com.school.erp.service.auth.AuthManagementService newAuthService;
 
     @Test
     void login_shouldReturnUserPayload() throws Exception {

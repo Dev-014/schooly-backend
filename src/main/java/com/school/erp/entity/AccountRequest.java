@@ -45,4 +45,19 @@ public class AccountRequest {
 
     @Column(name = "resolution_notes", columnDefinition = "TEXT")
     private String resolutionNotes;
+
+    @Column(name = "requester_name")
+    private String requesterName;
+
+    @Column(name = "requester_email")
+    private String requesterEmail;
+
+    @Column(name = "requester_phone")
+    private String requesterPhone;
+
+    @Column(name = "requested_role")
+    private String requestedRole;
+
+    @Column(name = "reject_reason", columnDefinition = "TEXT")
+    private String rejectReason;
 }

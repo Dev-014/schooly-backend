@@ -24,7 +24,7 @@ public class UserActivityLog {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "school_id", nullable = false)
+    @JoinColumn(name = "school_id", nullable = true)
     private School school;
 
     @Column(name = "role", nullable = false)
@@ -42,4 +42,13 @@ public class UserActivityLog {
     @CreationTimestamp
     @Column(name = "timestamp", updatable = false)
     private LocalDateTime timestamp;
+
+    @Column(name = "status")
+    private String status = "SUCCESS";
+
+    @Column(name = "browser")
+    private String browser;
+
+    @Column(name = "device")
+    private String device;
 }

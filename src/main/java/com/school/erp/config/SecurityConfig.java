@@ -8,10 +8,19 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.school.erp.security.JwtAuthenticationFilter;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -24,19 +33,16 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/auth/**", "/onboarding/**", "/api/v1/onboarding/**",
                     "/import/**", "/api/v1/import/**",
-                    "/api/students/**", "/api/student-*/**", "/api/online-admissions/**",
-                    "/api/families", "/api/families/**", "/api/v1/admin/families/**",
-                    "/api/staff/**", "/api/classes/**", "/api/academics/**",
-                    "/api/schools/**", "/api/parents/**", "/api/attendance/**",
-                    "/api/fee-invoices/**", "/api/dashboard/**", "/api/entitlements/**", "/api/payments/**",
-                    "/api/v1/catalog/**", "/api/v1/super-admin/**", "/super-admin/**",
+                    "/api/online-admissions/**",
                     "/health",
                     "/v3/api-docs", "/v3/api-docs/**",
-                    "/swagger-ui", "/swagger-ui/**", "/swagger-ui.html"
+                    "/swagger-ui", "/swagger-ui/**", "/swagger-ui.html",
+                    "/api/v1/super-admin/**"
                 ).permitAll()
                 // All other endpoints require authentication
                 .anyRequest().authenticated()
-            );
+            )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

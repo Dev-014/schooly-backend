@@ -79,10 +79,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (requestUri == null) {
             return false;
         }
-        // /auth/me and /auth/logout require authentication — they are NOT public
-        if (requestUri.equals("/auth/me") || requestUri.equals("/auth/logout") ||
-            requestUri.equals("/api/auth/me") || requestUri.equals("/api/auth/logout") ||
-            requestUri.equals("/api/v1/auth/me") || requestUri.equals("/api/v1/auth/logout")) {
+        // /auth/me, /auth/logout, and /auth/stop-impersonation require authentication — they are NOT public
+        if (requestUri.equals("/auth/me") || requestUri.equals("/auth/logout") || requestUri.equals("/auth/stop-impersonation") ||
+            requestUri.equals("/api/auth/me") || requestUri.equals("/api/auth/logout") || requestUri.equals("/api/auth/stop-impersonation") ||
+            requestUri.equals("/api/v1/auth/me") || requestUri.equals("/api/v1/auth/logout") || requestUri.equals("/api/v1/auth/stop-impersonation")) {
             return false;
         }
         return requestUri.equals("/health") ||
@@ -95,21 +95,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                requestUri.startsWith("/import") ||
                requestUri.startsWith("/api/import") ||
                requestUri.startsWith("/api/v1/import") ||
-               requestUri.startsWith("/api/students") ||
-               requestUri.startsWith("/api/student-") ||
-               requestUri.startsWith("/api/families") ||
-               requestUri.startsWith("/api/v1/admin/families") ||
-               requestUri.startsWith("/api/staff") ||
-               requestUri.startsWith("/api/schools") ||
-               requestUri.startsWith("/api/academics") ||
-               requestUri.startsWith("/api/v1/admin/academics") ||
-               requestUri.startsWith("/api/classes") ||
-               requestUri.startsWith("/api/v1/admin/classes") ||
-               requestUri.startsWith("/super-admin") ||
-               requestUri.startsWith("/api/v1/super-admin") ||
                requestUri.startsWith("/swagger-ui") ||
                requestUri.equals("/swagger-ui.html") ||
                requestUri.startsWith("/v3/api-docs") ||
+               requestUri.startsWith("/api/v1/super-admin") ||
                requestUri.startsWith("/webjars") ||
                requestUri.equals("/error") ||
                requestUri.equals("/");

@@ -22,9 +22,38 @@ import java.util.List;
 public class AuthController {
 
     private final AuthService authService;
+    private final com.school.erp.service.auth.AuthManagementService newAuthService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, com.school.erp.service.auth.AuthManagementService newAuthService) {
         this.authService = authService;
+        this.newAuthService = newAuthService;
+    }
+
+    @PostMapping("/password-reset/request")
+    @Operation(summary = "Request Password Reset", description = "Generates a reset token")
+    public ResponseEntity<?> requestPasswordReset(@RequestBody @Valid PasswordResetRequest request, HttpServletRequest httpRequest) {
+        String token = newAuthService.requestPasswordReset(request, httpRequest);
+        return ResponseEntity.ok(java.util.Collections.singletonMap("token", token));
+    }
+
+    @PostMapping("/password-reset/reset")
+    @Operation(summary = "Submit Password Reset", description = "Resets password using token")
+    public ResponseEntity<Void> submitPasswordReset(@RequestBody @Valid PasswordResetSubmitRequest request) {
+        newAuthService.submitPasswordReset(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/account-request")
+    @Operation(summary = "Submit Account Request", description = "For external users requesting an account")
+    public ResponseEntity<Void> submitAccountRequest(@RequestBody @Valid AccountRequestSubmitRequest request) {
+        newAuthService.submitAccountRequest(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/stop-impersonation")
+    @Operation(summary = "Stop Impersonation", description = "Reverts to original super admin")
+    public ResponseEntity<AuthTokenResponse> stopImpersonation() {
+        return ResponseEntity.ok(newAuthService.stopImpersonation());
     }
 
     @PostMapping("/login")

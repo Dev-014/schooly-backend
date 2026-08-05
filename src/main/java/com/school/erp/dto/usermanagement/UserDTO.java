@@ -22,4 +22,5 @@ public class UserDTO {
     private String schoolName;
     private LocalDateTime lastLogin;
     private String employeeId;
+    private String authStatus;
 }

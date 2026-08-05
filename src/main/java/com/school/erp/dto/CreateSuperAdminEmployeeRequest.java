@@ -18,4 +18,9 @@ public class CreateSuperAdminEmployeeRequest {
     
     @NotBlank
     private String password;
+
+    private String department;
+    private String designation;
+    private String employeeCode;
+    private String salaryBand;
 }

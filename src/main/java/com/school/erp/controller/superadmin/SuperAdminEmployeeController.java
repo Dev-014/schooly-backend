@@ -19,6 +19,11 @@ public class SuperAdminEmployeeController {
 
     private final SuperAdminEmployeeService employeeService;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<SuperAdminEmployeeDTO> getEmployeeById(@PathVariable Long id) {
+        return ResponseEntity.ok(employeeService.getEmployeeById(id));
+    }
+
     @GetMapping
     public ResponseEntity<List<SuperAdminEmployeeDTO>> getAllEmployees() {
         return ResponseEntity.ok(employeeService.getAllEmployees());

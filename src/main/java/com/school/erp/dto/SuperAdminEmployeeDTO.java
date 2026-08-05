@@ -11,4 +11,9 @@ public class SuperAdminEmployeeDTO {
     private String status;
     private String joinedAt;
     private Integer activeTickets;
+    private String department;
+    private String designation;
+    private String employeeCode;
+    private String salaryBand;
+    private Integer leaveBalance;
 }

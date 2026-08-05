@@ -5,6 +5,10 @@ import com.school.erp.entity.UserRole;
 public record AuthenticatedUser(
         Long userId,
         Long schoolId,
-        UserRole role
+        UserRole role,
+        Long impersonatorId
 ) {
+    public AuthenticatedUser(Long userId, Long schoolId, UserRole role) {
+        this(userId, schoolId, role, null);
+    }
 }

@@ -13,8 +13,7 @@ public class AuthFilterConfig {
     ) {
         FilterRegistrationBean<JwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(jwtAuthenticationFilter);
-        registrationBean.addUrlPatterns("/*");
-        registrationBean.setOrder(1);
+        registrationBean.setEnabled(false); // Disable top-level registration
         return registrationBean;
     }
 }
