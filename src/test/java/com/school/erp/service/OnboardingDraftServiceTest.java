@@ -11,6 +11,8 @@ import com.school.erp.repository.DataImportErrorRepository;
 import com.school.erp.repository.DataImportJobRepository;
 import com.school.erp.repository.OnboardingDraftRepository;
 import com.school.erp.repository.SchoolRepository;
+import com.school.erp.repository.UserRepository;
+import com.school.erp.repository.UserSchoolRoleRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import com.school.erp.dto.onboarding.OnboardingActivationResponse;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,6 +38,8 @@ class OnboardingDraftServiceTest {
     @Mock private DataImportJobRepository jobRepository;
     @Mock private DataImportErrorRepository errorRepository;
     @Mock private EntityManager entityManager;
+    @Mock private UserRepository userRepository;
+    @Mock private UserSchoolRoleRepository userSchoolRoleRepository;
 
     private ObjectMapper objectMapper;
     private OnboardingDraftService draftService;
@@ -42,7 +47,7 @@ class OnboardingDraftServiceTest {
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
-        draftService = new OnboardingDraftService(draftRepository, schoolRepository, jobRepository, errorRepository, objectMapper, entityManager);
+        draftService = new OnboardingDraftService(draftRepository, schoolRepository, jobRepository, errorRepository, objectMapper, entityManager, userRepository, userSchoolRoleRepository);
     }
 
     @Test
@@ -51,9 +56,13 @@ class OnboardingDraftServiceTest {
         draft.setSchoolId(101L);
         draft.setStatus("DRAFT");
         draft.setStep1Data(objectMapper.writeValueAsString(new HashMap<String, Object>() {{
+            put("subscriptionPlan", "PRO");
+        }}));
+        draft.setStep4Data(objectMapper.writeValueAsString(new HashMap<String, Object>() {{
             put("schoolName", "Greenwood Academy");
             put("schoolCode", "GA-101");
-            put("subscriptionPlan", "PRO");
+            put("contactEmail", "contact@greenwood.edu");
+            put("contactPhone", "1234567890");
         }}));
 
         when(draftRepository.findById(101L)).thenReturn(Optional.of(draft));
@@ -62,11 +71,15 @@ class OnboardingDraftServiceTest {
         when(schoolRepository.findById(101L)).thenReturn(Optional.empty());
         when(schoolRepository.findByCode("GA-101")).thenReturn(Optional.empty());
         when(schoolRepository.save(any(School.class))).thenAnswer(i -> i.getArgument(0));
+        when(userRepository.findByPhone(any())).thenReturn(Optional.empty());
+        when(userRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+        when(userSchoolRoleRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        OnboardingDraftDTO result = draftService.activateSchool(101L);
+        OnboardingActivationResponse result = draftService.activateSchool(101L);
 
         assertNotNull(result);
-        assertEquals("ACTIVE", result.status());
+        assertEquals("ACTIVE", result.draft().status());
+        assertNotNull(result.adminCredentials());
         verify(schoolRepository).save(argThat(school ->
                 "Greenwood Academy".equals(school.getName()) &&
                 "ACTIVE".equals(school.getStatus()) &&

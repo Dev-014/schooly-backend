@@ -63,7 +63,7 @@ public class OnboardingController {
     }
 
     @PostMapping("/activate/{schoolId}")
-    public ResponseEntity<ApiResponse<OnboardingDraftDTO>> activateSchool(@PathVariable Long schoolId) {
+    public ResponseEntity<ApiResponse<OnboardingActivationResponse>> activateSchool(@PathVariable Long schoolId) {
         return ResponseEntity.ok(ApiResponse.success(
                 draftService.activateSchool(schoolId),
                 "School activated successfully"

@@ -1,8 +1,7 @@
 -- 1. Insert Schools
 INSERT INTO schools (name, code, contact_email, contact_phone, address, status)
 VALUES
-('Global Academy', 'GA001', 'admin@globalacademy.com', '1234567890', '123 Education Lane', 'ACTIVE'),
-('City High School', 'CHS002', 'info@cityhigh.com', '9876543210', '456 Scholar Way', 'ACTIVE')
+('Global School', 'GA001', 'admin@globalacademy.com', '1234567890', '123 Education Lane', 'ACTIVE')
 ON CONFLICT (code) DO NOTHING;
 
 -- 2. Insert Users (Password is 'password')

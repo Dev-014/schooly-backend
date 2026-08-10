@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.Map;
 
 public record OnboardingInitRequest(
-        @NotBlank(message = "School name is required")
         String schoolName,
         String schoolCode,
         String boardType,

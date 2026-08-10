@@ -19,10 +19,20 @@ import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.school.erp.dto.onboarding.OnboardingActivationResponse;
+import com.school.erp.dto.onboarding.AdminCredentialsDTO;
+import com.school.erp.entity.User;
+import com.school.erp.entity.UserRole;
+import com.school.erp.entity.UserSchoolRole;
+import com.school.erp.repository.UserRepository;
+import com.school.erp.repository.UserSchoolRoleRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.security.SecureRandom;
 
 @Service
 public class OnboardingDraftService {
@@ -33,19 +43,26 @@ public class OnboardingDraftService {
     private final DataImportErrorRepository errorRepository;
     private final ObjectMapper objectMapper;
     private final EntityManager entityManager;
+    private final UserRepository userRepository;
+    private final UserSchoolRoleRepository userSchoolRoleRepository;
+    private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
     public OnboardingDraftService(OnboardingDraftRepository draftRepository,
                                   SchoolRepository schoolRepository,
                                   DataImportJobRepository jobRepository,
                                   DataImportErrorRepository errorRepository,
                                   ObjectMapper objectMapper,
-                                  EntityManager entityManager) {
+                                  EntityManager entityManager,
+                                  UserRepository userRepository,
+                                  UserSchoolRoleRepository userSchoolRoleRepository) {
         this.draftRepository = draftRepository;
         this.schoolRepository = schoolRepository;
         this.jobRepository = jobRepository;
         this.errorRepository = errorRepository;
         this.objectMapper = objectMapper;
         this.entityManager = entityManager;
+        this.userRepository = userRepository;
+        this.userSchoolRoleRepository = userSchoolRoleRepository;
     }
 
 
@@ -56,11 +73,11 @@ public class OnboardingDraftService {
         draft.setCurrentStep(1);
 
         Map<String, Object> step1Map = new HashMap<>();
-        step1Map.put("schoolName", request.schoolName());
+        step1Map.put("schoolName", request.schoolName() != null ? request.schoolName() : "Draft School");
         step1Map.put("schoolCode", request.schoolCode() != null ? request.schoolCode() : "SCH-" + System.currentTimeMillis() % 10000);
         step1Map.put("boardType", request.boardType() != null ? request.boardType() : "CBSE");
-        step1Map.put("principalEmail", request.principalEmail());
-        step1Map.put("adminPhone", request.adminPhone());
+        step1Map.put("principalEmail", request.principalEmail() != null ? request.principalEmail() : "draft@schooly.com");
+        step1Map.put("adminPhone", request.adminPhone() != null ? request.adminPhone() : "0000000000");
         if (request.initialMetadata() != null) {
             step1Map.putAll(request.initialMetadata());
         }
@@ -125,7 +142,7 @@ public class OnboardingDraftService {
     }
 
     @Transactional
-    public OnboardingDraftDTO activateSchool(Long schoolId) {
+    public OnboardingActivationResponse activateSchool(Long schoolId) {
         OnboardingDraft draft = draftRepository.findById(schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Onboarding draft not found with ID: " + schoolId));
 
@@ -146,8 +163,9 @@ public class OnboardingDraftService {
 
         // Provision or update actual School record in schools table
         Map<String, Object> step1 = parseJson(draft.getStep1Data());
-        String schoolCode = (String) step1.getOrDefault("schoolCode", "SCH-" + schoolId);
-        String schoolName = (String) step1.getOrDefault("schoolName", "Onboarded School " + schoolId);
+        Map<String, Object> step4 = parseJson(draft.getStep4Data());
+        String schoolCode = (String) step4.getOrDefault("schoolCode", "SCH-" + schoolId);
+        String schoolName = (String) step4.getOrDefault("schoolName", "Onboarded School " + schoolId);
 
         School school = schoolRepository.findById(schoolId)
                 .or(() -> schoolRepository.findByCode(schoolCode))
@@ -159,21 +177,70 @@ public class OnboardingDraftService {
                 });
         school.setName(schoolName);
         school.setCode(schoolCode);
-        school.setContactEmail((String) step1.getOrDefault("principalEmail", step1.getOrDefault("contactEmail", "admin@school.com")));
-        school.setContactPhone((String) step1.getOrDefault("adminPhone", step1.getOrDefault("contactPhone", "9999999999")));
-        school.setAddress((String) step1.getOrDefault("address", school.getAddress()));
-        school.setSubdomain((String) step1.getOrDefault("subdomain", schoolCode.toLowerCase()));
+        String principalEmail = (String) step4.getOrDefault("principalEmail", step4.getOrDefault("contactEmail", ""));
+        String adminPhone = (String) step4.getOrDefault("adminPhone", step4.getOrDefault("contactPhone", ""));
+        
+        if (principalEmail == null || principalEmail.trim().isEmpty()) {
+            throw new IllegalArgumentException("Principal Email (or Contact Email) is required for activation.");
+        }
+        if (adminPhone == null || adminPhone.trim().isEmpty()) {
+            throw new IllegalArgumentException("Admin Phone (or Contact Phone) is required for activation.");
+        }
+
+        school.setContactEmail(principalEmail);
+        school.setContactPhone(adminPhone);
+        school.setAddress((String) step4.getOrDefault("address", school.getAddress()));
+        school.setSubdomain((String) step4.getOrDefault("subdomain", schoolCode.toLowerCase()));
         school.setStatus("ACTIVE");
 
         Map<String, Object> meta = school.getMetadata() != null ? new HashMap<>(school.getMetadata()) : new HashMap<>();
         meta.put("subscriptionPlan", step1.getOrDefault("subscriptionPlan", "ENTERPRISE"));
-        meta.put("boardType", step1.getOrDefault("boardType", "CBSE"));
-        meta.put("udiseCode", step1.getOrDefault("udiseCode", ""));
+        meta.put("boardType", step4.getOrDefault("boardType", "CBSE"));
+        meta.put("udiseCode", step4.getOrDefault("udiseCode", ""));
+        
+        // Option B: Generate Credentials
+        String rawPassword = generateRandomPassword(8);
+        meta.put("tempAdminPassword", rawPassword);
         school.setMetadata(meta);
 
-        schoolRepository.save(school);
+        school = schoolRepository.save(school);
+        
+        User user = userRepository.findByPhone(adminPhone).orElse(null);
+        if (user == null) {
+            user = new User();
+            user.setPhone(adminPhone);
+            user.setName(schoolName + " Admin");
+            user.setEmail(principalEmail);
+            user.setPasswordHash(PASSWORD_ENCODER.encode(rawPassword));
+            user.setStatus("ACTIVE");
+            user = userRepository.save(user);
+        } else {
+            // If user already exists, update password to generated one to give access
+            user.setPasswordHash(PASSWORD_ENCODER.encode(rawPassword));
+            user = userRepository.save(user);
+        }
 
-        return toDTO(draft);
+        UserSchoolRole role = new UserSchoolRole();
+        role.setUser(user);
+        role.setSchool(school);
+        role.setRole(UserRole.ADMIN);
+        role.setStatus("ACTIVE");
+        userSchoolRoleRepository.save(role);
+
+        OnboardingDraftDTO draftDTO = toDTO(draft);
+        AdminCredentialsDTO credentialsDTO = new AdminCredentialsDTO(adminPhone, adminPhone, rawPassword);
+
+        return new OnboardingActivationResponse(draftDTO, credentialsDTO);
+    }
+
+    private String generateRandomPassword(int length) {
+        final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
 
     private OnboardingDraftDTO toDTO(OnboardingDraft draft) {
