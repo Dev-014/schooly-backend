@@ -73,11 +73,11 @@ public class OnboardingDraftService {
         draft.setCurrentStep(1);
 
         Map<String, Object> step1Map = new HashMap<>();
-        step1Map.put("schoolName", request.schoolName() != null ? request.schoolName() : "Draft School");
-        step1Map.put("schoolCode", request.schoolCode() != null ? request.schoolCode() : "SCH-" + System.currentTimeMillis() % 10000);
-        step1Map.put("boardType", request.boardType() != null ? request.boardType() : "CBSE");
-        step1Map.put("principalEmail", request.principalEmail() != null ? request.principalEmail() : "draft@schooly.com");
-        step1Map.put("adminPhone", request.adminPhone() != null ? request.adminPhone() : "0000000000");
+        step1Map.put("schoolName", (request.schoolName() != null && !request.schoolName().isBlank()) ? request.schoolName() : "Draft School");
+        step1Map.put("schoolCode", (request.schoolCode() != null && !request.schoolCode().isBlank()) ? request.schoolCode() : "SCH-" + System.currentTimeMillis() % 10000);
+        step1Map.put("boardType", (request.boardType() != null && !request.boardType().isBlank()) ? request.boardType() : "CBSE");
+        step1Map.put("principalEmail", (request.principalEmail() != null && !request.principalEmail().isBlank()) ? request.principalEmail() : "draft@schooly.com");
+        step1Map.put("adminPhone", (request.adminPhone() != null && !request.adminPhone().isBlank()) ? request.adminPhone() : "0000000000");
         if (request.initialMetadata() != null) {
             step1Map.putAll(request.initialMetadata());
         }
@@ -92,8 +92,8 @@ public class OnboardingDraftService {
 
         entityManager.createNativeQuery("INSERT INTO schools (id, name, code, status) VALUES (:id, :name, :code, :status) ON CONFLICT (id) DO NOTHING")
                 .setParameter("id", draft.getSchoolId())
-                .setParameter("name", request.schoolName() != null ? request.schoolName() : "School " + draft.getSchoolId())
-                .setParameter("code", request.schoolCode() != null ? request.schoolCode() : "SCH-" + draft.getSchoolId() + "-" + System.currentTimeMillis() % 1000)
+                .setParameter("name", (request.schoolName() != null && !request.schoolName().isBlank()) ? request.schoolName() : "School " + draft.getSchoolId())
+                .setParameter("code", (request.schoolCode() != null && !request.schoolCode().isBlank()) ? request.schoolCode() : "SCH-" + draft.getSchoolId() + "-" + System.currentTimeMillis() % 1000)
                 .setParameter("status", "DRAFT")
                 .executeUpdate();
 
