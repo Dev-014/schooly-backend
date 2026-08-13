@@ -163,6 +163,7 @@ public class OnboardingDraftService {
 
         // Provision or update actual School record in schools table
         Map<String, Object> step1 = parseJson(draft.getStep1Data());
+        Map<String, Object> step3 = parseJson(draft.getStep3Data());
         Map<String, Object> step4 = parseJson(draft.getStep4Data());
         String schoolCode = (String) step4.getOrDefault("schoolCode", "SCH-" + schoolId);
         String schoolName = (String) step4.getOrDefault("schoolName", "Onboarded School " + schoolId);
@@ -197,6 +198,8 @@ public class OnboardingDraftService {
         meta.put("subscriptionPlan", step1.getOrDefault("subscriptionPlan", "ENTERPRISE"));
         meta.put("boardType", step4.getOrDefault("boardType", "CBSE"));
         meta.put("udiseCode", step4.getOrDefault("udiseCode", ""));
+        meta.put("billingCycle", step3.getOrDefault("billingCycle", "YEARLY"));
+        meta.put("amountPaid", step3.getOrDefault("grandTotal", 0));
         
         // Option B: Generate Credentials
         String rawPassword = generateRandomPassword(8);
