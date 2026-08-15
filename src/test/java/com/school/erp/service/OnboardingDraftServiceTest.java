@@ -13,6 +13,9 @@ import com.school.erp.repository.OnboardingDraftRepository;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.UserRepository;
 import com.school.erp.repository.UserSchoolRoleRepository;
+import com.school.erp.repository.SchoolSubscriptionRepository;
+import com.school.erp.repository.SchoolSubscriptionInstallmentRepository;
+import com.school.erp.repository.SubscriptionPlanRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +43,9 @@ class OnboardingDraftServiceTest {
     @Mock private EntityManager entityManager;
     @Mock private UserRepository userRepository;
     @Mock private UserSchoolRoleRepository userSchoolRoleRepository;
+    @Mock private SchoolSubscriptionRepository subscriptionRepository;
+    @Mock private SchoolSubscriptionInstallmentRepository installmentRepository;
+    @Mock private SubscriptionPlanRepository planRepository;
 
     private ObjectMapper objectMapper;
     private OnboardingDraftService draftService;
@@ -47,7 +53,7 @@ class OnboardingDraftServiceTest {
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
-        draftService = new OnboardingDraftService(draftRepository, schoolRepository, jobRepository, errorRepository, objectMapper, entityManager, userRepository, userSchoolRoleRepository);
+        draftService = new OnboardingDraftService(draftRepository, schoolRepository, jobRepository, errorRepository, objectMapper, entityManager, userRepository, userSchoolRoleRepository, subscriptionRepository, installmentRepository, planRepository);
     }
 
     @Test
@@ -74,6 +80,8 @@ class OnboardingDraftServiceTest {
         when(userRepository.findByPhone(any())).thenReturn(Optional.empty());
         when(userRepository.save(any())).thenAnswer(i -> i.getArgument(0));
         when(userSchoolRoleRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+        when(planRepository.findAllByStatus("ACTIVE")).thenReturn(Collections.emptyList());
+        when(planRepository.findAll()).thenReturn(Collections.emptyList());
 
         OnboardingActivationResponse result = draftService.activateSchool(101L);
 

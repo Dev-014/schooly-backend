@@ -24,8 +24,14 @@ import com.school.erp.dto.onboarding.AdminCredentialsDTO;
 import com.school.erp.entity.User;
 import com.school.erp.entity.UserRole;
 import com.school.erp.entity.UserSchoolRole;
+import com.school.erp.entity.SchoolSubscription;
+import com.school.erp.entity.SchoolSubscriptionInstallment;
+import com.school.erp.entity.SubscriptionPlan;
 import com.school.erp.repository.UserRepository;
 import com.school.erp.repository.UserSchoolRoleRepository;
+import com.school.erp.repository.SchoolSubscriptionRepository;
+import com.school.erp.repository.SchoolSubscriptionInstallmentRepository;
+import com.school.erp.repository.SubscriptionPlanRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.format.DateTimeFormatter;
@@ -45,6 +51,9 @@ public class OnboardingDraftService {
     private final EntityManager entityManager;
     private final UserRepository userRepository;
     private final UserSchoolRoleRepository userSchoolRoleRepository;
+    private final SchoolSubscriptionRepository subscriptionRepository;
+    private final SchoolSubscriptionInstallmentRepository installmentRepository;
+    private final SubscriptionPlanRepository planRepository;
     private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
     public OnboardingDraftService(OnboardingDraftRepository draftRepository,
@@ -54,7 +63,10 @@ public class OnboardingDraftService {
                                   ObjectMapper objectMapper,
                                   EntityManager entityManager,
                                   UserRepository userRepository,
-                                  UserSchoolRoleRepository userSchoolRoleRepository) {
+                                  UserSchoolRoleRepository userSchoolRoleRepository,
+                                  SchoolSubscriptionRepository subscriptionRepository,
+                                  SchoolSubscriptionInstallmentRepository installmentRepository,
+                                  SubscriptionPlanRepository planRepository) {
         this.draftRepository = draftRepository;
         this.schoolRepository = schoolRepository;
         this.jobRepository = jobRepository;
@@ -63,6 +75,9 @@ public class OnboardingDraftService {
         this.entityManager = entityManager;
         this.userRepository = userRepository;
         this.userSchoolRoleRepository = userSchoolRoleRepository;
+        this.subscriptionRepository = subscriptionRepository;
+        this.installmentRepository = installmentRepository;
+        this.planRepository = planRepository;
     }
 
 
@@ -229,6 +244,76 @@ public class OnboardingDraftService {
         role.setRole(UserRole.ADMIN);
         role.setStatus("ACTIVE");
         userSchoolRoleRepository.save(role);
+        
+        // Generate Subscription
+        String planName = (String) step1.getOrDefault("subscriptionPlan", "ENTERPRISE");
+        SubscriptionPlan subscriptionPlan = planRepository.findAllByStatus("ACTIVE").stream()
+            .filter(p -> p.getName().equalsIgnoreCase(planName) || p.getName().toUpperCase().contains(planName.toUpperCase()))
+            .findFirst()
+            .orElseGet(() -> planRepository.findAll().stream().findFirst().orElse(null));
+            
+        if (subscriptionPlan != null) {
+            String billingCycle = (String) step3.getOrDefault("billingCycle", "YEARLY");
+            Integer studentCount = (Integer) step3.getOrDefault("studentCount", 0);
+            Double grandTotalDbl = 0.0;
+            if (step3.get("grandTotal") instanceof Number n) {
+                grandTotalDbl = n.doubleValue();
+            }
+            java.math.BigDecimal grandTotal = java.math.BigDecimal.valueOf(grandTotalDbl);
+            subscriptionRepository.findAllBySchoolIdAndStatus(school.getId(), "ACTIVE").forEach(existing -> {
+                installmentRepository.findBySubscriptionIdOrderByInstallmentNumberAsc(existing.getId())
+                        .forEach(installmentRepository::delete);
+                subscriptionRepository.delete(existing);
+            });
+
+            SchoolSubscription sub = new SchoolSubscription();
+            sub.setSchool(school);
+            sub.setPlan(subscriptionPlan);
+            sub.setBillingPeriod(billingCycle);
+            sub.setTotalStudents(studentCount);
+            sub.setTotalAmount(grandTotal);
+            sub.setAmountPaid(grandTotal); // Assume paid in onboarding
+            sub.setRemainingAmount(java.math.BigDecimal.ZERO);
+            sub.setStatus("ACTIVE");
+            sub.setStartDate(java.time.LocalDate.now());
+            if ("QUARTERLY".equalsIgnoreCase(billingCycle)) {
+                sub.setEndDate(java.time.LocalDate.now().plusMonths(3));
+            } else if ("HALF_YEARLY".equalsIgnoreCase(billingCycle)) {
+                sub.setEndDate(java.time.LocalDate.now().plusMonths(6));
+            } else {
+                sub.setEndDate(java.time.LocalDate.now().plusYears(1));
+            }
+            sub = subscriptionRepository.save(sub);
+            
+            SchoolSubscriptionInstallment inst = new SchoolSubscriptionInstallment();
+            inst.setSubscription(sub);
+            inst.setInstallmentNumber(1);
+            inst.setAmount(grandTotal);
+            inst.setDueDate(java.time.LocalDate.now());
+            inst.setStatus("PAID");
+            inst.setPaidDate(java.time.LocalDate.now());
+            installmentRepository.save(inst);
+            
+            if ("QUARTERLY".equalsIgnoreCase(billingCycle)) {
+                for (int i = 2; i <= 4; i++) {
+                    SchoolSubscriptionInstallment pending = new SchoolSubscriptionInstallment();
+                    pending.setSubscription(sub);
+                    pending.setInstallmentNumber(i);
+                    pending.setAmount(grandTotal);
+                    pending.setDueDate(java.time.LocalDate.now().plusMonths(3L * (i - 1)));
+                    pending.setStatus("PENDING");
+                    installmentRepository.save(pending);
+                }
+            } else if ("HALF_YEARLY".equalsIgnoreCase(billingCycle)) {
+                SchoolSubscriptionInstallment pending = new SchoolSubscriptionInstallment();
+                pending.setSubscription(sub);
+                pending.setInstallmentNumber(2);
+                pending.setAmount(grandTotal);
+                pending.setDueDate(java.time.LocalDate.now().plusMonths(6));
+                pending.setStatus("PENDING");
+                installmentRepository.save(pending);
+            }
+        }
 
         OnboardingDraftDTO draftDTO = toDTO(draft);
         AdminCredentialsDTO credentialsDTO = new AdminCredentialsDTO(adminPhone, adminPhone, rawPassword);

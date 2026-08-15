@@ -67,7 +67,7 @@ class AuthControllerTest {
     @Test
     void getUserSchools_shouldReturnMappedSchools() throws Exception {
         when(authService.getUserSchools(1L))
-                .thenReturn(List.of(new UserSchoolResponse(10L, "Alpha School", "ALPHA", "TEACHER", "ACTIVE")));
+                .thenReturn(List.of(new UserSchoolResponse(10L, "Alpha School", "ALPHA", "TEACHER", "ACTIVE", "ACTIVE")));
 
         mockMvc.perform(get("/auth/schools").param("userId", "1"))
                 .andExpect(status().isOk())

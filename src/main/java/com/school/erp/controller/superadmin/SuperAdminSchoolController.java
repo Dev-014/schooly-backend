@@ -15,9 +15,11 @@ import java.util.List;
 public class SuperAdminSchoolController {
 
     private final SuperAdminSchoolService schoolService;
+    private final com.school.erp.service.superadmin.SchoolSubscriptionService subscriptionService;
 
-    public SuperAdminSchoolController(SuperAdminSchoolService schoolService) {
+    public SuperAdminSchoolController(SuperAdminSchoolService schoolService, com.school.erp.service.superadmin.SchoolSubscriptionService subscriptionService) {
         this.schoolService = schoolService;
+        this.subscriptionService = subscriptionService;
     }
 
     @GetMapping
@@ -52,5 +54,10 @@ public class SuperAdminSchoolController {
     public ResponseEntity<ApiResponse<Void>> deleteSchool(@PathVariable Long id) {
         schoolService.deleteSchool(id);
         return ResponseEntity.ok(ApiResponse.success(null, "School deleted successfully"));
+    }
+
+    @GetMapping("/{id}/subscription")
+    public ResponseEntity<ApiResponse<com.school.erp.dto.superadmin.SchoolSubscriptionDTO>> getSchoolSubscription(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(subscriptionService.getActiveSubscriptionForSchool(id), "Subscription fetched successfully"));
     }
 }

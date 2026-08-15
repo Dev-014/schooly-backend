@@ -130,6 +130,9 @@ public class AuthService {
             if (!schools.isEmpty() && targetSchoolId != null) {
                 for (UserSchoolRole usr : userRoles) {
                     if (usr.getSchool() != null && Objects.equals(usr.getSchool().getId(), targetSchoolId)) {
+                        if ("SUSPENDED".equalsIgnoreCase(usr.getSchool().getStatus())) {
+                            throw new UnauthorizedException("SCHOOL_SUSPENDED");
+                        }
                         authSession.setSchool(usr.getSchool());
                         break;
                     }
@@ -192,6 +195,10 @@ public class AuthService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Active school membership not found for userId " + userId + " and schoolId " + schoolId
                 ));
+
+        if ("SUSPENDED".equalsIgnoreCase(userSchoolRole.getSchool().getStatus())) {
+            throw new UnauthorizedException("SCHOOL_SUSPENDED");
+        }
 
         String accessToken = jwtUtil.generateAccessToken(userId, schoolId, userSchoolRole.getRole());
         String refreshToken = jwtUtil.generateRefreshToken(userId, schoolId, userSchoolRole.getRole());
@@ -400,7 +407,8 @@ public class AuthService {
                 userSchoolRole.getSchool().getName(),
                 userSchoolRole.getSchool().getCode(),
                 userSchoolRole.getRole().name(),
-                userSchoolRole.getStatus()
+                userSchoolRole.getStatus(),
+                userSchoolRole.getSchool().getStatus()
         );
     }
 

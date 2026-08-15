@@ -5,6 +5,7 @@ public record UserSchoolResponse(
         String schoolName,
         String schoolCode,
         String role,
-        String status
+        String status,
+        String schoolStatus
 ) {
 }
