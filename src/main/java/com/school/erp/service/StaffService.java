@@ -10,13 +10,18 @@ import com.school.erp.repository.StaffRepository;
 import com.school.erp.repository.UserRepository;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.entity.User;
+import com.school.erp.entity.UserRole;
+import com.school.erp.entity.UserSchoolRole;
 import com.school.erp.entity.ClassTeacherAssignment;
 import com.school.erp.repository.ClassTeacherAssignmentRepository;
+import com.school.erp.repository.UserSchoolRoleRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,19 +33,24 @@ public class StaffService {
     private final UserRepository userRepository;
     private final AuthContextService authContextService;
     private final ClassTeacherAssignmentRepository classTeacherAssignmentRepository;
+    private final UserSchoolRoleRepository userSchoolRoleRepository;
+
+    private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
     public StaffService(
             StaffRepository staffRepository,
             SchoolRepository schoolRepository,
             UserRepository userRepository,
             AuthContextService authContextService,
-            ClassTeacherAssignmentRepository classTeacherAssignmentRepository
+            ClassTeacherAssignmentRepository classTeacherAssignmentRepository,
+            UserSchoolRoleRepository userSchoolRoleRepository
     ) {
         this.staffRepository = staffRepository;
         this.schoolRepository = schoolRepository;
         this.userRepository = userRepository;
         this.authContextService = authContextService;
         this.classTeacherAssignmentRepository = classTeacherAssignmentRepository;
+        this.userSchoolRoleRepository = userSchoolRoleRepository;
     }
 
     public List<StaffResponse> getAllStaff(Long schoolId) {
@@ -86,18 +96,70 @@ public class StaffService {
     public StaffResponse createStaff(StaffRequest request) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(request.schoolId());
         
-        // Prevent duplicate staff profiles for the same user in the same school
-        staffRepository.findBySchoolId(effectiveSchoolId).stream()
-                .filter(s -> s.getUserId() != null && s.getUserId().equals(request.userId()))
-                .findFirst()
-                .ifPresent(s -> {
-                    throw new IllegalStateException("User already has a staff profile in this school");
-                });
+        Long userIdToUse = request.userId();
+        String generatedPassword = null;
+        School school = getSchool(effectiveSchoolId);
+
+        if (userIdToUse == null) {
+            if (request.phone() == null || request.phone().isBlank()) {
+                throw new IllegalArgumentException("Phone number is required to auto-generate login credentials");
+            }
+            // Find or create User
+            User user = userRepository.findByPhone(request.phone()).orElse(null);
+            if (user == null) {
+                user = new User();
+                user.setPhone(request.phone());
+                user.setName(request.firstName() + (request.lastName() != null ? " " + request.lastName() : ""));
+                user.setEmail(request.email());
+                user.setStatus("ACTIVE");
+                generatedPassword = UUID.randomUUID().toString().substring(0, 8);
+                user.setPasswordHash(PASSWORD_ENCODER.encode(generatedPassword));
+                userRepository.save(user);
+            }
+            userIdToUse = user.getId();
+            
+            // Assign School Role
+            UserRole roleToAssign = request.designation() != null && request.designation().toLowerCase().contains("teacher") ? UserRole.TEACHER : UserRole.STAFF;
+            boolean roleExists = userSchoolRoleRepository.existsByUserIdAndSchoolIdAndRoleAndStatusIgnoreCase(
+                    userIdToUse, effectiveSchoolId, roleToAssign, "ACTIVE");
+            if (!roleExists) {
+                UserSchoolRole usr = new UserSchoolRole();
+                usr.setUser(user);
+                usr.setSchool(school);
+                usr.setRole(roleToAssign);
+                usr.setStatus("ACTIVE");
+                userSchoolRoleRepository.save(usr);
+            }
+        } else {
+            // Prevent duplicate staff profiles for the same user in the same school
+            Long finalUserIdToUse = userIdToUse;
+            staffRepository.findBySchoolId(effectiveSchoolId).stream()
+                    .filter(s -> s.getUserId() != null && s.getUserId().equals(finalUserIdToUse))
+                    .findFirst()
+                    .ifPresent(s -> {
+                        throw new IllegalStateException("User already has a staff profile in this school");
+                    });
+        }
 
         Staff staff = new Staff();
-        School school = getSchool(effectiveSchoolId);
         mapRequestToEntity(staff, request, school);
-        return toResponse(staffRepository.save(staff), null);
+        staff.setUserId(userIdToUse);
+        
+        Staff savedStaff = staffRepository.save(staff);
+        StaffResponse response = toResponse(savedStaff, null);
+        
+        if (generatedPassword != null) {
+            return new StaffResponse(
+                    response.id(), response.userId(), response.schoolId(), response.departmentId(),
+                    response.designationId(), response.joiningDate(), response.salary(),
+                    response.status(), response.firstName(), response.lastName(),
+                    response.department(), response.designation(), response.photoUrl(),
+                    response.phone(), response.email(), response.assignedClassAndSection(),
+                    generatedPassword
+            );
+        }
+        
+        return response;
     }
 
     @Transactional
@@ -197,7 +259,8 @@ public class StaffService {
                 staff.getPhotoUrl(),
                 phone,
                 email,
-                assignedClassAndSection
+                assignedClassAndSection,
+                null
         );
     }
 }

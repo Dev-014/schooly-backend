@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record StaffRequest(
-        @NotNull(message = "userId is required")
         Long userId,
         Long schoolId,
         @NotNull(message = "departmentId is required")

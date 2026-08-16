@@ -19,6 +19,7 @@ public record StaffResponse(
         String photoUrl,
         String phone,
         String email,
-        String assignedClassAndSection
+        String assignedClassAndSection,
+        String generatedPassword
 ) {
 }
