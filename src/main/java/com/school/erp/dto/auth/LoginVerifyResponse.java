@@ -15,6 +15,8 @@ public record LoginVerifyResponse(
         List<StudentSummaryDto> students,
         String accessToken,
         String refreshToken,
-        List<String> permissions
+        List<PermissionContextDto> permissions,
+        List<PersonaDto> availablePersonas,
+        PersonaDto activePersona
 ) {
 }

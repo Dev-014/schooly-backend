@@ -16,6 +16,9 @@ import com.school.erp.repository.UserSchoolRoleRepository;
 import com.school.erp.repository.SchoolSubscriptionRepository;
 import com.school.erp.repository.SchoolSubscriptionInstallmentRepository;
 import com.school.erp.repository.SubscriptionPlanRepository;
+import com.school.erp.repository.PlatformModuleRepository;
+import com.school.erp.repository.SchoolModuleAccessRepository;
+import com.school.erp.service.auth.RoleSyncService;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,6 +49,9 @@ class OnboardingDraftServiceTest {
     @Mock private SchoolSubscriptionRepository subscriptionRepository;
     @Mock private SchoolSubscriptionInstallmentRepository installmentRepository;
     @Mock private SubscriptionPlanRepository planRepository;
+    @Mock private PlatformModuleRepository moduleRepository;
+    @Mock private SchoolModuleAccessRepository moduleAccessRepository;
+    @Mock private RoleSyncService roleSyncService;
 
     private ObjectMapper objectMapper;
     private OnboardingDraftService draftService;
@@ -53,7 +59,22 @@ class OnboardingDraftServiceTest {
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
-        draftService = new OnboardingDraftService(draftRepository, schoolRepository, jobRepository, errorRepository, objectMapper, entityManager, userRepository, userSchoolRoleRepository, subscriptionRepository, installmentRepository, planRepository);
+        draftService = new OnboardingDraftService(
+                draftRepository, 
+                schoolRepository, 
+                jobRepository, 
+                errorRepository, 
+                objectMapper, 
+                entityManager, 
+                userRepository, 
+                userSchoolRoleRepository, 
+                subscriptionRepository, 
+                installmentRepository, 
+                planRepository, 
+                moduleRepository, 
+                moduleAccessRepository,
+                roleSyncService
+        );
     }
 
     @Test

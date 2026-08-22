@@ -12,9 +12,14 @@ import com.school.erp.security.AuthContextService;
 import com.school.erp.entity.User;
 import com.school.erp.entity.UserRole;
 import com.school.erp.entity.UserSchoolRole;
+import com.school.erp.entity.auth.Role;
+import com.school.erp.entity.auth.UserRoleMapping;
+import com.school.erp.repository.auth.RoleRepository;
+import com.school.erp.repository.auth.UserRoleMappingRepository;
 import com.school.erp.entity.ClassTeacherAssignment;
 import com.school.erp.repository.ClassTeacherAssignmentRepository;
 import com.school.erp.repository.UserSchoolRoleRepository;
+import com.school.erp.service.auth.RoleSyncService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +39,9 @@ public class StaffService {
     private final AuthContextService authContextService;
     private final ClassTeacherAssignmentRepository classTeacherAssignmentRepository;
     private final UserSchoolRoleRepository userSchoolRoleRepository;
+    private final RoleSyncService roleSyncService;
+    private final RoleRepository roleRepository;
+    private final UserRoleMappingRepository userRoleMappingRepository;
 
     private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
@@ -43,7 +51,10 @@ public class StaffService {
             UserRepository userRepository,
             AuthContextService authContextService,
             ClassTeacherAssignmentRepository classTeacherAssignmentRepository,
-            UserSchoolRoleRepository userSchoolRoleRepository
+            UserSchoolRoleRepository userSchoolRoleRepository,
+            RoleSyncService roleSyncService,
+            RoleRepository roleRepository,
+            UserRoleMappingRepository userRoleMappingRepository
     ) {
         this.staffRepository = staffRepository;
         this.schoolRepository = schoolRepository;
@@ -51,6 +62,9 @@ public class StaffService {
         this.authContextService = authContextService;
         this.classTeacherAssignmentRepository = classTeacherAssignmentRepository;
         this.userSchoolRoleRepository = userSchoolRoleRepository;
+        this.roleSyncService = roleSyncService;
+        this.roleRepository = roleRepository;
+        this.userRoleMappingRepository = userRoleMappingRepository;
     }
 
     public List<StaffResponse> getAllStaff(Long schoolId) {
@@ -73,6 +87,18 @@ public class StaffService {
         return staffList.stream()
                 .map(staff -> toResponse(staff, assignmentMap.get(staff.getId())))
                 .toList();
+    }
+
+    public com.school.erp.dto.staff.StaffStatsResponse getStaffStats(Long schoolId) {
+        Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
+        List<Staff> staffList = staffRepository.findBySchoolId(effectiveSchoolId);
+
+        long total = staffList.size();
+        long present = staffList.stream().filter(s -> "ACTIVE".equalsIgnoreCase(s.getStatus())).count();
+        long onLeave = staffList.stream().filter(s -> "ON_LEAVE".equalsIgnoreCase(s.getStatus())).count();
+        long departments = staffList.stream().map(Staff::getDepartmentId).filter(java.util.Objects::nonNull).distinct().count();
+
+        return new com.school.erp.dto.staff.StaffStatsResponse(total, present, onLeave, departments);
     }
 
     public StaffResponse getStaffById(Long id, Long schoolId) {
@@ -118,17 +144,34 @@ public class StaffService {
             }
             userIdToUse = user.getId();
             
-            // Assign School Role
-            UserRole roleToAssign = request.designation() != null && request.designation().toLowerCase().contains("teacher") ? UserRole.TEACHER : UserRole.STAFF;
-            boolean roleExists = userSchoolRoleRepository.existsByUserIdAndSchoolIdAndRoleAndStatusIgnoreCase(
-                    userIdToUse, effectiveSchoolId, roleToAssign, "ACTIVE");
-            if (!roleExists) {
+            // Assign legacy School Role
+            UserRole legacyRoleToAssign = request.designation() != null && request.designation().toLowerCase().contains("teacher") ? UserRole.TEACHER : UserRole.STAFF;
+            boolean legacyRoleExists = userSchoolRoleRepository.existsByUserIdAndSchoolIdAndRoleAndStatusIgnoreCase(
+                    userIdToUse, effectiveSchoolId, legacyRoleToAssign, "ACTIVE");
+            if (!legacyRoleExists) {
                 UserSchoolRole usr = new UserSchoolRole();
                 usr.setUser(user);
                 usr.setSchool(school);
-                usr.setRole(roleToAssign);
+                usr.setRole(legacyRoleToAssign);
                 usr.setStatus("ACTIVE");
                 userSchoolRoleRepository.save(usr);
+            }
+
+            // Assign new RBAC Role explicitly if provided
+            if (request.roleId() != null && !request.roleId().isBlank()) {
+                Role role = roleRepository.findById(request.roleId()).orElse(null);
+                if (role != null) {
+                    UserRoleMapping mapping = new UserRoleMapping();
+                    mapping.setUser(user);
+                    mapping.setSchoolId(effectiveSchoolId);
+                    mapping.setRole(role);
+                    mapping.setActive(true);
+                    userRoleMappingRepository.save(mapping);
+                }
+            } else {
+                // Fallback to auto-syncing if no role explicitly provided
+                userSchoolRoleRepository.findByUserIdAndSchoolIdAndStatusIgnoreCase(user.getId(), effectiveSchoolId, "ACTIVE")
+                        .ifPresent(roleSyncService::syncUserSchoolRole);
             }
         } else {
             // Prevent duplicate staff profiles for the same user in the same school

@@ -29,16 +29,27 @@ CREATE INDEX IF NOT EXISTS idx_tenant_entitlement_overrides_module ON tenant_ent
 -- 4. Seed / update comprehensive Platform Modules
 INSERT INTO platform_modules (code, name, description, is_default, status, category, add_on_price)
 VALUES
-('ATTENDANCE', 'Attendance Management', 'Track daily student and staff attendance with instant notification capabilities', TRUE, 'ACTIVE', 'CORE', 0.00),
-('EXAMS', 'Exams & Grading', 'Manage exams, marks, custom grading scales, evaluation criteria, and report cards', TRUE, 'ACTIVE', 'CORE', 0.00),
-('FINANCE', 'Fee & Finance Management', 'Manage fee invoices, online payment gateway integration, collections, and expenses', TRUE, 'ACTIVE', 'FINANCE', 149.00),
-('TRANSPORT', 'Transport & Bus Tracking', 'Manage routes, stops, buses, GPS bus tracking, and driver assignments', FALSE, 'ACTIVE', 'OPERATION', 99.00),
-('LIBRARY', 'Library Management', 'Manage books, barcoding, issues, returns, and digital library cataloging', FALSE, 'ACTIVE', 'ACADEMIC', 49.00),
-('LMS', 'Learning Management System (LMS)', 'Online courses, lesson planner, course curriculum, homework, and study materials', FALSE, 'ACTIVE', 'ACADEMIC', 199.00),
-('BIOMETRIC', 'Biometric & RFID Attendance', 'Hardware integration for automated biometric and RFID student/staff check-ins', FALSE, 'ACTIVE', 'INTEGRATION', 129.00),
-('HOSTEL', 'Hostel & Dormitory Management', 'Manage room allocations, dormitory warden logs, mess fees, and visitor passes', FALSE, 'ACTIVE', 'OPERATION', 79.00),
-('COMMUNICATION', 'SMS & WhatsApp Gateway', 'Automated parent & staff notifications, circulars, and instant messaging alerts', TRUE, 'ACTIVE', 'INTEGRATION', 59.00),
-('HR_PAYROLL', 'Staff HR & Payroll Processing', 'Staff leave management, salary computation, tax calculation, and pay slip generation', FALSE, 'ACTIVE', 'FINANCE', 119.00)
+('FRONT_OFFICE', 'Front Office', 'Admission enquiries, visitor logs, and complaints', TRUE, 'ACTIVE', 'CORE', 0.00),
+('STUDENTS', 'Students & Admission', 'Manage student admissions, reports, and categories', TRUE, 'ACTIVE', 'CORE', 0.00),
+('CERTIFICATES', 'Certificates & ID Cards', 'Generate ID cards and certificates for students/staff', FALSE, 'ACTIVE', 'OPERATION', 49.00),
+('ONLINE_CLASS', 'Online Class', 'Online classes, zoom integration, teacher timetable', FALSE, 'ACTIVE', 'ACADEMIC', 99.00),
+('STAFF_HR', 'Teachers & Staff', 'Staff list, workloads, and payroll', TRUE, 'ACTIVE', 'HR', 0.00),
+('ATTENDANCE', 'Attendance', 'Daily student attendance and leave management', TRUE, 'ACTIVE', 'CORE', 0.00),
+('ONLINE_EXAMS', 'Online Exams', 'Create exams, question banks, and evaluate students online', FALSE, 'ACTIVE', 'ACADEMIC', 149.00),
+('LESSON_MODULE', 'Lesson Module', 'Lesson planner, topics, and syllabus tracking', FALSE, 'ACTIVE', 'ACADEMIC', 49.00),
+('EXAMS_RESULTS', 'Exams & Results', 'Offline exams, report cards, grade list, and marks entry', TRUE, 'ACTIVE', 'CORE', 0.00),
+('HOMEWORK', 'Homework', 'Assign and evaluate daily classwork and homework', TRUE, 'ACTIVE', 'ACADEMIC', 0.00),
+('ACADEMICS', 'Academic Module', 'Subjects, classes, sections, timetables, and promotion', TRUE, 'ACTIVE', 'CORE', 0.00),
+('DOWNLOADS', 'Downloads Module', 'Study materials, syllabus, assignments, and videos', FALSE, 'ACTIVE', 'ACADEMIC', 29.00),
+('FEES', 'Fees Management', 'Fee collection, installments, search due fees', TRUE, 'ACTIVE', 'FINANCE', 0.00),
+('INCOME', 'Income Management', 'Track miscellaneous school incomes', TRUE, 'ACTIVE', 'FINANCE', 0.00),
+('LIBRARY', 'Library', 'Books issue/return, and catalog management', FALSE, 'ACTIVE', 'OPERATION', 59.00),
+('EXPENSE', 'Expense Management', 'Track operational expenses', TRUE, 'ACTIVE', 'FINANCE', 0.00),
+('QUESTION_PAPER', 'Question Paper', 'Generate and repository question papers', FALSE, 'ACTIVE', 'ACADEMIC', 79.00),
+('COMMUNICATION', 'Communication', 'Send SMS, email, WhatsApp, and manage logs', TRUE, 'ACTIVE', 'INTEGRATION', 49.00),
+('DISCIPLINE', 'Discipline', 'Track disciplinary issues and assessments', FALSE, 'ACTIVE', 'OPERATION', 29.00),
+('INVENTORY', 'Inventory', 'Manage stock, issues, and profit/loss', FALSE, 'ACTIVE', 'OPERATION', 89.00),
+('SETTINGS', 'Settings', 'Roles, permissions, and academic setup', TRUE, 'ACTIVE', 'SYSTEM', 0.00)
 ON CONFLICT (code) DO UPDATE SET
     name = EXCLUDED.name,
     description = EXCLUDED.description,

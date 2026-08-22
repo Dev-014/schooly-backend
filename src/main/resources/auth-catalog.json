@@ -1,0 +1,616 @@
+{
+  "modules": [
+    {
+      "key": "academic",
+      "name": "Academic Configuration"
+    },
+    {
+      "key": "attendance",
+      "name": "Attendance Management"
+    },
+    {
+      "key": "student",
+      "name": "Student Management"
+    },
+    {
+      "key": "staff",
+      "name": "Staff Management"
+    },
+    {
+      "key": "fees",
+      "name": "Fee Management"
+    },
+    {
+      "key": "family",
+      "name": "Family Management"
+    },
+    {
+      "key": "support",
+      "name": "Support Center"
+    },
+    {
+      "key": "data_import",
+      "name": "Data Imports"
+    },
+    {
+      "key": "school",
+      "name": "School Profile"
+    },
+    {
+      "key": "certificates",
+      "name": "Certificates & ID Cards"
+    },
+    {
+      "key": "online_class",
+      "name": "Online Class"
+    },
+    {
+      "key": "online_exams",
+      "name": "Online Exams"
+    },
+    {
+      "key": "lesson_module",
+      "name": "Lesson Module"
+    },
+    {
+      "key": "downloads",
+      "name": "Downloads"
+    },
+    {
+      "key": "income",
+      "name": "Income"
+    },
+    {
+      "key": "library",
+      "name": "Library"
+    },
+    {
+      "key": "expense",
+      "name": "Expense"
+    },
+    {
+      "key": "question_paper",
+      "name": "Question Paper"
+    },
+    {
+      "key": "discipline",
+      "name": "Discipline"
+    },
+    {
+      "key": "inventory",
+      "name": "Inventory"
+    },
+    {
+      "key": "front_office",
+      "name": "Front Office"
+    },
+    {
+      "key": "communication",
+      "name": "Communication"
+    },
+    {
+      "key": "homework",
+      "name": "Homework"
+    }
+  ],
+  "scopes": [
+    {
+      "key": "own",
+      "description": "Access only records belonging to the authenticated user."
+    },
+    {
+      "key": "assigned",
+      "description": "Access based on actual user assignments."
+    },
+    {
+      "key": "class",
+      "description": "Access records belonging to assigned class(es)."
+    },
+    {
+      "key": "section",
+      "description": "Access records belonging to assigned section(s)."
+    },
+    {
+      "key": "subject",
+      "description": "Access records related to assigned subject(s)."
+    },
+    {
+      "key": "linked",
+      "description": "Access resources linked to the user."
+    },
+    {
+      "key": "school",
+      "description": "Access eligible resources across the school."
+    }
+  ],
+  "assignment_types": [
+    {
+      "key": "class_teacher",
+      "requiredContext": [
+        "academic_session",
+        "class",
+        "section"
+      ]
+    },
+    {
+      "key": "subject_teacher",
+      "requiredContext": [
+        "academic_session",
+        "class",
+        "section",
+        "subject"
+      ]
+    }
+  ],
+  "permissions": [
+    {
+      "key": "attendance.attendance_record.view",
+      "module": "attendance",
+      "resource": "attendance_record",
+      "action": "view",
+      "name": "View Attendance",
+      "description": "View student attendance records.",
+      "supportedScopes": [
+        "school",
+        "assigned",
+        "class",
+        "section",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "attendance.attendance_record.edit",
+      "module": "attendance",
+      "resource": "attendance_record",
+      "action": "edit",
+      "name": "Edit Attendance",
+      "description": "Create or update attendance records.",
+      "supportedScopes": [
+        "school",
+        "assigned",
+        "class",
+        "section"
+      ],
+      "sensitive": true,
+      "status": "active"
+    },
+    {
+      "key": "student.student.view",
+      "module": "student",
+      "resource": "student",
+      "action": "view",
+      "name": "View Student",
+      "description": "View student profiles and details.",
+      "supportedScopes": [
+        "school",
+        "assigned",
+        "class",
+        "section",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "student.student.create",
+      "module": "student",
+      "resource": "student",
+      "action": "create",
+      "name": "Create Student",
+      "description": "Admit new students.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "student.student.edit",
+      "module": "student",
+      "resource": "student",
+      "action": "edit",
+      "name": "Edit Student",
+      "description": "Modify existing student profiles.",
+      "supportedScopes": [
+        "school",
+        "assigned"
+      ],
+      "sensitive": true,
+      "status": "active"
+    },
+    {
+      "key": "student.student.delete",
+      "module": "student",
+      "resource": "student",
+      "action": "delete",
+      "name": "Delete Student",
+      "description": "Permanently delete student records.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active"
+    },
+    {
+      "key": "student.student.promote",
+      "module": "student",
+      "resource": "student",
+      "action": "promote",
+      "name": "Promote Student",
+      "description": "Promote students to next academic year.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active"
+    },
+    {
+      "key": "staff.staff.view",
+      "module": "staff",
+      "resource": "staff",
+      "action": "view",
+      "name": "View Staff",
+      "description": "View staff profiles.",
+      "supportedScopes": [
+        "school",
+        "own"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "staff.staff.create",
+      "module": "staff",
+      "resource": "staff",
+      "action": "create",
+      "name": "Create Staff",
+      "description": "Create new staff records.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "staff.staff.edit",
+      "module": "staff",
+      "resource": "staff",
+      "action": "edit",
+      "name": "Edit Staff",
+      "description": "Modify staff profiles and configurations.",
+      "supportedScopes": [
+        "school",
+        "own"
+      ],
+      "sensitive": true,
+      "status": "active"
+    },
+    {
+      "key": "fees.fee_invoice.view",
+      "module": "fees",
+      "resource": "fee_invoice",
+      "action": "view",
+      "name": "View Invoices",
+      "description": "View fee invoices and transactions.",
+      "supportedScopes": [
+        "school",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "fees.fee_invoice.edit",
+      "module": "fees",
+      "resource": "fee_invoice",
+      "action": "edit",
+      "name": "Manage Invoices",
+      "description": "Create, collect, or update fee invoices.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active"
+    },
+    {
+      "key": "academic.class_setup.view",
+      "module": "academic",
+      "resource": "class_setup",
+      "action": "view",
+      "name": "View Academic Setup",
+      "description": "View classes, sections, and subjects.",
+      "supportedScopes": [
+        "school",
+        "assigned"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "academic.class_setup.edit",
+      "module": "academic",
+      "resource": "class_setup",
+      "action": "edit",
+      "name": "Manage Academic Setup",
+      "description": "Configure academic years, classes, and subjects.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active"
+    },
+    {
+      "key": "academic.assignment.edit",
+      "module": "academic",
+      "resource": "assignment",
+      "action": "edit",
+      "name": "Manage Teacher Assignments",
+      "description": "Assign teachers to classes and subjects.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active"
+    },
+    {
+      "key": "support.ticket.view",
+      "module": "support",
+      "resource": "ticket",
+      "action": "view",
+      "name": "View Support Tickets",
+      "description": "View support tickets.",
+      "supportedScopes": [
+        "school",
+        "assigned",
+        "own"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "support.ticket.edit",
+      "module": "support",
+      "resource": "ticket",
+      "action": "edit",
+      "name": "Manage Support Tickets",
+      "description": "Update and resolve support tickets.",
+      "supportedScopes": [
+        "school",
+        "assigned",
+        "own"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "family.family_profile.view",
+      "module": "family",
+      "resource": "family_profile",
+      "action": "view",
+      "name": "View Family Profile",
+      "description": "View family and parent details.",
+      "supportedScopes": [
+        "school",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "family.family_profile.edit",
+      "module": "family",
+      "resource": "family_profile",
+      "action": "edit",
+      "name": "Manage Family Profile",
+      "description": "Edit family and parent details.",
+      "supportedScopes": [
+        "school",
+        "linked"
+      ],
+      "sensitive": true,
+      "status": "active"
+    },
+    {
+      "key": "certificates.certificate.view",
+      "module": "certificates",
+      "resource": "certificate",
+      "action": "view",
+      "name": "View Certificates",
+      "description": "Allows viewing certificates and ID cards",
+      "supportedScopes": [
+        "school",
+        "class",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "online_class.session.view",
+      "module": "online_class",
+      "resource": "session",
+      "action": "view",
+      "name": "View Online Classes",
+      "description": "Allows viewing scheduled online classes",
+      "supportedScopes": [
+        "school",
+        "class",
+        "section",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "online_exams.exam.view",
+      "module": "online_exams",
+      "resource": "exam",
+      "action": "view",
+      "name": "View Online Exams",
+      "description": "Allows viewing online exams and results",
+      "supportedScopes": [
+        "school",
+        "class",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "lesson_module.plan.view",
+      "module": "lesson_module",
+      "resource": "plan",
+      "action": "view",
+      "name": "View Lesson Plans",
+      "description": "Allows viewing lesson plans and syllabus",
+      "supportedScopes": [
+        "school",
+        "class",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "downloads.material.view",
+      "module": "downloads",
+      "resource": "material",
+      "action": "view",
+      "name": "View Downloads",
+      "description": "Allows viewing study materials and assignments",
+      "supportedScopes": [
+        "school",
+        "class",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "income.transaction.view",
+      "module": "income",
+      "resource": "transaction",
+      "action": "view",
+      "name": "View Income",
+      "description": "Allows viewing school income records",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "library.book.view",
+      "module": "library",
+      "resource": "book",
+      "action": "view",
+      "name": "View Library",
+      "description": "Allows viewing library catalog and issued books",
+      "supportedScopes": [
+        "school",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "expense.transaction.view",
+      "module": "expense",
+      "resource": "transaction",
+      "action": "view",
+      "name": "View Expenses",
+      "description": "Allows viewing school expenses",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "question_paper.paper.view",
+      "module": "question_paper",
+      "resource": "paper",
+      "action": "view",
+      "name": "View Question Papers",
+      "description": "Allows viewing generated question papers",
+      "supportedScopes": [
+        "school",
+        "class"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "discipline.record.view",
+      "module": "discipline",
+      "resource": "record",
+      "action": "view",
+      "name": "View Discipline Records",
+      "description": "Allows viewing student disciplinary records",
+      "supportedScopes": [
+        "school",
+        "class",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "inventory.stock.view",
+      "module": "inventory",
+      "resource": "stock",
+      "action": "view",
+      "name": "View Inventory",
+      "description": "Allows viewing inventory and stock",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "front_office.enquiry.view",
+      "module": "front_office",
+      "resource": "enquiry",
+      "action": "view",
+      "name": "View Front Office",
+      "description": "Allows viewing front office enquiries",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "communication.message.view",
+      "module": "communication",
+      "resource": "message",
+      "action": "view",
+      "name": "View Communication",
+      "description": "Allows viewing communication messages",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "homework.assignment.view",
+      "module": "homework",
+      "resource": "assignment",
+      "action": "view",
+      "name": "View Homework",
+      "description": "Allows viewing homework assignments",
+      "supportedScopes": [
+        "school",
+        "class",
+        "section",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active"
+    }
+  ]
+}

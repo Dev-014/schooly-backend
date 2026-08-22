@@ -5,6 +5,7 @@ import com.school.erp.dto.user.GrantAccessResponseDTO;
 import com.school.erp.entity.*;
 import com.school.erp.repository.*;
 import com.school.erp.service.superadmin.UserSupportService;
+import com.school.erp.service.auth.RoleSyncService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ public class UserAccessService {
     // private final FamilyRepository familyRepository;
     private final UserSchoolRoleRepository userSchoolRoleRepository;
     private final UserSupportService userSupportService;
+    private final RoleSyncService roleSyncService;
 
     @Transactional
     public GrantAccessResponseDTO grantAccess(GrantAccessDTO request) {
@@ -93,6 +95,7 @@ public class UserAccessService {
         usr.setRole(roleToGrant);
         usr.setStatus("ACTIVE");
         userSchoolRoleRepository.save(usr);
+        roleSyncService.syncUserSchoolRole(usr);
 
         // 3. Apply Contact Strategy
         if (email != null) {

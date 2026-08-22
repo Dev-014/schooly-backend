@@ -6,6 +6,7 @@ import com.school.erp.repository.*;
 import com.school.erp.security.AuthContextHolder;
 import com.school.erp.security.AuthenticatedUser;
 import com.school.erp.security.JwtUtil;
+import com.school.erp.service.auth.RoleSyncService;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.exception.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ public class UserManagementService {
     private final SchoolRepository schoolRepository;
     private final ImpersonationSessionRepository impersonationSessionRepository;
     private final JwtUtil jwtUtil;
+    private final RoleSyncService roleSyncService;
 
     @Transactional(readOnly = true)
     public UserDashboardStatsDTO getDashboardStats() {
@@ -139,6 +141,7 @@ public class UserManagementService {
         usr.setRole(UserRole.valueOf(request.getRole().toUpperCase()));
         usr.setStatus("ACTIVE");
         userSchoolRoleRepository.save(usr);
+        roleSyncService.syncUserSchoolRole(usr);
 
         return UserDTO.builder()
                 .id(user.getId())
@@ -189,6 +192,7 @@ public class UserManagementService {
         usr.setSchool(school);
         usr.setRole(UserRole.valueOf(request.getRole().toUpperCase()));
         userSchoolRoleRepository.save(usr);
+        roleSyncService.syncUserSchoolRole(usr);
 
         return UserDTO.builder()
                 .id(user.getId())
@@ -355,6 +359,7 @@ public class UserManagementService {
         usr.setRole(UserRole.valueOf(request.getRequestedRole().toUpperCase()));
         usr.setStatus("ACTIVE");
         userSchoolRoleRepository.save(usr);
+        roleSyncService.syncUserSchoolRole(usr);
 
         request.setUser(user);
         request.setStatus("APPROVED");

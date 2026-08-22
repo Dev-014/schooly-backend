@@ -32,6 +32,7 @@ import com.school.erp.repository.UserSchoolRoleRepository;
 import com.school.erp.repository.SchoolSubscriptionRepository;
 import com.school.erp.repository.SchoolSubscriptionInstallmentRepository;
 import com.school.erp.repository.SubscriptionPlanRepository;
+import com.school.erp.service.auth.RoleSyncService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.format.DateTimeFormatter;
@@ -54,6 +55,9 @@ public class OnboardingDraftService {
     private final SchoolSubscriptionRepository subscriptionRepository;
     private final SchoolSubscriptionInstallmentRepository installmentRepository;
     private final SubscriptionPlanRepository planRepository;
+    private final com.school.erp.repository.PlatformModuleRepository moduleRepository;
+    private final com.school.erp.repository.SchoolModuleAccessRepository moduleAccessRepository;
+    private final RoleSyncService roleSyncService;
     private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
     public OnboardingDraftService(OnboardingDraftRepository draftRepository,
@@ -66,7 +70,10 @@ public class OnboardingDraftService {
                                   UserSchoolRoleRepository userSchoolRoleRepository,
                                   SchoolSubscriptionRepository subscriptionRepository,
                                   SchoolSubscriptionInstallmentRepository installmentRepository,
-                                  SubscriptionPlanRepository planRepository) {
+                                  SubscriptionPlanRepository planRepository,
+                                  com.school.erp.repository.PlatformModuleRepository moduleRepository,
+                                  com.school.erp.repository.SchoolModuleAccessRepository moduleAccessRepository,
+                                  RoleSyncService roleSyncService) {
         this.draftRepository = draftRepository;
         this.schoolRepository = schoolRepository;
         this.jobRepository = jobRepository;
@@ -78,6 +85,9 @@ public class OnboardingDraftService {
         this.subscriptionRepository = subscriptionRepository;
         this.installmentRepository = installmentRepository;
         this.planRepository = planRepository;
+        this.moduleRepository = moduleRepository;
+        this.moduleAccessRepository = moduleAccessRepository;
+        this.roleSyncService = roleSyncService;
     }
 
 
@@ -244,6 +254,7 @@ public class OnboardingDraftService {
         role.setRole(UserRole.ADMIN);
         role.setStatus("ACTIVE");
         userSchoolRoleRepository.save(role);
+        roleSyncService.syncUserSchoolRole(role);
         
         // Generate Subscription
         String planName = (String) step1.getOrDefault("subscriptionPlan", "ENTERPRISE");
@@ -313,6 +324,28 @@ public class OnboardingDraftService {
                 pending.setStatus("PENDING");
                 installmentRepository.save(pending);
             }
+        }
+
+        // Provision Module Access from Step 5
+        Map<String, Object> step5 = parseJson(draft.getStep5Data());
+        List<com.school.erp.entity.PlatformModule> activeModules = moduleRepository.findAllByStatus("ACTIVE");
+        
+        List<String> enabledCodes = new java.util.ArrayList<>();
+        if (step5.containsKey("enabledModuleCodes") && step5.get("enabledModuleCodes") instanceof List) {
+            for (Object code : (List<?>) step5.get("enabledModuleCodes")) {
+                if (code instanceof String) {
+                    enabledCodes.add(((String) code).toUpperCase());
+                }
+            }
+        }
+
+        final School finalSchool = school;
+        for (com.school.erp.entity.PlatformModule pm : activeModules) {
+            boolean shouldEnable = pm.isDefault() || enabledCodes.contains(pm.getCode().toUpperCase());
+            com.school.erp.entity.SchoolModuleAccess access = moduleAccessRepository.findBySchoolAndModule(finalSchool, pm)
+                    .orElseGet(() -> new com.school.erp.entity.SchoolModuleAccess(finalSchool, pm));
+            access.setEnabled(shouldEnable);
+            moduleAccessRepository.save(access);
         }
 
         OnboardingDraftDTO draftDTO = toDTO(draft);

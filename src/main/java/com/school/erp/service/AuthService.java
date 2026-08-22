@@ -7,6 +7,10 @@ import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.exception.UnauthorizedException;
 import com.school.erp.repository.*;
 import com.school.erp.security.JwtUtil;
+import com.school.erp.service.auth.AuthorizationService;
+import com.school.erp.service.auth.RoleSyncService;
+import com.school.erp.entity.auth.RoleArchetype;
+import com.school.erp.dto.auth.PersonaDto;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -27,6 +31,9 @@ public class AuthService {
     private final StudentRepository studentRepository;
     private final JwtUtil jwtUtil;
 
+    private final AuthorizationService authorizationService;
+    private final RoleSyncService roleSyncService;
+
     public AuthService(
             UserRepository userRepository,
             UserSchoolRoleRepository userSchoolRoleRepository,
@@ -34,7 +41,9 @@ public class AuthService {
             StudentParentRepository studentParentRepository,
             SchoolRepository schoolRepository,
             StudentRepository studentRepository,
-            JwtUtil jwtUtil
+            JwtUtil jwtUtil,
+            AuthorizationService authorizationService,
+            RoleSyncService roleSyncService
     ) {
         this.userRepository = userRepository;
         this.userSchoolRoleRepository = userSchoolRoleRepository;
@@ -43,6 +52,8 @@ public class AuthService {
         this.schoolRepository = schoolRepository;
         this.studentRepository = studentRepository;
         this.jwtUtil = jwtUtil;
+        this.authorizationService = authorizationService;
+        this.roleSyncService = roleSyncService;
     }
 
     // ──────────────────────────────────────────────
@@ -111,9 +122,10 @@ public class AuthService {
 
         String accessToken = null;
         String refreshToken = null;
+        Long targetSchoolId = null;
 
         if (!requiresSchoolSelection) {
-            Long targetSchoolId = !schools.isEmpty() ? schools.get(0).schoolId() : null;
+            targetSchoolId = !schools.isEmpty() ? schools.get(0).schoolId() : null;
             UserRole targetRole = userRoles.isEmpty() ? UserRole.STUDENT : userRoles.get(0).getRole();
             for (UserSchoolRole usr : userRoles) {
                 if (usr.getRole().name().equals(primaryRole)) {
@@ -143,7 +155,18 @@ public class AuthService {
             authSessionRepository.save(authSession);
         }
 
-        List<String> permissions = List.of("ALL");
+        List<PermissionContextDto> permissions;
+        if ("SUPER_ADMIN".equalsIgnoreCase(primaryRole) || "SUPERADMIN".equalsIgnoreCase(primaryRole) || "ADMIN".equalsIgnoreCase(primaryRole)) {
+            // Temporary fallback: Treat primary ADMIN as ALL until full backend role management is deployed
+            permissions = List.of(new PermissionContextDto("ALL", "GLOBAL"));
+        } else if (targetSchoolId != null) {
+            permissions = authorizationService.getEffectivePermissions(targetSchoolId, user.getId())
+                    .stream()
+                    .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
+                    .toList();
+        } else {
+            permissions = List.of();
+        }
 
         return new LoginVerifyResponse(
                 user.getId(),
@@ -158,7 +181,9 @@ public class AuthService {
                 students,
                 accessToken,
                 refreshToken,
-                permissions
+                permissions,
+                List.of(new PersonaDto(primaryRole, primaryRole, RoleArchetype.STAFF)),
+                new PersonaDto(primaryRole, primaryRole, RoleArchetype.STAFF)
         );
     }
 
@@ -211,12 +236,25 @@ public class AuthService {
         authSession.setDeviceInfo(deviceInfo != null ? deviceInfo : null);
         authSessionRepository.save(authSession);
 
+        List<PermissionContextDto> permissions;
+        if ("SUPER_ADMIN".equalsIgnoreCase(userSchoolRole.getRole().name()) || "SUPERADMIN".equalsIgnoreCase(userSchoolRole.getRole().name()) || "ADMIN".equalsIgnoreCase(userSchoolRole.getRole().name())) {
+            permissions = List.of(new PermissionContextDto("ALL", "GLOBAL"));
+        } else {
+            permissions = authorizationService.getEffectivePermissions(schoolId, userId)
+                    .stream()
+                    .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
+                    .toList();
+        }
+
         return new AuthTokenResponse(
                 userId,
                 schoolId,
                 userSchoolRole.getRole().name(),
                 accessToken,
-                refreshToken
+                refreshToken,
+                permissions,
+                List.of(new PersonaDto(userSchoolRole.getRole().name(), userSchoolRole.getRole().name(), RoleArchetype.STAFF)),
+                new PersonaDto(userSchoolRole.getRole().name(), userSchoolRole.getRole().name(), RoleArchetype.STAFF)
         );
     }
     // ──────────────────────────────────────────────
@@ -257,6 +295,7 @@ public class AuthService {
         userSchoolRole.setRole(role);
         userSchoolRole.setStatus("ACTIVE");
         userSchoolRoleRepository.save(userSchoolRole);
+        roleSyncService.syncUserSchoolRole(userSchoolRole);
 
         return toUserResponse(user, false);
     }
@@ -288,6 +327,7 @@ public class AuthService {
             studentRole.setRole(UserRole.STUDENT);
             studentRole.setStatus("ACTIVE");
             userSchoolRoleRepository.save(studentRole);
+            roleSyncService.syncUserSchoolRole(studentRole);
         }
 
         // Create Student record
@@ -351,12 +391,67 @@ public class AuthService {
         session.setRefreshToken(newRefreshToken);
         authSessionRepository.save(session);
 
+        List<PermissionContextDto> permissions;
+        if ("SUPER_ADMIN".equalsIgnoreCase(userSchoolRole.getRole().name()) || "SUPERADMIN".equalsIgnoreCase(userSchoolRole.getRole().name()) || "ADMIN".equalsIgnoreCase(userSchoolRole.getRole().name())) {
+            permissions = List.of(new PermissionContextDto("ALL", "GLOBAL"));
+        } else {
+            permissions = authorizationService.getEffectivePermissions(school.getId(), user.getId())
+                    .stream()
+                    .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
+                    .toList();
+        }
+
         return new AuthTokenResponse(
                 user.getId(),
                 school.getId(),
                 userSchoolRole.getRole().name(),
                 newAccessToken,
-                newRefreshToken
+                newRefreshToken,
+                permissions,
+                List.of(new PersonaDto(userSchoolRole.getRole().name(), userSchoolRole.getRole().name(), RoleArchetype.STAFF)),
+                new PersonaDto(userSchoolRole.getRole().name(), userSchoolRole.getRole().name(), RoleArchetype.STAFF)
+        );
+    }
+
+    // ──────────────────────────────────────────────
+    // SWITCH PERSONA
+    // ──────────────────────────────────────────────
+
+    @Transactional
+    public AuthTokenResponse switchPersona(String roleId, String deviceInfo) {
+        // Find current authenticated session context
+        com.school.erp.security.AuthenticatedUser authUser = com.school.erp.security.AuthContextHolder.get();
+        if (authUser == null) {
+            throw new UnauthorizedException("User not authenticated");
+        }
+
+        UserSchoolRole userSchoolRole = userSchoolRoleRepository
+                .findByUserIdAndSchoolIdAndStatusIgnoreCase(authUser.userId(), authUser.schoolId(), "ACTIVE")
+                .orElseThrow(() -> new UnauthorizedException("Active school membership not found"));
+
+        // Temporary stub for Persona Switching: In a full deployment, this validates the roleId against user_roles table.
+        // For now, we simulate switching by refreshing the token for the requested role archetype.
+        
+        String newAccessToken = jwtUtil.generateAccessToken(authUser.userId(), authUser.schoolId(), parseRole(roleId));
+        String newRefreshToken = jwtUtil.generateRefreshToken(authUser.userId(), authUser.schoolId(), parseRole(roleId));
+
+        // Generate mock permission contexts depending on the persona
+        List<PermissionContextDto> permissions = authorizationService.getEffectivePermissions(authUser.schoolId(), authUser.userId())
+                    .stream()
+                    .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
+                    .toList();
+
+        return new AuthTokenResponse(
+                authUser.userId(),
+                authUser.schoolId(),
+                roleId,
+                newAccessToken,
+                newRefreshToken,
+                permissions,
+                List.of(
+                        new PersonaDto(roleId, roleId, RoleArchetype.STAFF)
+                ),
+                new PersonaDto(roleId, roleId, RoleArchetype.STAFF)
         );
     }
 

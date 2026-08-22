@@ -15,9 +15,18 @@ import java.util.List;
 public class SchoolService {
 
     private final SchoolRepository schoolRepository;
+    private final com.school.erp.service.auth.RoleManagementService roleManagementService;
+    private final com.school.erp.repository.PlatformModuleRepository platformModuleRepository;
+    private final com.school.erp.repository.SchoolModuleAccessRepository schoolModuleAccessRepository;
 
-    public SchoolService(SchoolRepository schoolRepository) {
+    public SchoolService(SchoolRepository schoolRepository, 
+                         com.school.erp.service.auth.RoleManagementService roleManagementService,
+                         com.school.erp.repository.PlatformModuleRepository platformModuleRepository,
+                         com.school.erp.repository.SchoolModuleAccessRepository schoolModuleAccessRepository) {
         this.schoolRepository = schoolRepository;
+        this.roleManagementService = roleManagementService;
+        this.platformModuleRepository = platformModuleRepository;
+        this.schoolModuleAccessRepository = schoolModuleAccessRepository;
     }
 
     public List<SchoolResponse> getAllSchools() {
@@ -32,7 +41,21 @@ public class SchoolService {
     public SchoolResponse createSchool(SchoolRequest request) {
         School school = new School();
         mapRequestToEntity(school, request);
-        return toResponse(schoolRepository.save(school));
+        School saved = schoolRepository.save(school);
+        
+        // Grant default platform modules
+        platformModuleRepository.findAllByStatus("ACTIVE").stream()
+                .filter(com.school.erp.entity.PlatformModule::isDefault)
+                .forEach(module -> {
+                    com.school.erp.entity.SchoolModuleAccess access = new com.school.erp.entity.SchoolModuleAccess();
+                    access.setSchool(saved);
+                    access.setModule(module);
+                    access.setEnabled(true);
+                    schoolModuleAccessRepository.save(access);
+                });
+                
+        roleManagementService.seedDefaultRolesForSchool(saved.getId());
+        return toResponse(saved);
     }
 
     @Transactional

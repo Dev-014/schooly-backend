@@ -21,6 +21,7 @@ public class AuthorizationService {
     private final UserRoleMappingRepository userRoleMappingRepository;
     private final RolePermissionRepository rolePermissionRepository;
     private final UserAssignmentRepository userAssignmentRepository;
+    private final com.school.erp.repository.SchoolModuleAccessRepository moduleAccessRepository;
 
     /**
      * Checks if a user has a specific permission within a school context.
@@ -45,10 +46,19 @@ public class AuthorizationService {
         List<UserRoleMapping> roleMappings = userRoleMappingRepository
                 .findBySchoolIdAndUserIdAndIsActiveTrue(schoolId, userId);
 
+        java.util.Set<String> enabledModules = moduleAccessRepository.findBySchoolId(schoolId).stream()
+                .map(a -> a.getModule().getCode())
+                .collect(java.util.stream.Collectors.toSet());
+
         for (UserRoleMapping mapping : roleMappings) {
+            Long targetSchoolId = mapping.getRole().isSystemRole() ? null : schoolId;
             List<RolePermission> permissions = rolePermissionRepository
-                    .findBySchoolIdAndRoleId(schoolId, mapping.getRole().getId());
-            effectivePermissions.addAll(permissions);
+                    .findBySchoolIdAndRoleId(targetSchoolId, mapping.getRole().getId());
+            for (RolePermission p : permissions) {
+                if (enabledModules.contains(p.getPermission().getModuleKey())) {
+                    effectivePermissions.add(p);
+                }
+            }
         }
         return effectivePermissions;
     }

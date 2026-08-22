@@ -10,6 +10,7 @@ import com.school.erp.exception.BadRequestException;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.UserRepository;
 import com.school.erp.repository.UserSchoolRoleRepository;
+import com.school.erp.service.auth.RoleSyncService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +22,13 @@ public class OnboardingService {
     private final SchoolRepository schoolRepository;
     private final UserRepository userRepository;
     private final UserSchoolRoleRepository userSchoolRoleRepository;
+    private final RoleSyncService roleSyncService;
 
-    public OnboardingService(SchoolRepository schoolRepository, UserRepository userRepository, UserSchoolRoleRepository userSchoolRoleRepository) {
+    public OnboardingService(SchoolRepository schoolRepository, UserRepository userRepository, UserSchoolRoleRepository userSchoolRoleRepository, RoleSyncService roleSyncService) {
         this.schoolRepository = schoolRepository;
         this.userRepository = userRepository;
         this.userSchoolRoleRepository = userSchoolRoleRepository;
+        this.roleSyncService = roleSyncService;
     }
 
     @Transactional
@@ -74,6 +77,7 @@ public class OnboardingService {
         role.setRole(UserRole.ADMIN);
         role.setStatus("ACTIVE");
         userSchoolRoleRepository.save(role);
+        roleSyncService.syncUserSchoolRole(role);
 
         return new OnboardingRegisterResponse(
                 school.getId(),

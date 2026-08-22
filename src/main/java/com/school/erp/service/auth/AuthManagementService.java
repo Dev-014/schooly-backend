@@ -1,7 +1,9 @@
 package com.school.erp.service.auth;
 
 import com.school.erp.dto.auth.AccountRequestSubmitRequest;
+import com.school.erp.dto.auth.PermissionContextDto;
 import com.school.erp.dto.auth.AuthTokenResponse;
+import com.school.erp.dto.auth.PersonaDto;
 import com.school.erp.dto.auth.PasswordResetRequest;
 import com.school.erp.dto.auth.PasswordResetSubmitRequest;
 import com.school.erp.entity.AccountRequest;
@@ -122,7 +124,10 @@ public class AuthManagementService {
                 null,
                 UserRole.SUPER_ADMIN.name(),
                 accessToken,
-                refreshToken
+                refreshToken,
+                java.util.List.of(new PermissionContextDto("ALL", "GLOBAL")),
+                java.util.List.of(new PersonaDto(UserRole.SUPER_ADMIN.name(), UserRole.SUPER_ADMIN.name(), com.school.erp.entity.auth.RoleArchetype.SUPER_ADMIN)),
+                new PersonaDto(UserRole.SUPER_ADMIN.name(), UserRole.SUPER_ADMIN.name(), com.school.erp.entity.auth.RoleArchetype.SUPER_ADMIN)
         );
     }
 

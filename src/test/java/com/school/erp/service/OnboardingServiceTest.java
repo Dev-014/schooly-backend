@@ -9,6 +9,7 @@ import com.school.erp.exception.BadRequestException;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.UserRepository;
 import com.school.erp.repository.UserSchoolRoleRepository;
+import com.school.erp.service.auth.RoleSyncService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,13 +28,17 @@ class OnboardingServiceTest {
 
     @Mock private SchoolRepository schoolRepository;
     @Mock private UserRepository userRepository;
-    @Mock private UserSchoolRoleRepository userSchoolRoleRepository;
+    @Mock
+    private UserSchoolRoleRepository userSchoolRoleRepository;
+
+    @Mock
+    private RoleSyncService roleSyncService;
 
     private OnboardingService onboardingService;
 
     @BeforeEach
     void setUp() {
-        onboardingService = new OnboardingService(schoolRepository, userRepository, userSchoolRoleRepository);
+        onboardingService = new OnboardingService(schoolRepository, userRepository, userSchoolRoleRepository, roleSyncService);
     }
 
     @Test

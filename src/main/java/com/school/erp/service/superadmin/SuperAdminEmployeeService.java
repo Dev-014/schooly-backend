@@ -9,6 +9,7 @@ import com.school.erp.entity.UserSchoolRole;
 import com.school.erp.repository.SupportTicketRepository;
 import com.school.erp.repository.UserRepository;
 import com.school.erp.repository.UserSchoolRoleRepository;
+import com.school.erp.service.auth.RoleSyncService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class SuperAdminEmployeeService {
     private final UserSchoolRoleRepository userSchoolRoleRepository;
     private final SupportTicketRepository supportTicketRepository;
     private final com.school.erp.repository.SuperAdminEmployeeRepository employeeRepository;
+    private final RoleSyncService roleSyncService;
 
     @Transactional(readOnly = true)
     public SuperAdminEmployeeDTO getEmployeeById(Long id) {
@@ -101,6 +103,7 @@ public class SuperAdminEmployeeService {
         role.setRole(UserRole.SUPER_ADMIN);
         role.setStatus("ACTIVE");
         userSchoolRoleRepository.save(role);
+        roleSyncService.syncUserSchoolRole(role);
 
         com.school.erp.entity.SuperAdminEmployee emp = new com.school.erp.entity.SuperAdminEmployee();
         emp.setUser(user);

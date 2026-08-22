@@ -2,11 +2,14 @@ package com.school.erp.controller;
 
 import com.school.erp.dto.auth.AuthTokenResponse;
 import com.school.erp.dto.auth.AuthUserResponse;
+import com.school.erp.dto.auth.PermissionContextDto;
 import com.school.erp.dto.auth.UserSchoolResponse;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
 import com.school.erp.dto.auth.LoginVerifyResponse;
 import com.school.erp.dto.auth.OtpVerifyRequest;
+import com.school.erp.dto.auth.PersonaDto;
+import com.school.erp.entity.auth.RoleArchetype;
 import com.school.erp.service.AuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +85,9 @@ class AuthControllerTest {
                 1L, "9999999999", "John Admin", "admin@example.com",
                 "SUPER_ADMIN", List.of("SUPER_ADMIN"), List.of(),
                 false, false, List.of(),
-                "access-token", "refresh-token", List.of("ALL")
+                "access-token", "refresh-token", List.of(new PermissionContextDto("ALL", "GLOBAL")),
+                List.of(new PersonaDto("SUPER_ADMIN", "SUPER_ADMIN", RoleArchetype.SUPER_ADMIN)),
+                new PersonaDto("SUPER_ADMIN", "SUPER_ADMIN", RoleArchetype.SUPER_ADMIN)
         );
         when(authService.verifyOtp(any(OtpVerifyRequest.class), any())).thenReturn(response);
 
@@ -114,7 +119,9 @@ class AuthControllerTest {
     @Test
     void selectSchool_shouldReturnTokenPayload() throws Exception {
         when(authService.selectSchool(eq(1L), eq(10L), isNull()))
-                .thenReturn(new AuthTokenResponse(1L, 10L, "TEACHER", "access-token", "refresh-token"));
+                .thenReturn(new AuthTokenResponse(1L, 10L, "TEACHER", "access-token", "refresh-token", java.util.List.of(new PermissionContextDto("ALL", "GLOBAL")),
+                        List.of(new PersonaDto("TEACHER", "TEACHER", RoleArchetype.STAFF)),
+                        new PersonaDto("TEACHER", "TEACHER", RoleArchetype.STAFF)));
 
         mockMvc.perform(post("/auth/select-school")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,7 +21,7 @@ public class Role {
     @Id
     private String id;
 
-    @Column(name = "school_id", nullable = false)
+    @Column(name = "school_id")
     private Long schoolId;
 
     @Column(name = "name", nullable = false)
@@ -37,4 +38,8 @@ public class Role {
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Enumerated(jakarta.persistence.EnumType.STRING)
+    @Column(name = "archetype")
+    private RoleArchetype archetype;
 }

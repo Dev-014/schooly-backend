@@ -29,6 +29,14 @@ public class StaffController {
         ));
     }
 
+    @GetMapping("/stats")
+    public ResponseEntity<ApiResponse<com.school.erp.dto.staff.StaffStatsResponse>> getStaffStats(@RequestParam(required = false) Long schoolId) {
+        return ResponseEntity.ok(ApiResponse.success(
+                staffService.getStaffStats(schoolId),
+                "Staff stats fetched successfully"
+        ));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<StaffResponse>> getStaffById(
             @PathVariable Long id,

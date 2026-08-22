@@ -15,9 +15,12 @@ import com.school.erp.repository.StudentRepository;
 import com.school.erp.repository.UserRepository;
 import com.school.erp.repository.UserSchoolRoleRepository;
 import com.school.erp.security.JwtUtil;
+import com.school.erp.service.auth.AuthorizationService;
+import com.school.erp.service.auth.RoleSyncService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -39,14 +42,17 @@ class AuthServiceTest {
     @Mock private SchoolRepository schoolRepository;
     @Mock private StudentRepository studentRepository;
     @Mock private JwtUtil jwtUtil;
+    @Mock private AuthorizationService authorizationService;
+    @Mock private RoleSyncService roleSyncService;
 
+    @InjectMocks
     private AuthService authService;
 
     @BeforeEach
     void setUp() {
         authService = new AuthService(
                 userRepository, userSchoolRoleRepository, authSessionRepository,
-                studentParentRepository, schoolRepository, studentRepository, jwtUtil
+                studentParentRepository, schoolRepository, studentRepository, jwtUtil, authorizationService, roleSyncService
         );
     }
 

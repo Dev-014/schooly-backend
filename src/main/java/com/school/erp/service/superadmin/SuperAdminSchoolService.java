@@ -26,17 +26,20 @@ public class SuperAdminSchoolService {
     private final StaffRepository staffRepository;
     private final SchoolModuleAccessRepository accessRepository;
     private final SubscriptionPlanRepository planRepository;
+    private final com.school.erp.service.auth.RoleManagementService roleManagementService;
 
     public SuperAdminSchoolService(SchoolRepository schoolRepository,
                                    StudentRepository studentRepository,
                                    StaffRepository staffRepository,
                                    SchoolModuleAccessRepository accessRepository,
-                                   SubscriptionPlanRepository planRepository) {
+                                   SubscriptionPlanRepository planRepository,
+                                   com.school.erp.service.auth.RoleManagementService roleManagementService) {
         this.schoolRepository = schoolRepository;
         this.studentRepository = studentRepository;
         this.staffRepository = staffRepository;
         this.accessRepository = accessRepository;
         this.planRepository = planRepository;
+        this.roleManagementService = roleManagementService;
     }
 
     @Transactional(readOnly = true)
@@ -76,6 +79,7 @@ public class SuperAdminSchoolService {
         School school = new School();
         updateEntityFromDto(school, dto);
         School saved = schoolRepository.save(school);
+        roleManagementService.seedDefaultRolesForSchool(saved.getId());
         return toDto(saved);
     }
 

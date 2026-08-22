@@ -153,4 +153,18 @@ public class AuthController {
                 "Token refreshed successfully"
         ));
     }
+
+    @PostMapping("/switch-persona/{roleId}")
+    @Operation(summary = "Switch Persona", description = "Switches the active persona for the user and returns refreshed tokens")
+    public ResponseEntity<ApiResponse<AuthTokenResponse>> switchPersona(
+            @PathVariable String roleId,
+            HttpServletRequest httpServletRequest
+    ) {
+        String userAgent = httpServletRequest.getHeader("User-Agent");
+        String deviceInfo = userAgent == null ? null : "{\"userAgent\":\"" + userAgent.replace("\"", "\\\"") + "\"}";
+        return ResponseEntity.ok(ApiResponse.success(
+                authService.switchPersona(roleId, deviceInfo),
+                "Persona switched successfully"
+        ));
+    }
 }

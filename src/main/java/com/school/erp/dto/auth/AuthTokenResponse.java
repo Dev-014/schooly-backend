@@ -5,6 +5,9 @@ public record AuthTokenResponse(
         Long schoolId,
         String role,
         String accessToken,
-        String refreshToken
+        String refreshToken,
+        java.util.List<PermissionContextDto> permissions,
+        java.util.List<PersonaDto> availablePersonas,
+        PersonaDto activePersona
 ) {
 }

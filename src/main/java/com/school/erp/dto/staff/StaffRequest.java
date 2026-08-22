@@ -12,6 +12,7 @@ public record StaffRequest(
         Long schoolId,
         @NotNull(message = "departmentId is required")
         Long departmentId,
+        String roleId,
         @NotNull(message = "designationId is required")
         Long designationId,
         @NotNull(message = "joiningDate is required")
