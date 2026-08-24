@@ -36,6 +36,8 @@ class EntitlementServiceTest {
     private OnboardingDraftRepository draftRepo;
     @Mock
     private StudentRepository studentRepo;
+    @Mock
+    private com.school.erp.repository.SchoolModuleAccessRepository moduleAccessRepo;
 
     private EntitlementService entitlementService;
     private School testSchool;
@@ -43,7 +45,7 @@ class EntitlementServiceTest {
 
     @BeforeEach
     void setUp() {
-        entitlementService = new EntitlementService(schoolRepo, planRepo, overrideRepo, draftRepo, studentRepo);
+        entitlementService = new EntitlementService(schoolRepo, planRepo, overrideRepo, draftRepo, studentRepo, moduleAccessRepo);
 
         testSchool = new School();
         testSchool.setId(101L);

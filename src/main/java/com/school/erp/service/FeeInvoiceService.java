@@ -9,10 +9,17 @@ import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.FeeInvoiceRepository;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.StudentRepository;
+import com.school.erp.repository.FeeStructureRepository;
+import com.school.erp.entity.FeeStructure;
+import com.school.erp.entity.FeeStructureItem;
+import com.school.erp.entity.FeeInvoiceItem;
+import com.school.erp.repository.FeeInvoiceItemRepository;
 import com.school.erp.security.AuthContextService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -23,17 +30,23 @@ public class FeeInvoiceService {
     private final StudentRepository studentRepository;
     private final SchoolRepository schoolRepository;
     private final AuthContextService authContextService;
+    private final FeeStructureRepository feeStructureRepository;
+    private final FeeInvoiceItemRepository feeInvoiceItemRepository;
 
     public FeeInvoiceService(
             FeeInvoiceRepository feeInvoiceRepository,
             StudentRepository studentRepository,
             SchoolRepository schoolRepository,
-            AuthContextService authContextService
+            AuthContextService authContextService,
+            FeeStructureRepository feeStructureRepository,
+            FeeInvoiceItemRepository feeInvoiceItemRepository
     ) {
         this.feeInvoiceRepository = feeInvoiceRepository;
         this.studentRepository = studentRepository;
         this.schoolRepository = schoolRepository;
         this.authContextService = authContextService;
+        this.feeStructureRepository = feeStructureRepository;
+        this.feeInvoiceItemRepository = feeInvoiceItemRepository;
     }
 
     public List<FeeInvoiceResponse> getAllInvoices(Long schoolId, Long studentId) {
@@ -73,6 +86,40 @@ public class FeeInvoiceService {
     public void deleteInvoice(Long id, Long schoolId) {
         FeeInvoice invoice = findInvoice(id, authContextService.resolveSchoolId(schoolId));
         feeInvoiceRepository.delete(invoice);
+    }
+
+    @Transactional
+    public void bulkGenerateInvoices(Long feeStructureId, Long classId, Long schoolId, LocalDate dueDate) {
+        Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
+        School school = getSchool(effectiveSchoolId);
+        FeeStructure structure = feeStructureRepository.findById(feeStructureId).orElseThrow(() -> new ResourceNotFoundException("Fee structure not found"));
+        
+        List<Student> students = studentRepository.findBySchoolIdAndSchoolClassId(effectiveSchoolId, classId);
+        
+        BigDecimal totalAmount = structure.getItems().stream().map(FeeStructureItem::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        
+        for (Student student : students) {
+            FeeInvoice invoice = new FeeInvoice();
+            invoice.setSchool(school);
+            invoice.setStudent(student);
+            invoice.setFeeStructure(structure);
+            invoice.setAcademicYearId(structure.getAcademicYearId());
+            invoice.setDueDate(dueDate);
+            invoice.setTotalAmount(totalAmount);
+            invoice.setPaidAmount(BigDecimal.ZERO);
+            invoice.setStatus("PENDING");
+            
+            FeeInvoice savedInvoice = feeInvoiceRepository.save(invoice);
+            
+            for (FeeStructureItem item : structure.getItems()) {
+                FeeInvoiceItem invoiceItem = new FeeInvoiceItem();
+                invoiceItem.setFeeInvoice(savedInvoice);
+                invoiceItem.setFeeCategory(item.getFeeCategory());
+                invoiceItem.setAmount(item.getAmount());
+                invoiceItem.setPaidAmount(BigDecimal.ZERO);
+                feeInvoiceItemRepository.save(invoiceItem);
+            }
+        }
     }
 
     private FeeInvoice findInvoice(Long id, Long schoolId) {

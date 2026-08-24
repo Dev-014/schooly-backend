@@ -3,6 +3,7 @@ package com.school.erp.controller;
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.feeinvoice.FeeInvoiceRequest;
 import com.school.erp.dto.feeinvoice.FeeInvoiceResponse;
+import com.school.erp.dto.feeinvoice.BulkInvoiceRequest;
 import com.school.erp.service.FeeInvoiceService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,17 @@ public class FeeInvoiceController {
                 feeInvoiceService.createInvoice(request),
                 "Fee invoice created successfully"
         ));
+    }
+
+    @PostMapping("/bulk-generate")
+    public ResponseEntity<ApiResponse<Void>> bulkGenerateInvoices(@Valid @RequestBody BulkInvoiceRequest request) {
+        feeInvoiceService.bulkGenerateInvoices(
+                request.getFeeStructureId(),
+                request.getClassId(),
+                request.getSchoolId(),
+                request.getDueDate()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(null, "Invoices generated successfully in bulk"));
     }
 
     @PutMapping("/{id}")

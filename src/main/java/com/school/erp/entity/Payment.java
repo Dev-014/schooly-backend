@@ -6,13 +6,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "payment")
+@Table(name = "fee_payment")
 public class Payment {
 
     @Id
@@ -41,4 +44,17 @@ public class Payment {
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
+    private Student student;
+
+    @Column(name = "receipt_number")
+    private String receiptNumber;
+
+    @Column(name = "payment_date")
+    private LocalDate paymentDate;
+
+    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FeePaymentItem> items = new ArrayList<>();
 }

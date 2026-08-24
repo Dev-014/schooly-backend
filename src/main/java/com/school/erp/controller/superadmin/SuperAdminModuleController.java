@@ -24,6 +24,11 @@ public class SuperAdminModuleController {
         return ResponseEntity.ok(ApiResponse.success(moduleService.getAllModules(), "Modules fetched successfully"));
     }
 
+    @GetMapping("/school/{schoolId}")
+    public ResponseEntity<ApiResponse<List<ModuleDto>>> getModulesForSchool(@PathVariable Long schoolId) {
+        return ResponseEntity.ok(ApiResponse.success(moduleService.getModulesForSchool(schoolId), "School modules fetched successfully"));
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse<ModuleDto>> createModule(@Valid @RequestBody ModuleDto dto) {
         return ResponseEntity.ok(ApiResponse.success(moduleService.createModule(dto), "Module created successfully"));

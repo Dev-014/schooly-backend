@@ -23,6 +23,7 @@ public class ModuleDto {
     private BigDecimal addOnPrice;
     private List<String> targetRoles;
     private List<String> subModules;
+    private Boolean enabledForTenant;
 
     @JsonProperty("isDefault")
     public boolean isDefault() {

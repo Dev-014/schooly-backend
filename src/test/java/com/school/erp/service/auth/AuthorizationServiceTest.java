@@ -14,6 +14,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import com.school.erp.repository.SchoolModuleAccessRepository;
+import com.school.erp.entity.SchoolModuleAccess;
+import com.school.erp.entity.PlatformModule;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -37,6 +40,9 @@ class AuthorizationServiceTest {
     @Mock
     private UserAssignmentRepository userAssignmentRepository;
 
+    @Mock
+    private SchoolModuleAccessRepository moduleAccessRepository;
+
     @InjectMocks
     private AuthorizationService authorizationService;
 
@@ -46,6 +52,13 @@ class AuthorizationServiceTest {
 
     @BeforeEach
     void setUp() {
+        org.mockito.Mockito.lenient().when(moduleAccessRepository.findBySchoolId(any())).thenAnswer(invocation -> {
+            PlatformModule module = new PlatformModule();
+            module.setCode("attendance");
+            SchoolModuleAccess access = new SchoolModuleAccess();
+            access.setModule(module);
+            return List.of(access);
+        });
     }
 
     @Test
@@ -67,6 +80,7 @@ class AuthorizationServiceTest {
 
         PermissionDefinition perm = new PermissionDefinition();
         perm.setPermissionKey("attendance.edit");
+        perm.setModuleKey("attendance");
 
         RolePermission rp = new RolePermission();
         rp.setPermission(perm);
@@ -90,6 +104,7 @@ class AuthorizationServiceTest {
 
         PermissionDefinition perm = new PermissionDefinition();
         perm.setPermissionKey("attendance.edit");
+        perm.setModuleKey("attendance");
 
         RolePermission rp = new RolePermission();
         rp.setPermission(perm);
@@ -114,6 +129,7 @@ class AuthorizationServiceTest {
 
         PermissionDefinition perm = new PermissionDefinition();
         perm.setPermissionKey("attendance.edit");
+        perm.setModuleKey("attendance");
 
         RolePermission rp = new RolePermission();
         rp.setPermission(perm);
@@ -146,6 +162,7 @@ class AuthorizationServiceTest {
 
         PermissionDefinition perm = new PermissionDefinition();
         perm.setPermissionKey("attendance.edit");
+        perm.setModuleKey("attendance");
 
         RolePermission rp = new RolePermission();
         rp.setPermission(perm);
@@ -182,6 +199,7 @@ class AuthorizationServiceTest {
 
         PermissionDefinition perm = new PermissionDefinition();
         perm.setPermissionKey("attendance.edit");
+        perm.setModuleKey("attendance");
 
         RolePermission rp1 = new RolePermission();
         rp1.setPermission(perm);

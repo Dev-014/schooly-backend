@@ -19,17 +19,20 @@ public class EntitlementService {
     private final TenantEntitlementOverrideRepository overrideRepo;
     private final OnboardingDraftRepository draftRepo;
     private final StudentRepository studentRepo;
+    private final SchoolModuleAccessRepository moduleAccessRepository;
 
     public EntitlementService(SchoolRepository schoolRepo,
                               SubscriptionPlanRepository planRepo,
                               TenantEntitlementOverrideRepository overrideRepo,
                               OnboardingDraftRepository draftRepo,
-                              StudentRepository studentRepo) {
+                              StudentRepository studentRepo,
+                              SchoolModuleAccessRepository moduleAccessRepository) {
         this.schoolRepo = schoolRepo;
         this.planRepo = planRepo;
         this.overrideRepo = overrideRepo;
         this.draftRepo = draftRepo;
         this.studentRepo = studentRepo;
+        this.moduleAccessRepository = moduleAccessRepository;
     }
 
     @Transactional(readOnly = true)
@@ -78,6 +81,19 @@ public class EntitlementService {
                 enabledModules.add(o.getModuleCode());
                 if ("TRIAL".equalsIgnoreCase(o.getOverrideType()) || "FREE_TRIAL".equalsIgnoreCase(o.getOverrideType())) {
                     isTrialActive = true;
+                }
+            }
+        }
+
+        // Tier 2: Explicit Super Admin Toggles (SchoolModuleAccess)
+        List<SchoolModuleAccess> accessList = moduleAccessRepository.findBySchoolId(schoolId);
+        for (SchoolModuleAccess access : accessList) {
+            if (access.getModule() != null) {
+                String code = access.getModule().getCode();
+                if (Boolean.TRUE.equals(access.getEnabled())) {
+                    enabledModules.add(code);
+                } else {
+                    enabledModules.remove(code);
                 }
             }
         }

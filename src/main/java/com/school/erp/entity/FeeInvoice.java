@@ -8,6 +8,8 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -45,4 +47,11 @@ public class FeeInvoice {
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fee_structure_id")
+    private FeeStructure feeStructure;
+
+    @OneToMany(mappedBy = "feeInvoice", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FeeInvoiceItem> items = new ArrayList<>();
 }

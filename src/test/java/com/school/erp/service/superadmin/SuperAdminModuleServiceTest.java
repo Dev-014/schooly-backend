@@ -62,7 +62,7 @@ class SuperAdminModuleServiceTest {
     void createModule_ShouldSaveAndReturnDto() {
         ModuleDto input = new ModuleDto(
                 null, "TRANSPORT", "Transport", "Bus tracking", false, "ACTIVE",
-                "OPERATION", new BigDecimal("1199.00"), Arrays.asList("ADMIN", "PARENT"), Arrays.asList("Routes")
+                "OPERATION", new BigDecimal("1199.00"), Arrays.asList("ADMIN", "PARENT"), Arrays.asList("Routes"), null
         );
 
         when(moduleRepo.save(any(PlatformModule.class))).thenAnswer(inv -> {
@@ -90,7 +90,7 @@ class SuperAdminModuleServiceTest {
 
         ModuleDto input = new ModuleDto(
                 5L, "LMS_CLASSWORK", "New LMS Name", "Updated desc", true, "ACTIVE",
-                "ACADEMIC", new BigDecimal("1499.00"), Arrays.asList("ADMIN", "TEACHER"), Arrays.asList("Lesson Planner")
+                "ACADEMIC", new BigDecimal("1499.00"), Arrays.asList("ADMIN", "TEACHER"), Arrays.asList("Lesson Planner"), null
         );
 
         ModuleDto res = service.updateModule(5L, input);

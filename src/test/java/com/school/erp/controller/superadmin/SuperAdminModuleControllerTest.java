@@ -45,7 +45,7 @@ class SuperAdminModuleControllerTest {
     void getAllModules_ShouldReturnSuccess() throws Exception {
         ModuleDto dto = new ModuleDto(
                 1L, "ADMIN_SETUP", "School Config", "Setup", true, "ACTIVE",
-                "CORE", BigDecimal.ZERO, Arrays.asList("ADMIN"), Arrays.asList("Roles")
+                "CORE", BigDecimal.ZERO, Arrays.asList("ADMIN"), Arrays.asList("Roles"), null
         );
         when(moduleService.getAllModules()).thenReturn(Collections.singletonList(dto));
 
@@ -60,11 +60,11 @@ class SuperAdminModuleControllerTest {
     void createModule_ShouldReturnCreatedModule() throws Exception {
         ModuleDto input = new ModuleDto(
                 null, "FRONT_OFFICE", "Front Office", "Enquiry", true, "ACTIVE",
-                "CORE", new BigDecimal("499.00"), Arrays.asList("ADMIN"), Arrays.asList("Enquiry")
+                "CORE", new BigDecimal("499.00"), Arrays.asList("ADMIN"), Arrays.asList("Enquiry"), null
         );
         ModuleDto output = new ModuleDto(
                 2L, "FRONT_OFFICE", "Front Office", "Enquiry", true, "ACTIVE",
-                "CORE", new BigDecimal("499.00"), Arrays.asList("ADMIN"), Arrays.asList("Enquiry")
+                "CORE", new BigDecimal("499.00"), Arrays.asList("ADMIN"), Arrays.asList("Enquiry"), null
         );
         when(moduleService.createModule(any(ModuleDto.class))).thenReturn(output);
 
@@ -81,7 +81,7 @@ class SuperAdminModuleControllerTest {
     void updateModule_ShouldReturnUpdatedModule() throws Exception {
         ModuleDto input = new ModuleDto(
                 2L, "FRONT_OFFICE", "Updated Front Office", "New desc", true, "ACTIVE",
-                "CORE", new BigDecimal("599.00"), Arrays.asList("ADMIN"), Arrays.asList("Enquiry", "Visitor Book")
+                "CORE", new BigDecimal("599.00"), Arrays.asList("ADMIN"), Arrays.asList("Enquiry", "Visitor Book"), null
         );
         when(moduleService.updateModule(eq(2L), any(ModuleDto.class))).thenReturn(input);
 

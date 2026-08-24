@@ -31,7 +31,23 @@ public class SuperAdminModuleService {
     @Transactional(readOnly = true)
     public List<ModuleDto> getAllModules() {
         return moduleRepo.findAll().stream()
-                .map(this::toDto)
+                .map(m -> toDto(m, null))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ModuleDto> getModulesForSchool(Long schoolId) {
+        School school = schoolRepo.findById(schoolId)
+                .orElseThrow(() -> new com.school.erp.exception.ResourceNotFoundException("School not found for id " + schoolId));
+        
+        List<SchoolModuleAccess> accessList = accessRepo.findBySchoolId(schoolId);
+        
+        return moduleRepo.findAll().stream()
+                .map(m -> {
+                    boolean enabled = accessList.stream()
+                            .anyMatch(a -> a.getModule().getId().equals(m.getId()) && Boolean.TRUE.equals(a.getEnabled()));
+                    return toDto(m, enabled);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -48,7 +64,7 @@ public class SuperAdminModuleService {
         if (dto.getTargetRoles() != null) module.setTargetRolesList(dto.getTargetRoles());
         if (dto.getSubModules() != null) module.setSubModulesList(dto.getSubModules());
         PlatformModule saved = moduleRepo.save(module);
-        return toDto(saved);
+        return toDto(saved, null);
     }
 
     @Transactional
@@ -64,7 +80,7 @@ public class SuperAdminModuleService {
         if (dto.getSubModules() != null) module.setSubModulesList(dto.getSubModules());
         module.setDefault(dto.isDefault());
         PlatformModule saved = moduleRepo.save(module);
-        return toDto(saved);
+        return toDto(saved, null);
     }
 
     @Transactional
@@ -79,7 +95,7 @@ public class SuperAdminModuleService {
         accessRepo.save(access);
     }
 
-    private ModuleDto toDto(PlatformModule module) {
+    private ModuleDto toDto(PlatformModule module, Boolean enabledForTenant) {
         return new ModuleDto(
                 module.getId(),
                 module.getCode(),
@@ -90,7 +106,8 @@ public class SuperAdminModuleService {
                 module.getCategory(),
                 module.getAddOnPrice(),
                 module.getTargetRolesList(),
-                module.getSubModulesList()
+                module.getSubModulesList(),
+                enabledForTenant
         );
     }
 }

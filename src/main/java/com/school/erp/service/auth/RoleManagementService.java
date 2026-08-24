@@ -9,6 +9,9 @@ import com.school.erp.repository.auth.PermissionDefinitionRepository;
 import com.school.erp.repository.auth.RolePermissionRepository;
 import com.school.erp.repository.auth.RoleRepository;
 import com.school.erp.repository.auth.UserRoleMappingRepository;
+import com.school.erp.repository.PlatformModuleRepository;
+import com.school.erp.entity.PlatformModule;
+import com.school.erp.entity.SchoolModuleAccess;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +28,7 @@ public class RoleManagementService {
     private final PermissionDefinitionRepository permissionDefinitionRepository;
     private final UserRoleMappingRepository userRoleMappingRepository;
     private final com.school.erp.repository.SchoolModuleAccessRepository moduleAccessRepository;
+    private final PlatformModuleRepository platformModuleRepository;
 
     @Transactional(readOnly = true)
     public List<RoleDto> getRoles(Long schoolId) {
@@ -77,8 +81,18 @@ public class RoleManagementService {
 
         Set<String> enabledModules = null;
         if (schoolId != null) {
-            enabledModules = moduleAccessRepository.findBySchoolId(schoolId).stream()
-                .map(a -> a.getModule().getCode())
+            List<SchoolModuleAccess> accessList = moduleAccessRepository.findBySchoolId(schoolId);
+            enabledModules = platformModuleRepository.findAll().stream()
+                .filter(m -> {
+                    Optional<SchoolModuleAccess> accessOpt = accessList.stream()
+                            .filter(a -> a.getModule().getId().equals(m.getId()))
+                            .findFirst();
+                    if (accessOpt.isPresent()) {
+                        return Boolean.TRUE.equals(accessOpt.get().getEnabled());
+                    }
+                    return m.isDefault();
+                })
+                .map(PlatformModule::getCode)
                 .collect(Collectors.toSet());
         }
 
@@ -128,8 +142,18 @@ public class RoleManagementService {
             if (role.isSystemRole()) {
                 throw new com.school.erp.exception.ForbiddenException("System Roles cannot be modified by School Administrators");
             }
-            enabledModules = moduleAccessRepository.findBySchoolId(schoolId).stream()
-                .map(a -> a.getModule().getCode())
+            List<SchoolModuleAccess> accessList = moduleAccessRepository.findBySchoolId(schoolId);
+            enabledModules = platformModuleRepository.findAll().stream()
+                .filter(m -> {
+                    Optional<SchoolModuleAccess> accessOpt = accessList.stream()
+                            .filter(a -> a.getModule().getId().equals(m.getId()))
+                            .findFirst();
+                    if (accessOpt.isPresent()) {
+                        return Boolean.TRUE.equals(accessOpt.get().getEnabled());
+                    }
+                    return m.isDefault();
+                })
+                .map(PlatformModule::getCode)
                 .collect(Collectors.toSet());
         }
 
