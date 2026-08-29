@@ -96,6 +96,7 @@ public class StudentHouseService {
                 student.getAdmissionDate(),
                 student.getSchool().getId(),
                 student.getSchoolClass() != null ? student.getSchoolClass().getId() : null,
+                student.getSchoolClass() != null ? student.getSchoolClass().getName() : null,
                 student.getSectionId(),
                 student.getAcademicYearId(),
                 student.getFirstName(),

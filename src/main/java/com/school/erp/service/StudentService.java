@@ -27,6 +27,7 @@ public class StudentService {
     private final StudentCategoryRepository studentCategoryRepository;
     private final StudentHouseRepository studentHouseRepository;
     private final FamilyRepository familyRepository;
+    private final FeeDueService feeDueService;
 
     public StudentService(
             StudentRepository studentRepository,
@@ -38,7 +39,8 @@ public class StudentService {
             AcademicYearRepository academicYearRepository,
             StudentCategoryRepository studentCategoryRepository,
             StudentHouseRepository studentHouseRepository,
-            FamilyRepository familyRepository
+            FamilyRepository familyRepository,
+            FeeDueService feeDueService
     ) {
         this.studentRepository = studentRepository;
         this.schoolRepository = schoolRepository;
@@ -50,9 +52,10 @@ public class StudentService {
         this.studentCategoryRepository = studentCategoryRepository;
         this.studentHouseRepository = studentHouseRepository;
         this.familyRepository = familyRepository;
+        this.feeDueService = feeDueService;
     }
 
-    public List<StudentResponse> getAllStudents(Long schoolId, Long classId, Long sectionId) {
+    public List<StudentResponse> getAllStudents(Long schoolId, Long classId, Long sectionId, String search) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
         entitlementService.enforceModuleAccess(effectiveSchoolId, "STUDENT_INFO");
         List<Student> students;
@@ -65,7 +68,21 @@ public class StudentService {
         } else {
             students = studentRepository.findBySchoolId(effectiveSchoolId);
         }
-        return students.stream().map(this::toResponse).toList();
+
+        if (search != null && !search.trim().isEmpty()) {
+            String q = search.toLowerCase();
+            students = students.stream().filter(s -> {
+                String name = (s.getName() != null ? s.getName() : "") + 
+                             (s.getFirstName() != null ? s.getFirstName() : "") + 
+                             (s.getLastName() != null ? s.getLastName() : "");
+                String admissionNo = s.getAdmissionNo() != null ? s.getAdmissionNo() : "";
+                return name.toLowerCase().contains(q) || admissionNo.toLowerCase().contains(q);
+            }).toList();
+        }
+
+        return students.stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     public StudentResponse getStudentById(Long id, Long schoolId) {
@@ -111,7 +128,16 @@ public class StudentService {
             student.setName(combined.isEmpty() ? "Student " + request.admissionNo() : combined);
         }
 
-        return toResponse(studentRepository.save(student));
+        student = studentRepository.save(student);
+        
+        try {
+            feeDueService.generateBaseDuesForStudent(student.getId(), effectiveSchoolId);
+        } catch (Exception e) {
+            // Log but don't fail admission
+            e.printStackTrace();
+        }
+
+        return toResponse(student);
     }
 
     @Transactional
@@ -320,6 +346,7 @@ public class StudentService {
                 student.getAdmissionDate(),
                 student.getSchool().getId(),
                 student.getSchoolClass().getId(),
+                student.getSchoolClass().getName(),
                 student.getSectionId(),
                 student.getAcademicYearId(),
                 student.getFirstName(),

@@ -52,6 +52,5 @@ public class FeeInvoice {
     @JoinColumn(name = "fee_structure_id")
     private FeeStructure feeStructure;
 
-    @OneToMany(mappedBy = "feeInvoice", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FeeInvoiceItem> items = new ArrayList<>();
+
 }

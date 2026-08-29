@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "fee_payment_item")
-public class FeePaymentItem {
+@Table(name = "fee_payment_allocation")
+public class FeePaymentAllocation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,11 +22,11 @@ public class FeePaymentItem {
     private Payment payment;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "fee_invoice_item_id", nullable = false)
-    private FeeInvoiceItem feeInvoiceItem;
+    @JoinColumn(name = "fee_due_id", nullable = false)
+    private FeeDue feeDue;
 
-    @Column(nullable = false)
-    private BigDecimal amount;
+    @Column(name = "allocated_amount", nullable = false)
+    private BigDecimal allocatedAmount;
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;

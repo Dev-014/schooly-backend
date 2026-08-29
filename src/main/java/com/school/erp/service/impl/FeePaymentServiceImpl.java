@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -16,17 +17,15 @@ import java.util.UUID;
 public class FeePaymentServiceImpl implements FeePaymentService {
 
     private final PaymentRepository paymentRepository;
-    private final FeeInvoiceRepository feeInvoiceRepository;
-    private final FeePaymentItemRepository feePaymentItemRepository;
-    private final FeeInvoiceItemRepository feeInvoiceItemRepository;
+    private final FeeDueRepository feeDueRepository;
+    private final FeePaymentAllocationRepository feePaymentAllocationRepository;
     private final StudentRepository studentRepository;
     private final SchoolRepository schoolRepository;
 
-    public FeePaymentServiceImpl(PaymentRepository paymentRepository, FeeInvoiceRepository feeInvoiceRepository, FeePaymentItemRepository feePaymentItemRepository, FeeInvoiceItemRepository feeInvoiceItemRepository, StudentRepository studentRepository, SchoolRepository schoolRepository) {
+    public FeePaymentServiceImpl(PaymentRepository paymentRepository, FeeDueRepository feeDueRepository, FeePaymentAllocationRepository feePaymentAllocationRepository, StudentRepository studentRepository, SchoolRepository schoolRepository) {
         this.paymentRepository = paymentRepository;
-        this.feeInvoiceRepository = feeInvoiceRepository;
-        this.feePaymentItemRepository = feePaymentItemRepository;
-        this.feeInvoiceItemRepository = feeInvoiceItemRepository;
+        this.feeDueRepository = feeDueRepository;
+        this.feePaymentAllocationRepository = feePaymentAllocationRepository;
         this.studentRepository = studentRepository;
         this.schoolRepository = schoolRepository;
     }
@@ -35,13 +34,12 @@ public class FeePaymentServiceImpl implements FeePaymentService {
     public PaymentResponse processPayment(FeePaymentRequest request) {
         School school = schoolRepository.findById(request.getSchoolId()).orElseThrow(() -> new RuntimeException("School not found"));
         Student student = studentRepository.findById(request.getStudentId()).orElseThrow(() -> new RuntimeException("Student not found"));
-        FeeInvoice invoice = feeInvoiceRepository.findById(request.getInvoiceId()).orElseThrow(() -> new RuntimeException("Invoice not found"));
 
         Payment payment = new Payment();
         payment.setSchool(school);
         payment.setStudent(student);
-        payment.setInvoice(invoice);
         payment.setAmount(request.getTotalAmount());
+        payment.setUnallocatedAmount(request.getTotalAmount());
         payment.setPaymentMode(request.getPaymentMethod());
         payment.setPaymentDate(request.getPaymentDate());
         payment.setStatus("SUCCESS");
@@ -49,34 +47,46 @@ public class FeePaymentServiceImpl implements FeePaymentService {
         
         payment = paymentRepository.save(payment);
 
-        BigDecimal totalPaid = BigDecimal.ZERO;
-        
-        for (Long itemId : request.getFeeItemIds()) {
-            FeeInvoiceItem invoiceItem = feeInvoiceItemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Invoice item not found"));
+        BigDecimal remainingToAllocate = payment.getUnallocatedAmount();
+
+        if (request.getFeeDueIds() != null && !request.getFeeDueIds().isEmpty()) {
+            List<FeeDue> dues = feeDueRepository.findAllById(request.getFeeDueIds());
             
-            BigDecimal amountToPay = invoiceItem.getAmount().subtract(invoiceItem.getPaidAmount());
-            if (amountToPay.compareTo(BigDecimal.ZERO) > 0) {
-                invoiceItem.setPaidAmount(invoiceItem.getPaidAmount().add(amountToPay));
-                feeInvoiceItemRepository.save(invoiceItem);
+            // Sort dues by due date manually or rely on a query. We already fetched by ID so we should sort.
+            dues.sort((d1, d2) -> d1.getDueDate().compareTo(d2.getDueDate()));
+
+            for (FeeDue due : dues) {
+                if (remainingToAllocate.compareTo(BigDecimal.ZERO) <= 0) break;
                 
-                FeePaymentItem pItem = new FeePaymentItem();
-                pItem.setPayment(payment);
-                pItem.setFeeInvoiceItem(invoiceItem);
-                pItem.setAmount(amountToPay);
-                feePaymentItemRepository.save(pItem);
+                if ("PAID".equals(due.getStatus())) continue;
+
+                BigDecimal amountNeeded = due.getAmount().subtract(due.getPaidAmount());
                 
-                totalPaid = totalPaid.add(amountToPay);
+                if (amountNeeded.compareTo(BigDecimal.ZERO) > 0) {
+                    BigDecimal allocated = amountNeeded.min(remainingToAllocate);
+                    
+                    due.setPaidAmount(due.getPaidAmount().add(allocated));
+                    if (due.getPaidAmount().compareTo(due.getAmount()) >= 0) {
+                        due.setStatus("PAID");
+                    } else {
+                        due.setStatus("PARTIAL");
+                    }
+                    feeDueRepository.save(due);
+                    
+                    FeePaymentAllocation allocation = new FeePaymentAllocation();
+                    allocation.setPayment(payment);
+                    allocation.setFeeDue(due);
+                    allocation.setAllocatedAmount(allocated);
+                    feePaymentAllocationRepository.save(allocation);
+                    
+                    remainingToAllocate = remainingToAllocate.subtract(allocated);
+                }
             }
+            
+            payment.setUnallocatedAmount(remainingToAllocate);
+            paymentRepository.save(payment);
         }
 
-        invoice.setPaidAmount(invoice.getPaidAmount().add(totalPaid));
-        if (invoice.getPaidAmount().compareTo(invoice.getTotalAmount()) >= 0) {
-            invoice.setStatus("PAID");
-        } else {
-            invoice.setStatus("PARTIAL");
-        }
-        feeInvoiceRepository.save(invoice);
-
-        return new PaymentResponse(payment.getId(), invoice.getId(), school.getId(), payment.getAmount(), payment.getPaymentMode(), payment.getTransactionId(), payment.getStatus(), payment.getCreatedAt());
+        return new PaymentResponse(payment.getId(), school.getId(), payment.getAmount(), payment.getPaymentMode(), payment.getTransactionId(), payment.getStatus(), payment.getCreatedAt());
     }
 }

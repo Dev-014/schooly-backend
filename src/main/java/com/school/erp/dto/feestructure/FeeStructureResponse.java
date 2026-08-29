@@ -8,6 +8,8 @@ import java.util.List;
 public class FeeStructureResponse {
     private Long id;
     private Long schoolId;
+    private Long classId;
+    private String className;
     private Long academicYearId;
     private String name;
     private String description;

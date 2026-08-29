@@ -135,7 +135,7 @@ public class EntitlementService {
             return true;
         }
         // Core mandatory modules are always granted
-        if ("ATTENDANCE".equalsIgnoreCase(moduleCode) || "COMMUNICATION".equalsIgnoreCase(moduleCode) || "ACADEMICS".equalsIgnoreCase(moduleCode)) {
+        if ("ATTENDANCE".equalsIgnoreCase(moduleCode) || "COMMUNICATION".equalsIgnoreCase(moduleCode) || "ACADEMICS".equalsIgnoreCase(moduleCode) || "STUDENT_INFO".equalsIgnoreCase(moduleCode)) {
             return true;
         }
         EntitlementEvaluationDto eval = evaluateEntitlements(schoolId);

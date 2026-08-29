@@ -1,0 +1,16 @@
+--- src/main/java/com/school/erp/controller/StudentController.java
++++ src/main/java/com/school/erp/controller/StudentController.java
+@@ -23,10 +23,11 @@
+     public ResponseEntity<ApiResponse<List<StudentResponse>>> getAllStudents(
+             @RequestParam(required = false) Long schoolId,
+             @RequestParam(required = false) Long classId,
+-            @RequestParam(required = false) Long sectionId
++            @RequestParam(required = false) Long sectionId,
++            @RequestParam(required = false) String search
+     ) {
+         return ResponseEntity.ok(ApiResponse.success(
+-                studentService.getAllStudents(schoolId, classId, sectionId),
++                studentService.getAllStudents(schoolId, classId, sectionId, search),
+                 "Students fetched successfully"
+         ));
+     }

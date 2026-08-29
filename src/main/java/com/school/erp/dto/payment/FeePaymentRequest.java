@@ -15,11 +15,8 @@ public class FeePaymentRequest {
     
     private Long schoolId;
     
-    @NotNull(message = "invoiceId is required")
-    private Long invoiceId;
-    
-    @NotNull(message = "feeItemIds is required")
-    private List<Long> feeItemIds;
+    @NotNull(message = "feeDueIds is required")
+    private List<Long> feeDueIds;
     
     @NotNull(message = "totalAmount is required")
     @DecimalMin(value = "0.0", inclusive = false, message = "totalAmount must be greater than zero")
@@ -30,5 +27,7 @@ public class FeePaymentRequest {
     @NotNull(message = "paymentMethod is required")
     private String paymentMethod;
     
+    private Long accountId;
+
     private Boolean sendSmsReceipt;
 }

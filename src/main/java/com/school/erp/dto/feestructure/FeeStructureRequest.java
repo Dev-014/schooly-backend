@@ -11,6 +11,10 @@ import java.util.List;
 public class FeeStructureRequest {
     private Long schoolId;
     
+    @NotNull(message = "School class ID is required")
+    private Long classId;
+
+    @NotNull(message = "Academic year is required")
     private Long academicYearId;
     
     @NotBlank(message = "Structure name is required")

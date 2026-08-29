@@ -10,9 +10,11 @@ import com.school.erp.entity.FeeCategory;
 import com.school.erp.entity.FeeStructure;
 import com.school.erp.entity.FeeStructureItem;
 import com.school.erp.entity.School;
+import com.school.erp.entity.SchoolClass;
 import com.school.erp.repository.FeeCategoryRepository;
 import com.school.erp.repository.FeeStructureItemRepository;
 import com.school.erp.repository.FeeStructureRepository;
+import com.school.erp.repository.SchoolClassRepository;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.service.FeeMasterService;
 import org.springframework.stereotype.Service;
@@ -29,15 +31,18 @@ public class FeeMasterServiceImpl implements FeeMasterService {
     private final FeeStructureRepository feeStructureRepository;
     private final FeeStructureItemRepository feeStructureItemRepository;
     private final SchoolRepository schoolRepository;
+    private final SchoolClassRepository schoolClassRepository;
 
     public FeeMasterServiceImpl(FeeCategoryRepository feeCategoryRepository,
                                 FeeStructureRepository feeStructureRepository,
                                 FeeStructureItemRepository feeStructureItemRepository,
-                                SchoolRepository schoolRepository) {
+                                SchoolRepository schoolRepository,
+                                SchoolClassRepository schoolClassRepository) {
         this.feeCategoryRepository = feeCategoryRepository;
         this.feeStructureRepository = feeStructureRepository;
         this.feeStructureItemRepository = feeStructureItemRepository;
         this.schoolRepository = schoolRepository;
+        this.schoolClassRepository = schoolClassRepository;
     }
 
     private School getSchool(Long schoolId) {
@@ -103,8 +108,11 @@ public class FeeMasterServiceImpl implements FeeMasterService {
     @Override
     public FeeStructureResponse createStructure(FeeStructureRequest request) {
         School school = getSchool(request.getSchoolId());
+        SchoolClass schoolClass = schoolClassRepository.findById(request.getClassId()).orElseThrow(() -> new RuntimeException("Class not found"));
+        
         FeeStructure structure = new FeeStructure();
         structure.setSchool(school);
+        structure.setSchoolClass(schoolClass);
         structure.setAcademicYearId(request.getAcademicYearId());
         structure.setName(request.getName());
         structure.setDescription(request.getDescription());
@@ -132,6 +140,9 @@ public class FeeMasterServiceImpl implements FeeMasterService {
         FeeStructure structure = feeStructureRepository.findById(id).orElseThrow(() -> new RuntimeException("Structure not found"));
         if (!structure.getSchool().getId().equals(schoolId)) throw new RuntimeException("Unauthorized access to structure");
 
+        SchoolClass schoolClass = schoolClassRepository.findById(request.getClassId()).orElseThrow(() -> new RuntimeException("Class not found"));
+
+        structure.setSchoolClass(schoolClass);
         structure.setAcademicYearId(request.getAcademicYearId());
         structure.setName(request.getName());
         structure.setDescription(request.getDescription());
@@ -183,6 +194,10 @@ public class FeeMasterServiceImpl implements FeeMasterService {
         FeeStructureResponse res = new FeeStructureResponse();
         res.setId(entity.getId());
         res.setSchoolId(entity.getSchool().getId());
+        if (entity.getSchoolClass() != null) {
+            res.setClassId(entity.getSchoolClass().getId());
+            res.setClassName(entity.getSchoolClass().getName());
+        }
         res.setAcademicYearId(entity.getAcademicYearId());
         res.setName(entity.getName());
         res.setDescription(entity.getDescription());

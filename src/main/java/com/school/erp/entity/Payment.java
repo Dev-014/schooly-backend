@@ -22,16 +22,23 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "invoice_id", nullable = false)
-    private FeeInvoice invoice;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id", nullable = false)
+    private Student student;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "school_id", nullable = false)
     private School school;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    private SchoolAccount account;
+
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
+
+    @Column(name = "unallocated_amount")
+    private BigDecimal unallocatedAmount = BigDecimal.ZERO;
 
     @Column(name = "payment_mode", nullable = false)
     private String paymentMode;
@@ -45,9 +52,7 @@ public class Payment {
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id")
-    private Student student;
+
 
     @Column(name = "receipt_number")
     private String receiptNumber;
@@ -56,5 +61,5 @@ public class Payment {
     private LocalDate paymentDate;
 
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FeePaymentItem> items = new ArrayList<>();
+    private List<FeePaymentAllocation> allocations = new ArrayList<>();
 }

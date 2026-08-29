@@ -12,7 +12,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> findBySchoolId(Long schoolId);
 
-    List<Payment> findBySchoolIdAndInvoiceId(Long schoolId, Long invoiceId);
+
 
     @Query("""
             select coalesce(sum(p.amount), 0)

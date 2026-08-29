@@ -12,6 +12,7 @@ public record StudentResponse(
         LocalDate admissionDate,
         Long schoolId,
         Long classId,
+        String className,
         Long sectionId,
         Long academicYearId,
         String firstName,

@@ -27,6 +27,9 @@ public class AcademicYear {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "display_name", nullable = false)
+    private String displayName;
+
     @Column(name = "start_date")
     private LocalDate startDate;
 

@@ -25,6 +25,10 @@ public class FeeStructure {
     @Column(name = "academic_year_id")
     private Long academicYearId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_id")
+    private SchoolClass schoolClass;
+
     @Column(nullable = false)
     private String name;
 

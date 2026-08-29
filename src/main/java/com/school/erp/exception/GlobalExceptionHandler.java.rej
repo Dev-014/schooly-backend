@@ -1,0 +1,8 @@
+@@ -42,6 +42,7 @@
+ 
+     @ExceptionHandler(ForbiddenException.class)
+     public ResponseEntity<ApiResponse<Void>> handleForbiddenException(ForbiddenException ex) {
++        ex.printStackTrace();
+         return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                 .body(ApiResponse.error(ex.getMessage()));
+     }

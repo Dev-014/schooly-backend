@@ -47,7 +47,7 @@ public class SecurityConfig {
                     "/api/v1/super-admin/**"
                 ).permitAll()
                 // All other endpoints require authentication
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

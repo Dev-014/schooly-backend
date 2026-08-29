@@ -85,6 +85,7 @@ public class AcademicService {
         AcademicYear year = new AcademicYear();
         year.setSchool(school);
         year.setName(request.name());
+        year.setDisplayName(request.displayName());
         year.setStartDate(request.startDate());
         year.setEndDate(request.endDate());
         year.setStatus(request.status() != null ? request.status() : "ACTIVE");
@@ -120,6 +121,7 @@ public class AcademicService {
         AcademicYear target = academicYearRepository.findByIdAndSchoolId(id, effectiveSchoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Academic year not found"));
         if (request.name() != null) target.setName(request.name());
+        if (request.displayName() != null) target.setDisplayName(request.displayName());
         if (request.startDate() != null) target.setStartDate(request.startDate());
         if (request.endDate() != null) target.setEndDate(request.endDate());
         if (request.status() != null) target.setStatus(request.status());
@@ -378,7 +380,7 @@ public class AcademicService {
     }
 
     private AcademicYearResponse toYearResponse(AcademicYear ay) {
-        return new AcademicYearResponse(ay.getId(), ay.getSchool().getId(), ay.getName(), ay.getStartDate(), ay.getEndDate(), ay.getStatus());
+        return new AcademicYearResponse(ay.getId(), ay.getSchool().getId(), ay.getName(), ay.getDisplayName(), ay.getStartDate(), ay.getEndDate(), ay.getStatus());
     }
 
     private SectionResponse toSectionResponse(Section sec) {

@@ -1,0 +1,9 @@
+@@ -8,7 +8,7 @@
+ import java.util.Map;
+ 
+ public interface StudentService {
+-    List<StudentResponse> getAllStudents(Long schoolId, Long classId, Long sectionId);
++    List<StudentResponse> getAllStudents(Long schoolId, Long classId, Long sectionId, String search);
+     StudentStatsResponse getStudentStats(Long schoolId);
+     StudentResponse getStudentById(Long id, Long schoolId);
+     List<StudentResponse> createStudents(Long schoolId, List<StudentRequest> requests);

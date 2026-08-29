@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/fee-payments")
+@RequestMapping("/api/v1/finance/payments")
 public class FeePaymentController {
 
     private final FeePaymentService feePaymentService;
