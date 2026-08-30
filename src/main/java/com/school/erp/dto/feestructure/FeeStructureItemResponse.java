@@ -9,4 +9,5 @@ public class FeeStructureItemResponse {
     private Long feeCategoryId;
     private String feeCategoryName;
     private BigDecimal amount;
+    private Boolean isPartOfCollectionPlan;
 }

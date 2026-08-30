@@ -2,36 +2,37 @@ package com.school.erp.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "fee_installment")
 @Getter
 @Setter
-public class FeeInstallment {
+@NoArgsConstructor
+@Table(name = "collection_plan")
+public class CollectionPlan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "school_id", nullable = false)
     private School school;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "academic_year_id")
-    private AcademicYear academicYear;
 
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "start_date")
-    private LocalDate startDate;
+    private String description;
 
-    @Column(name = "due_date")
-    private LocalDate dueDate;
+    @Column(name = "is_active")
+    private Boolean isActive = true;
+
+    @OneToMany(mappedBy = "collectionPlan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CollectionPlanItem> items = new ArrayList<>();
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;

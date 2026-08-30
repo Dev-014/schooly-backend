@@ -14,6 +14,8 @@ public class FeeStructureResponse {
     private String name;
     private String description;
     private Boolean isActive;
+    private Long collectionPlanId;
+    private String collectionPlanName;
     private LocalDateTime createdAt;
     private List<FeeStructureItemResponse> items;
 }

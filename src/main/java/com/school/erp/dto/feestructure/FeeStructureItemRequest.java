@@ -13,4 +13,6 @@ public class FeeStructureItemRequest {
     @NotNull(message = "Amount is required")
     @Positive(message = "Amount must be greater than zero")
     private BigDecimal amount;
+    
+    private Boolean isPartOfCollectionPlan = true;
 }

@@ -24,6 +24,8 @@ public class FeeStructureRequest {
     
     private Boolean isActive;
     
+    private Long collectionPlanId;
+    
     @NotNull(message = "Items list cannot be null")
     @Valid
     private List<FeeStructureItemRequest> items;

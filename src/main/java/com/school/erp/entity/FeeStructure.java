@@ -40,6 +40,10 @@ public class FeeStructure {
     @OneToMany(mappedBy = "feeStructure", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FeeStructureItem> items = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "collection_plan_id")
+    private CollectionPlan collectionPlan;
+
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
     

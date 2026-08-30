@@ -26,8 +26,8 @@ public class FeeDue {
     @JoinColumn(name = "school_id", nullable = false)
     private School school;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "fee_category_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fee_category_id")
     private FeeCategory feeCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,8 +35,8 @@ public class FeeDue {
     private FeeStructure feeStructure;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fee_installment_id")
-    private FeeInstallment feeInstallment;
+    @JoinColumn(name = "collection_plan_item_id")
+    private CollectionPlanItem collectionPlanItem;
 
     @Column(name = "is_ad_hoc")
     private Boolean isAdHoc = false;

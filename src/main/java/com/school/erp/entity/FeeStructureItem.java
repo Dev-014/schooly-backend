@@ -25,8 +25,11 @@ public class FeeStructureItem {
     @JoinColumn(name = "fee_category_id", nullable = false)
     private FeeCategory feeCategory;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
+
+    @Column(name = "is_part_of_collection_plan")
+    private Boolean isPartOfCollectionPlan = true;
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;

@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/api/v1/finance/payments")
@@ -23,6 +25,16 @@ public class FeePaymentController {
     public ResponseEntity<ApiResponse<PaymentResponse>> processPayment(@Valid @RequestBody FeePaymentRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 ApiResponse.success(feePaymentService.processPayment(request), "Payment processed successfully")
+        );
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<Page<PaymentResponse>>> getPayments(
+            @RequestParam Long schoolId,
+            @RequestParam(required = false) String search,
+            Pageable pageable) {
+        return ResponseEntity.ok(
+                ApiResponse.success(feePaymentService.getPaymentsBySchool(schoolId, search, pageable), "Payments fetched successfully")
         );
     }
 }

@@ -8,9 +8,18 @@ import org.springframework.data.repository.query.Param;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> findBySchoolId(Long schoolId);
+    Page<Payment> findBySchoolId(Long schoolId, Pageable pageable);
+
+    @Query("SELECT p FROM Payment p WHERE p.school.id = :schoolId AND " +
+           "(:search IS NULL OR LOWER(p.student.firstName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           "LOWER(p.student.lastName) LIKE LOWER(CONCAT('%', :search, '%')))")
+    Page<Payment> findBySchoolIdAndSearch(@Param("schoolId") Long schoolId, @Param("search") String search, Pageable pageable);
 
 
 

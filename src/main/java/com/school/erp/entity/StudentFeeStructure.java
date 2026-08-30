@@ -27,6 +27,10 @@ public class StudentFeeStructure {
     @JoinColumn(name = "academic_year_id")
     private AcademicYear academicYear;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "collection_plan_id")
+    private CollectionPlan collectionPlan;
+
     @Column(name = "assigned_at", insertable = false, updatable = false)
     private LocalDateTime assignedAt;
 }

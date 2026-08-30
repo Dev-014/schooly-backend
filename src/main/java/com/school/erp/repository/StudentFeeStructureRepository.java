@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface StudentFeeStructureRepository extends JpaRepository<StudentFeeStructure, Long> {
     List<StudentFeeStructure> findByStudentId(Long studentId);
+    java.util.Optional<StudentFeeStructure> findFirstByStudentIdAndAcademicYearId(Long studentId, Long academicYearId);
 }

@@ -6,11 +6,13 @@ import com.school.erp.dto.feestructure.FeeStructureItemRequest;
 import com.school.erp.dto.feestructure.FeeStructureItemResponse;
 import com.school.erp.dto.feestructure.FeeStructureRequest;
 import com.school.erp.dto.feestructure.FeeStructureResponse;
+import com.school.erp.entity.CollectionPlan;
 import com.school.erp.entity.FeeCategory;
 import com.school.erp.entity.FeeStructure;
 import com.school.erp.entity.FeeStructureItem;
 import com.school.erp.entity.School;
 import com.school.erp.entity.SchoolClass;
+import com.school.erp.repository.CollectionPlanRepository;
 import com.school.erp.repository.FeeCategoryRepository;
 import com.school.erp.repository.FeeStructureItemRepository;
 import com.school.erp.repository.FeeStructureRepository;
@@ -32,17 +34,20 @@ public class FeeMasterServiceImpl implements FeeMasterService {
     private final FeeStructureItemRepository feeStructureItemRepository;
     private final SchoolRepository schoolRepository;
     private final SchoolClassRepository schoolClassRepository;
+    private final CollectionPlanRepository collectionPlanRepository;
 
     public FeeMasterServiceImpl(FeeCategoryRepository feeCategoryRepository,
                                 FeeStructureRepository feeStructureRepository,
                                 FeeStructureItemRepository feeStructureItemRepository,
                                 SchoolRepository schoolRepository,
-                                SchoolClassRepository schoolClassRepository) {
+                                SchoolClassRepository schoolClassRepository,
+                                CollectionPlanRepository collectionPlanRepository) {
         this.feeCategoryRepository = feeCategoryRepository;
         this.feeStructureRepository = feeStructureRepository;
         this.feeStructureItemRepository = feeStructureItemRepository;
         this.schoolRepository = schoolRepository;
         this.schoolClassRepository = schoolClassRepository;
+        this.collectionPlanRepository = collectionPlanRepository;
     }
 
     private School getSchool(Long schoolId) {
@@ -117,6 +122,9 @@ public class FeeMasterServiceImpl implements FeeMasterService {
         structure.setName(request.getName());
         structure.setDescription(request.getDescription());
         structure.setIsActive(request.getIsActive() != null ? request.getIsActive() : true);
+        if (request.getCollectionPlanId() != null) {
+            structure.setCollectionPlan(collectionPlanRepository.findById(request.getCollectionPlanId()).orElse(null));
+        }
         
         FeeStructure savedStructure = feeStructureRepository.save(structure);
 
@@ -128,6 +136,7 @@ public class FeeMasterServiceImpl implements FeeMasterService {
                 item.setFeeStructure(savedStructure);
                 item.setFeeCategory(category);
                 item.setAmount(itemReq.getAmount());
+                item.setIsPartOfCollectionPlan(itemReq.getIsPartOfCollectionPlan() != null ? itemReq.getIsPartOfCollectionPlan() : true);
                 feeStructureItemRepository.save(item);
                 savedStructure.getItems().add(item);
             }
@@ -149,6 +158,11 @@ public class FeeMasterServiceImpl implements FeeMasterService {
         if (request.getIsActive() != null) {
             structure.setIsActive(request.getIsActive());
         }
+        if (request.getCollectionPlanId() != null) {
+            structure.setCollectionPlan(collectionPlanRepository.findById(request.getCollectionPlanId()).orElse(null));
+        } else {
+            structure.setCollectionPlan(null);
+        }
 
         // Simplistic approach: delete existing items and recreate
         feeStructureItemRepository.deleteAll(structure.getItems());
@@ -163,6 +177,7 @@ public class FeeMasterServiceImpl implements FeeMasterService {
                 item.setFeeStructure(structure);
                 item.setFeeCategory(category);
                 item.setAmount(itemReq.getAmount());
+                item.setIsPartOfCollectionPlan(itemReq.getIsPartOfCollectionPlan() != null ? itemReq.getIsPartOfCollectionPlan() : true);
                 feeStructureItemRepository.save(item);
                 structure.getItems().add(item);
             }
@@ -202,6 +217,10 @@ public class FeeMasterServiceImpl implements FeeMasterService {
         res.setName(entity.getName());
         res.setDescription(entity.getDescription());
         res.setIsActive(entity.getIsActive());
+        if (entity.getCollectionPlan() != null) {
+            res.setCollectionPlanId(entity.getCollectionPlan().getId());
+            res.setCollectionPlanName(entity.getCollectionPlan().getName());
+        }
         res.setCreatedAt(entity.getCreatedAt());
         if (entity.getItems() != null) {
             res.setItems(entity.getItems().stream().map(item -> {
@@ -210,6 +229,7 @@ public class FeeMasterServiceImpl implements FeeMasterService {
                 itemRes.setFeeCategoryId(item.getFeeCategory().getId());
                 itemRes.setFeeCategoryName(item.getFeeCategory().getName());
                 itemRes.setAmount(item.getAmount());
+                itemRes.setIsPartOfCollectionPlan(item.getIsPartOfCollectionPlan());
                 return itemRes;
             }).collect(Collectors.toList()));
         }
