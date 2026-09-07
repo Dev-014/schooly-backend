@@ -49,6 +49,9 @@ public class UserAssignment {
     @Column(name = "subject_id")
     private Long subjectId;
 
+    @Column(name = "department_id")
+    private Long departmentId;
+
     @Column(name = "student_id")
     private Long studentId;
 

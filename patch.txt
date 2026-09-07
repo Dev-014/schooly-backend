@@ -1,0 +1,8 @@
+    @PostMapping
+    public ResponseEntity<ApiResponse<AttendanceResponse>> createAttendance(@Valid @RequestBody AttendanceRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(
+                attendanceService.createAttendance(request),
+                "Attendance created successfully"
+        ));
+    }
+}

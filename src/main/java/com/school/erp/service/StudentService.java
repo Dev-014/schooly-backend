@@ -28,6 +28,9 @@ public class StudentService {
     private final StudentHouseRepository studentHouseRepository;
     private final FamilyRepository familyRepository;
     private final FeeDueService feeDueService;
+    private final UserRepository userRepository;
+    private final UserSchoolRoleRepository userSchoolRoleRepository;
+    private final StudentParentRepository studentParentRepository;
 
     public StudentService(
             StudentRepository studentRepository,
@@ -40,7 +43,10 @@ public class StudentService {
             StudentCategoryRepository studentCategoryRepository,
             StudentHouseRepository studentHouseRepository,
             FamilyRepository familyRepository,
-            FeeDueService feeDueService
+            FeeDueService feeDueService,
+            UserRepository userRepository,
+            UserSchoolRoleRepository userSchoolRoleRepository,
+            StudentParentRepository studentParentRepository
     ) {
         this.studentRepository = studentRepository;
         this.schoolRepository = schoolRepository;
@@ -53,6 +59,9 @@ public class StudentService {
         this.studentHouseRepository = studentHouseRepository;
         this.familyRepository = familyRepository;
         this.feeDueService = feeDueService;
+        this.userRepository = userRepository;
+        this.userSchoolRoleRepository = userSchoolRoleRepository;
+        this.studentParentRepository = studentParentRepository;
     }
 
     public List<StudentResponse> getAllStudents(Long schoolId, Long classId, Long sectionId, String search) {
@@ -137,6 +146,8 @@ public class StudentService {
             e.printStackTrace();
         }
 
+        linkParentAccount(student, effectiveSchoolId);
+
         return toResponse(student);
     }
 
@@ -150,8 +161,12 @@ public class StudentService {
         Student student = findStudentByIdAndSchoolId(id, effectiveSchoolId);
         School school = getSchool(effectiveSchoolId);
         SchoolClass schoolClass = getClass(request.classId(), effectiveSchoolId);
-        mapRequestToEntity(student, request, school, schoolClass);
-        return toResponse(studentRepository.save(student));
+        mapRequestToEntity(student, request, student.getSchool(), student.getSchoolClass());
+        Student saved = studentRepository.save(student);
+
+        linkParentAccount(saved, effectiveSchoolId);
+
+        return toResponse(saved);
     }
 
     @Transactional
@@ -380,5 +395,54 @@ public class StudentService {
                 doc.getFileUrl(),
                 doc.getUploadedAt()
         );
+    }
+
+    private void linkParentAccount(Student student, Long schoolId) {
+        if (student.getGuardianPhone() == null || student.getGuardianPhone().isBlank()) {
+            return;
+        }
+        String phone = student.getGuardianPhone().trim();
+        String parentName = student.getGuardianName() != null ? student.getGuardianName() : "Parent of " + student.getName();
+
+        // 1. Create or Find User
+        User user = userRepository.findByPhone(phone).orElse(null);
+        if (user == null) {
+            user = new User();
+            user.setPhone(phone);
+            user.setName(parentName);
+            user.setEmail(student.getGuardianEmail());
+            user.setStatus("ACTIVE");
+            org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder encoder = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+            user.setPasswordHash(encoder.encode("schooly123")); // Default password
+            user = userRepository.save(user);
+        } else {
+            // Overwrite name to match the latest admission (as per user preference)
+            user.setName(parentName);
+            userRepository.save(user);
+        }
+
+        // 2. Assign Role if not present
+        List<UserSchoolRole> userRoles = userSchoolRoleRepository.findByUserIdAndStatusIgnoreCase(user.getId(), "ACTIVE");
+        boolean hasParentRole = userRoles.stream().anyMatch(r -> "PARENT".equalsIgnoreCase(r.getRole().name()) && r.getSchool().getId().equals(schoolId));
+        if (!hasParentRole) {
+            UserSchoolRole usr = new UserSchoolRole();
+            usr.setUser(user);
+            usr.setSchool(student.getSchool());
+            usr.setRole(UserRole.PARENT);
+            usr.setStatus("ACTIVE");
+            userSchoolRoleRepository.save(usr);
+        }
+
+        // 3. Link Student and Parent
+        boolean isLinked = studentParentRepository.findByIdParentUserIdAndStudentId(user.getId(), student.getId()).isPresent();
+        if (!isLinked) {
+            StudentParent link = new StudentParent();
+            link.setId(new StudentParentId(student.getId(), user.getId()));
+            link.setStudent(student);
+            link.setParentUser(user);
+            link.setRelation(student.getGuardianRelation() != null ? student.getGuardianRelation() : "Guardian");
+            link.setPrimary(true); // Default to primary for first admission
+            studentParentRepository.save(link);
+        }
     }
 }

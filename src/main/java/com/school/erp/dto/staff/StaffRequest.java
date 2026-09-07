@@ -28,6 +28,21 @@ public record StaffRequest(
         String designation,
         String photoUrl,
         String phone,
-        String email
+        String email,
+        String biometricId,
+        LocalDate dateOfBirth,
+        String gender,
+        String maritalStatus,
+        String fatherName,
+        String motherName,
+        String emergencyContact,
+        String currentAddress,
+        String permanentAddress,
+        String qualification,
+        String workExperience,
+        String contractType,
+        String workShift,
+        String location,
+        String notes
 ) {
 }

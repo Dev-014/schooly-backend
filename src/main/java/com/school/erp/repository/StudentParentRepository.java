@@ -14,4 +14,6 @@ public interface StudentParentRepository extends JpaRepository<StudentParent, St
 
     @EntityGraph(attributePaths = {"student", "student.school", "student.schoolClass"})
     List<StudentParent> findByIdParentUserId(Long parentUserId);
+
+    java.util.Optional<StudentParent> findByIdParentUserIdAndStudentId(Long parentUserId, Long studentId);
 }

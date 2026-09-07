@@ -60,10 +60,12 @@ public class RoleSyncService {
     private String mapLegacyRoleToNewRoleId(String legacyRole) {
         if (legacyRole == null) return null;
         return switch (legacyRole.toUpperCase()) {
-            case "ADMIN", "SUPERADMIN", "SUPER_ADMIN" -> "role_school_admin";
-            case "TEACHER" -> "role_teacher";
+            case "ADMIN", "SUPERADMIN", "SUPER_ADMIN" -> "role_school_admin_global";
+            case "TEACHER" -> "role_teacher_global";
+            case "STUDENT" -> "role_student_global";
+            case "PARENT" -> "role_parent_global";
             case "STAFF", "ACCOUNTANT" -> "role_accountant"; // Fallback for staff
-            default -> null; // Students/Parents don't map to these roles yet unless specified
+            default -> null;
         };
     }
 }

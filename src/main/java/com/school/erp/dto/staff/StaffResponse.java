@@ -20,6 +20,7 @@ public record StaffResponse(
         String phone,
         String email,
         String assignedClassAndSection,
-        String generatedPassword
+        String generatedPassword,
+        java.util.List<String> roles
 ) {
 }

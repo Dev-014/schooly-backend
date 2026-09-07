@@ -3,6 +3,8 @@ package com.school.erp.dto.auth;
 public record AuthTokenResponse(
         Long userId,
         Long schoolId,
+        Long studentId,
+        String name,
         String role,
         String accessToken,
         String refreshToken,

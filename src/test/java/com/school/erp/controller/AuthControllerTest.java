@@ -119,7 +119,7 @@ class AuthControllerTest {
     @Test
     void selectSchool_shouldReturnTokenPayload() throws Exception {
         when(authService.selectSchool(eq(1L), eq(10L), isNull()))
-                .thenReturn(new AuthTokenResponse(1L, 10L, "TEACHER", "access-token", "refresh-token", java.util.List.of(new PermissionContextDto("ALL", "GLOBAL")),
+                .thenReturn(new AuthTokenResponse(1L, 10L, null, "Teacher Name", "TEACHER", "access-token", "refresh-token", java.util.List.of(new PermissionContextDto("ALL", "GLOBAL")),
                         List.of(new PersonaDto("TEACHER", "TEACHER", RoleArchetype.STAFF)),
                         new PersonaDto("TEACHER", "TEACHER", RoleArchetype.STAFF)));
 

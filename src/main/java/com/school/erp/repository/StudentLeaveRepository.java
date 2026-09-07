@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface StudentLeaveRepository extends JpaRepository<StudentLeave, Long> {
     List<StudentLeave> findBySchoolId(Long schoolId);
     Optional<StudentLeave> findByIdAndSchoolId(Long id, Long schoolId);
+    long countBySchoolIdAndStatus(Long schoolId, String status);
 }

@@ -24,6 +24,7 @@ public class Staff {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "school_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private School school;
 
     @Column(name = "department_id")
@@ -61,4 +62,49 @@ public class Staff {
 
     @Column(name = "email")
     private String email;
+
+    @Column(name = "biometric_id")
+    private String biometricId;
+
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
+
+    @Column(name = "gender")
+    private String gender;
+
+    @Column(name = "marital_status")
+    private String maritalStatus;
+
+    @Column(name = "father_name")
+    private String fatherName;
+
+    @Column(name = "mother_name")
+    private String motherName;
+
+    @Column(name = "emergency_contact")
+    private String emergencyContact;
+
+    @Column(name = "current_address")
+    private String currentAddress;
+
+    @Column(name = "permanent_address")
+    private String permanentAddress;
+
+    @Column(name = "qualification")
+    private String qualification;
+
+    @Column(name = "work_experience")
+    private String workExperience;
+
+    @Column(name = "contract_type")
+    private String contractType;
+
+    @Column(name = "work_shift")
+    private String workShift;
+
+    @Column(name = "location")
+    private String location;
+
+    @Column(name = "notes")
+    private String notes;
 }

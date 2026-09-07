@@ -14,4 +14,5 @@ public interface ClassTeacherAssignmentRepository extends JpaRepository<ClassTea
     Optional<ClassTeacherAssignment> findBySchoolIdAndSectionIdAndAcademicYearIdAndStatus(Long schoolId, Long sectionId, Long academicYearId, String status);
     Optional<ClassTeacherAssignment> findByIdAndSchoolId(Long id, Long schoolId);
     List<ClassTeacherAssignment> findBySchoolIdAndStatus(Long schoolId, String status);
+    List<ClassTeacherAssignment> findByStaffIdAndStatus(Long staffId, String status);
 }

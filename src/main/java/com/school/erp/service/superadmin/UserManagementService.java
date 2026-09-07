@@ -132,7 +132,8 @@ public class UserManagementService {
         user.setPhone(request.getPhone());
         user.setEmail(request.getEmail());
         user.setStatus(request.getStatus() != null ? request.getStatus() : "ACTIVE");
-        user.setPasswordHash("$2a$10$temporaryHashForNow"); // Simplified for now
+        org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder encoder = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+        user.setPasswordHash(encoder.encode("password")); // Default password
         user = userRepository.save(user);
 
         UserSchoolRole usr = new UserSchoolRole();
@@ -236,7 +237,8 @@ public class UserManagementService {
         }
         
         // Normally use BCryptPasswordEncoder
-        user.setPasswordHash("$2a$10$temporaryHashForNow");
+        org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder encoder = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+        user.setPasswordHash(encoder.encode("password")); // Default password
         userRepository.save(user);
 
         UserActivityLog log = new UserActivityLog();
@@ -348,7 +350,8 @@ public class UserManagementService {
         user.setName(request.getRequesterName());
         user.setEmail(request.getRequesterEmail());
         user.setPhone(request.getRequesterPhone());
-        user.setPasswordHash("$2a$10$temporaryHashForNow"); // Simplified for now
+        org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder encoder = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+        user.setPasswordHash(encoder.encode("password")); // Default password
         user.setStatus("ACTIVE");
         user = userRepository.save(user);
 

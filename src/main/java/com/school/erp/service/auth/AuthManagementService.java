@@ -72,7 +72,8 @@ public class AuthManagementService {
 
         User user = resetToken.getUser();
         // Normally you'd hash the new password using PasswordEncoder
-        user.setPasswordHash("$2a$10$temporaryHashForNow");
+        org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder encoder = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+        user.setPasswordHash(encoder.encode(request.getNewPassword()));
         userRepository.save(user);
 
         resetToken.setStatus("USED");
@@ -122,6 +123,8 @@ public class AuthManagementService {
         return new AuthTokenResponse(
                 impersonator.getId(),
                 null,
+                null,   // not a student login
+                impersonator.getName() != null ? impersonator.getName() : "",
                 UserRole.SUPER_ADMIN.name(),
                 accessToken,
                 refreshToken,

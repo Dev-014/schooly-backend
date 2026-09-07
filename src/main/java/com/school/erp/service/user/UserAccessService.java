@@ -78,7 +78,8 @@ public class UserAccessService {
             user.setPhone(username);
         }
         
-        user.setPasswordHash("$2a$10$temporaryHashFor" + tempPassword); // Mocked bcrypt hash
+        org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder encoder = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+        user.setPasswordHash(encoder.encode(tempPassword));
         user = userRepository.save(user);
 
         // Link back to entity (e.g. Student)

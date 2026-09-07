@@ -315,6 +315,32 @@
       "status": "active"
     },
     {
+      "key": "academic.timetable_period.view",
+      "module": "academic",
+      "resource": "timetable_period",
+      "action": "view",
+      "name": "View Timetable Periods",
+      "description": "View timetable periods configuration.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "academic.timetable_period.edit",
+      "module": "academic",
+      "resource": "timetable_period",
+      "action": "edit",
+      "name": "Manage Timetable Periods",
+      "description": "Create, edit, or delete timetable periods.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active"
+    },
+    {
       "key": "academic.class_setup.view",
       "module": "academic",
       "resource": "class_setup",

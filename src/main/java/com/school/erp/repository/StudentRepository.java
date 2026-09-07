@@ -11,6 +11,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @EntityGraph(attributePaths = {"school", "schoolClass"})
     List<Student> findBySchoolId(Long schoolId);
+    
+    Optional<Student> findByAdmissionNo(String admissionNo);
 
     @EntityGraph(attributePaths = {"school", "schoolClass"})
     @org.springframework.data.jpa.repository.Query("SELECT s FROM Student s WHERE s.school.id = :schoolId AND " +

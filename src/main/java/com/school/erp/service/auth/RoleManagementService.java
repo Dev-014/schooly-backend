@@ -75,7 +75,7 @@ public class RoleManagementService {
         List<RolePermission> grantedPerms = rolePermissionRepository.findBySchoolIdAndRoleId(targetSchoolId, roleId);
         
         Map<String, RolePermission> grantedMap = grantedPerms.stream()
-                .collect(Collectors.toMap(rp -> rp.getPermission().getPermissionKey(), rp -> rp));
+                .collect(Collectors.toMap(rp -> rp.getPermission().getPermissionKey(), rp -> rp, (existing, replacement) -> existing));
 
         Map<String, List<PermissionDefinitionDto>> moduleMap = new HashMap<>();
 
@@ -253,67 +253,8 @@ public class RoleManagementService {
 
     @Transactional
     public void seedDefaultRolesForSchool(Long schoolId) {
-        // Create Admin
-        Role adminRole = new Role();
-        adminRole.setId("role_school_admin_" + schoolId);
-        adminRole.setSchoolId(schoolId);
-        adminRole.setName("School Admin");
-        adminRole.setDescription("Full administrative oversight of school operations and setup");
-        adminRole.setSystemRole(true);
-        adminRole.setActive(true);
-        roleRepository.save(adminRole);
-
-        // Create Teacher
-        Role teacherRole = new Role();
-        teacherRole.setId("role_teacher_" + schoolId);
-        teacherRole.setSchoolId(schoolId);
-        teacherRole.setName("Teacher");
-        teacherRole.setDescription("Faculty members with classroom access");
-        teacherRole.setSystemRole(true);
-        teacherRole.setActive(true);
-        roleRepository.save(teacherRole);
-
-        // Create Student
-        Role studentRole = new Role();
-        studentRole.setId("role_student_" + schoolId);
-        studentRole.setSchoolId(schoolId);
-        studentRole.setName("Student");
-        studentRole.setDescription("Student access");
-        studentRole.setSystemRole(true);
-        studentRole.setActive(true);
-        roleRepository.save(studentRole);
-
-        // Map basic permissions for Admin
-        List<String> adminPerms = Arrays.asList(
-            "attendance.attendance_record.view", "attendance.attendance_record.edit",
-            "student.student.view", "student.student.edit",
-            "fees.fee_collection.view", "fees.fee_collection.refund"
-        );
-        for (String permKey : adminPerms) {
-            permissionDefinitionRepository.findByPermissionKey(permKey).ifPresent(def -> {
-                RolePermission rp = new RolePermission();
-                rp.setSchoolId(schoolId);
-                rp.setRole(adminRole);
-                rp.setPermission(def);
-                rp.setScopeType("SCHOOL");
-                rolePermissionRepository.save(rp);
-            });
-        }
-
-        // Map basic permissions for Teacher
-        List<String> teacherPerms = Arrays.asList(
-            "attendance.attendance_record.view", "attendance.attendance_record.edit",
-            "student.student.view"
-        );
-        for (String permKey : teacherPerms) {
-            permissionDefinitionRepository.findByPermissionKey(permKey).ifPresent(def -> {
-                RolePermission rp = new RolePermission();
-                rp.setSchoolId(schoolId);
-                rp.setRole(teacherRole);
-                rp.setPermission(def);
-                rp.setScopeType("CLASS");
-                rolePermissionRepository.save(rp);
-            });
-        }
+        // Implementation emptied. 
+        // We now rely purely on the global System Roles (school_id IS NULL).
+        // RoleSyncService handles assigning these global roles to users automatically.
     }
 }

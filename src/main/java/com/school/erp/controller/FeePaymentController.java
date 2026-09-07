@@ -37,4 +37,14 @@ public class FeePaymentController {
                 ApiResponse.success(feePaymentService.getPaymentsBySchool(schoolId, search, pageable), "Payments fetched successfully")
         );
     }
+
+    @GetMapping("/student/{studentId}")
+    public ResponseEntity<ApiResponse<Page<PaymentResponse>>> getStudentPayments(
+            @PathVariable Long studentId,
+            @RequestParam Long schoolId,
+            Pageable pageable) {
+        return ResponseEntity.ok(
+                ApiResponse.success(feePaymentService.getPaymentsByStudent(studentId, schoolId, pageable), "Student payments fetched successfully")
+        );
+    }
 }

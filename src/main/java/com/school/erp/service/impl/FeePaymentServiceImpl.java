@@ -143,4 +143,34 @@ public class FeePaymentServiceImpl implements FeePaymentService {
             );
         });
     }
+
+    @Override
+    public Page<PaymentResponse> getPaymentsByStudent(Long studentId, Long schoolId, Pageable pageable) {
+        Page<Payment> payments = paymentRepository.findBySchoolIdAndStudentId(schoolId, studentId, pageable);
+
+        return payments.map(payment -> {
+            List<PaymentResponse.PaymentAllocationResponse> allocations = feePaymentAllocationRepository.findByPaymentId(payment.getId())
+                .stream()
+                .map(alloc -> new PaymentResponse.PaymentAllocationResponse(
+                    alloc.getFeeDue().getId(),
+                    alloc.getFeeDue().getTitle(),
+                    alloc.getAllocatedAmount()
+                )).toList();
+
+            return new PaymentResponse(
+                payment.getId(),
+                payment.getSchool().getId(),
+                payment.getAmount(),
+                payment.getPaymentMode(),
+                payment.getTransactionId(),
+                payment.getStatus(),
+                payment.getReceiptNumber(),
+                payment.getStudent().getFirstName() + " " + (payment.getStudent().getLastName() != null ? payment.getStudent().getLastName() : ""),
+                payment.getStudent().getSchoolClass() != null ? payment.getStudent().getSchoolClass().getName() : "",
+                payment.getPaymentDate(),
+                payment.getCreatedAt(),
+                allocations
+            );
+        });
+    }
 }

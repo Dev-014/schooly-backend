@@ -6,14 +6,16 @@ import com.school.erp.entity.AuthSession;
 import com.school.erp.entity.School;
 import com.school.erp.entity.User;
 import com.school.erp.entity.UserRole;
-import com.school.erp.entity.UserSchoolRole;
+import com.school.erp.entity.auth.Role;
+import com.school.erp.entity.auth.RoleArchetype;
+import com.school.erp.entity.auth.UserRoleMapping;
 import com.school.erp.exception.UnauthorizedException;
 import com.school.erp.repository.AuthSessionRepository;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.StudentParentRepository;
 import com.school.erp.repository.StudentRepository;
 import com.school.erp.repository.UserRepository;
-import com.school.erp.repository.UserSchoolRoleRepository;
+import com.school.erp.repository.auth.UserRoleMappingRepository;
 import com.school.erp.security.JwtUtil;
 import com.school.erp.service.auth.AuthorizationService;
 import com.school.erp.service.auth.RoleSyncService;
@@ -36,7 +38,7 @@ import static org.mockito.Mockito.*;
 class AuthServiceTest {
 
     @Mock private UserRepository userRepository;
-    @Mock private UserSchoolRoleRepository userSchoolRoleRepository;
+    @Mock private UserRoleMappingRepository userRoleMappingRepository;
     @Mock private AuthSessionRepository authSessionRepository;
     @Mock private StudentParentRepository studentParentRepository;
     @Mock private SchoolRepository schoolRepository;
@@ -44,6 +46,7 @@ class AuthServiceTest {
     @Mock private JwtUtil jwtUtil;
     @Mock private AuthorizationService authorizationService;
     @Mock private RoleSyncService roleSyncService;
+    @Mock private com.school.erp.repository.auth.RolePermissionRepository rolePermissionRepository;
 
     @InjectMocks
     private AuthService authService;
@@ -51,8 +54,8 @@ class AuthServiceTest {
     @BeforeEach
     void setUp() {
         authService = new AuthService(
-                userRepository, userSchoolRoleRepository, authSessionRepository,
-                studentParentRepository, schoolRepository, studentRepository, jwtUtil, authorizationService, roleSyncService
+                userRepository, userRoleMappingRepository, authSessionRepository,
+                studentParentRepository, schoolRepository, studentRepository, jwtUtil, authorizationService, roleSyncService, rolePermissionRepository
         );
     }
 
@@ -67,14 +70,21 @@ class AuthServiceTest {
         school.setId(10L);
         school.setName("Test School");
         school.setCode("TST");
+        school.setStatus("ACTIVE");
 
-        UserSchoolRole role = new UserSchoolRole();
+        Role roleEntity = new Role();
+        roleEntity.setId("role_school_admin_global");
+        roleEntity.setArchetype(RoleArchetype.SCHOOL_ADMIN);
+
+        UserRoleMapping role = new UserRoleMapping();
         role.setUser(user);
-        role.setSchool(school);
-        role.setRole(UserRole.ADMIN);
+        role.setSchoolId(10L);
+        role.setRole(roleEntity);
+        role.setActive(true);
 
         when(userRepository.findByPhone("9999999999")).thenReturn(Optional.of(user));
-        when(userSchoolRoleRepository.findByUserIdAndStatusIgnoreCase(1L, "ACTIVE")).thenReturn(List.of(role));
+        when(userRoleMappingRepository.findByUserIdAndIsActiveTrue(1L)).thenReturn(List.of(role));
+        when(schoolRepository.findById(10L)).thenReturn(Optional.of(school));
         when(jwtUtil.generateAccessToken(eq(1L), eq(10L), eq(UserRole.ADMIN))).thenReturn("token-access");
         when(jwtUtil.generateRefreshToken(eq(1L), eq(10L), eq(UserRole.ADMIN))).thenReturn("token-refresh");
 
@@ -98,11 +108,16 @@ class AuthServiceTest {
         School school1 = new School(); school1.setId(10L); school1.setCode("S1"); school1.setName("School 1");
         School school2 = new School(); school2.setId(20L); school2.setCode("S2"); school2.setName("School 2");
 
-        UserSchoolRole role1 = new UserSchoolRole(); role1.setUser(user); role1.setSchool(school1); role1.setRole(UserRole.TEACHER);
-        UserSchoolRole role2 = new UserSchoolRole(); role2.setUser(user); role2.setSchool(school2); role2.setRole(UserRole.ADMIN);
+        Role roleTeacher = new Role(); roleTeacher.setArchetype(RoleArchetype.STAFF);
+        Role roleAdmin = new Role(); roleAdmin.setArchetype(RoleArchetype.SCHOOL_ADMIN);
+
+        UserRoleMapping role1 = new UserRoleMapping(); role1.setUser(user); role1.setSchoolId(10L); role1.setRole(roleTeacher); role1.setActive(true);
+        UserRoleMapping role2 = new UserRoleMapping(); role2.setUser(user); role2.setSchoolId(20L); role2.setRole(roleAdmin); role2.setActive(true);
 
         when(userRepository.findByPhone("5555555555")).thenReturn(Optional.of(user));
-        when(userSchoolRoleRepository.findByUserIdAndStatusIgnoreCase(2L, "ACTIVE")).thenReturn(List.of(role1, role2));
+        when(userRoleMappingRepository.findByUserIdAndIsActiveTrue(2L)).thenReturn(List.of(role1, role2));
+        when(schoolRepository.findById(10L)).thenReturn(Optional.of(school1));
+        when(schoolRepository.findById(20L)).thenReturn(Optional.of(school2));
 
         OtpVerifyRequest request = new OtpVerifyRequest("5555555555", "1111");
         LoginVerifyResponse response = authService.verifyOtp(request, null);
@@ -131,14 +146,18 @@ class AuthServiceTest {
         school.setName("Greenwood Academy");
         school.setCode("GWA");
 
-        UserSchoolRole role = new UserSchoolRole();
+        Role roleEntity = new Role();
+        roleEntity.setArchetype(RoleArchetype.SCHOOL_ADMIN);
+
+        UserRoleMapping role = new UserRoleMapping();
         role.setUser(user);
-        role.setSchool(school);
-        role.setRole(UserRole.ADMIN);
-        role.setStatus("ACTIVE");
+        role.setSchoolId(10L);
+        role.setRole(roleEntity);
+        role.setActive(true);
 
         when(userRepository.findByPhone("9999999999")).thenReturn(Optional.of(user));
-        when(userSchoolRoleRepository.findByUserIdAndStatusIgnoreCase(1L, "ACTIVE")).thenReturn(List.of(role));
+        when(userRoleMappingRepository.findByUserIdAndIsActiveTrue(1L)).thenReturn(List.of(role));
+        when(schoolRepository.findById(10L)).thenReturn(Optional.of(school));
 
         var response = authService.loginOrSignup("9999999999");
         assertNotNull(response);
@@ -157,7 +176,7 @@ class AuthServiceTest {
 
         when(userRepository.findByPhone("1234567890")).thenReturn(Optional.empty());
         when(userRepository.save(any(User.class))).thenReturn(newUser);
-        when(userSchoolRoleRepository.findByUserIdAndStatusIgnoreCase(100L, "ACTIVE")).thenReturn(List.of());
+        when(userRoleMappingRepository.findByUserIdAndIsActiveTrue(100L)).thenReturn(List.of());
 
         var response = authService.loginOrSignup("1234567890");
         assertNotNull(response);

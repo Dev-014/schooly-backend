@@ -65,6 +65,20 @@ public class AuthController {
         ));
     }
 
+    @PostMapping("/login/student-credentials")
+    @Operation(summary = "Student Login", description = "Authenticates a student using their admission number and password. Returns JWT tokens directly.")
+    public ResponseEntity<ApiResponse<AuthTokenResponse>> loginStudentCredentials(
+            @Valid @RequestBody StudentLoginRequest request,
+            HttpServletRequest httpServletRequest
+    ) {
+        String userAgent = httpServletRequest.getHeader("User-Agent");
+        String deviceInfo = userAgent == null ? null : "{\"userAgent\":\"" + userAgent.replace("\"", "\\\"") + "\"}";
+        return ResponseEntity.ok(ApiResponse.success(
+                authService.loginStudentWithCredentials(request, deviceInfo),
+                "Student logged in successfully"
+        ));
+    }
+
     @PostMapping("/verify-otp")
     public ResponseEntity<ApiResponse<LoginVerifyResponse>> verifyOtp(
             @Valid @RequestBody OtpVerifyRequest request,

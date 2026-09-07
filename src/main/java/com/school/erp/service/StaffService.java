@@ -71,6 +71,18 @@ public class StaffService {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
         List<Staff> staffList = staffRepository.findBySchoolId(effectiveSchoolId);
         
+        List<Long> userIds = staffList.stream()
+                .map(Staff::getUserId)
+                .filter(java.util.Objects::nonNull)
+                .toList();
+
+        Map<Long, List<String>> rolesMap = userRoleMappingRepository.findBySchoolIdAndUserIdInAndIsActiveTrue(effectiveSchoolId, userIds)
+                .stream()
+                .collect(Collectors.groupingBy(
+                        mapping -> mapping.getUser().getId(),
+                        Collectors.mapping(mapping -> mapping.getRole().getName(), Collectors.toList())
+                ));
+        
         Map<Long, String> assignmentMap = classTeacherAssignmentRepository.findBySchoolIdAndStatus(effectiveSchoolId, "ACTIVE").stream()
                 .collect(Collectors.toMap(
                         a -> a.getStaff().getId(),
@@ -85,7 +97,7 @@ public class StaffService {
                 ));
 
         return staffList.stream()
-                .map(staff -> toResponse(staff, assignmentMap.get(staff.getId())))
+                .map(staff -> toResponse(staff, assignmentMap.get(staff.getId()), staff.getUserId() != null ? rolesMap.getOrDefault(staff.getUserId(), List.of()) : List.of()))
                 .toList();
     }
 
@@ -115,7 +127,15 @@ public class StaffService {
                 })
                 .findFirst()
                 .orElse(null);
-        return toResponse(staff, assignment);
+                
+        List<String> roles = List.of();
+        if (staff.getUserId() != null) {
+            roles = userRoleMappingRepository.findBySchoolIdAndUserIdAndIsActiveTrue(effectiveSchoolId, staff.getUserId())
+                    .stream()
+                    .map(mapping -> mapping.getRole().getName())
+                    .toList();
+        }
+        return toResponse(staff, assignment, roles);
     }
 
     @Transactional
@@ -189,7 +209,16 @@ public class StaffService {
         staff.setUserId(userIdToUse);
         
         Staff savedStaff = staffRepository.save(staff);
-        StaffResponse response = toResponse(savedStaff, null);
+        
+        List<String> roles = List.of();
+        if (savedStaff.getUserId() != null) {
+            roles = userRoleMappingRepository.findBySchoolIdAndUserIdAndIsActiveTrue(effectiveSchoolId, savedStaff.getUserId())
+                    .stream()
+                    .map(mapping -> mapping.getRole().getName())
+                    .toList();
+        }
+        
+        StaffResponse response = toResponse(savedStaff, null, roles);
         
         if (generatedPassword != null) {
             return new StaffResponse(
@@ -198,7 +227,7 @@ public class StaffService {
                     response.status(), response.firstName(), response.lastName(),
                     response.department(), response.designation(), response.photoUrl(),
                     response.phone(), response.email(), response.assignedClassAndSection(),
-                    generatedPassword
+                    generatedPassword, response.roles()
             );
         }
         
@@ -225,7 +254,15 @@ public class StaffService {
                 .findFirst()
                 .orElse(null);
                 
-        return toResponse(staffRepository.save(staff), assignment);
+        Staff savedStaff = staffRepository.save(staff);
+        List<String> roles = List.of();
+        if (savedStaff.getUserId() != null) {
+            roles = userRoleMappingRepository.findBySchoolIdAndUserIdAndIsActiveTrue(effectiveSchoolId, savedStaff.getUserId())
+                    .stream()
+                    .map(mapping -> mapping.getRole().getName())
+                    .toList();
+        }
+        return toResponse(savedStaff, assignment, roles);
     }
 
     @Transactional
@@ -264,10 +301,17 @@ public class StaffService {
     }
 
     private StaffResponse toResponse(Staff staff) {
-        return toResponse(staff, null);
+        List<String> roles = List.of();
+        if (staff.getUserId() != null) {
+            roles = userRoleMappingRepository.findBySchoolIdAndUserIdAndIsActiveTrue(staff.getSchool().getId(), staff.getUserId())
+                    .stream()
+                    .map(mapping -> mapping.getRole().getName())
+                    .toList();
+        }
+        return toResponse(staff, null, roles);
     }
 
-    private StaffResponse toResponse(Staff staff, String assignedClassAndSection) {
+    private StaffResponse toResponse(Staff staff, String assignedClassAndSection, List<String> roles) {
         String firstName = staff.getFirstName();
         String lastName = staff.getLastName();
         String email = staff.getEmail();
@@ -303,7 +347,8 @@ public class StaffService {
                 phone,
                 email,
                 assignedClassAndSection,
-                null
+                null,
+                roles != null ? roles : List.of()
         );
     }
 }

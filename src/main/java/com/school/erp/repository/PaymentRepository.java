@@ -15,6 +15,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> findBySchoolId(Long schoolId);
     Page<Payment> findBySchoolId(Long schoolId, Pageable pageable);
+    Page<Payment> findBySchoolIdAndStudentId(Long schoolId, Long studentId, Pageable pageable);
 
     @Query("SELECT p FROM Payment p WHERE p.school.id = :schoolId AND " +
            "(:search IS NULL OR LOWER(p.student.firstName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +

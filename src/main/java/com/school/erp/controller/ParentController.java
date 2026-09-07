@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/parent")
+@RequestMapping("/api/v1/parent")
 public class ParentController {
 
     private final ParentService parentService;

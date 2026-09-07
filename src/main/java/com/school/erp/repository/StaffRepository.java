@@ -12,5 +12,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 
     Optional<Staff> findByIdAndSchoolId(Long id, Long schoolId);
 
+    Optional<Staff> findByUserId(Long userId);
+
     long countBySchoolId(Long schoolId);
 }

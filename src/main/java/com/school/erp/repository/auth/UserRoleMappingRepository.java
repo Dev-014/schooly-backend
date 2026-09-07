@@ -10,4 +10,6 @@ import java.util.List;
 public interface UserRoleMappingRepository extends JpaRepository<UserRoleMapping, Long> {
     List<UserRoleMapping> findBySchoolIdAndUserIdAndIsActiveTrue(Long schoolId, Long userId);
     List<UserRoleMapping> findBySchoolIdAndRoleIdAndIsActiveTrue(Long schoolId, String roleId);
+    List<UserRoleMapping> findByUserIdAndIsActiveTrue(Long userId);
+    List<UserRoleMapping> findBySchoolIdAndUserIdInAndIsActiveTrue(Long schoolId, List<Long> userIds);
 }

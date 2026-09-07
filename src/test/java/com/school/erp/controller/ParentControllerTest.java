@@ -47,7 +47,7 @@ class ParentControllerTest {
         when(parentService.getChildren(7L, 10L))
                 .thenReturn(List.of(new ParentChildResponse(21L, "Alex", "ADM-21", 10L, 3L)));
 
-        mockMvc.perform(get("/parent/children"))
+        mockMvc.perform(get("/api/v1/parent/children"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data[0].studentId").value(21))
