@@ -15,6 +15,12 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findByAdmissionNo(String admissionNo);
 
     @EntityGraph(attributePaths = {"school", "schoolClass"})
+    Optional<Student> findBySchoolIdAndAdmissionNo(Long schoolId, String admissionNo);
+
+    @EntityGraph(attributePaths = {"school", "schoolClass"})
+    List<Student> findAllByAdmissionNo(String admissionNo);
+
+    @EntityGraph(attributePaths = {"school", "schoolClass"})
     @org.springframework.data.jpa.repository.Query("SELECT s FROM Student s WHERE s.school.id = :schoolId AND " +
            "(CAST(:classId AS Long) IS NULL OR s.schoolClass.id = :classId) AND " +
            "(:search = '' OR LOWER(s.firstName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +

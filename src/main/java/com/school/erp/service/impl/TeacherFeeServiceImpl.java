@@ -11,6 +11,7 @@ import com.school.erp.entity.Student;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.ClassTeacherAssignmentRepository;
 import com.school.erp.repository.FeeReminderRepository;
+import com.school.erp.repository.FeeDueRepository;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.StaffRepository;
 import com.school.erp.repository.StudentRepository;
@@ -47,6 +48,7 @@ public class TeacherFeeServiceImpl implements TeacherFeeService {
     private final UserAssignmentRepository userAssignmentRepository;
     private final SchoolClassRepository schoolClassRepository;
     private final SectionRepository sectionRepository;
+    private final FeeDueRepository feeDueRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -109,12 +111,18 @@ public class TeacherFeeServiceImpl implements TeacherFeeService {
         for (Long studentId : request.getStudentIds()) {
             Student student = studentRepository.findByIdAndSchoolId(studentId, schoolId)
                     .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+
+            List<com.school.erp.entity.FeeDue> dues = feeDueRepository.findByStudentIdAndSchoolIdAndStatusInOrderByDueDateAsc(
+                    studentId, schoolId, List.of("UNPAID", "PARTIALLY_PAID", "OVERDUE"));
+            BigDecimal totalPending = dues.stream()
+                    .map(d -> d.getAmount().subtract(d.getPaidAmount() != null ? d.getPaidAmount() : BigDecimal.ZERO))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
             
             FeeReminder reminder = new FeeReminder();
             reminder.setSchool(school);
             reminder.setStaff(staff);
             reminder.setStudent(student);
-            reminder.setFeeAmount(BigDecimal.ZERO); // For simplicity, actual amount could be calculated
+            reminder.setFeeAmount(totalPending);
             reminder.setMethod(request.getMethod());
             reminder.setStatus("SENT");
             reminder.setSentAt(LocalDateTime.now());
@@ -137,15 +145,29 @@ public class TeacherFeeServiceImpl implements TeacherFeeService {
             reminders = feeReminderRepository.findBySchoolId(schoolId, pageable);
         }
 
-        return reminders.map(r -> FeeReminderResponse.builder()
+        return reminders.map(r -> {
+            Student student = r.getStudent();
+            String studentName = "";
+            if (student != null) {
+                if (student.getFirstName() != null) {
+                    studentName = student.getFirstName() + (student.getLastName() != null && !student.getLastName().isBlank() ? " " + student.getLastName() : "");
+                } else if (student.getName() != null && !student.getName().isBlank()) {
+                    studentName = student.getName();
+                } else {
+                    studentName = "Student " + (student.getAdmissionNo() != null ? student.getAdmissionNo() : student.getId());
+                }
+            }
+
+            return FeeReminderResponse.builder()
                 .id(r.getId())
-                .studentId(r.getStudent().getId())
-                .studentName(r.getStudent().getFirstName() + " " + r.getStudent().getLastName())
-                .parentName(r.getStudent().getGuardianName() != null ? r.getStudent().getGuardianName() : "Guardian")
+                .studentId(student != null ? student.getId() : null)
+                .studentName(studentName)
+                .parentName(student != null && student.getGuardianName() != null ? student.getGuardianName() : "Guardian")
                 .feeAmount(r.getFeeAmount())
                 .method(r.getMethod())
                 .status(r.getStatus())
                 .sentAt(r.getSentAt())
-                .build());
+                .build();
+        });
     }
 }

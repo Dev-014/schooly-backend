@@ -92,8 +92,7 @@ public class HrStaffService {
         if (staff.getUserId() == null) {
             return List.of();
         }
-        return userAssignmentRepository.findAll().stream()
-                .filter(ua -> ua.getUser().getId().equals(staff.getUserId()) && ua.getSchoolId().equals(schoolId) && ua.isActive())
+        return userAssignmentRepository.findBySchoolIdAndUserIdAndIsActiveTrue(schoolId, staff.getUserId()).stream()
                 .map(this::toAssignmentResponse)
                 .collect(Collectors.toList());
     }

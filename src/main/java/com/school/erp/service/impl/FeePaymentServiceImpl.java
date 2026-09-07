@@ -157,6 +157,18 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                     alloc.getAllocatedAmount()
                 )).toList();
 
+            Student student = payment.getStudent();
+            String studentName = "";
+            if (student != null) {
+                if (student.getFirstName() != null) {
+                    studentName = student.getFirstName() + (student.getLastName() != null && !student.getLastName().isBlank() ? " " + student.getLastName() : "");
+                } else if (student.getName() != null && !student.getName().isBlank()) {
+                    studentName = student.getName();
+                } else {
+                    studentName = "Student " + (student.getAdmissionNo() != null ? student.getAdmissionNo() : student.getId());
+                }
+            }
+
             return new PaymentResponse(
                 payment.getId(),
                 payment.getSchool().getId(),
@@ -165,8 +177,8 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                 payment.getTransactionId(),
                 payment.getStatus(),
                 payment.getReceiptNumber(),
-                payment.getStudent().getFirstName() + " " + (payment.getStudent().getLastName() != null ? payment.getStudent().getLastName() : ""),
-                payment.getStudent().getSchoolClass() != null ? payment.getStudent().getSchoolClass().getName() : "",
+                studentName,
+                (student != null && student.getSchoolClass() != null) ? student.getSchoolClass().getName() : "",
                 payment.getPaymentDate(),
                 payment.getCreatedAt(),
                 allocations

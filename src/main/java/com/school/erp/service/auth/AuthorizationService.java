@@ -21,7 +21,7 @@ public class AuthorizationService {
     private final UserRoleMappingRepository userRoleMappingRepository;
     private final RolePermissionRepository rolePermissionRepository;
     private final UserAssignmentRepository userAssignmentRepository;
-    private final com.school.erp.repository.SchoolModuleAccessRepository moduleAccessRepository;
+    private final com.school.erp.service.EntitlementService entitlementService;
 
     /**
      * Checks if a user has a specific permission within a school context.
@@ -42,13 +42,19 @@ public class AuthorizationService {
      */
     @Transactional(readOnly = true)
     public List<RolePermission> getEffectivePermissions(Long schoolId, Long userId) {
+        if (schoolId == null || userId == null) {
+            return List.of();
+        }
         List<RolePermission> effectivePermissions = new ArrayList<>();
         List<UserRoleMapping> roleMappings = userRoleMappingRepository
                 .findBySchoolIdAndUserIdAndIsActiveTrue(schoolId, userId);
 
-        java.util.Set<String> enabledModules = moduleAccessRepository.findBySchoolId(schoolId).stream()
-                .map(a -> a.getModule().getCode())
-                .collect(java.util.stream.Collectors.toSet());
+        java.util.Set<String> enabledModules;
+        try {
+            enabledModules = entitlementService.evaluateEntitlements(schoolId).getEnabledModules();
+        } catch (Exception e) {
+            enabledModules = java.util.Collections.emptySet();
+        }
 
         for (UserRoleMapping mapping : roleMappings) {
             Long targetSchoolId = mapping.getRole().isSystemRole() ? null : schoolId;

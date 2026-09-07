@@ -7,6 +7,8 @@ public record StudentLoginRequest(
         String admissionNo,
 
         @NotBlank(message = "Password is required")
-        String password
+        String password,
+
+        String schoolCode
 ) {
 }
