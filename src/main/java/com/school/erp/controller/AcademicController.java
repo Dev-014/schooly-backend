@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping({"/api/academics", "/api/v1/admin/academics"})
+@RequestMapping({"/api/academics", "/api/v1/academics", "/api/v1/admin/academics"})
 public class AcademicController {
 
     private final AcademicService academicService;

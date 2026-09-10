@@ -58,7 +58,7 @@ class AcademicControllerTimetableTest {
                         .param("academicYearId", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data[0].id").value(1L))
                 .andExpect(jsonPath("$.data[0].dayOfWeek").value("MONDAY"));
     }
@@ -83,7 +83,7 @@ class AcademicControllerTimetableTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data[0].id").value(1L));
     }
 
@@ -92,6 +92,6 @@ class AcademicControllerTimetableTest {
         mockMvc.perform(delete("/api/v1/academics/timetable-entries/1")
                         .param("schoolId", "1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true));
+                .andExpect(jsonPath("$.status").value("success"));
     }
 }

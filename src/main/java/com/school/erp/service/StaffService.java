@@ -177,21 +177,9 @@ public class StaffService {
         final Long finalResolvedUserId = userIdToUse;
         User user = userRepository.findById(finalResolvedUserId).orElseThrow(() -> new IllegalStateException("User not found"));
 
-        // Assign legacy School Role
-        UserRole legacyRoleToAssign = request.designation() != null && request.designation().toLowerCase().contains("teacher") ? UserRole.TEACHER : UserRole.STAFF;
-        boolean legacyRoleExists = userSchoolRoleRepository.existsByUserIdAndSchoolIdAndRoleAndStatusIgnoreCase(
-                finalResolvedUserId, effectiveSchoolId, legacyRoleToAssign, "ACTIVE");
-        if (!legacyRoleExists) {
-            UserSchoolRole usr = new UserSchoolRole();
-            usr.setUser(user);
-            usr.setSchool(school);
-            usr.setRole(legacyRoleToAssign);
-            usr.setStatus("ACTIVE");
-            userSchoolRoleRepository.save(usr);
-        }
-
         // Assign new RBAC Role explicitly if provided
-        if (request.roleId() != null && !request.roleId().isBlank()) {
+        boolean explicitRoleProvided = request.roleId() != null && !request.roleId().isBlank();
+        if (explicitRoleProvided) {
             Role role = roleRepository.findById(request.roleId()).orElse(null);
             if (role != null) {
                 boolean mappingExists = userRoleMappingRepository.findBySchoolIdAndUserIdAndIsActiveTrue(effectiveSchoolId, finalResolvedUserId)
@@ -206,6 +194,19 @@ public class StaffService {
                 }
             }
         } else {
+            // Assign legacy School Role ONLY if no specific role is requested
+            UserRole legacyRoleToAssign = request.designation() != null && request.designation().toLowerCase().contains("teacher") ? UserRole.TEACHER : UserRole.STAFF;
+            boolean legacyRoleExists = userSchoolRoleRepository.existsByUserIdAndSchoolIdAndRoleAndStatusIgnoreCase(
+                    finalResolvedUserId, effectiveSchoolId, legacyRoleToAssign, "ACTIVE");
+            if (!legacyRoleExists) {
+                UserSchoolRole usr = new UserSchoolRole();
+                usr.setUser(user);
+                usr.setSchool(school);
+                usr.setRole(legacyRoleToAssign);
+                usr.setStatus("ACTIVE");
+                userSchoolRoleRepository.save(usr);
+            }
+
             // Fallback to auto-syncing if no role explicitly provided
             userSchoolRoleRepository.findByUserIdAndStatusIgnoreCase(finalResolvedUserId, "ACTIVE").stream()
                     .filter(usr -> usr.getSchool().getId().equals(effectiveSchoolId))

@@ -1,31 +1,40 @@
 -- V91__fix_auth_and_permissions.sql
--- Comprehensive fixes for authorization mismatches
 
--- 1. Fix the accidental mapping of SUPER_ADMIN to role_school_admin_global from V89
-UPDATE user_role_mappings 
-SET role_id = 'role_super_admin_global' 
-WHERE user_id IN (
-    SELECT user_id 
-    FROM user_school_roles 
-    WHERE role = 'SUPER_ADMIN'
-);
-
--- 3. Add missing DASHBOARD module to platform_modules
-INSERT INTO platform_modules (code, name, description, is_default)
-VALUES ('DASHBOARD', 'Dashboard', 'Dashboard and Analytics', true)
-ON CONFLICT (code) DO NOTHING;
-
--- Assign DASHBOARD to all existing schools
-INSERT INTO school_module_access (school_id, module_id, enabled)
-SELECT s.id, m.id, true
-FROM schools s
-CROSS JOIN platform_modules m
-WHERE m.code = 'DASHBOARD'
-ON CONFLICT DO NOTHING;
-
--- 4. Empty permissions for role_teacher_global (base staff should have no permissions by default)
-DELETE FROM role_permissions WHERE role_id = 'role_teacher_global';
-
--- 2. Align mismatched permission module_keys with platform_modules table
+-- 1. Align legacy module_key values in permission_definitions with actual platform_modules
 UPDATE permission_definitions SET module_key = 'ACADEMICS' WHERE module_key = 'ACADEMIC';
 UPDATE permission_definitions SET module_key = 'STAFF_HR' WHERE module_key = 'STAFF';
+
+-- 2. Ensure DASHBOARD module exists in platform_modules
+INSERT INTO platform_modules (code, name, is_default, status, category)
+SELECT 'DASHBOARD', 'Dashboard', true, 'ACTIVE', 'CORE'
+WHERE NOT EXISTS (SELECT 1 FROM platform_modules WHERE code = 'DASHBOARD');
+
+-- 3. Assign DASHBOARD module to all existing schools in school_module_access
+INSERT INTO school_module_access (school_id, module_id, enabled, enabled_at)
+SELECT s.id, pm.id, true, CURRENT_TIMESTAMP
+FROM schools s
+CROSS JOIN platform_modules pm
+WHERE pm.code = 'DASHBOARD'
+  AND NOT EXISTS (
+      SELECT 1 FROM school_module_access sma 
+      WHERE sma.school_id = s.id AND sma.module_id = pm.id
+  );
+
+
+-- 4. Clean up legacy role inheritance: If a user has a custom role (UUID format, not starting with 'role_'),
+-- they should not also have the generic 'role_teacher_global' or legacy 'TEACHER' mapping overriding their custom permissions.
+DELETE FROM user_role_mappings 
+WHERE role_id = 'role_teacher_global' 
+AND user_id IN (
+    SELECT m.user_id 
+    FROM user_role_mappings m 
+    WHERE m.role_id NOT LIKE 'role_%'
+);
+
+DELETE FROM user_school_roles 
+WHERE role = 'TEACHER' 
+AND user_id IN (
+    SELECT m.user_id 
+    FROM user_role_mappings m 
+    WHERE m.role_id NOT LIKE 'role_%'
+);
