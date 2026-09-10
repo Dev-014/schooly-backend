@@ -1,0 +1,3172 @@
+{
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\SchoolErpBackendApplication.java": {
+    "mtime": 1788775111.3241,
+    "ast_hash": "ddfa4b0fb5840875755c27737d90a7aa",
+    "semantic_hash": "ddfa4b0fb5840875755c27737d90a7aa"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\api\\ApiResponse.java": {
+    "mtime": 1788775111.3264875,
+    "ast_hash": "3dc1c024f511b00db19224e80e62b3d2",
+    "semantic_hash": "3dc1c024f511b00db19224e80e62b3d2"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\api\\PaginationMeta.java": {
+    "mtime": 1788775111.3314357,
+    "ast_hash": "8d45bc1efbb0ee7a965e55b1e6d06810",
+    "semantic_hash": "8d45bc1efbb0ee7a965e55b1e6d06810"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\config\\CorsConfig.java": {
+    "mtime": 1788775111.3361785,
+    "ast_hash": "122e6925d3855113bccecfb48a5125a3",
+    "semantic_hash": "122e6925d3855113bccecfb48a5125a3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\config\\JacksonConfig.java": {
+    "mtime": 1788775111.3374436,
+    "ast_hash": "27ee0b3e79696ddc7e9abd292c314255",
+    "semantic_hash": "27ee0b3e79696ddc7e9abd292c314255"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\config\\SalesCrmDataInitializer.java": {
+    "mtime": 1788775111.345163,
+    "ast_hash": "460e4d5cacf183385fb93613d550d720",
+    "semantic_hash": "460e4d5cacf183385fb93613d550d720"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\config\\SecurityConfig.java": {
+    "mtime": 1788775111.3474772,
+    "ast_hash": "66dd07275a0c264adc000b981ccbbdf4",
+    "semantic_hash": "66dd07275a0c264adc000b981ccbbdf4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\config\\SuperAdminSampleDataInitializer.java": {
+    "mtime": 1788775111.3495777,
+    "ast_hash": "118c4d15ef35c7cfeb37b7d9cf1b2c74",
+    "semantic_hash": "118c4d15ef35c7cfeb37b7d9cf1b2c74"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\config\\WebMvcConfig.java": {
+    "mtime": 1788775111.350596,
+    "ast_hash": "1a779b83b5eda0f8a0645a8b36b74fe8",
+    "semantic_hash": "1a779b83b5eda0f8a0645a8b36b74fe8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\AcademicController.java": {
+    "mtime": 1788775111.3527422,
+    "ast_hash": "361ccd10450fc5731dcb8e18290a3da9",
+    "semantic_hash": "361ccd10450fc5731dcb8e18290a3da9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\AttendanceController.java": {
+    "mtime": 1788775111.35418,
+    "ast_hash": "39352b89dadb5f532aa3333b8596f583",
+    "semantic_hash": "39352b89dadb5f532aa3333b8596f583"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\AuthController.java": {
+    "mtime": 1788775111.3551967,
+    "ast_hash": "44774a85aa5b8285bb190dedc1901672",
+    "semantic_hash": "44774a85aa5b8285bb190dedc1901672"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\CatalogController.java": {
+    "mtime": 1788775111.3572388,
+    "ast_hash": "bb424423585bbc24ccd3c113fb9e14aa",
+    "semantic_hash": "bb424423585bbc24ccd3c113fb9e14aa"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\CollectionPlanController.java": {
+    "mtime": 1788775111.3587663,
+    "ast_hash": "05375b8edc5309fb405749bfe48aea6a",
+    "semantic_hash": "05375b8edc5309fb405749bfe48aea6a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\DashboardController.java": {
+    "mtime": 1788775111.3597622,
+    "ast_hash": "8564997a302c54ab7229db836137bc3e",
+    "semantic_hash": "8564997a302c54ab7229db836137bc3e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\DataImportController.java": {
+    "mtime": 1788775111.3607943,
+    "ast_hash": "89419a58d9a7c765167ee4a6fffb055a",
+    "semantic_hash": "89419a58d9a7c765167ee4a6fffb055a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\EntitlementController.java": {
+    "mtime": 1788775111.3618078,
+    "ast_hash": "485276393d1b1230943b79cb75781965",
+    "semantic_hash": "485276393d1b1230943b79cb75781965"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\FamilyController.java": {
+    "mtime": 1788775111.3628109,
+    "ast_hash": "f3fc0032c818b5bfe2ba005e6da9695c",
+    "semantic_hash": "f3fc0032c818b5bfe2ba005e6da9695c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\FeeDueController.java": {
+    "mtime": 1788775111.3638108,
+    "ast_hash": "fd6e9c6278037ffa958be8742b2f640e",
+    "semantic_hash": "fd6e9c6278037ffa958be8742b2f640e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\FeeGenerationController.java": {
+    "mtime": 1788775111.364813,
+    "ast_hash": "7e71514d6b5f21ddc88a86a7fdde8415",
+    "semantic_hash": "7e71514d6b5f21ddc88a86a7fdde8415"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\FeeMasterController.java": {
+    "mtime": 1788775111.3658073,
+    "ast_hash": "f186e255f046b32f612ea989c0f805da",
+    "semantic_hash": "f186e255f046b32f612ea989c0f805da"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\FeePaymentController.java": {
+    "mtime": 1788775111.3668108,
+    "ast_hash": "d5359242bb989a3ea7c4a1c512a3e7eb",
+    "semantic_hash": "d5359242bb989a3ea7c4a1c512a3e7eb"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\FeeRecordController.java": {
+    "mtime": 1788775111.367809,
+    "ast_hash": "a6e77d77d21e5ae5ec490b6a9e2b358e",
+    "semantic_hash": "a6e77d77d21e5ae5ec490b6a9e2b358e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\HealthController.java": {
+    "mtime": 1788775111.367809,
+    "ast_hash": "d21c7152c086db45fff108e652c828fe",
+    "semantic_hash": "d21c7152c086db45fff108e652c828fe"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\OnboardingController.java": {
+    "mtime": 1788775111.36881,
+    "ast_hash": "06064643d9e565a97ef78410fd25c90a",
+    "semantic_hash": "06064643d9e565a97ef78410fd25c90a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\ParentController.java": {
+    "mtime": 1788775111.369807,
+    "ast_hash": "4347242a8c75f85e3883c2bd0050b9f6",
+    "semantic_hash": "4347242a8c75f85e3883c2bd0050b9f6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\SchoolAccountController.java": {
+    "mtime": 1788775111.371875,
+    "ast_hash": "61c77b2e60a6b04775d6f40f273f9193",
+    "semantic_hash": "61c77b2e60a6b04775d6f40f273f9193"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\SchoolClassController.java": {
+    "mtime": 1788775111.3728867,
+    "ast_hash": "fbb7cf6bd1e9e553504fd3ca7ab59bdb",
+    "semantic_hash": "fbb7cf6bd1e9e553504fd3ca7ab59bdb"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\SchoolController.java": {
+    "mtime": 1788775111.3748899,
+    "ast_hash": "d42d708edd2f44051d633be7e0904cb5",
+    "semantic_hash": "d42d708edd2f44051d633be7e0904cb5"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\StaffController.java": {
+    "mtime": 1788775111.3768935,
+    "ast_hash": "05aeebbb13212b589dabdee3979a1529",
+    "semantic_hash": "05aeebbb13212b589dabdee3979a1529"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\StudentController.java": {
+    "mtime": 1788775111.3783982,
+    "ast_hash": "0c2b96cabad83f12e47be89008427a40",
+    "semantic_hash": "0c2b96cabad83f12e47be89008427a40"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\StudentEligibilityController.java": {
+    "mtime": 1788775111.380496,
+    "ast_hash": "224ddecba63d38f97625463e8ceca5ff",
+    "semantic_hash": "224ddecba63d38f97625463e8ceca5ff"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\SupportTicketController.java": {
+    "mtime": 1788775111.3817673,
+    "ast_hash": "3c3f40fe7fede0c17220e8c3e5508488",
+    "semantic_hash": "3c3f40fe7fede0c17220e8c3e5508488"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\auth\\RoleController.java": {
+    "mtime": 1788775111.382785,
+    "ast_hash": "0b93442aa9966e2f2e8adc16ebf6eab5",
+    "semantic_hash": "0b93442aa9966e2f2e8adc16ebf6eab5"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\student\\IdCardGenerationController.java": {
+    "mtime": 1788775111.384981,
+    "ast_hash": "61f2b7956b3badd6366cd73203525d5a",
+    "semantic_hash": "61f2b7956b3badd6366cd73203525d5a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\student\\OnlineAdmissionController.java": {
+    "mtime": 1788775111.3860266,
+    "ast_hash": "172416159c65364f2e872c78ed159cd8",
+    "semantic_hash": "172416159c65364f2e872c78ed159cd8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\student\\StudentCategoryController.java": {
+    "mtime": 1788775111.3967104,
+    "ast_hash": "500dd50b309e5c77142dbccd53bb2950",
+    "semantic_hash": "500dd50b309e5c77142dbccd53bb2950"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\student\\StudentCertificateController.java": {
+    "mtime": 1788775111.398712,
+    "ast_hash": "4d3ac2f781db2a96e9e951272c7ce7c7",
+    "semantic_hash": "4d3ac2f781db2a96e9e951272c7ce7c7"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\student\\StudentHouseController.java": {
+    "mtime": 1788775111.399702,
+    "ast_hash": "74bc325948a1c4c824ede3a9f962453b",
+    "semantic_hash": "74bc325948a1c4c824ede3a9f962453b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\student\\StudentLeaveController.java": {
+    "mtime": 1788775111.400702,
+    "ast_hash": "8878aa0ff6c959540ea1030e1129853d",
+    "semantic_hash": "8878aa0ff6c959540ea1030e1129853d"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\student\\StudentReferralController.java": {
+    "mtime": 1788775111.4017096,
+    "ast_hash": "05db88911aaed6720895bb79371bfcba",
+    "semantic_hash": "05db88911aaed6720895bb79371bfcba"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\student\\StudentSiblingController.java": {
+    "mtime": 1788775111.4024181,
+    "ast_hash": "f36520b10fbe6dba63b84c06ebf064b1",
+    "semantic_hash": "f36520b10fbe6dba63b84c06ebf064b1"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\CommunicationCenterController.java": {
+    "mtime": 1788775111.404441,
+    "ast_hash": "3daddc6fabf724ba994e6715afcbe3a3",
+    "semantic_hash": "3daddc6fabf724ba994e6715afcbe3a3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\DepartmentController.java": {
+    "mtime": 1788775111.4054787,
+    "ast_hash": "090dc0a46dc0bac11e48a730a53ca30c",
+    "semantic_hash": "090dc0a46dc0bac11e48a730a53ca30c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeAssetController.java": {
+    "mtime": 1788775111.4065032,
+    "ast_hash": "79941dbb22e28db638ac5aa1c66b1ae4",
+    "semantic_hash": "79941dbb22e28db638ac5aa1c66b1ae4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeAttendanceController.java": {
+    "mtime": 1788775111.4085011,
+    "ast_hash": "83eb5e4b7fa72119113277996143da3c",
+    "semantic_hash": "83eb5e4b7fa72119113277996143da3c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeAuditLogController.java": {
+    "mtime": 1788775111.4085011,
+    "ast_hash": "b02ca053d58ac3774a0c04dc453487b3",
+    "semantic_hash": "b02ca053d58ac3774a0c04dc453487b3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeDocumentController.java": {
+    "mtime": 1788775111.4095006,
+    "ast_hash": "09ae901c500b7a1123347ee169922b38",
+    "semantic_hash": "09ae901c500b7a1123347ee169922b38"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeLeaveController.java": {
+    "mtime": 1788775111.4110153,
+    "ast_hash": "a805a96d7a57bb1e0b9a54945fcc7515",
+    "semantic_hash": "a805a96d7a57bb1e0b9a54945fcc7515"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeLifecycleController.java": {
+    "mtime": 1788775111.4120357,
+    "ast_hash": "9eaa05028ed61f0c97e5bda8e31f1a3f",
+    "semantic_hash": "9eaa05028ed61f0c97e5bda8e31f1a3f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeNoteController.java": {
+    "mtime": 1788775111.4130352,
+    "ast_hash": "65caa86f44c946d9be1a9b79dd30744f",
+    "semantic_hash": "65caa86f44c946d9be1a9b79dd30744f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\EmployeePayrollController.java": {
+    "mtime": 1788775111.4140391,
+    "ast_hash": "ac14215a5d7badf2f654ae61d395153d",
+    "semantic_hash": "ac14215a5d7badf2f654ae61d395153d"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\EmployeePerformanceController.java": {
+    "mtime": 1788775111.4150372,
+    "ast_hash": "1f0a8afa488673c18be81b4132d254f1",
+    "semantic_hash": "1f0a8afa488673c18be81b4132d254f1"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeTimelineController.java": {
+    "mtime": 1788775111.4165459,
+    "ast_hash": "863caa012472cabf19c4ea2ea2908577",
+    "semantic_hash": "863caa012472cabf19c4ea2ea2908577"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\SalesCrmController.java": {
+    "mtime": 1788775111.4182982,
+    "ast_hash": "00c223966d00ca4460166421e595f0a7",
+    "semantic_hash": "00c223966d00ca4460166421e595f0a7"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\SuperAdminConfigController.java": {
+    "mtime": 1788775111.419313,
+    "ast_hash": "976089b8031b621c7075e899334cb105",
+    "semantic_hash": "976089b8031b621c7075e899334cb105"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\SuperAdminDashboardController.java": {
+    "mtime": 1788775111.4206483,
+    "ast_hash": "7eb93c72fd4fcf6d5f90382541d2a0c3",
+    "semantic_hash": "7eb93c72fd4fcf6d5f90382541d2a0c3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\SuperAdminEmployeeController.java": {
+    "mtime": 1788775111.4286537,
+    "ast_hash": "b734a3498a0cc07ac8d5474ca65759d3",
+    "semantic_hash": "b734a3498a0cc07ac8d5474ca65759d3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\SuperAdminLogController.java": {
+    "mtime": 1788775111.4296734,
+    "ast_hash": "e63d1f6e9fdb9db368d16b9309edd3ec",
+    "semantic_hash": "e63d1f6e9fdb9db368d16b9309edd3ec"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\SuperAdminModuleController.java": {
+    "mtime": 1788775111.431668,
+    "ast_hash": "9a6165b5fc764180c15894e21794552a",
+    "semantic_hash": "9a6165b5fc764180c15894e21794552a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\SuperAdminPlanController.java": {
+    "mtime": 1788775111.431668,
+    "ast_hash": "46d3c5283b9ec7b9041e65c6a9d41eae",
+    "semantic_hash": "46d3c5283b9ec7b9041e65c6a9d41eae"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\SuperAdminRoleController.java": {
+    "mtime": 1788775111.4336667,
+    "ast_hash": "5ac0926a243acce70a1b42cb56af7831",
+    "semantic_hash": "5ac0926a243acce70a1b42cb56af7831"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\SuperAdminSchoolController.java": {
+    "mtime": 1788775111.4346669,
+    "ast_hash": "b04938d3dbafb390fad8fe9202c4c936",
+    "semantic_hash": "b04938d3dbafb390fad8fe9202c4c936"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\UserAccessController.java": {
+    "mtime": 1788775111.435454,
+    "ast_hash": "a9269fd3c2cc951f58d4d955c1158d0f",
+    "semantic_hash": "a9269fd3c2cc951f58d4d955c1158d0f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\UserManagementController.java": {
+    "mtime": 1788775111.4364648,
+    "ast_hash": "65257b2b67b320d50c006b4f6c25cbda",
+    "semantic_hash": "65257b2b67b320d50c006b4f6c25cbda"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\controller\\superadmin\\UserSupportController.java": {
+    "mtime": 1788775111.4398396,
+    "ast_hash": "a07c1da7e518e8b0cf1f6d07965ab939",
+    "semantic_hash": "a07c1da7e518e8b0cf1f6d07965ab939"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\AddPerformanceReviewRequest.java": {
+    "mtime": 1788775111.4424653,
+    "ast_hash": "27450742933edfa42899a43bca536a26",
+    "semantic_hash": "27450742933edfa42899a43bca536a26"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\ApplyLeaveRequest.java": {
+    "mtime": 1788775111.4434905,
+    "ast_hash": "ed337d6e6ceaa43270204fc3720eb544",
+    "semantic_hash": "ed337d6e6ceaa43270204fc3720eb544"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\AssignTicketRequest.java": {
+    "mtime": 1788775111.4464858,
+    "ast_hash": "93fea9aca9b873bd4af2d8a28112a2fe",
+    "semantic_hash": "93fea9aca9b873bd4af2d8a28112a2fe"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\CreateDepartmentRequest.java": {
+    "mtime": 1788775111.447487,
+    "ast_hash": "fe99a6b8a164c9d4b42d1dcca3100d87",
+    "semantic_hash": "fe99a6b8a164c9d4b42d1dcca3100d87"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\CreateSuperAdminEmployeeRequest.java": {
+    "mtime": 1788775111.447487,
+    "ast_hash": "14605d4dae77f0916c2c93aef42bfe36",
+    "semantic_hash": "14605d4dae77f0916c2c93aef42bfe36"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\CreateSupportTicketRequest.java": {
+    "mtime": 1788775111.4484897,
+    "ast_hash": "f33aaee18aa1435e85d1e52d5643fda3",
+    "semantic_hash": "f33aaee18aa1435e85d1e52d5643fda3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\DepartmentDTO.java": {
+    "mtime": 1788775111.4500039,
+    "ast_hash": "3d330feba38ff7a156709f8af0d2e3a0",
+    "semantic_hash": "3d330feba38ff7a156709f8af0d2e3a0"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\EmployeeAssetDTO.java": {
+    "mtime": 1788775111.4515765,
+    "ast_hash": "1449593131151b255a940e659e469d86",
+    "semantic_hash": "1449593131151b255a940e659e469d86"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\EmployeeAttendanceDTO.java": {
+    "mtime": 1788775111.4526856,
+    "ast_hash": "7cede3fb94ccf2fce3b540053d02918b",
+    "semantic_hash": "7cede3fb94ccf2fce3b540053d02918b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\EmployeeAuditLogDTO.java": {
+    "mtime": 1788775111.4537008,
+    "ast_hash": "d6df03931164cb33233469eb6fdc81b8",
+    "semantic_hash": "d6df03931164cb33233469eb6fdc81b8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\EmployeeDocumentDTO.java": {
+    "mtime": 1788775111.4542105,
+    "ast_hash": "d2a0c1861bda1119fc0994c89628e55f",
+    "semantic_hash": "d2a0c1861bda1119fc0994c89628e55f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\EmployeeLeaveDTO.java": {
+    "mtime": 1788775111.4552245,
+    "ast_hash": "389fdae5e01c77325263a3c4825be85c",
+    "semantic_hash": "389fdae5e01c77325263a3c4825be85c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\EmployeeLifecycleDTO.java": {
+    "mtime": 1788775111.4562259,
+    "ast_hash": "2812e7de329e413a3980759ff040268c",
+    "semantic_hash": "2812e7de329e413a3980759ff040268c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\EmployeeNoteDTO.java": {
+    "mtime": 1788775111.4572234,
+    "ast_hash": "110a26553a3f2dc36a5225efec62c6a8",
+    "semantic_hash": "110a26553a3f2dc36a5225efec62c6a8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\EmployeePayrollDTO.java": {
+    "mtime": 1788775111.4592328,
+    "ast_hash": "2d914f1633ced06ebe4f1439fdb64a0c",
+    "semantic_hash": "2d914f1633ced06ebe4f1439fdb64a0c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\EmployeePerformanceDTO.java": {
+    "mtime": 1788775111.4602365,
+    "ast_hash": "62730d3c3f2d7062318364d527ca7e77",
+    "semantic_hash": "62730d3c3f2d7062318364d527ca7e77"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\EmployeeTimelineDTO.java": {
+    "mtime": 1788775111.4617412,
+    "ast_hash": "e83e234180a2d7e51e55de36991d9697",
+    "semantic_hash": "e83e234180a2d7e51e55de36991d9697"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\MarkAttendanceRequest.java": {
+    "mtime": 1788775111.462763,
+    "ast_hash": "1de3264cdcf38fde0f863aa518946be9",
+    "semantic_hash": "1de3264cdcf38fde0f863aa518946be9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\RunPayrollRequest.java": {
+    "mtime": 1788775111.464584,
+    "ast_hash": "898c743718325889f7b835545b32121c",
+    "semantic_hash": "898c743718325889f7b835545b32121c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\SuperAdminEmployeeDTO.java": {
+    "mtime": 1788775111.4661064,
+    "ast_hash": "ca721fa29bc0b69b87d5b204b682b2f0",
+    "semantic_hash": "ca721fa29bc0b69b87d5b204b682b2f0"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\SupportTicketDTO.java": {
+    "mtime": 1788775111.4671185,
+    "ast_hash": "ac981eeeae6c3aaf65d135b51086c667",
+    "semantic_hash": "ac981eeeae6c3aaf65d135b51086c667"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\TicketCategoryDTO.java": {
+    "mtime": 1788775111.4681244,
+    "ast_hash": "cc82f85e977fc0da0d18d002fdc8679c",
+    "semantic_hash": "cc82f85e977fc0da0d18d002fdc8679c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\TicketDashboardStatsDTO.java": {
+    "mtime": 1788775111.4701247,
+    "ast_hash": "55cf85ac0d712b8516fdafb3e1cb2e66",
+    "semantic_hash": "55cf85ac0d712b8516fdafb3e1cb2e66"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\TicketHistoryDTO.java": {
+    "mtime": 1788775111.47104,
+    "ast_hash": "8d28d309928637591d691e71ba5f0e63",
+    "semantic_hash": "8d28d309928637591d691e71ba5f0e63"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\UpdateSuperAdminEmployeeRequest.java": {
+    "mtime": 1788775111.4726164,
+    "ast_hash": "9dfb8a0a50f05022ad473f598e8709a0",
+    "semantic_hash": "9dfb8a0a50f05022ad473f598e8709a0"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\UpdateTicketStatusRequest.java": {
+    "mtime": 1788775111.4741423,
+    "ast_hash": "fc583af1e0ae49736eefb92c2fd21f03",
+    "semantic_hash": "fc583af1e0ae49736eefb92c2fd21f03"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\UploadDocumentRequest.java": {
+    "mtime": 1788775111.4746518,
+    "ast_hash": "ecf9861c14f7a6e42d85f49fc7c5427b",
+    "semantic_hash": "ecf9861c14f7a6e42d85f49fc7c5427b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\AcademicYearRequest.java": {
+    "mtime": 1788775111.476668,
+    "ast_hash": "a5540d4355e0d16f76b729e1cde4c995",
+    "semantic_hash": "a5540d4355e0d16f76b729e1cde4c995"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\AcademicYearResponse.java": {
+    "mtime": 1788775111.477898,
+    "ast_hash": "8824b7007a16575d8d9cf6cdc55c6bd6",
+    "semantic_hash": "8824b7007a16575d8d9cf6cdc55c6bd6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\BulkTimetableRequest.java": {
+    "mtime": 1788775111.4805913,
+    "ast_hash": "dbe73db2a1920b5b40705f404e28eee8",
+    "semantic_hash": "dbe73db2a1920b5b40705f404e28eee8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\ClassSubjectAssignmentRequest.java": {
+    "mtime": 1788775111.4815903,
+    "ast_hash": "8b9dca897d732fa2fb1ec28b71ce3172",
+    "semantic_hash": "8b9dca897d732fa2fb1ec28b71ce3172"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\ClassSubjectAssignmentResponse.java": {
+    "mtime": 1788775111.482599,
+    "ast_hash": "67bcd065f9cc47161d9527795ae2fcd1",
+    "semantic_hash": "67bcd065f9cc47161d9527795ae2fcd1"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\ClassTeacherAssignmentRequest.java": {
+    "mtime": 1788775111.4836183,
+    "ast_hash": "34523cf94504a4006d6210a8dfb3aafa",
+    "semantic_hash": "34523cf94504a4006d6210a8dfb3aafa"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\ClassTeacherAssignmentResponse.java": {
+    "mtime": 1788775111.4846315,
+    "ast_hash": "b5662bf3efe8ea3374f93f7e228239f9",
+    "semantic_hash": "b5662bf3efe8ea3374f93f7e228239f9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\SectionRequest.java": {
+    "mtime": 1788775111.4860563,
+    "ast_hash": "acf00cb3854230793f880a3a2b735b9f",
+    "semantic_hash": "acf00cb3854230793f880a3a2b735b9f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\SectionResponse.java": {
+    "mtime": 1788775111.487081,
+    "ast_hash": "5e5cdaae1dbec8f5ec94fe061a8becf4",
+    "semantic_hash": "5e5cdaae1dbec8f5ec94fe061a8becf4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\StudentSubjectEnrollmentRequest.java": {
+    "mtime": 1788775111.488096,
+    "ast_hash": "88166d3ad13b3112ae6f8bee9cae81f3",
+    "semantic_hash": "88166d3ad13b3112ae6f8bee9cae81f3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\StudentSubjectEnrollmentResponse.java": {
+    "mtime": 1788775111.4892673,
+    "ast_hash": "e1c6439c57b0f625a26f964bf14ecdd7",
+    "semantic_hash": "e1c6439c57b0f625a26f964bf14ecdd7"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\SubjectRequest.java": {
+    "mtime": 1788775111.4902854,
+    "ast_hash": "e40265da0a39559ef71778eb5493c716",
+    "semantic_hash": "e40265da0a39559ef71778eb5493c716"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\SubjectResponse.java": {
+    "mtime": 1788775111.491282,
+    "ast_hash": "58f3d998b659f74991ca036b10aac192",
+    "semantic_hash": "58f3d998b659f74991ca036b10aac192"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\TimetableEntryRequest.java": {
+    "mtime": 1788775111.4932878,
+    "ast_hash": "b6ec54d44f16cf4c5febe3264741857c",
+    "semantic_hash": "b6ec54d44f16cf4c5febe3264741857c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\TimetableEntryResponse.java": {
+    "mtime": 1788775111.495821,
+    "ast_hash": "e28e0e11452fb4e47b6c43287ea498b4",
+    "semantic_hash": "e28e0e11452fb4e47b6c43287ea498b4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\TimetablePeriodRequest.java": {
+    "mtime": 1788775111.5003536,
+    "ast_hash": "d13a6b54f7c8677fe5134adb59c36509",
+    "semantic_hash": "d13a6b54f7c8677fe5134adb59c36509"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\academic\\TimetablePeriodResponse.java": {
+    "mtime": 1788775111.50146,
+    "ast_hash": "191c60d2a4a3af489edd7cef969999ce",
+    "semantic_hash": "191c60d2a4a3af489edd7cef969999ce"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\attendance\\AttendanceRequest.java": {
+    "mtime": 1788775111.5038965,
+    "ast_hash": "57c32720c385cbd6bf7cfc60f6b3eec4",
+    "semantic_hash": "57c32720c385cbd6bf7cfc60f6b3eec4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\attendance\\AttendanceResponse.java": {
+    "mtime": 1788775111.5049226,
+    "ast_hash": "0276a64674f6bb72f14fe95bdcf69cb1",
+    "semantic_hash": "0276a64674f6bb72f14fe95bdcf69cb1"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\AccountRequestSubmitRequest.java": {
+    "mtime": 1788775111.5074227,
+    "ast_hash": "76876b598376208692a7cd6e91227e94",
+    "semantic_hash": "76876b598376208692a7cd6e91227e94"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\AuthLoginRequest.java": {
+    "mtime": 1788775111.5084343,
+    "ast_hash": "1c71d7dfbace927f2e0bcafada5727a9",
+    "semantic_hash": "1c71d7dfbace927f2e0bcafada5727a9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\AuthTokenResponse.java": {
+    "mtime": 1788775111.516292,
+    "ast_hash": "4e4565313d705d797edf697eb577d7bf",
+    "semantic_hash": "4e4565313d705d797edf697eb577d7bf"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\AuthUserResponse.java": {
+    "mtime": 1788775111.5173225,
+    "ast_hash": "a1d211c90fdb32f17c3f1dba53bc77cb",
+    "semantic_hash": "a1d211c90fdb32f17c3f1dba53bc77cb"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\CreateRoleRequest.java": {
+    "mtime": 1788775111.5188217,
+    "ast_hash": "bd5942dc373cdae122946440f61880cd",
+    "semantic_hash": "bd5942dc373cdae122946440f61880cd"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\LoginVerifyResponse.java": {
+    "mtime": 1788775111.519338,
+    "ast_hash": "ec0c4c51c7fa5885005a411a6747aad3",
+    "semantic_hash": "ec0c4c51c7fa5885005a411a6747aad3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\OtpVerifyRequest.java": {
+    "mtime": 1788775111.5203521,
+    "ast_hash": "1e0792941763a281f50451f0d9c31bcf",
+    "semantic_hash": "1e0792941763a281f50451f0d9c31bcf"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\PasswordResetRequest.java": {
+    "mtime": 1788775111.5223522,
+    "ast_hash": "8dacb6e90b70033d4625bf01b6aa92f4",
+    "semantic_hash": "8dacb6e90b70033d4625bf01b6aa92f4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\PasswordResetSubmitRequest.java": {
+    "mtime": 1788775111.5233514,
+    "ast_hash": "9136a609272a6190603f0339404892f4",
+    "semantic_hash": "9136a609272a6190603f0339404892f4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\PermissionContextDto.java": {
+    "mtime": 1788775111.524878,
+    "ast_hash": "8231eb83d9ae7d91a97937bcde5136dd",
+    "semantic_hash": "8231eb83d9ae7d91a97937bcde5136dd"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\PermissionDefinitionDto.java": {
+    "mtime": 1788775111.525874,
+    "ast_hash": "84d66eb2f413dc374c862f347b933b98",
+    "semantic_hash": "84d66eb2f413dc374c862f347b933b98"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\PermissionGroupDto.java": {
+    "mtime": 1788775111.5263894,
+    "ast_hash": "e3775deda2e232b4a74b38d2e0fdaf16",
+    "semantic_hash": "e3775deda2e232b4a74b38d2e0fdaf16"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\PersonaDto.java": {
+    "mtime": 1788775111.5271754,
+    "ast_hash": "5d59fcb49fd032080317a0642fe47add",
+    "semantic_hash": "5d59fcb49fd032080317a0642fe47add"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\RefreshTokenRequest.java": {
+    "mtime": 1788775111.5281897,
+    "ast_hash": "dd908391549650165a8ed90f3e5a4b34",
+    "semantic_hash": "dd908391549650165a8ed90f3e5a4b34"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\RegisterStudentRequest.java": {
+    "mtime": 1788775111.5291893,
+    "ast_hash": "2a8f1c285e96ae9ac39b8178830642f1",
+    "semantic_hash": "2a8f1c285e96ae9ac39b8178830642f1"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\RegisterUserRequest.java": {
+    "mtime": 1788775111.5304554,
+    "ast_hash": "fe098a87d7ec842c5b43300511585019",
+    "semantic_hash": "fe098a87d7ec842c5b43300511585019"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\RoleDto.java": {
+    "mtime": 1788775111.531497,
+    "ast_hash": "21f6253767e0decf7a195e0d43fe55de",
+    "semantic_hash": "21f6253767e0decf7a195e0d43fe55de"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\SelectSchoolRequest.java": {
+    "mtime": 1788775111.5325127,
+    "ast_hash": "c24ffe16ab36ae8c3a70aa56c795d8f9",
+    "semantic_hash": "c24ffe16ab36ae8c3a70aa56c795d8f9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\StudentSummaryDto.java": {
+    "mtime": 1788775111.5337067,
+    "ast_hash": "c67fffb4c8a7ecf7d41eedbf743f22fb",
+    "semantic_hash": "c67fffb4c8a7ecf7d41eedbf743f22fb"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\SwitchPersonaRequest.java": {
+    "mtime": 1788775111.5357263,
+    "ast_hash": "1d11fdbb7fc2970cae032fbefbc4a2f4",
+    "semantic_hash": "1d11fdbb7fc2970cae032fbefbc4a2f4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\UpdateRolePermissionsRequest.java": {
+    "mtime": 1788775111.5382645,
+    "ast_hash": "63ab711d02f06c5bcb92475e4c63bf2f",
+    "semantic_hash": "63ab711d02f06c5bcb92475e4c63bf2f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\auth\\UserSchoolResponse.java": {
+    "mtime": 1788775111.539259,
+    "ast_hash": "22804812dfc29fc479b798184603ea79",
+    "semantic_hash": "22804812dfc29fc479b798184603ea79"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\catalog\\CatalogModuleDto.java": {
+    "mtime": 1788775111.5414476,
+    "ast_hash": "208ae93d87a5a1debc8599ebc84a3929",
+    "semantic_hash": "208ae93d87a5a1debc8599ebc84a3929"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\catalog\\CatalogOptionDto.java": {
+    "mtime": 1788775111.5429125,
+    "ast_hash": "6abcc22da138e66c2e2dcc4596813920",
+    "semantic_hash": "6abcc22da138e66c2e2dcc4596813920"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\catalog\\CatalogPlanDto.java": {
+    "mtime": 1788775111.5439305,
+    "ast_hash": "31826c8bbd093a4c92d8fd2ce3de444b",
+    "semantic_hash": "31826c8bbd093a4c92d8fd2ce3de444b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\catalog\\CatalogRoleDto.java": {
+    "mtime": 1788775111.5449274,
+    "ast_hash": "323030e5c6e5ec74471be5aed4e0869b",
+    "semantic_hash": "323030e5c6e5ec74471be5aed4e0869b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\catalog\\EntitlementEvaluationDto.java": {
+    "mtime": 1788775111.5449274,
+    "ast_hash": "eef8e8c243498316d48e54e85d74e4d3",
+    "semantic_hash": "eef8e8c243498316d48e54e85d74e4d3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\communication\\CommunicationAnnouncementDTO.java": {
+    "mtime": 1788775111.547453,
+    "ast_hash": "a97efc9bdebb281043a736cbf21923de",
+    "semantic_hash": "a97efc9bdebb281043a736cbf21923de"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\communication\\CommunicationDashboardStatsDTO.java": {
+    "mtime": 1788775111.547963,
+    "ast_hash": "5c76761aa20d9845d072a3aec7add69b",
+    "semantic_hash": "5c76761aa20d9845d072a3aec7add69b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\communication\\CommunicationDeliveryDTO.java": {
+    "mtime": 1788775111.54998,
+    "ast_hash": "00cd093d5e0e8251fda2d804e3192e32",
+    "semantic_hash": "00cd093d5e0e8251fda2d804e3192e32"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\communication\\CommunicationTemplateDTO.java": {
+    "mtime": 1788775111.5513663,
+    "ast_hash": "09cff98bd88a5296b361136ffb03c76a",
+    "semantic_hash": "09cff98bd88a5296b361136ffb03c76a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\communication\\CreateAnnouncementRequest.java": {
+    "mtime": 1788775111.552386,
+    "ast_hash": "9d2cfbc29b865a7f482d1f7c2511712a",
+    "semantic_hash": "9d2cfbc29b865a7f482d1f7c2511712a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\communication\\CreateTemplateRequest.java": {
+    "mtime": 1788775111.5623243,
+    "ast_hash": "b11fddec0193b0a4db68b6cc0e7a7708",
+    "semantic_hash": "b11fddec0193b0a4db68b6cc0e7a7708"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\crm\\CreateCrmLeadRequest.java": {
+    "mtime": 1788775111.5645373,
+    "ast_hash": "4353fd3262ef4d5389a625305fae86f9",
+    "semantic_hash": "4353fd3262ef4d5389a625305fae86f9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\crm\\CrmActivityLogDto.java": {
+    "mtime": 1788775111.5650969,
+    "ast_hash": "bf716a783c95578a88e9556b148877e3",
+    "semantic_hash": "bf716a783c95578a88e9556b148877e3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\crm\\CrmDashboardStatsDto.java": {
+    "mtime": 1788775111.5661125,
+    "ast_hash": "710a3e728f2f6f77b8dafbd48f1664fa",
+    "semantic_hash": "710a3e728f2f6f77b8dafbd48f1664fa"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\crm\\CrmDemoDto.java": {
+    "mtime": 1788775111.5674472,
+    "ast_hash": "8fd792b1a3056d283a691e4300d0cc7c",
+    "semantic_hash": "8fd792b1a3056d283a691e4300d0cc7c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\crm\\CrmFollowUpDto.java": {
+    "mtime": 1788775111.5693798,
+    "ast_hash": "4dbf58aff1ed9a1a6a45add4c6806216",
+    "semantic_hash": "4dbf58aff1ed9a1a6a45add4c6806216"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\crm\\CrmLeadDto.java": {
+    "mtime": 1788775111.5708642,
+    "ast_hash": "49111862e710c0ad618987e6929ffe2e",
+    "semantic_hash": "49111862e710c0ad618987e6929ffe2e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\crm\\CrmQuotationDto.java": {
+    "mtime": 1788775111.5734692,
+    "ast_hash": "9e7490320beea6b52b67d9e2018d12d3",
+    "semantic_hash": "9e7490320beea6b52b67d9e2018d12d3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\crm\\LogFollowUpRequest.java": {
+    "mtime": 1788775111.5744832,
+    "ast_hash": "563e302276e3219e065784aa036418d3",
+    "semantic_hash": "563e302276e3219e065784aa036418d3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\crm\\ScheduleDemoRequest.java": {
+    "mtime": 1788775111.5754817,
+    "ast_hash": "640a1fc1c8ed425f6215af69975b10da",
+    "semantic_hash": "640a1fc1c8ed425f6215af69975b10da"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\crm\\UpdateLeadStageRequest.java": {
+    "mtime": 1788775111.5778708,
+    "ast_hash": "f37c440bd4f2d30e52f7761fd1610740",
+    "semantic_hash": "f37c440bd4f2d30e52f7761fd1610740"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\dashboard\\ActivityFeedResponse.java": {
+    "mtime": 1788775111.5798736,
+    "ast_hash": "e1fb0e48cccda1d81001ae960cd78218",
+    "semantic_hash": "e1fb0e48cccda1d81001ae960cd78218"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\dashboard\\CollectionExpensePointResponse.java": {
+    "mtime": 1788775111.5803845,
+    "ast_hash": "3afb234c678c2c14e9cddb9b3594447b",
+    "semantic_hash": "3afb234c678c2c14e9cddb9b3594447b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\dashboard\\DashboardKpiResponse.java": {
+    "mtime": 1788775111.581399,
+    "ast_hash": "348bedaf81839506489ce262582e4ab4",
+    "semantic_hash": "348bedaf81839506489ce262582e4ab4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\feecategory\\FeeCategoryRequest.java": {
+    "mtime": 1788775111.5832782,
+    "ast_hash": "9f522a43f78e7a9943d85884933edf63",
+    "semantic_hash": "9f522a43f78e7a9943d85884933edf63"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\feecategory\\FeeCategoryResponse.java": {
+    "mtime": 1788775111.5839336,
+    "ast_hash": "fa332bd36e34895aa72a10e52c9a0250",
+    "semantic_hash": "fa332bd36e34895aa72a10e52c9a0250"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\feeinvoice\\BulkInvoiceRequest.java": {
+    "mtime": 1788775111.5859284,
+    "ast_hash": "0e735492285366af32190b8becbe646c",
+    "semantic_hash": "0e735492285366af32190b8becbe646c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\feeinvoice\\FeeInvoiceRequest.java": {
+    "mtime": 1788775111.58739,
+    "ast_hash": "8b4fb6fb4a5614cab56838fe621afa34",
+    "semantic_hash": "8b4fb6fb4a5614cab56838fe621afa34"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\feeinvoice\\FeeInvoiceResponse.java": {
+    "mtime": 1788775111.58739,
+    "ast_hash": "8822208bb8ab14c472c42feca528d4dc",
+    "semantic_hash": "8822208bb8ab14c472c42feca528d4dc"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\feestructure\\FeeStructureItemRequest.java": {
+    "mtime": 1788775111.5896575,
+    "ast_hash": "bd99e08486bf0078041cee67d6a3bc8a",
+    "semantic_hash": "bd99e08486bf0078041cee67d6a3bc8a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\feestructure\\FeeStructureItemResponse.java": {
+    "mtime": 1788775111.590774,
+    "ast_hash": "f7248727dfd2af2fa9ec48e81994aca9",
+    "semantic_hash": "f7248727dfd2af2fa9ec48e81994aca9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\feestructure\\FeeStructureRequest.java": {
+    "mtime": 1788775111.5917878,
+    "ast_hash": "ead7c9380c0148f39f46c674953dd726",
+    "semantic_hash": "ead7c9380c0148f39f46c674953dd726"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\feestructure\\FeeStructureResponse.java": {
+    "mtime": 1788775111.593298,
+    "ast_hash": "00400eff413189e1ad6d98e9f8af3016",
+    "semantic_hash": "00400eff413189e1ad6d98e9f8af3016"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\finance\\CollectionPlanItemRequest.java": {
+    "mtime": 1788775111.5954869,
+    "ast_hash": "10613f4abd893e8693b4858d13a28348",
+    "semantic_hash": "10613f4abd893e8693b4858d13a28348"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\finance\\CollectionPlanItemResponse.java": {
+    "mtime": 1788775111.5965023,
+    "ast_hash": "70fb66c1027c63ac633edcef7b600ecb",
+    "semantic_hash": "70fb66c1027c63ac633edcef7b600ecb"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\finance\\CollectionPlanRequest.java": {
+    "mtime": 1788775111.597506,
+    "ast_hash": "76008be86bf09a57af754a1026c02823",
+    "semantic_hash": "76008be86bf09a57af754a1026c02823"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\finance\\CollectionPlanResponse.java": {
+    "mtime": 1788775111.6041129,
+    "ast_hash": "35f7dfe198f63e6b4876fb368bfdbfbf",
+    "semantic_hash": "35f7dfe198f63e6b4876fb368bfdbfbf"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\finance\\SchoolAccountRequest.java": {
+    "mtime": 1788775111.6061409,
+    "ast_hash": "cf253dd6a323a7d054e7347bf055dc1a",
+    "semantic_hash": "cf253dd6a323a7d054e7347bf055dc1a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\finance\\SchoolAccountResponse.java": {
+    "mtime": 1788775111.607156,
+    "ast_hash": "2ac94bcf712ca14a99092ffdf1faa771",
+    "semantic_hash": "2ac94bcf712ca14a99092ffdf1faa771"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\importing\\DataImportErrorDTO.java": {
+    "mtime": 1788775111.609538,
+    "ast_hash": "7e42815c22dbb9e97ff430f270307a4a",
+    "semantic_hash": "7e42815c22dbb9e97ff430f270307a4a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\importing\\DataImportJobDTO.java": {
+    "mtime": 1788775111.6109183,
+    "ast_hash": "72e5f51842d56bac21638b5603583ecc",
+    "semantic_hash": "72e5f51842d56bac21638b5603583ecc"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\importing\\DataImportMappingDTO.java": {
+    "mtime": 1788775111.6131785,
+    "ast_hash": "27a6beee64ba770c8109a99dbfe66e11",
+    "semantic_hash": "27a6beee64ba770c8109a99dbfe66e11"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\importing\\ResolveErrorRequest.java": {
+    "mtime": 1788775111.6141984,
+    "ast_hash": "82bc823df574462420db997fd65676e1",
+    "semantic_hash": "82bc823df574462420db997fd65676e1"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\onboarding\\AdminCredentialsDTO.java": {
+    "mtime": 1788775111.6154344,
+    "ast_hash": "894dda7133cb1743ec8af8cf8fac6ad8",
+    "semantic_hash": "894dda7133cb1743ec8af8cf8fac6ad8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\onboarding\\OnboardingActivationResponse.java": {
+    "mtime": 1788775111.6164515,
+    "ast_hash": "7f6f3733bbea5525d2c1abb446adbf88",
+    "semantic_hash": "7f6f3733bbea5525d2c1abb446adbf88"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\onboarding\\OnboardingDraftDTO.java": {
+    "mtime": 1788775111.6174498,
+    "ast_hash": "ea917f8c08af3253852bfbd235f2dfd6",
+    "semantic_hash": "ea917f8c08af3253852bfbd235f2dfd6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\onboarding\\OnboardingInitRequest.java": {
+    "mtime": 1788775111.6192768,
+    "ast_hash": "8ef2f3d50d3430c3cb3f137ffc1c6aa0",
+    "semantic_hash": "8ef2f3d50d3430c3cb3f137ffc1c6aa0"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\onboarding\\OnboardingRegisterRequest.java": {
+    "mtime": 1788775111.6209872,
+    "ast_hash": "490783c75474dfebe75321962fa022ce",
+    "semantic_hash": "490783c75474dfebe75321962fa022ce"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\onboarding\\OnboardingRegisterResponse.java": {
+    "mtime": 1788775111.6219797,
+    "ast_hash": "46d9cf851e52b9b31493ed23ff0563e6",
+    "semantic_hash": "46d9cf851e52b9b31493ed23ff0563e6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\onboarding\\OnboardingStepRequest.java": {
+    "mtime": 1788775111.6230824,
+    "ast_hash": "82bb2c0bc6a4e0ae2f2c25f177003602",
+    "semantic_hash": "82bb2c0bc6a4e0ae2f2c25f177003602"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\parent\\ParentChildResponse.java": {
+    "mtime": 1788775111.624587,
+    "ast_hash": "111619d669be95c137da9a3858cf0e60",
+    "semantic_hash": "111619d669be95c137da9a3858cf0e60"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\payment\\AdHocFeeRequest.java": {
+    "mtime": 1788775111.6266198,
+    "ast_hash": "c025fcf36201b9660d61cdfaa5546cfa",
+    "semantic_hash": "c025fcf36201b9660d61cdfaa5546cfa"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\payment\\ApplyDiscountRequest.java": {
+    "mtime": 1788775111.6301117,
+    "ast_hash": "16ac2fac289a160e2190b82d56764290",
+    "semantic_hash": "16ac2fac289a160e2190b82d56764290"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\payment\\FeeDueResponse.java": {
+    "mtime": 1788775111.632136,
+    "ast_hash": "124319318c606bc495305351828c2a10",
+    "semantic_hash": "124319318c606bc495305351828c2a10"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\payment\\FeeGenerationConfirmRequest.java": {
+    "mtime": 1788775111.633137,
+    "ast_hash": "8c9f0242b9f9d961b583832b76b30eb9",
+    "semantic_hash": "8c9f0242b9f9d961b583832b76b30eb9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\payment\\FeeGenerationPreviewRequest.java": {
+    "mtime": 1788775111.6341522,
+    "ast_hash": "6fce7741f5e045bfff3fe469af6d4928",
+    "semantic_hash": "6fce7741f5e045bfff3fe469af6d4928"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\payment\\FeeGenerationPreviewResponse.java": {
+    "mtime": 1788775111.6351383,
+    "ast_hash": "2f3f59cf2a9a1f222cd80123e2c5364c",
+    "semantic_hash": "2f3f59cf2a9a1f222cd80123e2c5364c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\payment\\FeePaymentRequest.java": {
+    "mtime": 1788775111.636137,
+    "ast_hash": "9c8caa48f1916d62229548ac289d90a8",
+    "semantic_hash": "9c8caa48f1916d62229548ac289d90a8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\payment\\FeeStatsDTO.java": {
+    "mtime": 1788775111.637138,
+    "ast_hash": "4a9bdfc5e25b4bee9a95b9c2f6e2e8a9",
+    "semantic_hash": "4a9bdfc5e25b4bee9a95b9c2f6e2e8a9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\payment\\PaymentRequest.java": {
+    "mtime": 1788775111.6381373,
+    "ast_hash": "9494e695b55f014f4d34082e151c59b7",
+    "semantic_hash": "9494e695b55f014f4d34082e151c59b7"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\payment\\PaymentResponse.java": {
+    "mtime": 1788775111.6391394,
+    "ast_hash": "30a5b63e343c772dd8ff14a703543459",
+    "semantic_hash": "30a5b63e343c772dd8ff14a703543459"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\payment\\StudentFeeRecordDTO.java": {
+    "mtime": 1788775111.641138,
+    "ast_hash": "6f21ed9e85be8c615b757d17230b0bec",
+    "semantic_hash": "6f21ed9e85be8c615b757d17230b0bec"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\school\\SchoolRequest.java": {
+    "mtime": 1788775111.6436656,
+    "ast_hash": "5274459ce4d6125207c9e822dad46a40",
+    "semantic_hash": "5274459ce4d6125207c9e822dad46a40"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\school\\SchoolResponse.java": {
+    "mtime": 1788775111.644665,
+    "ast_hash": "ec5cc231cb1ebf79571ed1bd895a59cd",
+    "semantic_hash": "ec5cc231cb1ebf79571ed1bd895a59cd"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\schoolclass\\SchoolClassRequest.java": {
+    "mtime": 1788775111.648179,
+    "ast_hash": "815c89617a4f6c4ab1630a18cda5f834",
+    "semantic_hash": "815c89617a4f6c4ab1630a18cda5f834"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\schoolclass\\SchoolClassResponse.java": {
+    "mtime": 1788775111.6491947,
+    "ast_hash": "bb3e2cf9082efe6ece4f1ee2082c312a",
+    "semantic_hash": "bb3e2cf9082efe6ece4f1ee2082c312a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\staff\\StaffRequest.java": {
+    "mtime": 1788775111.6501956,
+    "ast_hash": "54c241240550429a4b18bbbc5dc81c4c",
+    "semantic_hash": "54c241240550429a4b18bbbc5dc81c4c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\staff\\StaffResponse.java": {
+    "mtime": 1788775111.6521945,
+    "ast_hash": "7ec47eef82567c3dc5bb97d4bf51273c",
+    "semantic_hash": "7ec47eef82567c3dc5bb97d4bf51273c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\staff\\StaffStatsResponse.java": {
+    "mtime": 1788775111.6531937,
+    "ast_hash": "011d3ad786b01dc99ca68a498100a161",
+    "semantic_hash": "011d3ad786b01dc99ca68a498100a161"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\FamilyRequest.java": {
+    "mtime": 1788775111.6557083,
+    "ast_hash": "ca1b4e5418dd8435f89bb1976b079da0",
+    "semantic_hash": "ca1b4e5418dd8435f89bb1976b079da0"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\FamilyResponse.java": {
+    "mtime": 1788775111.6567223,
+    "ast_hash": "b3d080576bcbbf62c87836dc19d2d1ab",
+    "semantic_hash": "b3d080576bcbbf62c87836dc19d2d1ab"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\IdCardGenerationRequest.java": {
+    "mtime": 1788775111.6582358,
+    "ast_hash": "df96336d708a5fc218f4403fe5ee181d",
+    "semantic_hash": "df96336d708a5fc218f4403fe5ee181d"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\IdCardGenerationResponse.java": {
+    "mtime": 1788775111.6602497,
+    "ast_hash": "fa0d4d07144c79b428e8ff73bd9a3ede",
+    "semantic_hash": "fa0d4d07144c79b428e8ff73bd9a3ede"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\OnlineAdmissionRequest.java": {
+    "mtime": 1788775111.6612477,
+    "ast_hash": "ab18c4d62b5939d3b792607b4ea3d56d",
+    "semantic_hash": "ab18c4d62b5939d3b792607b4ea3d56d"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\OnlineAdmissionResponse.java": {
+    "mtime": 1788775111.6622493,
+    "ast_hash": "2b2634a37415687166b4c4cb1771e30c",
+    "semantic_hash": "2b2634a37415687166b4c4cb1771e30c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentCategoryRequest.java": {
+    "mtime": 1788775111.66325,
+    "ast_hash": "b74fa8bd5f6c3cffd1285164b03d597b",
+    "semantic_hash": "b74fa8bd5f6c3cffd1285164b03d597b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentCategoryResponse.java": {
+    "mtime": 1788775111.6642506,
+    "ast_hash": "b9577d55467e5e82a29be47dbf250414",
+    "semantic_hash": "b9577d55467e5e82a29be47dbf250414"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentCertificateRequest.java": {
+    "mtime": 1788775111.6652515,
+    "ast_hash": "e1bf4bda3898f04f6fd5c2b7e72a08d8",
+    "semantic_hash": "e1bf4bda3898f04f6fd5c2b7e72a08d8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentCertificateResponse.java": {
+    "mtime": 1788775111.6667607,
+    "ast_hash": "87543172b6505a69e66dc467ab738647",
+    "semantic_hash": "87543172b6505a69e66dc467ab738647"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentDocumentRequest.java": {
+    "mtime": 1788775111.6677804,
+    "ast_hash": "9985850223e2f3e51743ec3ef2612462",
+    "semantic_hash": "9985850223e2f3e51743ec3ef2612462"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentDocumentResponse.java": {
+    "mtime": 1788775111.6687722,
+    "ast_hash": "53aed8416351fb69becd4084cf38912a",
+    "semantic_hash": "53aed8416351fb69becd4084cf38912a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentHouseRequest.java": {
+    "mtime": 1788775111.670773,
+    "ast_hash": "f312ce07f66d49313cb00b4ada189053",
+    "semantic_hash": "f312ce07f66d49313cb00b4ada189053"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentHouseResponse.java": {
+    "mtime": 1788775111.6717734,
+    "ast_hash": "3693150b76c5472926e887a631e26c1f",
+    "semantic_hash": "3693150b76c5472926e887a631e26c1f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentLeaveRequest.java": {
+    "mtime": 1788775111.6727717,
+    "ast_hash": "6117f6fb4ad8d0debc6424186e3bb00b",
+    "semantic_hash": "6117f6fb4ad8d0debc6424186e3bb00b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentLeaveResponse.java": {
+    "mtime": 1788775111.673292,
+    "ast_hash": "57e8351ed3aac1f708c7162f32533dde",
+    "semantic_hash": "57e8351ed3aac1f708c7162f32533dde"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentPromotionRequest.java": {
+    "mtime": 1788775111.6753018,
+    "ast_hash": "326b6b285ed8bc81279bf10812f6612a",
+    "semantic_hash": "326b6b285ed8bc81279bf10812f6612a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentReferralRequest.java": {
+    "mtime": 1788775111.6768112,
+    "ast_hash": "122a19dc86efcfe91ce529a6b8e1f4d6",
+    "semantic_hash": "122a19dc86efcfe91ce529a6b8e1f4d6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentReferralResponse.java": {
+    "mtime": 1788775111.6783595,
+    "ast_hash": "c718ad0312cf4eb3492ee45c1ae26cbe",
+    "semantic_hash": "c718ad0312cf4eb3492ee45c1ae26cbe"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentRequest.java": {
+    "mtime": 1788775111.679361,
+    "ast_hash": "4e602fb76a90f919bed0521c0fb01be3",
+    "semantic_hash": "4e602fb76a90f919bed0521c0fb01be3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentResponse.java": {
+    "mtime": 1788775111.6803586,
+    "ast_hash": "22bfe319a0104c8fb8bdce9978a7a968",
+    "semantic_hash": "22bfe319a0104c8fb8bdce9978a7a968"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentSiblingRequest.java": {
+    "mtime": 1788775111.6813574,
+    "ast_hash": "fbbfc53a31101e23cf749b7790a55361",
+    "semantic_hash": "fbbfc53a31101e23cf749b7790a55361"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentSiblingResponse.java": {
+    "mtime": 1788775111.682357,
+    "ast_hash": "1b3a5756caad8aa3137456d2baaede61",
+    "semantic_hash": "1b3a5756caad8aa3137456d2baaede61"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\student\\StudentStatsResponse.java": {
+    "mtime": 1788775111.684359,
+    "ast_hash": "563bc71f3e17418f1b15dd875ca13a74",
+    "semantic_hash": "563bc71f3e17418f1b15dd875ca13a74"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\ConfigOverrideDto.java": {
+    "mtime": 1788775111.6853564,
+    "ast_hash": "b71338c9856fb4b6f9bc6db1682d7a42",
+    "semantic_hash": "b71338c9856fb4b6f9bc6db1682d7a42"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\ImpersonationResponseDto.java": {
+    "mtime": 1788775111.6878626,
+    "ast_hash": "7cbdb3ed11760f787969c4a2d3267d1b",
+    "semantic_hash": "7cbdb3ed11760f787969c4a2d3267d1b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\ModuleAdoptionDto.java": {
+    "mtime": 1788775111.6888714,
+    "ast_hash": "5ab05a6aeb6197fdfc96c9fe4d5bb602",
+    "semantic_hash": "5ab05a6aeb6197fdfc96c9fe4d5bb602"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\ModuleDto.java": {
+    "mtime": 1788775111.691876,
+    "ast_hash": "4328d74f93bb127733222ccac3dc06b6",
+    "semantic_hash": "4328d74f93bb127733222ccac3dc06b6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\OnboardingMatrixDto.java": {
+    "mtime": 1788775111.6928759,
+    "ast_hash": "0442af2b4079e446c722289322d5b6a6",
+    "semantic_hash": "0442af2b4079e446c722289322d5b6a6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\OperationalAlertDto.java": {
+    "mtime": 1788775111.6938765,
+    "ast_hash": "63b725aa1a7e80780b12fc074a86295a",
+    "semantic_hash": "63b725aa1a7e80780b12fc074a86295a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\PasswordResetDTO.java": {
+    "mtime": 1788775111.6948762,
+    "ast_hash": "84378c995b878307728e2bfbd4f5fb75",
+    "semantic_hash": "84378c995b878307728e2bfbd4f5fb75"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\PipelineSchoolDto.java": {
+    "mtime": 1788775111.695877,
+    "ast_hash": "34972b31f6ebaa4d17ca09ff91a42d1b",
+    "semantic_hash": "34972b31f6ebaa4d17ca09ff91a42d1b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\PlanDto.java": {
+    "mtime": 1788775111.696877,
+    "ast_hash": "cd1d82f749b5e3121547268d4b46ec8e",
+    "semantic_hash": "cd1d82f749b5e3121547268d4b46ec8e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\PlatformHealthDto.java": {
+    "mtime": 1788775111.698383,
+    "ast_hash": "4e0e50be7102b94128bf68d477157630",
+    "semantic_hash": "4e0e50be7102b94128bf68d477157630"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\RetentionPointDto.java": {
+    "mtime": 1788775111.7023952,
+    "ast_hash": "15b37c6ef6de37574869b9e25abe9494",
+    "semantic_hash": "15b37c6ef6de37574869b9e25abe9494"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\RevenueGrowthPointDto.java": {
+    "mtime": 1788775111.705396,
+    "ast_hash": "8fc89c2eaaa04c6f434501a6ab209e9a",
+    "semantic_hash": "8fc89c2eaaa04c6f434501a6ab209e9a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\SalesFunnelStepDto.java": {
+    "mtime": 1788775111.7063954,
+    "ast_hash": "3b525248d983d78e9aac3f73d9ed0592",
+    "semantic_hash": "3b525248d983d78e9aac3f73d9ed0592"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\SchoolDto.java": {
+    "mtime": 1788775111.707397,
+    "ast_hash": "73ee8b4b047f552e905a9d7f9f31362d",
+    "semantic_hash": "73ee8b4b047f552e905a9d7f9f31362d"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\SchoolSubscriptionDTO.java": {
+    "mtime": 1788775111.7089071,
+    "ast_hash": "bd63680c48fa6d78ab7fb319d9ea0ce9",
+    "semantic_hash": "bd63680c48fa6d78ab7fb319d9ea0ce9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\SchoolSubscriptionInstallmentDTO.java": {
+    "mtime": 1788775111.7099183,
+    "ast_hash": "d36c9f51b2afb6072d7256b23b1bfdd8",
+    "semantic_hash": "d36c9f51b2afb6072d7256b23b1bfdd8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\SuperAdminDashboardMetricsDto.java": {
+    "mtime": 1788775111.7119322,
+    "ast_hash": "14ff7c5ca126cb0588fe2abe2b5259e4",
+    "semantic_hash": "14ff7c5ca126cb0588fe2abe2b5259e4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\SuperAdminLogEntryDto.java": {
+    "mtime": 1788775111.7129345,
+    "ast_hash": "6d1c25005cccab63ffc17a98e68b8ace",
+    "semantic_hash": "6d1c25005cccab63ffc17a98e68b8ace"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\SuperAdminLogStatsDto.java": {
+    "mtime": 1788775111.7139323,
+    "ast_hash": "17f97b31e47652995e5cc2b2a6f17a74",
+    "semantic_hash": "17f97b31e47652995e5cc2b2a6f17a74"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\SupportMetricsDto.java": {
+    "mtime": 1788775111.7149343,
+    "ast_hash": "643b86f044f8196c6cffa589dfb444cb",
+    "semantic_hash": "643b86f044f8196c6cffa589dfb444cb"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\SystemConfigDto.java": {
+    "mtime": 1788775111.7159345,
+    "ast_hash": "d5cfab19489c6b23750dfc3c1b40ba21",
+    "semantic_hash": "d5cfab19489c6b23750dfc3c1b40ba21"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\UpcomingRenewalDto.java": {
+    "mtime": 1788775111.7169342,
+    "ast_hash": "ce9d41682e59568e1aab440ba97913a5",
+    "semantic_hash": "ce9d41682e59568e1aab440ba97913a5"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\UserDto.java": {
+    "mtime": 1788775111.717934,
+    "ast_hash": "ccb10540892ae44dc4980dfaff43d963",
+    "semantic_hash": "ccb10540892ae44dc4980dfaff43d963"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\superadmin\\UserRequestDTO.java": {
+    "mtime": 1788775111.719445,
+    "ast_hash": "6b975b1ed3407d20774b22c2bb6264a1",
+    "semantic_hash": "6b975b1ed3407d20774b22c2bb6264a1"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\user\\GrantAccessDTO.java": {
+    "mtime": 1788775111.7214596,
+    "ast_hash": "e5c98d3b15a73773b4c9c223a8849e6c",
+    "semantic_hash": "e5c98d3b15a73773b4c9c223a8849e6c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\user\\GrantAccessResponseDTO.java": {
+    "mtime": 1788775111.72246,
+    "ast_hash": "086bac1b45c1f126b54a6ea79b1bf0a8",
+    "semantic_hash": "086bac1b45c1f126b54a6ea79b1bf0a8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\usermanagement\\AccountRequestDTO.java": {
+    "mtime": 1788775111.7244587,
+    "ast_hash": "c0887fd0289b94694c92aba700f9ef08",
+    "semantic_hash": "c0887fd0289b94694c92aba700f9ef08"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\usermanagement\\ImpersonationResponseDTO.java": {
+    "mtime": 1788775111.725458,
+    "ast_hash": "68e87d01198c39f57da5860baffdf32a",
+    "semantic_hash": "68e87d01198c39f57da5860baffdf32a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\usermanagement\\UserActivityLogDTO.java": {
+    "mtime": 1788775111.7264578,
+    "ast_hash": "2c92deb41898d52f533d7e509a9e67e6",
+    "semantic_hash": "2c92deb41898d52f533d7e509a9e67e6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\usermanagement\\UserDTO.java": {
+    "mtime": 1788775111.7284627,
+    "ast_hash": "2f83599266567abdd47b691b8a73d423",
+    "semantic_hash": "2f83599266567abdd47b691b8a73d423"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\usermanagement\\UserDashboardStatsDTO.java": {
+    "mtime": 1788775111.73298,
+    "ast_hash": "6afbc43c723686350a0cf18adfff8669",
+    "semantic_hash": "6afbc43c723686350a0cf18adfff8669"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\usermanagement\\UserLoginHistoryDTO.java": {
+    "mtime": 1788775111.7359803,
+    "ast_hash": "9262a28486a45f1b6cb9e3eb9a5de9bd",
+    "semantic_hash": "9262a28486a45f1b6cb9e3eb9a5de9bd"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\dto\\usermanagement\\UserRequestDTO.java": {
+    "mtime": 1788775111.7369797,
+    "ast_hash": "d1d65ce3d15fc02e5eed7c57e20501c2",
+    "semantic_hash": "d1d65ce3d15fc02e5eed7c57e20501c2"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\AcademicYear.java": {
+    "mtime": 1788775111.7430356,
+    "ast_hash": "14341edb77ebaafb6767f1e0965f36c9",
+    "semantic_hash": "14341edb77ebaafb6767f1e0965f36c9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\AccountRequest.java": {
+    "mtime": 1788775111.7453115,
+    "ast_hash": "486729d19f45f50db2f2cbabb73b2233",
+    "semantic_hash": "486729d19f45f50db2f2cbabb73b2233"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\Attendance.java": {
+    "mtime": 1788775111.7469015,
+    "ast_hash": "6480d949018317323a78653fa178b064",
+    "semantic_hash": "6480d949018317323a78653fa178b064"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\AuditActions.java": {
+    "mtime": 1788775111.7479029,
+    "ast_hash": "7bdf3ba11d5614608a7ad447ab8d4a4f",
+    "semantic_hash": "7bdf3ba11d5614608a7ad447ab8d4a4f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\AuditLog.java": {
+    "mtime": 1788775111.748926,
+    "ast_hash": "c3737efb1b6fefc5b6018fbc9e1a6a8e",
+    "semantic_hash": "c3737efb1b6fefc5b6018fbc9e1a6a8e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\AuthSession.java": {
+    "mtime": 1788775111.7504141,
+    "ast_hash": "42cf8c7ee91898588313118b1909788d",
+    "semantic_hash": "42cf8c7ee91898588313118b1909788d"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\ClassSubjectAssignment.java": {
+    "mtime": 1788775111.7504141,
+    "ast_hash": "0469c4bcbb2da651493bdc7eeb20879b",
+    "semantic_hash": "0469c4bcbb2da651493bdc7eeb20879b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\ClassTeacherAssignment.java": {
+    "mtime": 1788775111.7516105,
+    "ast_hash": "1d06d7a90aded840444eecd1f3703a72",
+    "semantic_hash": "1d06d7a90aded840444eecd1f3703a72"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\CollectionPlan.java": {
+    "mtime": 1788775111.7527983,
+    "ast_hash": "3da9fe7d5ce258c2d185c3342c0c9587",
+    "semantic_hash": "3da9fe7d5ce258c2d185c3342c0c9587"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\CollectionPlanItem.java": {
+    "mtime": 1788775111.7539632,
+    "ast_hash": "245c1753f494f6d48855f20d5fee086e",
+    "semantic_hash": "245c1753f494f6d48855f20d5fee086e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\DataImportError.java": {
+    "mtime": 1788775111.7553341,
+    "ast_hash": "0b62a9b6400f6bf9dd70cb416890f981",
+    "semantic_hash": "0b62a9b6400f6bf9dd70cb416890f981"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\DataImportJob.java": {
+    "mtime": 1788775111.7563536,
+    "ast_hash": "e95a7c8433f8d7b661a47f92fe474683",
+    "semantic_hash": "e95a7c8433f8d7b661a47f92fe474683"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\Family.java": {
+    "mtime": 1788775111.7573495,
+    "ast_hash": "6ea1c53c38405cdc90e94cc0a9372bed",
+    "semantic_hash": "6ea1c53c38405cdc90e94cc0a9372bed"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\FeeCategory.java": {
+    "mtime": 1788775111.7583492,
+    "ast_hash": "bc1e8e02b9099bbf3a1e1a4915b6a8db",
+    "semantic_hash": "bc1e8e02b9099bbf3a1e1a4915b6a8db"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\FeeDue.java": {
+    "mtime": 1788775111.759349,
+    "ast_hash": "47402ef55f7c0b145a5e07b3915940d8",
+    "semantic_hash": "47402ef55f7c0b145a5e07b3915940d8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\FeeGenerationBatch.java": {
+    "mtime": 1788775111.7603161,
+    "ast_hash": "8f0209092df55b5de2d2cc96b087ab4e",
+    "semantic_hash": "8f0209092df55b5de2d2cc96b087ab4e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\FeeInvoice.java": {
+    "mtime": 1788775111.7617314,
+    "ast_hash": "849840b7d23d4c2d6ecc5242c7a69763",
+    "semantic_hash": "849840b7d23d4c2d6ecc5242c7a69763"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\FeePaymentAllocation.java": {
+    "mtime": 1788775111.7627468,
+    "ast_hash": "6e02291c98b58ee6497330f574e65d91",
+    "semantic_hash": "6e02291c98b58ee6497330f574e65d91"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\FeeStructure.java": {
+    "mtime": 1788775111.7713096,
+    "ast_hash": "d9ab2a448a1f162d697eed5e9a49b17d",
+    "semantic_hash": "d9ab2a448a1f162d697eed5e9a49b17d"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\FeeStructureItem.java": {
+    "mtime": 1788775111.7728493,
+    "ast_hash": "5d19547b5f785008f1dfbe313c6b28ab",
+    "semantic_hash": "5d19547b5f785008f1dfbe313c6b28ab"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\IdCardGeneration.java": {
+    "mtime": 1788775111.7760046,
+    "ast_hash": "52ffb365c1775c6cfe1061d330971a92",
+    "semantic_hash": "52ffb365c1775c6cfe1061d330971a92"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\ImpersonationSession.java": {
+    "mtime": 1788775111.7799087,
+    "ast_hash": "3e13a3ea1107f7abca6a6e2c9b9628b4",
+    "semantic_hash": "3e13a3ea1107f7abca6a6e2c9b9628b4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\OnboardingDraft.java": {
+    "mtime": 1788775111.781624,
+    "ast_hash": "b780e14c701c05eb8417348a3928a3e6",
+    "semantic_hash": "b780e14c701c05eb8417348a3928a3e6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\OnlineAdmission.java": {
+    "mtime": 1788775111.782801,
+    "ast_hash": "14ab893f3a2c9e83fb1a0de77e721ef7",
+    "semantic_hash": "14ab893f3a2c9e83fb1a0de77e721ef7"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\PasswordReset.java": {
+    "mtime": 1788775111.7838962,
+    "ast_hash": "9d3f8320a55289d22ffffb288c45caaf",
+    "semantic_hash": "9d3f8320a55289d22ffffb288c45caaf"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\PasswordResetToken.java": {
+    "mtime": 1788775111.7852771,
+    "ast_hash": "f1741c7bf6f822d44d9c253e5275f2b1",
+    "semantic_hash": "f1741c7bf6f822d44d9c253e5275f2b1"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\Payment.java": {
+    "mtime": 1788775111.7865238,
+    "ast_hash": "09896b089aa9ee2e33d4b71d577b9883",
+    "semantic_hash": "09896b089aa9ee2e33d4b71d577b9883"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\PlatformModule.java": {
+    "mtime": 1788775111.7877638,
+    "ast_hash": "2402be470d80ce85fa5c1decc22bb831",
+    "semantic_hash": "2402be470d80ce85fa5c1decc22bb831"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\School.java": {
+    "mtime": 1788775111.788764,
+    "ast_hash": "9f70b50a584ee55128cfafd23e3512b3",
+    "semantic_hash": "9f70b50a584ee55128cfafd23e3512b3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\SchoolAccount.java": {
+    "mtime": 1788775111.790313,
+    "ast_hash": "3212c925a4a06829ef5ff6af273693a7",
+    "semantic_hash": "3212c925a4a06829ef5ff6af273693a7"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\SchoolClass.java": {
+    "mtime": 1788775111.790823,
+    "ast_hash": "cdfd17fc0e0ce2bfc79243aaf0986aeb",
+    "semantic_hash": "cdfd17fc0e0ce2bfc79243aaf0986aeb"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\SchoolConfigOverride.java": {
+    "mtime": 1788775111.7921457,
+    "ast_hash": "eec1cfa9c84e8c8ba0625024b2680216",
+    "semantic_hash": "eec1cfa9c84e8c8ba0625024b2680216"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\SchoolModuleAccess.java": {
+    "mtime": 1788775111.7932506,
+    "ast_hash": "d71bfb38bf6185b93da5a5dc79843857",
+    "semantic_hash": "d71bfb38bf6185b93da5a5dc79843857"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\SchoolSubscription.java": {
+    "mtime": 1788775111.794271,
+    "ast_hash": "d5a69ba97c35b96c315c41d22ddaa3da",
+    "semantic_hash": "d5a69ba97c35b96c315c41d22ddaa3da"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\SchoolSubscriptionInstallment.java": {
+    "mtime": 1788775111.7964694,
+    "ast_hash": "d8c256d69b6c8943d3807db795dd4fad",
+    "semantic_hash": "d8c256d69b6c8943d3807db795dd4fad"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\Section.java": {
+    "mtime": 1788775111.797489,
+    "ast_hash": "499491fa65c88cafd14f9b7fd3db10da",
+    "semantic_hash": "499491fa65c88cafd14f9b7fd3db10da"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\Staff.java": {
+    "mtime": 1788775111.7984896,
+    "ast_hash": "6f9ea7c0e229e19f15339bf2c70ee06e",
+    "semantic_hash": "6f9ea7c0e229e19f15339bf2c70ee06e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\Student.java": {
+    "mtime": 1788775111.7994916,
+    "ast_hash": "84ff4df71b0e6d23738b4db643a12497",
+    "semantic_hash": "84ff4df71b0e6d23738b4db643a12497"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\StudentCategory.java": {
+    "mtime": 1788775111.8017218,
+    "ast_hash": "057f01e118dfb21a313d6afcb63860d6",
+    "semantic_hash": "057f01e118dfb21a313d6afcb63860d6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\StudentCertificate.java": {
+    "mtime": 1788775111.802739,
+    "ast_hash": "10f7404c95374da812697644e9dd9ff5",
+    "semantic_hash": "10f7404c95374da812697644e9dd9ff5"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\StudentDocument.java": {
+    "mtime": 1788775111.802739,
+    "ast_hash": "6ace520ac0b5a2eee792da414f2ae352",
+    "semantic_hash": "6ace520ac0b5a2eee792da414f2ae352"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\StudentFeeStructure.java": {
+    "mtime": 1788775111.8050983,
+    "ast_hash": "779c918930328f8ea7156798e4409fd1",
+    "semantic_hash": "779c918930328f8ea7156798e4409fd1"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\StudentHouse.java": {
+    "mtime": 1788775111.8057685,
+    "ast_hash": "62181658bc5d827958cd9725dae5646b",
+    "semantic_hash": "62181658bc5d827958cd9725dae5646b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\StudentLeave.java": {
+    "mtime": 1788775111.8067806,
+    "ast_hash": "dec543d019e736704d22a7be2b3de9ad",
+    "semantic_hash": "dec543d019e736704d22a7be2b3de9ad"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\StudentParent.java": {
+    "mtime": 1788775111.8077874,
+    "ast_hash": "42fe3b9a7faf2e3805f8bab72aad849f",
+    "semantic_hash": "42fe3b9a7faf2e3805f8bab72aad849f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\StudentParentId.java": {
+    "mtime": 1788775111.8095603,
+    "ast_hash": "6e050b66c50f25c8317308c28baee890",
+    "semantic_hash": "6e050b66c50f25c8317308c28baee890"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\StudentReferral.java": {
+    "mtime": 1788775111.8105583,
+    "ast_hash": "6e9f37e27332c3de9ff30792f28f12ac",
+    "semantic_hash": "6e9f37e27332c3de9ff30792f28f12ac"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\StudentSibling.java": {
+    "mtime": 1788775111.8116717,
+    "ast_hash": "e0ac8d69fbd5cd3e96a0b404ad87e02e",
+    "semantic_hash": "e0ac8d69fbd5cd3e96a0b404ad87e02e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\StudentSubjectEnrollment.java": {
+    "mtime": 1788775111.813693,
+    "ast_hash": "f1b6d6f2cf7281f5c84521000417f64e",
+    "semantic_hash": "f1b6d6f2cf7281f5c84521000417f64e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\Subject.java": {
+    "mtime": 1788775111.8148723,
+    "ast_hash": "8ac6dcfb8b23f1d39b5e986c21e11634",
+    "semantic_hash": "8ac6dcfb8b23f1d39b5e986c21e11634"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\SubscriptionPlan.java": {
+    "mtime": 1788775111.8159008,
+    "ast_hash": "54fe42822239d8cfcab0bf0cc1f70fd4",
+    "semantic_hash": "54fe42822239d8cfcab0bf0cc1f70fd4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\SuperAdminEmployee.java": {
+    "mtime": 1788775111.8169222,
+    "ast_hash": "1fceb715945dab544f7cce82ce854b6f",
+    "semantic_hash": "1fceb715945dab544f7cce82ce854b6f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\SupportTicket.java": {
+    "mtime": 1788775111.8189147,
+    "ast_hash": "7c4aebb8ebdd0da03d56d01d360aae60",
+    "semantic_hash": "7c4aebb8ebdd0da03d56d01d360aae60"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\TenantEntitlementOverride.java": {
+    "mtime": 1788775111.819913,
+    "ast_hash": "4412b6b008f81a8831fa4c17dba7ed52",
+    "semantic_hash": "4412b6b008f81a8831fa4c17dba7ed52"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\TicketCategory.java": {
+    "mtime": 1788775111.8209138,
+    "ast_hash": "48ef05058c1d9c9d41eee139ccd10e54",
+    "semantic_hash": "48ef05058c1d9c9d41eee139ccd10e54"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\TicketHistory.java": {
+    "mtime": 1788775111.8228981,
+    "ast_hash": "ba5646fbd14ff1df4755f6d9d18fabb7",
+    "semantic_hash": "ba5646fbd14ff1df4755f6d9d18fabb7"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\TimetableEntry.java": {
+    "mtime": 1788775111.8239856,
+    "ast_hash": "576917736dc2a612e81766e63b26c238",
+    "semantic_hash": "576917736dc2a612e81766e63b26c238"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\TimetablePeriod.java": {
+    "mtime": 1788775111.8250067,
+    "ast_hash": "39a807b817a3133008b2869d69fa3bcb",
+    "semantic_hash": "39a807b817a3133008b2869d69fa3bcb"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\User.java": {
+    "mtime": 1788775111.8265214,
+    "ast_hash": "9d2cc873c2b3bb1bd10a7a0c0fc14819",
+    "semantic_hash": "9d2cc873c2b3bb1bd10a7a0c0fc14819"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\UserActivityLog.java": {
+    "mtime": 1788775111.828535,
+    "ast_hash": "5d96046b99ec8d2c5f224ca156f8b8c4",
+    "semantic_hash": "5d96046b99ec8d2c5f224ca156f8b8c4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\UserLoginHistory.java": {
+    "mtime": 1788775111.8295326,
+    "ast_hash": "e5ba707d547fca91fea8254598d58413",
+    "semantic_hash": "e5ba707d547fca91fea8254598d58413"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\UserRequest.java": {
+    "mtime": 1788775111.8308067,
+    "ast_hash": "7d92155b13d21e67047541f8a2d42bd3",
+    "semantic_hash": "7d92155b13d21e67047541f8a2d42bd3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\UserRole.java": {
+    "mtime": 1788775111.8328283,
+    "ast_hash": "3016bfe54355673b443a024b90413233",
+    "semantic_hash": "3016bfe54355673b443a024b90413233"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\UserSchoolRole.java": {
+    "mtime": 1788775111.8338206,
+    "ast_hash": "d44de7939876b46122509747b77d0a24",
+    "semantic_hash": "d44de7939876b46122509747b77d0a24"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\auth\\PermissionDefinition.java": {
+    "mtime": 1788775111.8358254,
+    "ast_hash": "3ac327205170d0901665259396b862cb",
+    "semantic_hash": "3ac327205170d0901665259396b862cb"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\auth\\Role.java": {
+    "mtime": 1788775111.836821,
+    "ast_hash": "cc96bebc8f925947da5823085cd62850",
+    "semantic_hash": "cc96bebc8f925947da5823085cd62850"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\auth\\RoleArchetype.java": {
+    "mtime": 1788775111.8389072,
+    "ast_hash": "b877eff6e91321641e5264572be2da8f",
+    "semantic_hash": "b877eff6e91321641e5264572be2da8f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\auth\\RolePermission.java": {
+    "mtime": 1788775111.8410885,
+    "ast_hash": "3d7c021701b5b2a8bae24aa61c61cd18",
+    "semantic_hash": "3d7c021701b5b2a8bae24aa61c61cd18"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\auth\\UserAssignment.java": {
+    "mtime": 1788775111.842087,
+    "ast_hash": "734c3d6bdc46ba315a0fb4fd0a39d8d3",
+    "semantic_hash": "734c3d6bdc46ba315a0fb4fd0a39d8d3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\auth\\UserRoleMapping.java": {
+    "mtime": 1788775111.8435464,
+    "ast_hash": "9de3b535bdfa98f0b824bd6d505dd973",
+    "semantic_hash": "9de3b535bdfa98f0b824bd6d505dd973"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\communication\\CommunicationAnnouncement.java": {
+    "mtime": 1788775111.846563,
+    "ast_hash": "8f2aad46f28aefc8df649d345eaddd12",
+    "semantic_hash": "8f2aad46f28aefc8df649d345eaddd12"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\communication\\CommunicationAudienceType.java": {
+    "mtime": 1788775111.8475914,
+    "ast_hash": "b804d4d06e6648e0f31bccec65da849e",
+    "semantic_hash": "b804d4d06e6648e0f31bccec65da849e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\communication\\CommunicationChannel.java": {
+    "mtime": 1788775111.8502073,
+    "ast_hash": "309f1f9f9261921fe4d48a0c20662d85",
+    "semantic_hash": "309f1f9f9261921fe4d48a0c20662d85"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\communication\\CommunicationDelivery.java": {
+    "mtime": 1788775111.8526506,
+    "ast_hash": "20797cf7405579b1e2ea0feddc33e410",
+    "semantic_hash": "20797cf7405579b1e2ea0feddc33e410"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\communication\\CommunicationDeliveryStatus.java": {
+    "mtime": 1788775111.853667,
+    "ast_hash": "813c56a4817bed09371207a5697d36fd",
+    "semantic_hash": "813c56a4817bed09371207a5697d36fd"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\communication\\CommunicationImportance.java": {
+    "mtime": 1788775111.8545163,
+    "ast_hash": "31be91acd54a67d48dffc615bc7e0dfa",
+    "semantic_hash": "31be91acd54a67d48dffc615bc7e0dfa"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\communication\\CommunicationMessageType.java": {
+    "mtime": 1788775111.855597,
+    "ast_hash": "66fe391cfe6ee91db2aa189dabb975cd",
+    "semantic_hash": "66fe391cfe6ee91db2aa189dabb975cd"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\communication\\CommunicationStatus.java": {
+    "mtime": 1788775111.8576179,
+    "ast_hash": "759b195a1339c1759a624b1e9c9f28b2",
+    "semantic_hash": "759b195a1339c1759a624b1e9c9f28b2"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\communication\\CommunicationTemplate.java": {
+    "mtime": 1788775111.858618,
+    "ast_hash": "cc5235155ea32e824a3426b9ec8da79e",
+    "semantic_hash": "cc5235155ea32e824a3426b9ec8da79e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\crm\\CrmActivityLog.java": {
+    "mtime": 1788775111.860712,
+    "ast_hash": "b4d3e6699ba65e0c9981f56431624841",
+    "semantic_hash": "b4d3e6699ba65e0c9981f56431624841"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\crm\\CrmDemo.java": {
+    "mtime": 1788775111.861727,
+    "ast_hash": "1236247b601a0f5d748862bab64a1949",
+    "semantic_hash": "1236247b601a0f5d748862bab64a1949"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\crm\\CrmDemoMode.java": {
+    "mtime": 1788775111.8630757,
+    "ast_hash": "d6700263392b945558ff5fee07f4ae19",
+    "semantic_hash": "d6700263392b945558ff5fee07f4ae19"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\crm\\CrmDemoStatus.java": {
+    "mtime": 1788775111.8641002,
+    "ast_hash": "928048c73bd53abf8a89ae6eccb57e48",
+    "semantic_hash": "928048c73bd53abf8a89ae6eccb57e48"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\crm\\CrmFollowUp.java": {
+    "mtime": 1788775111.8650963,
+    "ast_hash": "079ac17ee74f239b7bca32e1c7548a70",
+    "semantic_hash": "079ac17ee74f239b7bca32e1c7548a70"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\crm\\CrmFollowUpAction.java": {
+    "mtime": 1788775111.866101,
+    "ast_hash": "85f62da6072f759f7a999b6642a98168",
+    "semantic_hash": "85f62da6072f759f7a999b6642a98168"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\crm\\CrmFollowUpStatus.java": {
+    "mtime": 1788775111.8670998,
+    "ast_hash": "1a3c7a2fdde1284416c7ad9275ea66a6",
+    "semantic_hash": "1a3c7a2fdde1284416c7ad9275ea66a6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\crm\\CrmLead.java": {
+    "mtime": 1788775111.869153,
+    "ast_hash": "5f5efd686703fdaf07caee57c524f128",
+    "semantic_hash": "5f5efd686703fdaf07caee57c524f128"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\crm\\CrmLeadSource.java": {
+    "mtime": 1788775111.8701653,
+    "ast_hash": "e1a7aaa7ee66748116c9d1a0006df46e",
+    "semantic_hash": "e1a7aaa7ee66748116c9d1a0006df46e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\crm\\CrmPipelineStage.java": {
+    "mtime": 1788775111.871697,
+    "ast_hash": "68d3d6f8218199744d53dccdfb1e5652",
+    "semantic_hash": "68d3d6f8218199744d53dccdfb1e5652"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\crm\\CrmQuotation.java": {
+    "mtime": 1788775111.8726926,
+    "ast_hash": "f1e739026dc85d841051998157f080ff",
+    "semantic_hash": "f1e739026dc85d841051998157f080ff"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\crm\\CrmQuotationStatus.java": {
+    "mtime": 1788775111.8732042,
+    "ast_hash": "6adf040065938738273cf8db9bcea4ad",
+    "semantic_hash": "6adf040065938738273cf8db9bcea4ad"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\superadmin\\Department.java": {
+    "mtime": 1788775111.8756247,
+    "ast_hash": "781144d0e13cc16119cfb2c3f9862b61",
+    "semantic_hash": "781144d0e13cc16119cfb2c3f9862b61"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\superadmin\\EmployeeAsset.java": {
+    "mtime": 1788775111.877627,
+    "ast_hash": "1b46c5a6a786f3f982cf8eacafd28667",
+    "semantic_hash": "1b46c5a6a786f3f982cf8eacafd28667"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\superadmin\\EmployeeAttendance.java": {
+    "mtime": 1788775111.8786297,
+    "ast_hash": "37cab1f18bfb5a981a6e19c3a73930b4",
+    "semantic_hash": "37cab1f18bfb5a981a6e19c3a73930b4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\superadmin\\EmployeeAuditLog.java": {
+    "mtime": 1788775111.8804908,
+    "ast_hash": "d1b7ebc2f0055883aca4130fdcc0fd8f",
+    "semantic_hash": "d1b7ebc2f0055883aca4130fdcc0fd8f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\superadmin\\EmployeeDocument.java": {
+    "mtime": 1788775111.881511,
+    "ast_hash": "a8aa965192a9d4808eff12daad08fc00",
+    "semantic_hash": "a8aa965192a9d4808eff12daad08fc00"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\superadmin\\EmployeeLeave.java": {
+    "mtime": 1788775111.88251,
+    "ast_hash": "cfc133ac9f75e52024493401abc4d10a",
+    "semantic_hash": "cfc133ac9f75e52024493401abc4d10a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\superadmin\\EmployeeLifecycle.java": {
+    "mtime": 1788775111.8842714,
+    "ast_hash": "2ac2cfeaf81fd6299b570c2ab14f0cda",
+    "semantic_hash": "2ac2cfeaf81fd6299b570c2ab14f0cda"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\superadmin\\EmployeeNote.java": {
+    "mtime": 1788775111.8852942,
+    "ast_hash": "5b7f054e968242c7924fbc4e42fd53da",
+    "semantic_hash": "5b7f054e968242c7924fbc4e42fd53da"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\superadmin\\EmployeePayroll.java": {
+    "mtime": 1788775111.8872871,
+    "ast_hash": "2d99ad915a173a73c900712f82f013d7",
+    "semantic_hash": "2d99ad915a173a73c900712f82f013d7"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\superadmin\\EmployeePerformance.java": {
+    "mtime": 1788775111.8872871,
+    "ast_hash": "80ca1051fa6a96486f3767e6f4660d15",
+    "semantic_hash": "80ca1051fa6a96486f3767e6f4660d15"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\entity\\superadmin\\EmployeeTimeline.java": {
+    "mtime": 1788775111.8896577,
+    "ast_hash": "b2c1bf8e626056f81170d8b042e22139",
+    "semantic_hash": "b2c1bf8e626056f81170d8b042e22139"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\exception\\BadRequestException.java": {
+    "mtime": 1788775111.8922246,
+    "ast_hash": "cdef58d38bb80dd17ab52706cb9d9947",
+    "semantic_hash": "cdef58d38bb80dd17ab52706cb9d9947"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\exception\\ErrorResponse.java": {
+    "mtime": 1788775111.8932436,
+    "ast_hash": "c71caafe87e42082988f3ef510e15c0c",
+    "semantic_hash": "c71caafe87e42082988f3ef510e15c0c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\exception\\ForbiddenException.java": {
+    "mtime": 1788775111.8945246,
+    "ast_hash": "ae1e76862940d62d68076a7462e6d0eb",
+    "semantic_hash": "ae1e76862940d62d68076a7462e6d0eb"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\exception\\GlobalExceptionHandler.java": {
+    "mtime": 1788775111.8955162,
+    "ast_hash": "65397380662ed2150400d71725bc4d56",
+    "semantic_hash": "65397380662ed2150400d71725bc4d56"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\exception\\ResourceNotFoundException.java": {
+    "mtime": 1788775111.8988345,
+    "ast_hash": "aae0e145eb08030bccc75c476569fb62",
+    "semantic_hash": "aae0e145eb08030bccc75c476569fb62"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\exception\\UnauthorizedException.java": {
+    "mtime": 1788775111.899611,
+    "ast_hash": "6a7a9dc9863fdee97ec8a093b2360576",
+    "semantic_hash": "6a7a9dc9863fdee97ec8a093b2360576"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\AcademicYearRepository.java": {
+    "mtime": 1788775111.9023666,
+    "ast_hash": "12515410d66e37e5552a5189d858cd45",
+    "semantic_hash": "12515410d66e37e5552a5189d858cd45"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\AccountRequestRepository.java": {
+    "mtime": 1788775111.9043655,
+    "ast_hash": "bab0f1cce7b7995eef5188d20ee7975a",
+    "semantic_hash": "bab0f1cce7b7995eef5188d20ee7975a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\AttendanceRepository.java": {
+    "mtime": 1788775111.9063642,
+    "ast_hash": "98835c9904505557de0b7daebde479b0",
+    "semantic_hash": "98835c9904505557de0b7daebde479b0"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\AuditLogRepository.java": {
+    "mtime": 1788775111.907365,
+    "ast_hash": "c7afef0544ae4ae265015b758462c6f8",
+    "semantic_hash": "c7afef0544ae4ae265015b758462c6f8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\AuthSessionRepository.java": {
+    "mtime": 1788775111.9083664,
+    "ast_hash": "1a34d90eee3c2a823bacc20dd1b6c198",
+    "semantic_hash": "1a34d90eee3c2a823bacc20dd1b6c198"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\ClassSubjectAssignmentRepository.java": {
+    "mtime": 1788775111.9103656,
+    "ast_hash": "974a43f2d6f1d5b5286c8ec5e6acf95e",
+    "semantic_hash": "974a43f2d6f1d5b5286c8ec5e6acf95e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\ClassTeacherAssignmentRepository.java": {
+    "mtime": 1788775111.9113674,
+    "ast_hash": "0279945327a1358a0a92fee88bd88cd0",
+    "semantic_hash": "0279945327a1358a0a92fee88bd88cd0"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\CollectionPlanItemRepository.java": {
+    "mtime": 1788775111.9127662,
+    "ast_hash": "3d0eea84ec1f246f6989987867c9cbc1",
+    "semantic_hash": "3d0eea84ec1f246f6989987867c9cbc1"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\CollectionPlanRepository.java": {
+    "mtime": 1788775111.9145682,
+    "ast_hash": "35e5aa336ab9a0f57c0e92299d4634e1",
+    "semantic_hash": "35e5aa336ab9a0f57c0e92299d4634e1"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\DataImportErrorRepository.java": {
+    "mtime": 1788775111.9155824,
+    "ast_hash": "07d6d086be6e20f5f8f8d39b82a073d6",
+    "semantic_hash": "07d6d086be6e20f5f8f8d39b82a073d6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\DataImportJobRepository.java": {
+    "mtime": 1788775111.9165826,
+    "ast_hash": "54c2eef083c944384dbf4cce21abfd8c",
+    "semantic_hash": "54c2eef083c944384dbf4cce21abfd8c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\FamilyRepository.java": {
+    "mtime": 1788775111.9179175,
+    "ast_hash": "7e35ab81e82112967bf1661fcf0e5d1e",
+    "semantic_hash": "7e35ab81e82112967bf1661fcf0e5d1e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\FeeCategoryRepository.java": {
+    "mtime": 1788775111.9199343,
+    "ast_hash": "deb13f3895f3cda0bcde00e331310512",
+    "semantic_hash": "deb13f3895f3cda0bcde00e331310512"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\FeeDueRepository.java": {
+    "mtime": 1788775111.9219346,
+    "ast_hash": "1b1ba12625a529c46728a8582bc830d9",
+    "semantic_hash": "1b1ba12625a529c46728a8582bc830d9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\FeeGenerationBatchRepository.java": {
+    "mtime": 1788775111.9234629,
+    "ast_hash": "a73119029248278252ac7f40ffd6478b",
+    "semantic_hash": "a73119029248278252ac7f40ffd6478b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\FeeInvoiceRepository.java": {
+    "mtime": 1788775111.924911,
+    "ast_hash": "902186f63fe4bb634697b365195d4007",
+    "semantic_hash": "902186f63fe4bb634697b365195d4007"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\FeePaymentAllocationRepository.java": {
+    "mtime": 1788775111.9259303,
+    "ast_hash": "12e3190f973b55a2e24d9a0263d09f51",
+    "semantic_hash": "12e3190f973b55a2e24d9a0263d09f51"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\FeeStructureItemRepository.java": {
+    "mtime": 1788775111.9269502,
+    "ast_hash": "cf9b339119ef07e5b57c50c418cc184b",
+    "semantic_hash": "cf9b339119ef07e5b57c50c418cc184b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\FeeStructureRepository.java": {
+    "mtime": 1788775111.9279497,
+    "ast_hash": "b75f031404a683afe9a9a97f8b598ead",
+    "semantic_hash": "b75f031404a683afe9a9a97f8b598ead"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\IdCardGenerationRepository.java": {
+    "mtime": 1788775111.9299467,
+    "ast_hash": "838ae396183145023d6a1aa21fc2cc21",
+    "semantic_hash": "838ae396183145023d6a1aa21fc2cc21"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\ImpersonationSessionRepository.java": {
+    "mtime": 1788775111.930597,
+    "ast_hash": "625ec0bdfaea425cb40fc0263eea40b2",
+    "semantic_hash": "625ec0bdfaea425cb40fc0263eea40b2"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\OnboardingDraftRepository.java": {
+    "mtime": 1788775111.93216,
+    "ast_hash": "a3c094ee2c325509a819acc2c4fe3303",
+    "semantic_hash": "a3c094ee2c325509a819acc2c4fe3303"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\OnlineAdmissionRepository.java": {
+    "mtime": 1788775111.9331868,
+    "ast_hash": "22c245a4c6423f7a5f0a6ccf9ffb9612",
+    "semantic_hash": "22c245a4c6423f7a5f0a6ccf9ffb9612"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\PasswordResetRepository.java": {
+    "mtime": 1788775111.9341834,
+    "ast_hash": "9be7881d77cb6a43df825f0c5c1bbb6f",
+    "semantic_hash": "9be7881d77cb6a43df825f0c5c1bbb6f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\PasswordResetTokenRepository.java": {
+    "mtime": 1788775111.9351845,
+    "ast_hash": "fbeb1a27d4c9d4b05d805a6a4e339c21",
+    "semantic_hash": "fbeb1a27d4c9d4b05d805a6a4e339c21"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\PaymentRepository.java": {
+    "mtime": 1788775111.9371803,
+    "ast_hash": "21f23fb488534d7a6012825e42a32e82",
+    "semantic_hash": "21f23fb488534d7a6012825e42a32e82"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\PlatformModuleRepository.java": {
+    "mtime": 1788775111.9381804,
+    "ast_hash": "936c7d6996db57c277cf33cd3f2fa3a1",
+    "semantic_hash": "936c7d6996db57c277cf33cd3f2fa3a1"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\SchoolAccountRepository.java": {
+    "mtime": 1788775111.9391785,
+    "ast_hash": "48ad96c501300d2be650b79bdb6a24ef",
+    "semantic_hash": "48ad96c501300d2be650b79bdb6a24ef"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\SchoolClassRepository.java": {
+    "mtime": 1788775111.940178,
+    "ast_hash": "c16c27bda67fce6cd2e5deb58ee9fa02",
+    "semantic_hash": "c16c27bda67fce6cd2e5deb58ee9fa02"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\SchoolConfigOverrideRepository.java": {
+    "mtime": 1788775111.9411786,
+    "ast_hash": "5f59a2aae2dc3a7f2984232e33c4d248",
+    "semantic_hash": "5f59a2aae2dc3a7f2984232e33c4d248"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\SchoolModuleAccessRepository.java": {
+    "mtime": 1788775111.942693,
+    "ast_hash": "b203394fecf1f4c4d82aa6f6adcf496e",
+    "semantic_hash": "b203394fecf1f4c4d82aa6f6adcf496e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\SchoolRepository.java": {
+    "mtime": 1788775111.9442048,
+    "ast_hash": "175ca960057a93b9d457a47e6fecb7ca",
+    "semantic_hash": "175ca960057a93b9d457a47e6fecb7ca"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\SchoolSubscriptionInstallmentRepository.java": {
+    "mtime": 1788775111.9461963,
+    "ast_hash": "595e71c741cae918fc93f82c3bb8b823",
+    "semantic_hash": "595e71c741cae918fc93f82c3bb8b823"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\SchoolSubscriptionRepository.java": {
+    "mtime": 1788775111.9482179,
+    "ast_hash": "45a6f50f9e91fa678601808e97d13b91",
+    "semantic_hash": "45a6f50f9e91fa678601808e97d13b91"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\SectionRepository.java": {
+    "mtime": 1788775111.9492204,
+    "ast_hash": "3a2dcc38f9988649c6202fab79d7d584",
+    "semantic_hash": "3a2dcc38f9988649c6202fab79d7d584"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\StaffRepository.java": {
+    "mtime": 1788775111.95022,
+    "ast_hash": "cad64cc037bf2dbcd6e73fedb4c40f7b",
+    "semantic_hash": "cad64cc037bf2dbcd6e73fedb4c40f7b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\StudentCategoryRepository.java": {
+    "mtime": 1788775111.9512148,
+    "ast_hash": "d701fed0b8d9b9959f3456cc4b7d2ab6",
+    "semantic_hash": "d701fed0b8d9b9959f3456cc4b7d2ab6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\StudentCertificateRepository.java": {
+    "mtime": 1788775111.9529955,
+    "ast_hash": "e25eeb7c606d49455e36ad1104111877",
+    "semantic_hash": "e25eeb7c606d49455e36ad1104111877"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\StudentDocumentRepository.java": {
+    "mtime": 1788775111.9540136,
+    "ast_hash": "40a7bbd678c31b791be4409d7c84dab3",
+    "semantic_hash": "40a7bbd678c31b791be4409d7c84dab3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\StudentFeeAggregation.java": {
+    "mtime": 1788775111.956014,
+    "ast_hash": "4d5e6dea57a18aba99cc9ad7dcdaba77",
+    "semantic_hash": "4d5e6dea57a18aba99cc9ad7dcdaba77"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\StudentFeeStructureRepository.java": {
+    "mtime": 1788775111.958016,
+    "ast_hash": "5f108865ecb07545ef5488c726ddb960",
+    "semantic_hash": "5f108865ecb07545ef5488c726ddb960"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\StudentHouseRepository.java": {
+    "mtime": 1788775111.9600167,
+    "ast_hash": "1b54de34d3ea1bc459b8e461b4292eca",
+    "semantic_hash": "1b54de34d3ea1bc459b8e461b4292eca"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\StudentLeaveRepository.java": {
+    "mtime": 1788775111.9613745,
+    "ast_hash": "5c6c243f33c878d77cf30004109e20a8",
+    "semantic_hash": "5c6c243f33c878d77cf30004109e20a8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\StudentParentRepository.java": {
+    "mtime": 1788775111.963001,
+    "ast_hash": "17da656078698e30aca38783086e750f",
+    "semantic_hash": "17da656078698e30aca38783086e750f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\StudentReferralRepository.java": {
+    "mtime": 1788775111.9640827,
+    "ast_hash": "9b6eb1d909e3f4d5a5dfbfb3ccb69cf8",
+    "semantic_hash": "9b6eb1d909e3f4d5a5dfbfb3ccb69cf8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\StudentRepository.java": {
+    "mtime": 1788775111.9652016,
+    "ast_hash": "3b3aa8625a1f7c213e0cc0584c9afac2",
+    "semantic_hash": "3b3aa8625a1f7c213e0cc0584c9afac2"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\StudentSiblingRepository.java": {
+    "mtime": 1788775111.9666407,
+    "ast_hash": "fed057ef409475d0dcaa6e42d75aa46d",
+    "semantic_hash": "fed057ef409475d0dcaa6e42d75aa46d"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\StudentSubjectEnrollmentRepository.java": {
+    "mtime": 1788775111.9676564,
+    "ast_hash": "fc123b8da2095cd6f59f0f84ee925dc7",
+    "semantic_hash": "fc123b8da2095cd6f59f0f84ee925dc7"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\SubjectRepository.java": {
+    "mtime": 1788775111.969657,
+    "ast_hash": "4364daf5dd4979f7e77db6ab0435953b",
+    "semantic_hash": "4364daf5dd4979f7e77db6ab0435953b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\SubscriptionPlanRepository.java": {
+    "mtime": 1788775111.970658,
+    "ast_hash": "c07f94dfb62498c32f0a740f43421871",
+    "semantic_hash": "c07f94dfb62498c32f0a740f43421871"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\SuperAdminEmployeeRepository.java": {
+    "mtime": 1788775111.9726582,
+    "ast_hash": "577f5c9e4a738b7afc79739847761d5e",
+    "semantic_hash": "577f5c9e4a738b7afc79739847761d5e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\SupportTicketRepository.java": {
+    "mtime": 1788775111.9731698,
+    "ast_hash": "54f095e44b315d1e767bf03c32321fcb",
+    "semantic_hash": "54f095e44b315d1e767bf03c32321fcb"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\TenantEntitlementOverrideRepository.java": {
+    "mtime": 1788775111.975195,
+    "ast_hash": "7cdff95842a9d62174b28e26dedc0dac",
+    "semantic_hash": "7cdff95842a9d62174b28e26dedc0dac"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\TicketCategoryRepository.java": {
+    "mtime": 1788775111.9761949,
+    "ast_hash": "fbaba773deb6db737c2cff22df5741a4",
+    "semantic_hash": "fbaba773deb6db737c2cff22df5741a4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\TicketHistoryRepository.java": {
+    "mtime": 1788775111.977178,
+    "ast_hash": "e948cf340d7c865a462bf47b641a9dda",
+    "semantic_hash": "e948cf340d7c865a462bf47b641a9dda"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\TimetableEntryRepository.java": {
+    "mtime": 1788775111.9781916,
+    "ast_hash": "7b5c0716832ce2945b1193cfd66098c9",
+    "semantic_hash": "7b5c0716832ce2945b1193cfd66098c9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\TimetablePeriodRepository.java": {
+    "mtime": 1788775111.9801936,
+    "ast_hash": "e6ef411c8fc9f7270ae58c898c4cb496",
+    "semantic_hash": "e6ef411c8fc9f7270ae58c898c4cb496"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\UserActivityLogRepository.java": {
+    "mtime": 1788775111.9811938,
+    "ast_hash": "22428e752d869afdf9710803ef7dff2c",
+    "semantic_hash": "22428e752d869afdf9710803ef7dff2c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\UserLoginHistoryRepository.java": {
+    "mtime": 1788775111.982195,
+    "ast_hash": "8469a0f420aabc07a5294e543671871e",
+    "semantic_hash": "8469a0f420aabc07a5294e543671871e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\UserRepository.java": {
+    "mtime": 1788775111.9831927,
+    "ast_hash": "c1f9a9fefe826e9b152c418811f4936e",
+    "semantic_hash": "c1f9a9fefe826e9b152c418811f4936e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\UserRequestRepository.java": {
+    "mtime": 1788775111.984707,
+    "ast_hash": "ac63a3ae4f85c34167b29f876e4f72e8",
+    "semantic_hash": "ac63a3ae4f85c34167b29f876e4f72e8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\UserSchoolRoleRepository.java": {
+    "mtime": 1788775111.985723,
+    "ast_hash": "f2f89aa4d0fc5391e3f3eb6e1aaa283f",
+    "semantic_hash": "f2f89aa4d0fc5391e3f3eb6e1aaa283f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\auth\\PermissionDefinitionRepository.java": {
+    "mtime": 1788775111.9897232,
+    "ast_hash": "3ae33690a24bb14cc6192c2d12da58e0",
+    "semantic_hash": "3ae33690a24bb14cc6192c2d12da58e0"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\auth\\RolePermissionRepository.java": {
+    "mtime": 1788775111.9917219,
+    "ast_hash": "e57d8ae3dc361b54c9a5042b4627b398",
+    "semantic_hash": "e57d8ae3dc361b54c9a5042b4627b398"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\auth\\RoleRepository.java": {
+    "mtime": 1788775111.992917,
+    "ast_hash": "8104becc1850b97cc63b832b01f40f60",
+    "semantic_hash": "8104becc1850b97cc63b832b01f40f60"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\auth\\UserAssignmentRepository.java": {
+    "mtime": 1788775111.9939334,
+    "ast_hash": "2cc7e297309e64be5c0849a55ebe985b",
+    "semantic_hash": "2cc7e297309e64be5c0849a55ebe985b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\auth\\UserRoleMappingRepository.java": {
+    "mtime": 1788775111.9954436,
+    "ast_hash": "9a1012102f5cd14d9bd9a0ed2b2cd7db",
+    "semantic_hash": "9a1012102f5cd14d9bd9a0ed2b2cd7db"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\communication\\CommunicationAnnouncementRepository.java": {
+    "mtime": 1788775111.9974568,
+    "ast_hash": "4cd2feb8f55c650ee5ac4fe138bf4e0e",
+    "semantic_hash": "4cd2feb8f55c650ee5ac4fe138bf4e0e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\communication\\CommunicationDeliveryRepository.java": {
+    "mtime": 1788775111.998458,
+    "ast_hash": "09f3efe46e2bf53abe019583e7d8da71",
+    "semantic_hash": "09f3efe46e2bf53abe019583e7d8da71"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\communication\\CommunicationTemplateRepository.java": {
+    "mtime": 1788775112.0004575,
+    "ast_hash": "45f893f8d8a6401a3ef95b292795216e",
+    "semantic_hash": "45f893f8d8a6401a3ef95b292795216e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\crm\\CrmActivityLogRepository.java": {
+    "mtime": 1788775112.0014598,
+    "ast_hash": "c5b78ff26a768209a4dfb7fbf7f0f98a",
+    "semantic_hash": "c5b78ff26a768209a4dfb7fbf7f0f98a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\crm\\CrmDemoRepository.java": {
+    "mtime": 1788775112.003458,
+    "ast_hash": "4fadaf81367fddcbc2b8c15049cb349b",
+    "semantic_hash": "4fadaf81367fddcbc2b8c15049cb349b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\crm\\CrmFollowUpRepository.java": {
+    "mtime": 1788775112.004458,
+    "ast_hash": "5a402e1ed569486ab681fd553afb762a",
+    "semantic_hash": "5a402e1ed569486ab681fd553afb762a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\crm\\CrmLeadRepository.java": {
+    "mtime": 1788775112.0059695,
+    "ast_hash": "c15d70758d00550d85385072de246a01",
+    "semantic_hash": "c15d70758d00550d85385072de246a01"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\crm\\CrmQuotationRepository.java": {
+    "mtime": 1788775112.0069847,
+    "ast_hash": "d704d8863c9e83b33366781215dd0d97",
+    "semantic_hash": "d704d8863c9e83b33366781215dd0d97"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\superadmin\\DepartmentRepository.java": {
+    "mtime": 1788775112.008688,
+    "ast_hash": "67e266177abaed7ac70306b58820327d",
+    "semantic_hash": "67e266177abaed7ac70306b58820327d"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\superadmin\\EmployeeAssetRepository.java": {
+    "mtime": 1788775112.0096872,
+    "ast_hash": "bad47190be02ab0c1a18b0b952bac739",
+    "semantic_hash": "bad47190be02ab0c1a18b0b952bac739"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\superadmin\\EmployeeAttendanceRepository.java": {
+    "mtime": 1788775112.0126884,
+    "ast_hash": "af0b2cea4352576caa0312ade53e3933",
+    "semantic_hash": "af0b2cea4352576caa0312ade53e3933"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\superadmin\\EmployeeAuditLogRepository.java": {
+    "mtime": 1788775112.013688,
+    "ast_hash": "da921178f7aa1e8f110fb0003c44058c",
+    "semantic_hash": "da921178f7aa1e8f110fb0003c44058c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\superadmin\\EmployeeDocumentRepository.java": {
+    "mtime": 1788775112.0146892,
+    "ast_hash": "5140606e857efda7b450322bf750c901",
+    "semantic_hash": "5140606e857efda7b450322bf750c901"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\superadmin\\EmployeeLeaveRepository.java": {
+    "mtime": 1788775112.016202,
+    "ast_hash": "fdd84a110fbbaf86dd751ec0cdae8ecf",
+    "semantic_hash": "fdd84a110fbbaf86dd751ec0cdae8ecf"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\superadmin\\EmployeeLifecycleRepository.java": {
+    "mtime": 1788775112.0172167,
+    "ast_hash": "a5845bf846a321f5c5cd17989add0538",
+    "semantic_hash": "a5845bf846a321f5c5cd17989add0538"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\superadmin\\EmployeeNoteRepository.java": {
+    "mtime": 1788775112.0182168,
+    "ast_hash": "c6b316991c8d323250ea065da7361676",
+    "semantic_hash": "c6b316991c8d323250ea065da7361676"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\superadmin\\EmployeePayrollRepository.java": {
+    "mtime": 1788775112.0192182,
+    "ast_hash": "856f80430005c10f6f275621f67be3f9",
+    "semantic_hash": "856f80430005c10f6f275621f67be3f9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\superadmin\\EmployeePerformanceRepository.java": {
+    "mtime": 1788775112.0212164,
+    "ast_hash": "b6b873ab406a96c43d23a477e85f6153",
+    "semantic_hash": "b6b873ab406a96c43d23a477e85f6153"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\repository\\superadmin\\EmployeeTimelineRepository.java": {
+    "mtime": 1788775112.0222166,
+    "ast_hash": "011b01a04fea1e7717e752c03c149878",
+    "semantic_hash": "011b01a04fea1e7717e752c03c149878"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\security\\AuthContextHolder.java": {
+    "mtime": 1788775112.0249648,
+    "ast_hash": "81ff917866d9b93a72d66c91fb690cb3",
+    "semantic_hash": "81ff917866d9b93a72d66c91fb690cb3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\security\\AuthContextService.java": {
+    "mtime": 1788775112.0272095,
+    "ast_hash": "1a57be2859e502da0f208b3d797514ce",
+    "semantic_hash": "1a57be2859e502da0f208b3d797514ce"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\security\\AuthFilterConfig.java": {
+    "mtime": 1788775112.0302222,
+    "ast_hash": "e5cec13ac20232163a36f4756d6a6f34",
+    "semantic_hash": "e5cec13ac20232163a36f4756d6a6f34"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\security\\AuthenticatedUser.java": {
+    "mtime": 1788775112.0342221,
+    "ast_hash": "9032ab18093a98d4532e3ae105fa1c2b",
+    "semantic_hash": "9032ab18093a98d4532e3ae105fa1c2b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\security\\JwtAuthenticationFilter.java": {
+    "mtime": 1788775112.0372236,
+    "ast_hash": "978032f6e908c4ab81a63e6f98a337ca",
+    "semantic_hash": "978032f6e908c4ab81a63e6f98a337ca"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\security\\JwtUtil.java": {
+    "mtime": 1788775112.0388162,
+    "ast_hash": "1c9a4c0492a216a738fa6511f6e7909e",
+    "semantic_hash": "1c9a4c0492a216a738fa6511f6e7909e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\security\\PermissionAuthorizationInterceptor.java": {
+    "mtime": 1788775112.0411355,
+    "ast_hash": "85de7d76c66db52a1449afadf25413c6",
+    "semantic_hash": "85de7d76c66db52a1449afadf25413c6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\security\\PermissionRequired.java": {
+    "mtime": 1788775112.0431342,
+    "ast_hash": "e1350ec89f7d1914176215a41a0e0d3c",
+    "semantic_hash": "e1350ec89f7d1914176215a41a0e0d3c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\security\\RoleAuthorizationInterceptor.java": {
+    "mtime": 1788775112.0451362,
+    "ast_hash": "ea08755752c33e2812ee4f922949d242",
+    "semantic_hash": "ea08755752c33e2812ee4f922949d242"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\security\\RoleRequired.java": {
+    "mtime": 1788775112.0471346,
+    "ast_hash": "6b83c5b502086012d98e0908e5637101",
+    "semantic_hash": "6b83c5b502086012d98e0908e5637101"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\seed\\LoginAccessDataSeeder.java": {
+    "mtime": 1788775112.049643,
+    "ast_hash": "0d012d9f6e932f3bc5d07fca29e763f5",
+    "semantic_hash": "0d012d9f6e932f3bc5d07fca29e763f5"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\AcademicService.java": {
+    "mtime": 1788775112.0526607,
+    "ast_hash": "e9661c39a1434022f840b23e285c0b87",
+    "semantic_hash": "e9661c39a1434022f840b23e285c0b87"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\AttendanceService.java": {
+    "mtime": 1788775112.0554876,
+    "ast_hash": "8a66cc098f92bfd510a797e52cb97d5d",
+    "semantic_hash": "8a66cc098f92bfd510a797e52cb97d5d"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\AuditLogService.java": {
+    "mtime": 1788775112.0584896,
+    "ast_hash": "6209ade1b5e7b9afb4cdb4eef3f51016",
+    "semantic_hash": "6209ade1b5e7b9afb4cdb4eef3f51016"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\AuthService.java": {
+    "mtime": 1788775112.0599968,
+    "ast_hash": "a94b43a72300256cd57bf9d5a87e200a",
+    "semantic_hash": "a94b43a72300256cd57bf9d5a87e200a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\CatalogService.java": {
+    "mtime": 1788775112.0620067,
+    "ast_hash": "adcf7d9e7203e91348bd978aa4eed13b",
+    "semantic_hash": "adcf7d9e7203e91348bd978aa4eed13b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\DashboardService.java": {
+    "mtime": 1788775112.0638733,
+    "ast_hash": "674a6c14cb0a2158cedc1872dbb7c9f0",
+    "semantic_hash": "674a6c14cb0a2158cedc1872dbb7c9f0"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\DataImportService.java": {
+    "mtime": 1788775112.064963,
+    "ast_hash": "5cefb5b89d4d7514beda2cf554a38685",
+    "semantic_hash": "5cefb5b89d4d7514beda2cf554a38685"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\EntitlementService.java": {
+    "mtime": 1788775112.067497,
+    "ast_hash": "391d85bea0b9f61c1947b9a1755c711e",
+    "semantic_hash": "391d85bea0b9f61c1947b9a1755c711e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\FamilyService.java": {
+    "mtime": 1788775112.0689516,
+    "ast_hash": "57fb1e880690b5486ff0e897d93cb64e",
+    "semantic_hash": "57fb1e880690b5486ff0e897d93cb64e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\FeeDueService.java": {
+    "mtime": 1788775112.0699646,
+    "ast_hash": "dd56498cbe7d97810fa7cb67f08204f5",
+    "semantic_hash": "dd56498cbe7d97810fa7cb67f08204f5"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\FeeMasterService.java": {
+    "mtime": 1788775112.0716898,
+    "ast_hash": "db6f44dadc02b7897ce3b27346a0ed08",
+    "semantic_hash": "db6f44dadc02b7897ce3b27346a0ed08"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\FeePaymentService.java": {
+    "mtime": 1788775112.0747135,
+    "ast_hash": "adab7cb1ab890fed510a70f02e5d32d0",
+    "semantic_hash": "adab7cb1ab890fed510a70f02e5d32d0"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\FeeRecordService.java": {
+    "mtime": 1788775112.0767138,
+    "ast_hash": "ebcae83d3f86c44f01232232ef0a1ce8",
+    "semantic_hash": "ebcae83d3f86c44f01232232ef0a1ce8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\IdCardGenerationService.java": {
+    "mtime": 1788775112.0787134,
+    "ast_hash": "8ee008b1c6152328fabb6424b55115a1",
+    "semantic_hash": "8ee008b1c6152328fabb6424b55115a1"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\OnboardingDraftService.java": {
+    "mtime": 1788775112.0802257,
+    "ast_hash": "31f7a01bbcf237b3f9dda9732a080ac6",
+    "semantic_hash": "31f7a01bbcf237b3f9dda9732a080ac6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\OnboardingService.java": {
+    "mtime": 1788775112.0822408,
+    "ast_hash": "0df5d84f28b0594a3f2435bed41108cb",
+    "semantic_hash": "0df5d84f28b0594a3f2435bed41108cb"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\OnlineAdmissionService.java": {
+    "mtime": 1788775112.0842438,
+    "ast_hash": "315da9e80882d65b8928059d54793031",
+    "semantic_hash": "315da9e80882d65b8928059d54793031"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\ParentService.java": {
+    "mtime": 1788775112.0850136,
+    "ast_hash": "318f14f6d996fa4a6c3686a8d35f5ca3",
+    "semantic_hash": "318f14f6d996fa4a6c3686a8d35f5ca3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\SchoolClassService.java": {
+    "mtime": 1788775112.0870292,
+    "ast_hash": "720e6eea483f7379c90a7059123e0ac9",
+    "semantic_hash": "720e6eea483f7379c90a7059123e0ac9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\SchoolService.java": {
+    "mtime": 1788775112.0880299,
+    "ast_hash": "c06075be4c718842db0235be0d4fa2ec",
+    "semantic_hash": "c06075be4c718842db0235be0d4fa2ec"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\StaffService.java": {
+    "mtime": 1788775112.0890293,
+    "ast_hash": "9ab2fe48bd4cd5b86d31438a5f5e3af4",
+    "semantic_hash": "9ab2fe48bd4cd5b86d31438a5f5e3af4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\StudentCategoryService.java": {
+    "mtime": 1788775112.0905426,
+    "ast_hash": "1e2349fe1b324055fdee3d09b2a47c57",
+    "semantic_hash": "1e2349fe1b324055fdee3d09b2a47c57"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\StudentCertificateService.java": {
+    "mtime": 1788775112.0925593,
+    "ast_hash": "2512c65a329e0e1f511cc44bd6f95b1b",
+    "semantic_hash": "2512c65a329e0e1f511cc44bd6f95b1b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\StudentHouseService.java": {
+    "mtime": 1788775112.094558,
+    "ast_hash": "f217d2a50167b8dcbc787be5878c7397",
+    "semantic_hash": "f217d2a50167b8dcbc787be5878c7397"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\StudentLeaveService.java": {
+    "mtime": 1788775112.0955577,
+    "ast_hash": "51b4daa87277dcc3b16fe148b8223770",
+    "semantic_hash": "51b4daa87277dcc3b16fe148b8223770"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\StudentReferralService.java": {
+    "mtime": 1788775112.0975578,
+    "ast_hash": "7057abe9b35e8c7179fb7d740f3a7184",
+    "semantic_hash": "7057abe9b35e8c7179fb7d740f3a7184"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\StudentService.java": {
+    "mtime": 1788775112.1000051,
+    "ast_hash": "f5061aad92fc17aa0c5cf7b634a2322f",
+    "semantic_hash": "f5061aad92fc17aa0c5cf7b634a2322f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\StudentSiblingService.java": {
+    "mtime": 1788775112.1046078,
+    "ast_hash": "acb7a3c64661d666317da7407d97ccd4",
+    "semantic_hash": "acb7a3c64661d666317da7407d97ccd4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\SupportTicketService.java": {
+    "mtime": 1788775112.1056092,
+    "ast_hash": "3f8c03cc10237fe6e8f7067a65bf6b62",
+    "semantic_hash": "3f8c03cc10237fe6e8f7067a65bf6b62"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\TicketCategoryService.java": {
+    "mtime": 1788775112.1070585,
+    "ast_hash": "cac8342782a5dd47fffc05e667bdf3af",
+    "semantic_hash": "cac8342782a5dd47fffc05e667bdf3af"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\auth\\AuthManagementService.java": {
+    "mtime": 1788775112.1094785,
+    "ast_hash": "29e5246948a6d5e398550a1f70d10213",
+    "semantic_hash": "29e5246948a6d5e398550a1f70d10213"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\auth\\AuthorizationService.java": {
+    "mtime": 1788775112.110472,
+    "ast_hash": "394a626f76a44a5d803473000a6e99f3",
+    "semantic_hash": "394a626f76a44a5d803473000a6e99f3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\auth\\RoleManagementService.java": {
+    "mtime": 1788775112.1133046,
+    "ast_hash": "deace6d1fabded2074a327e4405cc695",
+    "semantic_hash": "deace6d1fabded2074a327e4405cc695"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\auth\\RoleSyncService.java": {
+    "mtime": 1788775112.1143222,
+    "ast_hash": "e95dbc6f874796ada927e426f8f5f9f3",
+    "semantic_hash": "e95dbc6f874796ada927e426f8f5f9f3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\finance\\CollectionPlanService.java": {
+    "mtime": 1788775112.1178122,
+    "ast_hash": "6e863f7a0676bee838af45da343f7370",
+    "semantic_hash": "6e863f7a0676bee838af45da343f7370"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\finance\\SchoolAccountService.java": {
+    "mtime": 1788775112.1190693,
+    "ast_hash": "42411446a1aa14cefebac1e2f386f7ef",
+    "semantic_hash": "42411446a1aa14cefebac1e2f386f7ef"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\finance\\StudentEligibilityService.java": {
+    "mtime": 1788775112.1200852,
+    "ast_hash": "1a34f51b4b42b1d63e1c6dca6c05d0f5",
+    "semantic_hash": "1a34f51b4b42b1d63e1c6dca6c05d0f5"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\impl\\FeeDueServiceImpl.java": {
+    "mtime": 1788775112.1225996,
+    "ast_hash": "b5e3b447db13a5061f57f500c2584966",
+    "semantic_hash": "b5e3b447db13a5061f57f500c2584966"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\impl\\FeeMasterServiceImpl.java": {
+    "mtime": 1788775112.125264,
+    "ast_hash": "e4efbd325095107eecfb8bc7f4964b51",
+    "semantic_hash": "e4efbd325095107eecfb8bc7f4964b51"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\impl\\FeePaymentServiceImpl.java": {
+    "mtime": 1788775112.1272802,
+    "ast_hash": "966c578c59c47bf8d85fe8051a973be4",
+    "semantic_hash": "966c578c59c47bf8d85fe8051a973be4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\impl\\FeeRecordServiceImpl.java": {
+    "mtime": 1788775112.129527,
+    "ast_hash": "965aeeaa9d29681b58d5ea1c1c7e11bb",
+    "semantic_hash": "965aeeaa9d29681b58d5ea1c1c7e11bb"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\CommunicationCenterService.java": {
+    "mtime": 1788775112.1315155,
+    "ast_hash": "11da0381a15d4e8361883689531f113c",
+    "semantic_hash": "11da0381a15d4e8361883689531f113c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\DepartmentService.java": {
+    "mtime": 1788775112.1315155,
+    "ast_hash": "c7ac039d4315a57c558131cf40dbc3d7",
+    "semantic_hash": "c7ac039d4315a57c558131cf40dbc3d7"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\EmployeeAssetService.java": {
+    "mtime": 1788775112.1340878,
+    "ast_hash": "22c8eaa9fab24b46852819360743a886",
+    "semantic_hash": "22c8eaa9fab24b46852819360743a886"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\EmployeeAttendanceService.java": {
+    "mtime": 1788775112.1360805,
+    "ast_hash": "7579b0bf5f6923f1bdeabd97eef1f255",
+    "semantic_hash": "7579b0bf5f6923f1bdeabd97eef1f255"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\EmployeeAuditLogService.java": {
+    "mtime": 1788775112.1370833,
+    "ast_hash": "1282eeb00dc6ce4180edeed32b06d0f6",
+    "semantic_hash": "1282eeb00dc6ce4180edeed32b06d0f6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\EmployeeDocumentService.java": {
+    "mtime": 1788775112.13933,
+    "ast_hash": "ab14804c820a629bc75f6f6dfc24ae7d",
+    "semantic_hash": "ab14804c820a629bc75f6f6dfc24ae7d"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\EmployeeLeaveService.java": {
+    "mtime": 1788775112.1413307,
+    "ast_hash": "077b73504cbd18e22f620aee9fb2dcf0",
+    "semantic_hash": "077b73504cbd18e22f620aee9fb2dcf0"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\EmployeeLifecycleService.java": {
+    "mtime": 1788775112.1428275,
+    "ast_hash": "5d46b70859718c749d87bca0d1cc5744",
+    "semantic_hash": "5d46b70859718c749d87bca0d1cc5744"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\EmployeeNoteService.java": {
+    "mtime": 1788775112.1433406,
+    "ast_hash": "5179f95851ab31833ac2ed4649e633cf",
+    "semantic_hash": "5179f95851ab31833ac2ed4649e633cf"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\EmployeePayrollService.java": {
+    "mtime": 1788775112.1454875,
+    "ast_hash": "1bac6298a677a61b5e3e5e056918a5b3",
+    "semantic_hash": "1bac6298a677a61b5e3e5e056918a5b3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\EmployeePerformanceService.java": {
+    "mtime": 1788775112.1471624,
+    "ast_hash": "82870f75eca451a07fb419966987b237",
+    "semantic_hash": "82870f75eca451a07fb419966987b237"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\EmployeeTimelineService.java": {
+    "mtime": 1788775112.148176,
+    "ast_hash": "56be4bbfc19308562ba56a4cca1d76af",
+    "semantic_hash": "56be4bbfc19308562ba56a4cca1d76af"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\SalesCrmService.java": {
+    "mtime": 1788775112.150177,
+    "ast_hash": "e63fc3bb3dca1dcab55ddab1f32610dd",
+    "semantic_hash": "e63fc3bb3dca1dcab55ddab1f32610dd"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\SchoolSubscriptionService.java": {
+    "mtime": 1788775112.1513982,
+    "ast_hash": "c6a20d11f41b3d5bec8ef7e5ad3322a0",
+    "semantic_hash": "c6a20d11f41b3d5bec8ef7e5ad3322a0"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\SuperAdminConfigService.java": {
+    "mtime": 1788775112.1524196,
+    "ast_hash": "3affddcfec2a9693adc31a901ff3dd1e",
+    "semantic_hash": "3affddcfec2a9693adc31a901ff3dd1e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\SuperAdminDashboardService.java": {
+    "mtime": 1788775112.1559432,
+    "ast_hash": "81154c88cba08a070a6254577f15ca30",
+    "semantic_hash": "81154c88cba08a070a6254577f15ca30"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\SuperAdminEmployeeService.java": {
+    "mtime": 1788775112.1590688,
+    "ast_hash": "4b4b410938f833edfff0e586a69b63ee",
+    "semantic_hash": "4b4b410938f833edfff0e586a69b63ee"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\SuperAdminLogService.java": {
+    "mtime": 1788775112.1605654,
+    "ast_hash": "b356d08ff2c86c0f732104ecad39aa0e",
+    "semantic_hash": "b356d08ff2c86c0f732104ecad39aa0e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\SuperAdminModuleService.java": {
+    "mtime": 1788775112.162508,
+    "ast_hash": "3ec6706bda64adec4f0d799e710454d8",
+    "semantic_hash": "3ec6706bda64adec4f0d799e710454d8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\SuperAdminPlanService.java": {
+    "mtime": 1788775112.1646976,
+    "ast_hash": "b4c75067624057cfc3528baa686ae8b8",
+    "semantic_hash": "b4c75067624057cfc3528baa686ae8b8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\SuperAdminSchoolService.java": {
+    "mtime": 1788775112.1657245,
+    "ast_hash": "cbb2bf2da37408de57ee9468fb4ad58a",
+    "semantic_hash": "cbb2bf2da37408de57ee9468fb4ad58a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\UserManagementService.java": {
+    "mtime": 1788775112.1672423,
+    "ast_hash": "0f8b2afb43f5299a685e739e411b47e4",
+    "semantic_hash": "0f8b2afb43f5299a685e739e411b47e4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\superadmin\\UserSupportService.java": {
+    "mtime": 1788775112.1707506,
+    "ast_hash": "ef132c2beed95b02d1f188860fabae48",
+    "semantic_hash": "ef132c2beed95b02d1f188860fabae48"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\java\\com\\school\\erp\\service\\user\\UserAccessService.java": {
+    "mtime": 1788775112.1732774,
+    "ast_hash": "a16cb7fb82cab8cf0db32422c255a4fe",
+    "semantic_hash": "a16cb7fb82cab8cf0db32422c255a4fe"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\auth-catalog.json": {
+    "mtime": 1788775112.178386,
+    "ast_hash": "3fa9e08b862a589b9bafd1e42fd9677c",
+    "semantic_hash": "3fa9e08b862a589b9bafd1e42fd9677c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V10__add_step11_to_onboarding_drafts.sql": {
+    "mtime": 1788775112.1804047,
+    "ast_hash": "ddbc65468ab270baf7ff61cbdd1b3fb8",
+    "semantic_hash": "ddbc65468ab270baf7ff61cbdd1b3fb8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V11__catalog_and_entitlements_sample_data.sql": {
+    "mtime": 1788775112.182402,
+    "ast_hash": "2c2328ce049994e464eb44e05fb2b353",
+    "semantic_hash": "2c2328ce049994e464eb44e05fb2b353"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V12__superadmin_sample_data.sql": {
+    "mtime": 1788775112.1836793,
+    "ast_hash": "1227517f35f0fdb193d637dd4b5039db",
+    "semantic_hash": "1227517f35f0fdb193d637dd4b5039db"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V13__comprehensive_erp_modules.sql": {
+    "mtime": 1788775112.1847084,
+    "ast_hash": "5686e254bf4c31eadabe5f8540dec337",
+    "semantic_hash": "5686e254bf4c31eadabe5f8540dec337"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V14__admin_academic_and_student_enhancements.sql": {
+    "mtime": 1788775112.1872358,
+    "ast_hash": "c82de238fe9106ee79d967483c1db586",
+    "semantic_hash": "c82de238fe9106ee79d967483c1db586"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V15__Add_Demographics_To_Entities.sql": {
+    "mtime": 1788775112.1917665,
+    "ast_hash": "a9f12011ae1e47765d8af99364391006",
+    "semantic_hash": "a9f12011ae1e47765d8af99364391006"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V16__Remove_Section_From_Class.sql": {
+    "mtime": 1788775112.193767,
+    "ast_hash": "9b34ef2308b4ca26ec97051b211fef4f",
+    "semantic_hash": "9b34ef2308b4ca26ec97051b211fef4f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V17__add_class_teacher_assignment.sql": {
+    "mtime": 1788775112.19441,
+    "ast_hash": "9af7b71cfcba863937fcb07e0cc91109",
+    "semantic_hash": "9af7b71cfcba863937fcb07e0cc91109"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V18__add_unique_constraint_to_staff.sql": {
+    "mtime": 1788775112.1954265,
+    "ast_hash": "40f538d8b0f19f9685f0d113aaa4c388",
+    "semantic_hash": "40f538d8b0f19f9685f0d113aaa4c388"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V19__add_status_to_subjects.sql": {
+    "mtime": 1788775112.1969357,
+    "ast_hash": "b0c1eab17bf5627781513d0c132bc9e4",
+    "semantic_hash": "b0c1eab17bf5627781513d0c132bc9e4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V1__init.sql": {
+    "mtime": 1788775112.1978283,
+    "ast_hash": "1ee5e9aa4e8e130937cb0d0ab36b20ee",
+    "semantic_hash": "1ee5e9aa4e8e130937cb0d0ab36b20ee"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V20__create_class_subject_assignments.sql": {
+    "mtime": 1788775112.198841,
+    "ast_hash": "0308e421ee79c814564984ca2ed074da",
+    "semantic_hash": "0308e421ee79c814564984ca2ed074da"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V21__create_student_subject_enrollments.sql": {
+    "mtime": 1788775112.1998596,
+    "ast_hash": "916b960541732fe1acb0c68226c7f1c4",
+    "semantic_hash": "916b960541732fe1acb0c68226c7f1c4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V22__create_timetable_entries.sql": {
+    "mtime": 1788775112.2018635,
+    "ast_hash": "585b09db79412ad0384b902de64b9add",
+    "semantic_hash": "585b09db79412ad0384b902de64b9add"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V23__create_student_categories_and_houses.sql": {
+    "mtime": 1788775112.202956,
+    "ast_hash": "5649baea655f26da2c1da1ca76eba506",
+    "semantic_hash": "5649baea655f26da2c1da1ca76eba506"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V24__create_online_admissions.sql": {
+    "mtime": 1788775112.2039678,
+    "ast_hash": "9699824b61ce98250545ba345c1a34d3",
+    "semantic_hash": "9699824b61ce98250545ba345c1a34d3"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V25__create_student_referrals.sql": {
+    "mtime": 1788775112.2053707,
+    "ast_hash": "347ce0b9a08ae630128e15ee05644cd6",
+    "semantic_hash": "347ce0b9a08ae630128e15ee05644cd6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V26__create_student_certificates.sql": {
+    "mtime": 1788775112.208421,
+    "ast_hash": "ba36c20a26c62a0d779e044b6dc61f22",
+    "semantic_hash": "ba36c20a26c62a0d779e044b6dc61f22"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V27__create_id_card_generations.sql": {
+    "mtime": 1788775112.209724,
+    "ast_hash": "be4764b819ff8933bf343b2b36b17ebc",
+    "semantic_hash": "be4764b819ff8933bf343b2b36b17ebc"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V28__create_student_leaves.sql": {
+    "mtime": 1788775112.210736,
+    "ast_hash": "470f4e2f6ed5890226b579a3a53ad7c2",
+    "semantic_hash": "470f4e2f6ed5890226b579a3a53ad7c2"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V29__create_student_siblings.sql": {
+    "mtime": 1788775112.21195,
+    "ast_hash": "060ea84fa3c98dbbd7d572a9650967f9",
+    "semantic_hash": "060ea84fa3c98dbbd7d572a9650967f9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V2__multi_tenant_auth.sql": {
+    "mtime": 1788775112.2127984,
+    "ast_hash": "16bead729cf0be44b6c5b4bea84508ba",
+    "semantic_hash": "16bead729cf0be44b6c5b4bea84508ba"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V30__increase_color_code_length.sql": {
+    "mtime": 1788775112.213818,
+    "ast_hash": "08338c5fec57d560f4fcd1e04cfdcffd",
+    "semantic_hash": "08338c5fec57d560f4fcd1e04cfdcffd"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V31__create_family_table.sql": {
+    "mtime": 1788775112.2158153,
+    "ast_hash": "3a64b2f3cf437874a1d13230bad11bc1",
+    "semantic_hash": "3a64b2f3cf437874a1d13230bad11bc1"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V32__add_per_student_pricing_and_school_relations.sql": {
+    "mtime": 1788775112.2168136,
+    "ast_hash": "1b1e15149fb692567575cb4d74a6af69",
+    "semantic_hash": "1b1e15149fb692567575cb4d74a6af69"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V33__create_support_center_tables.sql": {
+    "mtime": 1788775112.2178178,
+    "ast_hash": "d9c83e7c96d866996b262a9302bb4653",
+    "semantic_hash": "d9c83e7c96d866996b262a9302bb4653"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V34__add_support_tickets_sample_data.sql": {
+    "mtime": 1788775112.2190585,
+    "ast_hash": "b47c64bf8b9dd8928054a0bd695ea2f9",
+    "semantic_hash": "b47c64bf8b9dd8928054a0bd695ea2f9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V35__create_sales_crm_tables.sql": {
+    "mtime": 1788775112.2202923,
+    "ast_hash": "144dedf2bffd2b0b049653c1d3f08878",
+    "semantic_hash": "144dedf2bffd2b0b049653c1d3f08878"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V36__create_communication_center_tables.sql": {
+    "mtime": 1788775112.2213037,
+    "ast_hash": "57edbc650b5d4a5d66dd7fc3ef46529d",
+    "semantic_hash": "57edbc650b5d4a5d66dd7fc3ef46529d"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V37__create_user_management_tables.sql": {
+    "mtime": 1788775112.2223108,
+    "ast_hash": "0eb8083f437aad39dde0123ca9b90c0f",
+    "semantic_hash": "0eb8083f437aad39dde0123ca9b90c0f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V38__login_and_access_extensions.sql": {
+    "mtime": 1788775112.226014,
+    "ast_hash": "6ef6512fad7fb0ec4f710b7b3376c2e7",
+    "semantic_hash": "6ef6512fad7fb0ec4f710b7b3376c2e7"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V39__create_impersonation_sessions.sql": {
+    "mtime": 1788775112.227013,
+    "ast_hash": "cd3b378c5d964d60bee0a1f1c586d9c2",
+    "semantic_hash": "cd3b378c5d964d60bee0a1f1c586d9c2"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V3__sample_data.sql": {
+    "mtime": 1788775112.228014,
+    "ast_hash": "8b058eb1f8ecbc077bd50f966de0ce80",
+    "semantic_hash": "8b058eb1f8ecbc077bd50f966de0ce80"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V41__create_user_requests.sql": {
+    "mtime": 1788775112.2317362,
+    "ast_hash": "c33eccb9922354d59f0476f25450579b",
+    "semantic_hash": "c33eccb9922354d59f0476f25450579b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V42__link_students_staff_to_users.sql": {
+    "mtime": 1788775112.2327523,
+    "ast_hash": "0e5da182cd6437ef40d6d511ef0155f6",
+    "semantic_hash": "0e5da182cd6437ef40d6d511ef0155f6"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V43__make_user_activity_logs_school_id_nullable.sql": {
+    "mtime": 1788775112.233755,
+    "ast_hash": "cfba0a87ea260bac3b84e120a926c7bf",
+    "semantic_hash": "cfba0a87ea260bac3b84e120a926c7bf"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V44__create_super_admin_employees.sql": {
+    "mtime": 1788775112.234959,
+    "ast_hash": "98f27dd21b7c2f31366abeaa9ef86f2b",
+    "semantic_hash": "98f27dd21b7c2f31366abeaa9ef86f2b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V45__create_employee_attendance_and_leaves.sql": {
+    "mtime": 1788775112.2377603,
+    "ast_hash": "88bda791218a035cb262ea3d6b9fb647",
+    "semantic_hash": "88bda791218a035cb262ea3d6b9fb647"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V46__create_employee_payroll_and_performance.sql": {
+    "mtime": 1788775112.2382767,
+    "ast_hash": "d811a493ac657fd65590af7bd098dc15",
+    "semantic_hash": "d811a493ac657fd65590af7bd098dc15"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V47__create_employee_docs_depts_audit.sql": {
+    "mtime": 1788775112.2406485,
+    "ast_hash": "636b61243600aa808e3253c049f1a0c0",
+    "semantic_hash": "636b61243600aa808e3253c049f1a0c0"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V48__create_assets_lifecycle_notes_timeline.sql": {
+    "mtime": 1788775112.241417,
+    "ast_hash": "9a3bc6fb6460218c966d5bf8e7683a5b",
+    "semantic_hash": "9a3bc6fb6460218c966d5bf8e7683a5b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V49__employee_module_sample_data.sql": {
+    "mtime": 1788775112.2440407,
+    "ast_hash": "7796a5f21b4ef8fd85a712fd714bff53",
+    "semantic_hash": "7796a5f21b4ef8fd85a712fd714bff53"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V4__onboarding_and_auth_metadata.sql": {
+    "mtime": 1788775112.2450643,
+    "ast_hash": "f24f57416a7172d5b3672e8951c81d61",
+    "semantic_hash": "f24f57416a7172d5b3672e8951c81d61"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V50__add_address_fields_to_schools.sql": {
+    "mtime": 1788775112.246056,
+    "ast_hash": "b234b49fe921dfba4a3a5ed8780e22e2",
+    "semantic_hash": "b234b49fe921dfba4a3a5ed8780e22e2"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V51__school_subscriptions.sql": {
+    "mtime": 1788775112.2485745,
+    "ast_hash": "623fc845a15421a33fce250949285582",
+    "semantic_hash": "623fc845a15421a33fce250949285582"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V52__seed_school_subscriptions.sql": {
+    "mtime": 1788775112.249113,
+    "ast_hash": "db213620e21dcd406e73850ebb52e327",
+    "semantic_hash": "db213620e21dcd406e73850ebb52e327"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V53__multi_tenant_authorization_framework.sql": {
+    "mtime": 1788775112.2510362,
+    "ast_hash": "f6c31c27b0dd1aab700490c98b028cdc",
+    "semantic_hash": "f6c31c27b0dd1aab700490c98b028cdc"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V54__seed_default_school_roles.sql": {
+    "mtime": 1788775112.252052,
+    "ast_hash": "c62137cd28bad9d625c48d011fede0fc",
+    "semantic_hash": "c62137cd28bad9d625c48d011fede0fc"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V55__align_modules_with_frontend_sidebar.sql": {
+    "mtime": 1788775112.2530518,
+    "ast_hash": "8e94ca60366638aad7f6e90f97d69a58",
+    "semantic_hash": "8e94ca60366638aad7f6e90f97d69a58"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V56__cleanup_legacy_modules.sql": {
+    "mtime": 1788775112.2553413,
+    "ast_hash": "80ce615e5c8450e300dc94c337193138",
+    "semantic_hash": "80ce615e5c8450e300dc94c337193138"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V57__seed_remaining_module_permissions.sql": {
+    "mtime": 1788775112.2560334,
+    "ast_hash": "85fe7a1e1b7f5c3e476ba8e4403e219d",
+    "semantic_hash": "85fe7a1e1b7f5c3e476ba8e4403e219d"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V58__align_permission_keys_with_frontend.sql": {
+    "mtime": 1788775112.2570462,
+    "ast_hash": "421f20ce4252c7595d4150111e1e53b5",
+    "semantic_hash": "421f20ce4252c7595d4150111e1e53b5"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V59__add_archetype_to_roles.sql": {
+    "mtime": 1788775112.2590656,
+    "ast_hash": "40a6d849744cc3d36d345a4ea087a275",
+    "semantic_hash": "40a6d849744cc3d36d345a4ea087a275"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V60__add_granular_screen_permissions.sql": {
+    "mtime": 1788775112.2622852,
+    "ast_hash": "dd550e70f87c5596c17404de93b0a477",
+    "semantic_hash": "dd550e70f87c5596c17404de93b0a477"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V61__grant_granular_permissions_to_system_roles.sql": {
+    "mtime": 1788775112.2632828,
+    "ast_hash": "eea307eb5116da7372cd02c6d304000e",
+    "semantic_hash": "eea307eb5116da7372cd02c6d304000e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V62__refactor_to_global_system_roles.sql": {
+    "mtime": 1788775112.2644923,
+    "ast_hash": "2ac7114c6344c7a1925b42b08c71fda7",
+    "semantic_hash": "2ac7114c6344c7a1925b42b08c71fda7"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V63__create_fee_module_tables.sql": {
+    "mtime": 1788775112.2656157,
+    "ast_hash": "41cd797de53fa9c59fd17a413bf8fef5",
+    "semantic_hash": "41cd797de53fa9c59fd17a413bf8fef5"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V64__refactor_to_fee_dues_architecture.sql": {
+    "mtime": 1788775112.2692559,
+    "ast_hash": "26a2e85c9818c1b1afe3cda2a4fb0886",
+    "semantic_hash": "26a2e85c9818c1b1afe3cda2a4fb0886"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V65__add_discount_and_term_to_fee_due.sql": {
+    "mtime": 1788775112.2702725,
+    "ast_hash": "bdebe4590c6502a8bfec04c5399c23ca",
+    "semantic_hash": "bdebe4590c6502a8bfec04c5399c23ca"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V66__add_display_name_to_academic_years.sql": {
+    "mtime": 1788775112.2727015,
+    "ast_hash": "996e3957be0ad48beb2983edcd6a8298",
+    "semantic_hash": "996e3957be0ad48beb2983edcd6a8298"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V67__seed_fee_dues.sql": {
+    "mtime": 1788775112.2737238,
+    "ast_hash": "e92aaee09041ab7597ffc8203c57efa4",
+    "semantic_hash": "e92aaee09041ab7597ffc8203c57efa4"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V68__fee_architecture_upgrade.sql": {
+    "mtime": 1788775112.2757213,
+    "ast_hash": "f497400b95cdf39291093d225781fcd8",
+    "semantic_hash": "f497400b95cdf39291093d225781fcd8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V69__add_class_id_to_fee_structure.sql": {
+    "mtime": 1788775112.2767198,
+    "ast_hash": "de5224ae979249fac6e5b26acc214382",
+    "semantic_hash": "de5224ae979249fac6e5b26acc214382"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V6__add_staff_role.sql": {
+    "mtime": 1788775112.2784758,
+    "ast_hash": "419d1a28947e9f3b1eeddb360b847ee2",
+    "semantic_hash": "419d1a28947e9f3b1eeddb360b847ee2"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V70__flexible_fee_architecture.sql": {
+    "mtime": 1788775112.279491,
+    "ast_hash": "7bdf2469a3f24d9743b4f75d8c2655bf",
+    "semantic_hash": "7bdf2469a3f24d9743b4f75d8c2655bf"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V71__add_collection_plan_to_fee_structure.sql": {
+    "mtime": 1788775112.2806356,
+    "ast_hash": "546ace5b57dafd23886e8e6b3cb79625",
+    "semantic_hash": "546ace5b57dafd23886e8e6b3cb79625"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V72__add_fee_generation_batch.sql": {
+    "mtime": 1788775112.2816598,
+    "ast_hash": "1e630e770c591283b17525a3d2c3dada",
+    "semantic_hash": "1e630e770c591283b17525a3d2c3dada"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V7__create_missing_tables_and_seed_superadmin.sql": {
+    "mtime": 1788775112.2826517,
+    "ast_hash": "42f729cea05ddf974fa055a9eb5926cf",
+    "semantic_hash": "42f729cea05ddf974fa055a9eb5926cf"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V8__onboarding_drafts_and_imports.sql": {
+    "mtime": 1788775112.2838821,
+    "ast_hash": "4590438996c3ace660f0b63ce00c217c",
+    "semantic_hash": "4590438996c3ace660f0b63ce00c217c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\main\\resources\\db\\migration\\V9__add_step10_to_onboarding_drafts.sql": {
+    "mtime": 1788775112.2853231,
+    "ast_hash": "b2ca7941106b6ae5fa1a121a162ffd26",
+    "semantic_hash": "b2ca7941106b6ae5fa1a121a162ffd26"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\ApplicationContextTest.java": {
+    "mtime": 1788775112.2931583,
+    "ast_hash": "5fb2f89819cdecc8e486266f363fe744",
+    "semantic_hash": "5fb2f89819cdecc8e486266f363fe744"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\SchoolErpBackendApplicationTests.java": {
+    "mtime": 1788775112.2941654,
+    "ast_hash": "a7db7f76e6f1e51c9f8ed39caa87b234",
+    "semantic_hash": "a7db7f76e6f1e51c9f8ed39caa87b234"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\AuthControllerTest.java": {
+    "mtime": 1788775112.2976446,
+    "ast_hash": "36af645bfe35576823bebcc0bcc1a048",
+    "semantic_hash": "36af645bfe35576823bebcc0bcc1a048"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\CatalogControllerTest.java": {
+    "mtime": 1788775112.2999861,
+    "ast_hash": "3062785e0b21049db75271718895b8aa",
+    "semantic_hash": "3062785e0b21049db75271718895b8aa"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\DataImportControllerTest.java": {
+    "mtime": 1788775112.3020024,
+    "ast_hash": "1558384eadc85bd301759099e48bd8bc",
+    "semantic_hash": "1558384eadc85bd301759099e48bd8bc"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\EntitlementControllerTest.java": {
+    "mtime": 1788775112.3049796,
+    "ast_hash": "cce7e2f8e2df0ae215b64f602a056a83",
+    "semantic_hash": "cce7e2f8e2df0ae215b64f602a056a83"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\OnboardingControllerTest.java": {
+    "mtime": 1788775112.3059795,
+    "ast_hash": "6c7c87a1779537ad89297e7c9b3d717f",
+    "semantic_hash": "6c7c87a1779537ad89297e7c9b3d717f"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\ParentControllerTest.java": {
+    "mtime": 1788775112.306975,
+    "ast_hash": "3f777b8151f516fb56156931e2dd4cdb",
+    "semantic_hash": "3f777b8151f516fb56156931e2dd4cdb"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\superadmin\\DepartmentControllerTest.java": {
+    "mtime": 1788775112.3105125,
+    "ast_hash": "0ec81f8841a876d0968ab8c8a428f0ff",
+    "semantic_hash": "0ec81f8841a876d0968ab8c8a428f0ff"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeAssetControllerTest.java": {
+    "mtime": 1788775112.3115327,
+    "ast_hash": "2e810bdf4d976c116eff119cd85f1133",
+    "semantic_hash": "2e810bdf4d976c116eff119cd85f1133"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeAttendanceControllerTest.java": {
+    "mtime": 1788775112.3135543,
+    "ast_hash": "308b43dd996a3866767613bb6584ddb8",
+    "semantic_hash": "308b43dd996a3866767613bb6584ddb8"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeAuditLogControllerTest.java": {
+    "mtime": 1788775112.3145552,
+    "ast_hash": "18719ad5a198b1a444744297499bca98",
+    "semantic_hash": "18719ad5a198b1a444744297499bca98"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeDocumentControllerTest.java": {
+    "mtime": 1788775112.3155577,
+    "ast_hash": "b8947e230cbe625b605774115585abba",
+    "semantic_hash": "b8947e230cbe625b605774115585abba"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeLeaveControllerTest.java": {
+    "mtime": 1788775112.3165553,
+    "ast_hash": "2824e24b943adb15e17b27dccb033d1a",
+    "semantic_hash": "2824e24b943adb15e17b27dccb033d1a"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeLifecycleControllerTest.java": {
+    "mtime": 1788775112.317559,
+    "ast_hash": "0498f2fc1051c28225790d9636598255",
+    "semantic_hash": "0498f2fc1051c28225790d9636598255"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeNoteControllerTest.java": {
+    "mtime": 1788775112.318706,
+    "ast_hash": "1642650266bd0607e95e1a7dd6d97dbe",
+    "semantic_hash": "1642650266bd0607e95e1a7dd6d97dbe"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\superadmin\\EmployeePayrollControllerTest.java": {
+    "mtime": 1788775112.3193185,
+    "ast_hash": "cd23ba2b1357978f46b776f51c1bc90c",
+    "semantic_hash": "cd23ba2b1357978f46b776f51c1bc90c"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\superadmin\\EmployeePerformanceControllerTest.java": {
+    "mtime": 1788775112.3209903,
+    "ast_hash": "f4d852aa0f57cd3f864413927fb042d1",
+    "semantic_hash": "f4d852aa0f57cd3f864413927fb042d1"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\superadmin\\EmployeeTimelineControllerTest.java": {
+    "mtime": 1788775112.3230054,
+    "ast_hash": "e08422951f141c857616c25a153c689b",
+    "semantic_hash": "e08422951f141c857616c25a153c689b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\superadmin\\SuperAdminEmployeeControllerTest.java": {
+    "mtime": 1788775112.3241253,
+    "ast_hash": "03b93c63002fb255a28f0eb14889214b",
+    "semantic_hash": "03b93c63002fb255a28f0eb14889214b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\superadmin\\SuperAdminModuleControllerTest.java": {
+    "mtime": 1788775112.3251543,
+    "ast_hash": "33e280cb4d0d9f0cd66c33ca3a3dfb58",
+    "semantic_hash": "33e280cb4d0d9f0cd66c33ca3a3dfb58"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\controller\\superadmin\\UserManagementControllerTest.java": {
+    "mtime": 1788775112.3271384,
+    "ast_hash": "9498e2e4d18ab81cd668b92ef1a9d69d",
+    "semantic_hash": "9498e2e4d18ab81cd668b92ef1a9d69d"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\service\\AuthServiceTest.java": {
+    "mtime": 1788775112.3286502,
+    "ast_hash": "a07ec5c24be873fcecda1969f9b7ee8b",
+    "semantic_hash": "a07ec5c24be873fcecda1969f9b7ee8b"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\service\\EntitlementServiceTest.java": {
+    "mtime": 1788775112.3299992,
+    "ast_hash": "897c590b1c102ade7db310dadb27ee41",
+    "semantic_hash": "897c590b1c102ade7db310dadb27ee41"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\service\\FeeDueServiceTest.java": {
+    "mtime": 1788775112.3315098,
+    "ast_hash": "94a847046e08ca6915dc6db8e0a4ed96",
+    "semantic_hash": "94a847046e08ca6915dc6db8e0a4ed96"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\service\\OnboardingDraftServiceTest.java": {
+    "mtime": 1788775112.332522,
+    "ast_hash": "42c643f03ee5ad0ab42c429a88bf8652",
+    "semantic_hash": "42c643f03ee5ad0ab42c429a88bf8652"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\service\\OnboardingServiceTest.java": {
+    "mtime": 1788775112.3335268,
+    "ast_hash": "649e103f754052d8d1f659e45eee5a83",
+    "semantic_hash": "649e103f754052d8d1f659e45eee5a83"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\service\\ParentServiceTest.java": {
+    "mtime": 1788775112.3351789,
+    "ast_hash": "de9f23c2ca59179b8100c2a043e76035",
+    "semantic_hash": "de9f23c2ca59179b8100c2a043e76035"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\service\\auth\\AuthorizationServiceTest.java": {
+    "mtime": 1788775112.3372028,
+    "ast_hash": "e2d629b092e59bcbbe3b924fa7ccdeb9",
+    "semantic_hash": "e2d629b092e59bcbbe3b924fa7ccdeb9"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\service\\superadmin\\SalesCrmServiceTest.java": {
+    "mtime": 1788775112.3402233,
+    "ast_hash": "07a6b12f17862d3f7a37c6bd577f6304",
+    "semantic_hash": "07a6b12f17862d3f7a37c6bd577f6304"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\service\\superadmin\\SuperAdminDashboardServiceTest.java": {
+    "mtime": 1788775112.3417585,
+    "ast_hash": "014251bc6dc8f0386dc18dbb42820b08",
+    "semantic_hash": "014251bc6dc8f0386dc18dbb42820b08"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\service\\superadmin\\SuperAdminModuleServiceTest.java": {
+    "mtime": 1788775112.343774,
+    "ast_hash": "6cdef7b334baabf3cafea06e78559d8e",
+    "semantic_hash": "6cdef7b334baabf3cafea06e78559d8e"
+  },
+  "C:\\Users\\Admin\\Desktop\\My Project\\schooly-backend\\src\\test\\java\\com\\school\\erp\\service\\superadmin\\SuperAdminPlanServiceTest.java": {
+    "mtime": 1788775112.3447762,
+    "ast_hash": "f4738c5912a06cb2e15420f444029cb4",
+    "semantic_hash": "f4738c5912a06cb2e15420f444029cb4"
+  }
+}

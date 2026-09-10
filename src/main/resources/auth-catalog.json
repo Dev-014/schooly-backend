@@ -610,6 +610,71 @@
       "status": "active"
     },
     {
+      "key": "front_office.admission_enquiry.view",
+      "module": "front_office",
+      "resource": "admission_enquiry",
+      "action": "view",
+      "name": "Access Admission Enquiry",
+      "description": "Allows access to the Admission Enquiry screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "front_office.visitor_book.view",
+      "module": "front_office",
+      "resource": "visitor_book",
+      "action": "view",
+      "name": "Access Visitor Book",
+      "description": "Allows access to the Visitor Book screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "front_office.gate_pass.view",
+      "module": "front_office",
+      "resource": "gate_pass",
+      "action": "view",
+      "name": "Access Gate Pass",
+      "description": "Allows access to the Gate Pass screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "front_office.parcel_receive.view",
+      "module": "front_office",
+      "resource": "parcel_receive",
+      "action": "view",
+      "name": "Access Parcel Receive",
+      "description": "Allows access to the Parcel Receive screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
+      "key": "front_office.parcel_dispatch.view",
+      "module": "front_office",
+      "resource": "parcel_dispatch",
+      "action": "view",
+      "name": "Access Parcel Dispatch",
+      "description": "Allows access to the Parcel Dispatch screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active"
+    },
+    {
       "key": "communication.message.view",
       "module": "communication",
       "resource": "message",
