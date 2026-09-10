@@ -6,6 +6,7 @@ import com.school.erp.dto.frontoffice.ParcelDispatchStatsResponse;
 import com.school.erp.entity.School;
 import com.school.erp.entity.frontoffice.ParcelDispatch;
 import com.school.erp.exception.ResourceNotFoundException;
+import com.school.erp.security.AuthContextService;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.frontoffice.ParcelDispatchRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,16 +21,20 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class ParcelDispatchService {
 
+    private final AuthContextService authContextService;
+
     private final ParcelDispatchRepository parcelDispatchRepository;
     private final SchoolRepository schoolRepository;
 
     @Transactional(readOnly = true)
     public Page<ParcelDispatchResponse> filterParcelDispatches(
-            Long schoolId,
+            Long rawSchoolId,
             String search,
             LocalDate date,
             String status,
             Pageable pageable) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
 
         String cleanSearch = (search != null && !search.isBlank()) ? search.trim() : null;
         String cleanStatus = (status != null && !status.isBlank() && !status.equalsIgnoreCase("all")) ? status.trim() : null;
@@ -39,14 +44,18 @@ public class ParcelDispatchService {
     }
 
     @Transactional(readOnly = true)
-    public ParcelDispatchResponse getParcelDispatchById(Long schoolId, Long id) {
+    public ParcelDispatchResponse getParcelDispatchById(Long rawSchoolId, Long id) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         ParcelDispatch parcel = parcelDispatchRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Parcel dispatch log not found with id: " + id));
         return mapToResponse(parcel);
     }
 
     @Transactional
-    public ParcelDispatchResponse createParcelDispatch(Long schoolId, ParcelDispatchRequest request) {
+    public ParcelDispatchResponse createParcelDispatch(Long rawSchoolId, ParcelDispatchRequest request) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         School school = schoolRepository.findById(schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("School not found with id: " + schoolId));
 
@@ -75,7 +84,9 @@ public class ParcelDispatchService {
     }
 
     @Transactional
-    public ParcelDispatchResponse updateStatus(Long schoolId, Long id, String status) {
+    public ParcelDispatchResponse updateStatus(Long rawSchoolId, Long id, String status) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         ParcelDispatch parcel = parcelDispatchRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Parcel dispatch log not found with id: " + id));
 
@@ -90,7 +101,9 @@ public class ParcelDispatchService {
     }
 
     @Transactional(readOnly = true)
-    public ParcelDispatchStatsResponse getParcelDispatchStats(Long schoolId) {
+    public ParcelDispatchStatsResponse getParcelDispatchStats(Long rawSchoolId) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
 
@@ -121,7 +134,9 @@ public class ParcelDispatchService {
     }
 
     @Transactional
-    public void deleteParcelDispatch(Long schoolId, Long id) {
+    public void deleteParcelDispatch(Long rawSchoolId, Long id) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         ParcelDispatch parcel = parcelDispatchRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Parcel dispatch log not found with id: " + id));
         parcelDispatchRepository.delete(parcel);

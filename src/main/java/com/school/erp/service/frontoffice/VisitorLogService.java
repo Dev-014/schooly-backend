@@ -7,6 +7,7 @@ import com.school.erp.entity.School;
 import com.school.erp.entity.Staff;
 import com.school.erp.entity.frontoffice.VisitorLog;
 import com.school.erp.exception.ResourceNotFoundException;
+import com.school.erp.security.AuthContextService;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.StaffRepository;
 import com.school.erp.repository.frontoffice.VisitorLogRepository;
@@ -23,18 +24,22 @@ import java.time.LocalTime;
 @RequiredArgsConstructor
 public class VisitorLogService {
 
+    private final AuthContextService authContextService;
+
     private final VisitorLogRepository visitorLogRepository;
     private final SchoolRepository schoolRepository;
     private final StaffRepository staffRepository;
 
     @Transactional(readOnly = true)
     public Page<VisitorLogResponse> filterVisitors(
-            Long schoolId,
+            Long rawSchoolId,
             String search,
             LocalDate date,
             String purpose,
             String status,
             Pageable pageable) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
 
         String cleanSearch = (search != null && !search.isBlank()) ? search.trim() : null;
         String cleanPurpose = (purpose != null && !purpose.isBlank() && !purpose.equalsIgnoreCase("all")) ? purpose.trim() : null;
@@ -45,14 +50,18 @@ public class VisitorLogService {
     }
 
     @Transactional(readOnly = true)
-    public VisitorLogResponse getVisitorById(Long schoolId, Long id) {
+    public VisitorLogResponse getVisitorById(Long rawSchoolId, Long id) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         VisitorLog visitor = visitorLogRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Visitor log not found with id: " + id));
         return mapToResponse(visitor);
     }
 
     @Transactional
-    public VisitorLogResponse createVisitor(Long schoolId, VisitorLogRequest request) {
+    public VisitorLogResponse createVisitor(Long rawSchoolId, VisitorLogRequest request) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         School school = schoolRepository.findById(schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("School not found with id: " + schoolId));
 
@@ -81,7 +90,9 @@ public class VisitorLogService {
     }
 
     @Transactional
-    public VisitorLogResponse checkoutVisitor(Long schoolId, Long id, LocalTime timeOut) {
+    public VisitorLogResponse checkoutVisitor(Long rawSchoolId, Long id, LocalTime timeOut) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         VisitorLog visitor = visitorLogRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Visitor log not found with id: " + id));
 
@@ -93,7 +104,9 @@ public class VisitorLogService {
     }
 
     @Transactional(readOnly = true)
-    public VisitorStatsResponse getVisitorStats(Long schoolId) {
+    public VisitorStatsResponse getVisitorStats(Long rawSchoolId) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         LocalDate today = LocalDate.now();
         long todayVisitors = visitorLogRepository.sumGuestsForDate(schoolId, today);
         long activeCheckIns = visitorLogRepository.countActiveOnSite(schoolId);
@@ -105,7 +118,9 @@ public class VisitorLogService {
     }
 
     @Transactional
-    public void deleteVisitor(Long schoolId, Long id) {
+    public void deleteVisitor(Long rawSchoolId, Long id) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         VisitorLog visitor = visitorLogRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Visitor log not found with id: " + id));
         visitorLogRepository.delete(visitor);

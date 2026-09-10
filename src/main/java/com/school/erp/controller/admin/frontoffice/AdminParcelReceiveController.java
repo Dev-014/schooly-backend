@@ -28,7 +28,7 @@ public class AdminParcelReceiveController {
     @GetMapping
     @PermissionRequired("front_office.parcel_receive.view")
     public ResponseEntity<ApiResponse<List<ParcelReceiveResponse>>> getParcelReceives(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(required = false) String status,
@@ -47,7 +47,7 @@ public class AdminParcelReceiveController {
     @GetMapping("/{id}")
     @PermissionRequired("front_office.parcel_receive.view")
     public ResponseEntity<ApiResponse<ParcelReceiveResponse>> getParcelReceiveById(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success(
                 parcelReceiveService.getParcelReceiveById(schoolId, id),
@@ -57,7 +57,7 @@ public class AdminParcelReceiveController {
     @PostMapping
     @PermissionRequired("front_office.parcel_receive.view")
     public ResponseEntity<ApiResponse<ParcelReceiveResponse>> receiveParcel(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @Valid @RequestBody ParcelReceiveRequest request) {
         return ResponseEntity.ok(ApiResponse.success(
                 parcelReceiveService.receiveParcel(schoolId, request),
@@ -67,7 +67,7 @@ public class AdminParcelReceiveController {
     @PutMapping("/{id}/collect")
     @PermissionRequired("front_office.parcel_receive.view")
     public ResponseEntity<ApiResponse<ParcelReceiveResponse>> markCollected(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id,
             @RequestParam(required = false) String collectedBy) {
         return ResponseEntity.ok(ApiResponse.success(
@@ -78,7 +78,7 @@ public class AdminParcelReceiveController {
     @GetMapping("/stats")
     @PermissionRequired("front_office.parcel_receive.view")
     public ResponseEntity<ApiResponse<ParcelReceiveStatsResponse>> getStats(
-            @RequestParam Long schoolId) {
+            @RequestParam(required = false) Long schoolId) {
         return ResponseEntity.ok(ApiResponse.success(
                 parcelReceiveService.getParcelReceiveStats(schoolId),
                 "Parcel receive statistics retrieved successfully"));
@@ -87,9 +87,10 @@ public class AdminParcelReceiveController {
     @DeleteMapping("/{id}")
     @PermissionRequired("front_office.parcel_receive.view")
     public ResponseEntity<ApiResponse<Void>> deleteParcel(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id) {
         parcelReceiveService.deleteParcelReceive(schoolId, id);
         return ResponseEntity.ok(ApiResponse.success(null, "Parcel receive log deleted successfully"));
     }
 }
+

@@ -17,13 +17,13 @@ public interface GatePassRepository extends JpaRepository<GatePass, Long> {
     Optional<GatePass> findByIdAndSchoolId(Long id, Long schoolId);
 
     @Query("SELECT g FROM GatePass g WHERE g.school.id = :schoolId " +
-            "AND (:search IS NULL OR LOWER(g.personName) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "     OR LOWER(g.passNumber) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "     OR LOWER(g.classOrDepartment) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "     OR LOWER(g.reasonForExit) LIKE LOWER(CONCAT('%', :search, '%'))) " +
+            "AND (:search IS NULL OR LOWER(g.personName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "     OR LOWER(g.passNumber) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "     OR LOWER(g.classOrDepartment) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "     OR LOWER(g.reasonForExit) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) " +
             "AND (:date IS NULL OR g.passDate = :date) " +
-            "AND (:role IS NULL OR LOWER(g.role) = LOWER(:role)) " +
-            "AND (:status IS NULL OR LOWER(g.status) = LOWER(:status)) " +
+            "AND (:role IS NULL OR LOWER(g.role) = LOWER(CAST(:role AS string))) " +
+            "AND (:status IS NULL OR LOWER(g.status) = LOWER(CAST(:status AS string))) " +
             "ORDER BY g.passDate DESC, g.exitTime DESC")
     Page<GatePass> filterGatePasses(
             @Param("schoolId") Long schoolId,

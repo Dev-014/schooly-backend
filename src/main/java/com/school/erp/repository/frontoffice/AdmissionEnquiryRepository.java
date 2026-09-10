@@ -18,14 +18,14 @@ public interface AdmissionEnquiryRepository extends JpaRepository<AdmissionEnqui
     Optional<AdmissionEnquiry> findByIdAndSchoolId(Long id, Long schoolId);
 
     @Query("SELECT e FROM AdmissionEnquiry e WHERE e.school.id = :schoolId " +
-            "AND (:search IS NULL OR LOWER(e.studentName) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "     OR LOWER(e.parentName) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "     OR LOWER(e.enquiryNumber) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "     OR LOWER(e.phone) LIKE LOWER(CONCAT('%', :search, '%'))) " +
+            "AND (:search IS NULL OR LOWER(e.studentName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "     OR LOWER(e.parentName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "     OR LOWER(e.enquiryNumber) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "     OR LOWER(e.phone) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) " +
             "AND (:startDate IS NULL OR e.enquiryDate >= :startDate) " +
             "AND (:endDate IS NULL OR e.enquiryDate <= :endDate) " +
-            "AND (:source IS NULL OR LOWER(e.source) = LOWER(:source)) " +
-            "AND (:status IS NULL OR LOWER(e.status) = LOWER(:status)) " +
+            "AND (:source IS NULL OR LOWER(e.source) = LOWER(CAST(:source AS string))) " +
+            "AND (:status IS NULL OR LOWER(e.status) = LOWER(CAST(:status AS string))) " +
             "ORDER BY e.enquiryDate DESC, e.id DESC")
     Page<AdmissionEnquiry> filterEnquiries(
             @Param("schoolId") Long schoolId,
@@ -40,8 +40,8 @@ public interface AdmissionEnquiryRepository extends JpaRepository<AdmissionEnqui
     @Query("SELECT e FROM AdmissionEnquiry e WHERE e.school.id = :schoolId " +
             "AND (:startDate IS NULL OR e.enquiryDate >= :startDate) " +
             "AND (:endDate IS NULL OR e.enquiryDate <= :endDate) " +
-            "AND (:source IS NULL OR LOWER(e.source) = LOWER(:source)) " +
-            "AND (:status IS NULL OR LOWER(e.status) = LOWER(:status)) " +
+            "AND (:source IS NULL OR LOWER(e.source) = LOWER(CAST(:source AS string))) " +
+            "AND (:status IS NULL OR LOWER(e.status) = LOWER(CAST(:status AS string))) " +
             "ORDER BY e.enquiryDate DESC, e.id DESC")
     List<AdmissionEnquiry> filterEnquiriesList(
             @Param("schoolId") Long schoolId,

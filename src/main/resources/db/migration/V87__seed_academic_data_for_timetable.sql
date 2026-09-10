@@ -1,3 +1,9 @@
+-- Sync serial sequences with existing table IDs before insertion
+SELECT setval(pg_get_serial_sequence('timetable_periods', 'id'), COALESCE(max(id), 1)) FROM timetable_periods;
+SELECT setval(pg_get_serial_sequence('subjects', 'id'), COALESCE(max(id), 1)) FROM subjects;
+SELECT setval(pg_get_serial_sequence('class', 'id'), COALESCE(max(id), 1)) FROM class;
+SELECT setval(pg_get_serial_sequence('sections', 'id'), COALESCE(max(id), 1)) FROM sections;
+SELECT setval(pg_get_serial_sequence('academic_years', 'id'), COALESCE(max(id), 1)) FROM academic_years;
 -- Seed Timetable Periods for School 1
 INSERT INTO timetable_periods (school_id, period_number, name, start_time, end_time, is_break)
 SELECT 1, 1, 'Period 1', '08:00', '08:45', false
@@ -46,3 +52,4 @@ WHERE NOT EXISTS (SELECT 1 FROM sections WHERE school_id = 1 AND name = 'Section
 INSERT INTO academic_years (school_id, name, display_name, start_date, end_date, status)
 SELECT 1, '2026-2027', 'AY 2026-2027', '2026-04-01', '2027-03-31', 'ACTIVE'
 WHERE NOT EXISTS (SELECT 1 FROM academic_years WHERE school_id = 1 AND name = '2026-2027');
+

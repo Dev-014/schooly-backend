@@ -17,12 +17,12 @@ public interface ParcelReceiveRepository extends JpaRepository<ParcelReceive, Lo
     Optional<ParcelReceive> findByIdAndSchoolId(Long id, Long schoolId);
 
     @Query("SELECT p FROM ParcelReceive p WHERE p.school.id = :schoolId " +
-            "AND (:search IS NULL OR LOWER(p.senderName) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "     OR LOWER(p.itemDetails) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "     OR LOWER(p.receivedBy) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "     OR LOWER(p.contactNumber) LIKE LOWER(CONCAT('%', :search, '%'))) " +
+            "AND (:search IS NULL OR LOWER(p.senderName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "     OR LOWER(p.itemDetails) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "     OR LOWER(p.receivedBy) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "     OR LOWER(p.contactNumber) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) " +
             "AND (:date IS NULL OR p.dateReceived = :date) " +
-            "AND (:status IS NULL OR LOWER(p.status) = LOWER(:status)) " +
+            "AND (:status IS NULL OR LOWER(p.status) = LOWER(CAST(:status AS string))) " +
             "ORDER BY p.dateReceived DESC, p.id DESC")
     Page<ParcelReceive> filterParcelReceives(
             @Param("schoolId") Long schoolId,

@@ -28,7 +28,7 @@ public class AdminGatePassController {
     @GetMapping
     @PermissionRequired("front_office.gate_pass.view")
     public ResponseEntity<ApiResponse<List<GatePassResponse>>> getGatePasses(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(required = false) String role,
@@ -48,7 +48,7 @@ public class AdminGatePassController {
     @GetMapping("/{id}")
     @PermissionRequired("front_office.gate_pass.view")
     public ResponseEntity<ApiResponse<GatePassResponse>> getGatePassById(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success(
                 gatePassService.getGatePassById(schoolId, id),
@@ -58,7 +58,7 @@ public class AdminGatePassController {
     @PostMapping
     @PermissionRequired("front_office.gate_pass.view")
     public ResponseEntity<ApiResponse<GatePassResponse>> createGatePass(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @Valid @RequestBody GatePassRequest request) {
         return ResponseEntity.ok(ApiResponse.success(
                 gatePassService.createGatePass(schoolId, request),
@@ -68,7 +68,7 @@ public class AdminGatePassController {
     @PutMapping("/{id}/status")
     @PermissionRequired("front_office.gate_pass.view")
     public ResponseEntity<ApiResponse<GatePassResponse>> updateStatus(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id,
             @RequestParam String status) {
         return ResponseEntity.ok(ApiResponse.success(
@@ -79,7 +79,7 @@ public class AdminGatePassController {
     @GetMapping("/stats")
     @PermissionRequired("front_office.gate_pass.view")
     public ResponseEntity<ApiResponse<GatePassStatsResponse>> getStats(
-            @RequestParam Long schoolId) {
+            @RequestParam(required = false) Long schoolId) {
         return ResponseEntity.ok(ApiResponse.success(
                 gatePassService.getGatePassStats(schoolId),
                 "Gate pass statistics retrieved successfully"));
@@ -88,9 +88,10 @@ public class AdminGatePassController {
     @DeleteMapping("/{id}")
     @PermissionRequired("front_office.gate_pass.view")
     public ResponseEntity<ApiResponse<Void>> deleteGatePass(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id) {
         gatePassService.deleteGatePass(schoolId, id);
         return ResponseEntity.ok(ApiResponse.success(null, "Gate pass deleted successfully"));
     }
 }
+

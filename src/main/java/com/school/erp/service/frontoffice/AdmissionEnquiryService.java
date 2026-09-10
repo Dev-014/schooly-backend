@@ -7,6 +7,7 @@ import com.school.erp.entity.Staff;
 import com.school.erp.entity.frontoffice.AdmissionEnquiry;
 import com.school.erp.entity.frontoffice.AdmissionEnquiryFollowUp;
 import com.school.erp.exception.ResourceNotFoundException;
+import com.school.erp.security.AuthContextService;
 import com.school.erp.repository.SchoolClassRepository;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.StaffRepository;
@@ -27,6 +28,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdmissionEnquiryService {
 
+    private final AuthContextService authContextService;
+
     private final AdmissionEnquiryRepository enquiryRepository;
     private final AdmissionEnquiryFollowUpRepository followUpRepository;
     private final SchoolRepository schoolRepository;
@@ -35,13 +38,15 @@ public class AdmissionEnquiryService {
 
     @Transactional(readOnly = true)
     public Page<AdmissionEnquiryResponse> filterEnquiries(
-            Long schoolId,
+            Long rawSchoolId,
             String search,
             LocalDate startDate,
             LocalDate endDate,
             String source,
             String status,
             Pageable pageable) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
 
         String cleanSearch = (search != null && !search.isBlank()) ? search.trim() : null;
         String cleanSource = (source != null && !source.isBlank() && !source.equalsIgnoreCase("all") && !source.equalsIgnoreCase("all sources")) ? source.trim() : null;
@@ -52,14 +57,18 @@ public class AdmissionEnquiryService {
     }
 
     @Transactional(readOnly = true)
-    public AdmissionEnquiryResponse getEnquiryById(Long schoolId, Long id) {
+    public AdmissionEnquiryResponse getEnquiryById(Long rawSchoolId, Long id) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         AdmissionEnquiry enquiry = enquiryRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Admission enquiry not found with id: " + id));
         return mapToResponse(enquiry);
     }
 
     @Transactional
-    public AdmissionEnquiryResponse createEnquiry(Long schoolId, AdmissionEnquiryRequest request) {
+    public AdmissionEnquiryResponse createEnquiry(Long rawSchoolId, AdmissionEnquiryRequest request) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         School school = schoolRepository.findById(schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("School not found with id: " + schoolId));
 
@@ -79,7 +88,9 @@ public class AdmissionEnquiryService {
     }
 
     @Transactional
-    public AdmissionEnquiryResponse updateEnquiry(Long schoolId, Long id, AdmissionEnquiryRequest request) {
+    public AdmissionEnquiryResponse updateEnquiry(Long rawSchoolId, Long id, AdmissionEnquiryRequest request) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         AdmissionEnquiry enquiry = enquiryRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Admission enquiry not found with id: " + id));
 
@@ -92,7 +103,9 @@ public class AdmissionEnquiryService {
     }
 
     @Transactional
-    public EnquiryFollowUpResponse addFollowUp(Long schoolId, Long enquiryId, EnquiryFollowUpRequest request) {
+    public EnquiryFollowUpResponse addFollowUp(Long rawSchoolId, Long enquiryId, EnquiryFollowUpRequest request) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         AdmissionEnquiry enquiry = enquiryRepository.findByIdAndSchoolId(enquiryId, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Admission enquiry not found with id: " + enquiryId));
 
@@ -121,7 +134,9 @@ public class AdmissionEnquiryService {
     }
 
     @Transactional(readOnly = true)
-    public AdmissionEnquiryStatsResponse getEnquiryStats(Long schoolId) {
+    public AdmissionEnquiryStatsResponse getEnquiryStats(Long rawSchoolId) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         LocalDate today = LocalDate.now();
         long total = enquiryRepository.countBySchoolId(schoolId);
         long active = enquiryRepository.countBySchoolIdAndStatusIgnoreCase(schoolId, "ACTIVE");
@@ -143,7 +158,9 @@ public class AdmissionEnquiryService {
     }
 
     @Transactional
-    public void deleteEnquiry(Long schoolId, Long id) {
+    public void deleteEnquiry(Long rawSchoolId, Long id) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         AdmissionEnquiry enquiry = enquiryRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Admission enquiry not found with id: " + id));
         enquiryRepository.delete(enquiry);

@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS admission_enquiries (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_admission_enquiry_school FOREIGN KEY (school_id) REFERENCES schools (id) ON DELETE CASCADE,
-    CONSTRAINT fk_admission_enquiry_class FOREIGN KEY (class_id) REFERENCES school_classes (id) ON DELETE SET NULL,
+    CONSTRAINT fk_admission_enquiry_class FOREIGN KEY (class_id) REFERENCES class (id) ON DELETE SET NULL,
     CONSTRAINT fk_admission_enquiry_assigned_staff FOREIGN KEY (assigned_to) REFERENCES staff (id) ON DELETE SET NULL
 );
 
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS gate_passes (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_gate_passes_school FOREIGN KEY (school_id) REFERENCES schools (id) ON DELETE CASCADE,
-    CONSTRAINT fk_gate_passes_student FOREIGN KEY (student_id) REFERENCES students (id) ON DELETE SET NULL,
+    CONSTRAINT fk_gate_passes_student FOREIGN KEY (student_id) REFERENCES student (id) ON DELETE SET NULL,
     CONSTRAINT fk_gate_passes_staff FOREIGN KEY (staff_id) REFERENCES staff (id) ON DELETE SET NULL,
     CONSTRAINT fk_gate_passes_approver FOREIGN KEY (approved_by_staff_id) REFERENCES staff (id) ON DELETE SET NULL
 );
@@ -247,3 +247,4 @@ BEGIN
 
     END LOOP;
 END $$;
+

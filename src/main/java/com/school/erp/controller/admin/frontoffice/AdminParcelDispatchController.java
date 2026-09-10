@@ -28,7 +28,7 @@ public class AdminParcelDispatchController {
     @GetMapping
     @PermissionRequired("front_office.parcel_dispatch.view")
     public ResponseEntity<ApiResponse<List<ParcelDispatchResponse>>> getParcelDispatches(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(required = false) String status,
@@ -47,7 +47,7 @@ public class AdminParcelDispatchController {
     @GetMapping("/{id}")
     @PermissionRequired("front_office.parcel_dispatch.view")
     public ResponseEntity<ApiResponse<ParcelDispatchResponse>> getParcelDispatchById(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success(
                 parcelDispatchService.getParcelDispatchById(schoolId, id),
@@ -57,7 +57,7 @@ public class AdminParcelDispatchController {
     @PostMapping
     @PermissionRequired("front_office.parcel_dispatch.view")
     public ResponseEntity<ApiResponse<ParcelDispatchResponse>> createParcelDispatch(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @Valid @RequestBody ParcelDispatchRequest request) {
         return ResponseEntity.ok(ApiResponse.success(
                 parcelDispatchService.createParcelDispatch(schoolId, request),
@@ -67,7 +67,7 @@ public class AdminParcelDispatchController {
     @PutMapping("/{id}/status")
     @PermissionRequired("front_office.parcel_dispatch.view")
     public ResponseEntity<ApiResponse<ParcelDispatchResponse>> updateStatus(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id,
             @RequestParam String status) {
         return ResponseEntity.ok(ApiResponse.success(
@@ -78,7 +78,7 @@ public class AdminParcelDispatchController {
     @GetMapping("/stats")
     @PermissionRequired("front_office.parcel_dispatch.view")
     public ResponseEntity<ApiResponse<ParcelDispatchStatsResponse>> getStats(
-            @RequestParam Long schoolId) {
+            @RequestParam(required = false) Long schoolId) {
         return ResponseEntity.ok(ApiResponse.success(
                 parcelDispatchService.getParcelDispatchStats(schoolId),
                 "Parcel dispatch statistics retrieved successfully"));
@@ -87,9 +87,10 @@ public class AdminParcelDispatchController {
     @DeleteMapping("/{id}")
     @PermissionRequired("front_office.parcel_dispatch.view")
     public ResponseEntity<ApiResponse<Void>> deleteParcelDispatch(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id) {
         parcelDispatchService.deleteParcelDispatch(schoolId, id);
         return ResponseEntity.ok(ApiResponse.success(null, "Parcel dispatch record deleted successfully"));
     }
 }
+

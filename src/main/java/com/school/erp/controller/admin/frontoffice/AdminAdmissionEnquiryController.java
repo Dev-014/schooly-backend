@@ -26,7 +26,7 @@ public class AdminAdmissionEnquiryController {
     @GetMapping
     @PermissionRequired("front_office.admission_enquiry.view")
     public ResponseEntity<ApiResponse<List<AdmissionEnquiryResponse>>> getEnquiries(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
@@ -47,7 +47,7 @@ public class AdminAdmissionEnquiryController {
     @GetMapping("/{id}")
     @PermissionRequired("front_office.admission_enquiry.view")
     public ResponseEntity<ApiResponse<AdmissionEnquiryResponse>> getEnquiryById(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success(
                 enquiryService.getEnquiryById(schoolId, id),
@@ -57,7 +57,7 @@ public class AdminAdmissionEnquiryController {
     @PostMapping
     @PermissionRequired("front_office.admission_enquiry.view")
     public ResponseEntity<ApiResponse<AdmissionEnquiryResponse>> createEnquiry(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @Valid @RequestBody AdmissionEnquiryRequest request) {
         return ResponseEntity.ok(ApiResponse.success(
                 enquiryService.createEnquiry(schoolId, request),
@@ -67,7 +67,7 @@ public class AdminAdmissionEnquiryController {
     @PutMapping("/{id}")
     @PermissionRequired("front_office.admission_enquiry.view")
     public ResponseEntity<ApiResponse<AdmissionEnquiryResponse>> updateEnquiry(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id,
             @Valid @RequestBody AdmissionEnquiryRequest request) {
         return ResponseEntity.ok(ApiResponse.success(
@@ -78,7 +78,7 @@ public class AdminAdmissionEnquiryController {
     @PostMapping("/{id}/follow-ups")
     @PermissionRequired("front_office.admission_enquiry.view")
     public ResponseEntity<ApiResponse<EnquiryFollowUpResponse>> addFollowUp(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id,
             @Valid @RequestBody EnquiryFollowUpRequest request) {
         return ResponseEntity.ok(ApiResponse.success(
@@ -89,7 +89,7 @@ public class AdminAdmissionEnquiryController {
     @GetMapping("/stats")
     @PermissionRequired("front_office.admission_enquiry.view")
     public ResponseEntity<ApiResponse<AdmissionEnquiryStatsResponse>> getStats(
-            @RequestParam Long schoolId) {
+            @RequestParam(required = false) Long schoolId) {
         return ResponseEntity.ok(ApiResponse.success(
                 enquiryService.getEnquiryStats(schoolId),
                 "Admission enquiry statistics retrieved successfully"));
@@ -98,9 +98,10 @@ public class AdminAdmissionEnquiryController {
     @DeleteMapping("/{id}")
     @PermissionRequired("front_office.admission_enquiry.view")
     public ResponseEntity<ApiResponse<Void>> deleteEnquiry(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id) {
         enquiryService.deleteEnquiry(schoolId, id);
         return ResponseEntity.ok(ApiResponse.success(null, "Admission enquiry deleted successfully"));
     }
 }
+

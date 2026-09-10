@@ -17,12 +17,12 @@ public interface VisitorLogRepository extends JpaRepository<VisitorLog, Long> {
     Optional<VisitorLog> findByIdAndSchoolId(Long id, Long schoolId);
 
     @Query("SELECT v FROM VisitorLog v WHERE v.school.id = :schoolId " +
-            "AND (:search IS NULL OR LOWER(v.visitorName) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "     OR LOWER(v.meetingWith) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "     OR LOWER(v.phone) LIKE LOWER(CONCAT('%', :search, '%'))) " +
+            "AND (:search IS NULL OR LOWER(v.visitorName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "     OR LOWER(v.meetingWith) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "     OR LOWER(v.phone) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) " +
             "AND (:date IS NULL OR v.visitDate = :date) " +
-            "AND (:purpose IS NULL OR LOWER(v.purpose) = LOWER(:purpose)) " +
-            "AND (:status IS NULL OR LOWER(v.status) = LOWER(:status)) " +
+            "AND (:purpose IS NULL OR LOWER(v.purpose) = LOWER(CAST(:purpose AS string))) " +
+            "AND (:status IS NULL OR LOWER(v.status) = LOWER(CAST(:status AS string))) " +
             "ORDER BY v.visitDate DESC, v.timeIn DESC")
     Page<VisitorLog> filterVisitors(
             @Param("schoolId") Long schoolId,

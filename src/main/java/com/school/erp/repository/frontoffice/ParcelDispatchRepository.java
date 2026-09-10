@@ -17,13 +17,13 @@ public interface ParcelDispatchRepository extends JpaRepository<ParcelDispatch, 
     Optional<ParcelDispatch> findByIdAndSchoolId(Long id, Long schoolId);
 
     @Query("SELECT p FROM ParcelDispatch p WHERE p.school.id = :schoolId " +
-            "AND (:search IS NULL OR LOWER(p.receiverName) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "     OR LOWER(p.receiverInstitution) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "     OR LOWER(p.itemDetails) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "     OR LOWER(p.trackingNumber) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "     OR LOWER(p.courierName) LIKE LOWER(CONCAT('%', :search, '%'))) " +
+            "AND (:search IS NULL OR LOWER(p.receiverName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "     OR LOWER(p.receiverInstitution) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "     OR LOWER(p.itemDetails) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "     OR LOWER(p.trackingNumber) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "     OR LOWER(p.courierName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) " +
             "AND (:date IS NULL OR p.dispatchDate = :date) " +
-            "AND (:status IS NULL OR LOWER(p.status) = LOWER(:status)) " +
+            "AND (:status IS NULL OR LOWER(p.status) = LOWER(CAST(:status AS string))) " +
             "ORDER BY p.dispatchDate DESC, p.id DESC")
     Page<ParcelDispatch> filterParcelDispatches(
             @Param("schoolId") Long schoolId,

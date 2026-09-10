@@ -29,7 +29,7 @@ public class AdminVisitorBookController {
     @GetMapping
     @PermissionRequired("front_office.visitor_book.view")
     public ResponseEntity<ApiResponse<List<VisitorLogResponse>>> getVisitors(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(required = false) String purpose,
@@ -49,7 +49,7 @@ public class AdminVisitorBookController {
     @GetMapping("/{id}")
     @PermissionRequired("front_office.visitor_book.view")
     public ResponseEntity<ApiResponse<VisitorLogResponse>> getVisitorById(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success(
                 visitorLogService.getVisitorById(schoolId, id),
@@ -59,7 +59,7 @@ public class AdminVisitorBookController {
     @PostMapping
     @PermissionRequired("front_office.visitor_book.view")
     public ResponseEntity<ApiResponse<VisitorLogResponse>> createVisitor(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @Valid @RequestBody VisitorLogRequest request) {
         return ResponseEntity.ok(ApiResponse.success(
                 visitorLogService.createVisitor(schoolId, request),
@@ -69,7 +69,7 @@ public class AdminVisitorBookController {
     @PutMapping("/{id}/checkout")
     @PermissionRequired("front_office.visitor_book.view")
     public ResponseEntity<ApiResponse<VisitorLogResponse>> checkoutVisitor(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime timeOut) {
         return ResponseEntity.ok(ApiResponse.success(
@@ -80,7 +80,7 @@ public class AdminVisitorBookController {
     @GetMapping("/stats")
     @PermissionRequired("front_office.visitor_book.view")
     public ResponseEntity<ApiResponse<VisitorStatsResponse>> getStats(
-            @RequestParam Long schoolId) {
+            @RequestParam(required = false) Long schoolId) {
         return ResponseEntity.ok(ApiResponse.success(
                 visitorLogService.getVisitorStats(schoolId),
                 "Visitor statistics retrieved successfully"));
@@ -89,9 +89,10 @@ public class AdminVisitorBookController {
     @DeleteMapping("/{id}")
     @PermissionRequired("front_office.visitor_book.view")
     public ResponseEntity<ApiResponse<Void>> deleteVisitor(
-            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long schoolId,
             @PathVariable Long id) {
         visitorLogService.deleteVisitor(schoolId, id);
         return ResponseEntity.ok(ApiResponse.success(null, "Visitor log deleted successfully"));
     }
 }
+

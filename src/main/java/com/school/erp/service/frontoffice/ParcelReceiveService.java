@@ -7,6 +7,7 @@ import com.school.erp.entity.School;
 import com.school.erp.entity.Staff;
 import com.school.erp.entity.frontoffice.ParcelReceive;
 import com.school.erp.exception.ResourceNotFoundException;
+import com.school.erp.security.AuthContextService;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.StaffRepository;
 import com.school.erp.repository.frontoffice.ParcelReceiveRepository;
@@ -23,17 +24,21 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ParcelReceiveService {
 
+    private final AuthContextService authContextService;
+
     private final ParcelReceiveRepository parcelReceiveRepository;
     private final SchoolRepository schoolRepository;
     private final StaffRepository staffRepository;
 
     @Transactional(readOnly = true)
     public Page<ParcelReceiveResponse> filterParcelReceives(
-            Long schoolId,
+            Long rawSchoolId,
             String search,
             LocalDate date,
             String status,
             Pageable pageable) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
 
         String cleanSearch = (search != null && !search.isBlank()) ? search.trim() : null;
         String cleanStatus = (status != null && !status.isBlank() && !status.equalsIgnoreCase("all")) ? status.trim() : null;
@@ -43,14 +48,18 @@ public class ParcelReceiveService {
     }
 
     @Transactional(readOnly = true)
-    public ParcelReceiveResponse getParcelReceiveById(Long schoolId, Long id) {
+    public ParcelReceiveResponse getParcelReceiveById(Long rawSchoolId, Long id) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         ParcelReceive parcel = parcelReceiveRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Parcel receive log not found with id: " + id));
         return mapToResponse(parcel);
     }
 
     @Transactional
-    public ParcelReceiveResponse receiveParcel(Long schoolId, ParcelReceiveRequest request) {
+    public ParcelReceiveResponse receiveParcel(Long rawSchoolId, ParcelReceiveRequest request) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         School school = schoolRepository.findById(schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("School not found with id: " + schoolId));
 
@@ -75,7 +84,9 @@ public class ParcelReceiveService {
     }
 
     @Transactional
-    public ParcelReceiveResponse markCollected(Long schoolId, Long id, String collectedBy) {
+    public ParcelReceiveResponse markCollected(Long rawSchoolId, Long id, String collectedBy) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         ParcelReceive parcel = parcelReceiveRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Parcel receive log not found with id: " + id));
 
@@ -88,7 +99,9 @@ public class ParcelReceiveService {
     }
 
     @Transactional(readOnly = true)
-    public ParcelReceiveStatsResponse getParcelReceiveStats(Long schoolId) {
+    public ParcelReceiveStatsResponse getParcelReceiveStats(Long rawSchoolId) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
         long todayCount = parcelReceiveRepository.countReceivedOnDate(schoolId, today);
@@ -110,7 +123,9 @@ public class ParcelReceiveService {
     }
 
     @Transactional
-    public void deleteParcelReceive(Long schoolId, Long id) {
+    public void deleteParcelReceive(Long rawSchoolId, Long id) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         ParcelReceive parcel = parcelReceiveRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Parcel receive log not found with id: " + id));
         parcelReceiveRepository.delete(parcel);

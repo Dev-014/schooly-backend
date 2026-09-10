@@ -8,6 +8,7 @@ import com.school.erp.entity.Staff;
 import com.school.erp.entity.Student;
 import com.school.erp.entity.frontoffice.GatePass;
 import com.school.erp.exception.ResourceNotFoundException;
+import com.school.erp.security.AuthContextService;
 import com.school.erp.repository.SchoolRepository;
 import com.school.erp.repository.StaffRepository;
 import com.school.erp.repository.StudentRepository;
@@ -25,6 +26,8 @@ import java.time.LocalTime;
 @RequiredArgsConstructor
 public class GatePassService {
 
+    private final AuthContextService authContextService;
+
     private final GatePassRepository gatePassRepository;
     private final SchoolRepository schoolRepository;
     private final StudentRepository studentRepository;
@@ -32,12 +35,14 @@ public class GatePassService {
 
     @Transactional(readOnly = true)
     public Page<GatePassResponse> filterGatePasses(
-            Long schoolId,
+            Long rawSchoolId,
             String search,
             LocalDate date,
             String role,
             String status,
             Pageable pageable) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
 
         String cleanSearch = (search != null && !search.isBlank()) ? search.trim() : null;
         String cleanRole = (role != null && !role.isBlank() && !role.equalsIgnoreCase("all")) ? role.trim() : null;
@@ -48,14 +53,18 @@ public class GatePassService {
     }
 
     @Transactional(readOnly = true)
-    public GatePassResponse getGatePassById(Long schoolId, Long id) {
+    public GatePassResponse getGatePassById(Long rawSchoolId, Long id) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         GatePass gatePass = gatePassRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Gate pass not found with id: " + id));
         return mapToResponse(gatePass);
     }
 
     @Transactional
-    public GatePassResponse createGatePass(Long schoolId, GatePassRequest request) {
+    public GatePassResponse createGatePass(Long rawSchoolId, GatePassRequest request) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         School school = schoolRepository.findById(schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("School not found with id: " + schoolId));
 
@@ -97,7 +106,9 @@ public class GatePassService {
     }
 
     @Transactional
-    public GatePassResponse updateStatus(Long schoolId, Long id, String status) {
+    public GatePassResponse updateStatus(Long rawSchoolId, Long id, String status) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         GatePass gatePass = gatePassRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Gate pass not found with id: " + id));
 
@@ -107,7 +118,9 @@ public class GatePassService {
     }
 
     @Transactional(readOnly = true)
-    public GatePassStatsResponse getGatePassStats(Long schoolId) {
+    public GatePassStatsResponse getGatePassStats(Long rawSchoolId) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         LocalDate today = LocalDate.now();
         long issuedToday = gatePassRepository.countIssuedOnDate(schoolId, today);
         long approvedToday = gatePassRepository.countApprovedOnDate(schoolId, today);
@@ -119,7 +132,9 @@ public class GatePassService {
     }
 
     @Transactional
-    public void deleteGatePass(Long schoolId, Long id) {
+    public void deleteGatePass(Long rawSchoolId, Long id) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        
         GatePass gatePass = gatePassRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Gate pass not found with id: " + id));
         gatePassRepository.delete(gatePass);
