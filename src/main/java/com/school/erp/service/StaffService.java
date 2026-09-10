@@ -163,36 +163,6 @@ public class StaffService {
                 userRepository.save(user);
             }
             userIdToUse = user.getId();
-            
-            // Assign legacy School Role
-            UserRole legacyRoleToAssign = request.designation() != null && request.designation().toLowerCase().contains("teacher") ? UserRole.TEACHER : UserRole.STAFF;
-            boolean legacyRoleExists = userSchoolRoleRepository.existsByUserIdAndSchoolIdAndRoleAndStatusIgnoreCase(
-                    userIdToUse, effectiveSchoolId, legacyRoleToAssign, "ACTIVE");
-            if (!legacyRoleExists) {
-                UserSchoolRole usr = new UserSchoolRole();
-                usr.setUser(user);
-                usr.setSchool(school);
-                usr.setRole(legacyRoleToAssign);
-                usr.setStatus("ACTIVE");
-                userSchoolRoleRepository.save(usr);
-            }
-
-            // Assign new RBAC Role explicitly if provided
-            if (request.roleId() != null && !request.roleId().isBlank()) {
-                Role role = roleRepository.findById(request.roleId()).orElse(null);
-                if (role != null) {
-                    UserRoleMapping mapping = new UserRoleMapping();
-                    mapping.setUser(user);
-                    mapping.setSchoolId(effectiveSchoolId);
-                    mapping.setRole(role);
-                    mapping.setActive(true);
-                    userRoleMappingRepository.save(mapping);
-                }
-            } else {
-                // Fallback to auto-syncing if no role explicitly provided
-                userSchoolRoleRepository.findByUserIdAndSchoolIdAndStatusIgnoreCase(user.getId(), effectiveSchoolId, "ACTIVE")
-                        .ifPresent(roleSyncService::syncUserSchoolRole);
-            }
         } else {
             // Prevent duplicate staff profiles for the same user in the same school
             Long finalUserIdToUse = userIdToUse;
@@ -202,6 +172,44 @@ public class StaffService {
                     .ifPresent(s -> {
                         throw new IllegalStateException("User already has a staff profile in this school");
                     });
+        }
+
+        final Long finalResolvedUserId = userIdToUse;
+        User user = userRepository.findById(finalResolvedUserId).orElseThrow(() -> new IllegalStateException("User not found"));
+
+        // Assign legacy School Role
+        UserRole legacyRoleToAssign = request.designation() != null && request.designation().toLowerCase().contains("teacher") ? UserRole.TEACHER : UserRole.STAFF;
+        boolean legacyRoleExists = userSchoolRoleRepository.existsByUserIdAndSchoolIdAndRoleAndStatusIgnoreCase(
+                finalResolvedUserId, effectiveSchoolId, legacyRoleToAssign, "ACTIVE");
+        if (!legacyRoleExists) {
+            UserSchoolRole usr = new UserSchoolRole();
+            usr.setUser(user);
+            usr.setSchool(school);
+            usr.setRole(legacyRoleToAssign);
+            usr.setStatus("ACTIVE");
+            userSchoolRoleRepository.save(usr);
+        }
+
+        // Assign new RBAC Role explicitly if provided
+        if (request.roleId() != null && !request.roleId().isBlank()) {
+            Role role = roleRepository.findById(request.roleId()).orElse(null);
+            if (role != null) {
+                boolean mappingExists = userRoleMappingRepository.findBySchoolIdAndUserIdAndIsActiveTrue(effectiveSchoolId, finalResolvedUserId)
+                        .stream().anyMatch(m -> m.getRole().getId().equals(request.roleId()));
+                if (!mappingExists) {
+                    UserRoleMapping mapping = new UserRoleMapping();
+                    mapping.setUser(user);
+                    mapping.setSchoolId(effectiveSchoolId);
+                    mapping.setRole(role);
+                    mapping.setActive(true);
+                    userRoleMappingRepository.save(mapping);
+                }
+            }
+        } else {
+            // Fallback to auto-syncing if no role explicitly provided
+            userSchoolRoleRepository.findByUserIdAndStatusIgnoreCase(finalResolvedUserId, "ACTIVE").stream()
+                    .filter(usr -> usr.getSchool().getId().equals(effectiveSchoolId))
+                    .forEach(roleSyncService::syncUserSchoolRole);
         }
 
         Staff staff = new Staff();
