@@ -24,6 +24,8 @@ public class AttendanceService {
     private final SchoolRepository schoolRepository;
     private final StudentRepository studentRepository;
     private final com.school.erp.repository.StudentLeaveRepository studentLeaveRepository;
+    private final com.school.erp.repository.StaffRepository staffRepository;
+    private final com.school.erp.repository.ClassTeacherAssignmentRepository assignmentRepository;
     private final AuthContextService authContextService;
 
     public AttendanceService(
@@ -31,14 +33,19 @@ public class AttendanceService {
             SchoolRepository schoolRepository,
             StudentRepository studentRepository,
             com.school.erp.repository.StudentLeaveRepository studentLeaveRepository,
+            com.school.erp.repository.StaffRepository staffRepository,
+            com.school.erp.repository.ClassTeacherAssignmentRepository assignmentRepository,
             AuthContextService authContextService
     ) {
         this.attendanceRepository = attendanceRepository;
         this.schoolRepository = schoolRepository;
         this.studentRepository = studentRepository;
         this.studentLeaveRepository = studentLeaveRepository;
+        this.staffRepository = staffRepository;
+        this.assignmentRepository = assignmentRepository;
         this.authContextService = authContextService;
     }
+
 
     public List<AttendanceResponse> getAttendance(Long schoolId, Long studentId) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
@@ -125,9 +132,15 @@ public class AttendanceService {
         School school = getSchool(effectiveSchoolId);
         
         List<AttendanceResponse> responses = new java.util.ArrayList<>();
+        boolean validatedAuth = false;
         
         for (BulkAttendanceRequest.AttendanceEntry entry : request.entries()) {
             Student student = getStudent(entry.studentId(), effectiveSchoolId);
+            
+            if (!validatedAuth) {
+                validateClassTeacherOrAdmin(effectiveSchoolId, student);
+                validatedAuth = true;
+            }
             
             Attendance attendance = attendanceRepository
                 .findBySchoolIdAndAttendanceDateAndStudentId(effectiveSchoolId, request.attendanceDate(), student.getId())
@@ -149,6 +162,7 @@ public class AttendanceService {
         Long effectiveSchoolId = authContextService.resolveSchoolId(request.schoolId());
         School school = getSchool(effectiveSchoolId);
         Student student = getStudent(request.studentId(), effectiveSchoolId);
+        validateClassTeacherOrAdmin(effectiveSchoolId, student);
 
         Attendance attendance = new Attendance();
         attendance.setSchool(school);
@@ -158,6 +172,48 @@ public class AttendanceService {
 
         return toResponse(attendanceRepository.save(attendance));
     }
+
+    private void validateClassTeacherOrAdmin(Long schoolId, Student student) {
+        com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+        if (currentUser == null) {
+            return;
+        }
+        // Super Admins and Admins can always mark attendance
+        if (currentUser.role() == com.school.erp.entity.UserRole.SUPER_ADMIN ||
+            currentUser.role() == com.school.erp.entity.UserRole.ADMIN) {
+            return;
+        }
+
+        // For non-admin (e.g. TEACHER, STAFF), verify assignment
+        if (currentUser.userId() != null) {
+            java.util.Optional<com.school.erp.entity.Staff> staffOpt = staffRepository.findByUserId(currentUser.userId());
+            if (staffOpt.isEmpty()) {
+                throw new com.school.erp.exception.ForbiddenException("Staff profile not found. Only the assigned Class Teacher or Administrator can mark daily roll call attendance.");
+            }
+            Long staffId = staffOpt.get().getId();
+            Long classId = student.getSchoolClass() != null ? student.getSchoolClass().getId() : null;
+            Long sectionId = student.getSectionId();
+
+            if (classId != null) {
+
+                boolean isAssigned;
+                if (sectionId != null) {
+                    isAssigned = assignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndSectionIdAndStatus(
+                            schoolId, staffId, classId, sectionId, "ACTIVE");
+                } else {
+                    isAssigned = assignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndStatus(
+                            schoolId, staffId, classId, "ACTIVE");
+                }
+
+                if (!isAssigned) {
+                    throw new com.school.erp.exception.ForbiddenException(
+                            "Access Denied: Only the assigned Class Teacher or School Administrator can mark daily roll call attendance for this class/section."
+                    );
+                }
+            }
+        }
+    }
+
 
     private School getSchool(Long schoolId) {
         return schoolRepository.findById(schoolId)

@@ -328,6 +328,19 @@ public class AcademicService {
         return list.stream().map(this::toAssignmentResponse).toList();
     }
 
+    public List<ClassTeacherAssignmentResponse> getMyClassTeacherAssignments(Long schoolId) {
+        Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
+        com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+        if (currentUser == null || currentUser.userId() == null) {
+            return List.of();
+        }
+        return staffRepository.findByUserId(currentUser.userId())
+                .map(staff -> assignmentRepository.findBySchoolIdAndStaffIdAndStatus(effectiveSchoolId, staff.getId(), "ACTIVE")
+                        .stream().map(this::toAssignmentResponse).toList())
+                .orElse(List.of());
+    }
+
+
     @Transactional
     public ClassTeacherAssignmentResponse assignClassTeacher(ClassTeacherAssignmentRequest request) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(request.schoolId());
