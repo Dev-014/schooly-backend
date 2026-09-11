@@ -17,4 +17,7 @@ public interface TimetableEntryRepository extends JpaRepository<TimetableEntry, 
     List<TimetableEntry> findBySchoolIdAndTeacherIdAndDayOfWeekAndAcademicYearId(Long schoolId, Long teacherId, String dayOfWeek, Long academicYearId);
     Optional<TimetableEntry> findBySchoolIdAndSchoolClassIdAndSectionIdAndAcademicYearIdAndDayOfWeekAndPeriodId(Long schoolId, Long classId, Long sectionId, Long academicYearId, String dayOfWeek, Long periodId);
     void deleteBySchoolIdAndSchoolClassIdAndSectionIdAndAcademicYearId(Long schoolId, Long classId, Long sectionId, Long academicYearId);
+    boolean existsBySchoolIdAndTeacherIdAndSchoolClassIdAndSubjectId(Long schoolId, Long teacherId, Long classId, Long subjectId);
+    boolean existsBySchoolIdAndTeacherIdAndSchoolClassIdAndSectionIdAndSubjectId(Long schoolId, Long teacherId, Long classId, Long sectionId, Long subjectId);
 }
+

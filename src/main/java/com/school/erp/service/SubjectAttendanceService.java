@@ -5,6 +5,7 @@ import com.school.erp.dto.attendance.StudentSubjectAttendanceSummaryDTO;
 import com.school.erp.dto.attendance.SubjectAttendanceRequest;
 import com.school.erp.dto.attendance.SubjectAttendanceResponse;
 import com.school.erp.entity.*;
+import com.school.erp.exception.ForbiddenException;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.*;
 import com.school.erp.security.AuthContextService;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,6 +29,7 @@ public class SubjectAttendanceService {
     private final SectionRepository sectionRepository;
     private final SubjectRepository subjectRepository;
     private final TimetableEntryRepository timetableEntryRepository;
+    private final ClassTeacherAssignmentRepository classTeacherAssignmentRepository;
     private final StaffRepository staffRepository;
     private final AuthContextService authContextService;
 
@@ -38,6 +41,7 @@ public class SubjectAttendanceService {
             SectionRepository sectionRepository,
             SubjectRepository subjectRepository,
             TimetableEntryRepository timetableEntryRepository,
+            ClassTeacherAssignmentRepository classTeacherAssignmentRepository,
             StaffRepository staffRepository,
             AuthContextService authContextService
     ) {
@@ -48,6 +52,7 @@ public class SubjectAttendanceService {
         this.sectionRepository = sectionRepository;
         this.subjectRepository = subjectRepository;
         this.timetableEntryRepository = timetableEntryRepository;
+        this.classTeacherAssignmentRepository = classTeacherAssignmentRepository;
         this.staffRepository = staffRepository;
         this.authContextService = authContextService;
     }
@@ -140,6 +145,8 @@ public class SubjectAttendanceService {
                 ? timetableEntryRepository.findById(request.timetableEntryId()).orElse(null)
                 : null;
 
+        validateSubjectTeacherOrAdmin(effectiveSchoolId, request.classId(), request.sectionId(), request.subjectId());
+
         Long markedBy = resolveCurrentStaffOrUserId();
 
         List<SubjectAttendanceResponse> responses = new ArrayList<>();
@@ -174,6 +181,8 @@ public class SubjectAttendanceService {
     @Transactional
     public SubjectAttendanceResponse createSubjectAttendance(SubjectAttendanceRequest request) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(request.schoolId());
+        validateSubjectTeacherOrAdmin(effectiveSchoolId, request.classId(), request.sectionId(), request.subjectId());
+
         School school = schoolRepository.findById(effectiveSchoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("School not found"));
         Student student = studentRepository.findByIdAndSchoolId(request.studentId(), effectiveSchoolId)
@@ -202,6 +211,54 @@ public class SubjectAttendanceService {
         attendance.setMarkedBy(resolveCurrentStaffOrUserId());
 
         return toResponse(subjectAttendanceRepository.save(attendance));
+    }
+
+    private void validateSubjectTeacherOrAdmin(Long schoolId, Long classId, Long sectionId, Long subjectId) {
+        AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+        if (currentUser == null) {
+            return;
+        }
+        if (currentUser.role() == UserRole.SUPER_ADMIN || currentUser.role() == UserRole.ADMIN) {
+            return;
+        }
+
+        if (currentUser.userId() != null) {
+            Optional<Staff> staffOpt = staffRepository.findByUserId(currentUser.userId());
+            if (staffOpt.isEmpty()) {
+                throw new ForbiddenException("Staff profile not found. Only the assigned Subject Teacher, Class Teacher, or Administrator can mark subject attendance.");
+            }
+            Long staffId = staffOpt.get().getId();
+
+            // 1. Check if assigned as Subject Teacher in Timetable
+            boolean isSubjectTeacher;
+            if (sectionId != null) {
+                isSubjectTeacher = timetableEntryRepository.existsBySchoolIdAndTeacherIdAndSchoolClassIdAndSectionIdAndSubjectId(
+                        schoolId, staffId, classId, sectionId, subjectId);
+            } else {
+                isSubjectTeacher = timetableEntryRepository.existsBySchoolIdAndTeacherIdAndSchoolClassIdAndSubjectId(
+                        schoolId, staffId, classId, subjectId);
+            }
+
+            if (isSubjectTeacher) {
+                return;
+            }
+
+            // 2. Check if assigned as Class Teacher for this class/section
+            boolean isClassTeacher;
+            if (sectionId != null) {
+                isClassTeacher = classTeacherAssignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndSectionIdAndStatus(
+                        schoolId, staffId, classId, sectionId, "ACTIVE");
+            } else {
+                isClassTeacher = classTeacherAssignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndStatus(
+                        schoolId, staffId, classId, "ACTIVE");
+            }
+
+            if (isClassTeacher) {
+                return;
+            }
+
+            throw new ForbiddenException("Access Denied: Only the assigned Subject Teacher, Class Teacher, or School Administrator can mark attendance for this subject.");
+        }
     }
 
     private Long resolveCurrentStaffOrUserId() {
