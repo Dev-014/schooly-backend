@@ -44,6 +44,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(ApiResponse.error(exception.getMessage()));
     }
 
+    @ExceptionHandler(org.springframework.web.bind.MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMissingParams(
+            org.springframework.web.bind.MissingServletRequestParameterException exception,
+            HttpServletRequest request
+    ) {
+        return ResponseEntity.badRequest().body(ApiResponse.error(exception.getMessage()));
+    }
+
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiResponse<Void>> handleBadRequest(
             BadRequestException exception,

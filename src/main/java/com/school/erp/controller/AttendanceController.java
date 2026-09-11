@@ -67,13 +67,20 @@ public class AttendanceController {
     @GetMapping("/daily")
     public ResponseEntity<ApiResponse<List<AttendanceResponse>>> getAttendanceByDate(
             @RequestParam(required = false) Long schoolId,
-            @RequestParam Long classId,
+            @RequestParam(required = false) Long classId,
             @RequestParam(required = false) Long sectionId,
-            @RequestParam java.time.LocalDate attendanceDate
+            @RequestParam(required = false) Long studentId,
+            @RequestParam(required = false) java.time.LocalDate attendanceDate
     ) {
+        if (classId != null && attendanceDate != null) {
+            return ResponseEntity.ok(ApiResponse.success(
+                    attendanceService.getAttendanceByDate(schoolId, classId, sectionId, attendanceDate),
+                    "Daily attendance fetched successfully"
+            ));
+        }
         return ResponseEntity.ok(ApiResponse.success(
-                attendanceService.getAttendanceByDate(schoolId, classId, sectionId, attendanceDate),
-                "Daily attendance fetched successfully"
+                attendanceService.getAttendance(schoolId, studentId),
+                "Attendance fetched successfully"
         ));
     }
 

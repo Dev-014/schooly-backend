@@ -42,9 +42,19 @@ public class AttendanceService {
 
     public List<AttendanceResponse> getAttendance(Long schoolId, Long studentId) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
-        List<Attendance> records = studentId == null
+        Long resolvedStudentId = studentId;
+        if (resolvedStudentId == null) {
+            com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+            if (currentUser != null && currentUser.userId() != null) {
+                List<Student> students = studentRepository.findByUserId(currentUser.userId());
+                if (!students.isEmpty()) {
+                    resolvedStudentId = students.get(0).getId();
+                }
+            }
+        }
+        List<Attendance> records = resolvedStudentId == null
                 ? attendanceRepository.findBySchoolId(effectiveSchoolId)
-                : attendanceRepository.findBySchoolIdAndStudentId(effectiveSchoolId, studentId);
+                : attendanceRepository.findBySchoolIdAndStudentId(effectiveSchoolId, resolvedStudentId);
         return records.stream().map(this::toResponse).toList();
     }
 
