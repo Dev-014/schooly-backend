@@ -1,16 +1,15 @@
 package com.school.erp.service.hr;
 
-import com.school.erp.dto.staff.StaffRequest;
-import com.school.erp.entity.School;
-import com.school.erp.entity.Staff;
-import com.school.erp.repository.SchoolRepository;
-import com.school.erp.repository.StaffRepository;
-import com.school.erp.repository.UserRepository;
+import com.school.erp.entity.*;
+import com.school.erp.repository.*;
 import com.school.erp.repository.auth.UserAssignmentRepository;
+import com.school.erp.repository.hr.SchoolDepartmentRepository;
 import com.school.erp.entity.User;
 import com.school.erp.entity.auth.UserAssignment;
+import com.school.erp.entity.hr.SchoolDepartment;
 import com.school.erp.dto.auth.UserAssignmentRequest;
 import com.school.erp.dto.auth.UserAssignmentResponse;
+import com.school.erp.dto.staff.StaffRequest;
 import lombok.RequiredArgsConstructor;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
@@ -27,6 +26,11 @@ public class HrStaffService {
     private final SchoolRepository schoolRepository;
     private final UserRepository userRepository;
     private final UserAssignmentRepository userAssignmentRepository;
+    private final SchoolClassRepository classRepository;
+    private final SectionRepository sectionRepository;
+    private final SubjectRepository subjectRepository;
+    private final AcademicYearRepository academicYearRepository;
+    private final SchoolDepartmentRepository schoolDepartmentRepository;
 
     public List<Staff> getStaffBySchool(Long schoolId) {
         return staffRepository.findBySchoolId(schoolId);
@@ -140,16 +144,52 @@ public class HrStaffService {
     }
 
     private UserAssignmentResponse toAssignmentResponse(UserAssignment ua) {
+        String className = null;
+        if (ua.getClassId() != null) {
+            className = classRepository.findById(ua.getClassId()).map(SchoolClass::getName).orElse(null);
+        }
+
+        String sectionName = null;
+        if (ua.getSectionId() != null) {
+            sectionName = sectionRepository.findById(ua.getSectionId()).map(Section::getName).orElse(null);
+        }
+
+        String subjectName = null;
+        String subjectCode = null;
+        if (ua.getSubjectId() != null) {
+            Subject sub = subjectRepository.findById(ua.getSubjectId()).orElse(null);
+            if (sub != null) {
+                subjectName = sub.getName();
+                subjectCode = sub.getCode();
+            }
+        }
+
+        String sessionName = null;
+        if (ua.getAcademicSessionId() != null) {
+            sessionName = academicYearRepository.findById(ua.getAcademicSessionId()).map(AcademicYear::getName).orElse(null);
+        }
+
+        String departmentName = null;
+        if (ua.getDepartmentId() != null) {
+            departmentName = schoolDepartmentRepository.findById(ua.getDepartmentId()).map(SchoolDepartment::getName).orElse(null);
+        }
+
         return UserAssignmentResponse.builder()
                 .id(ua.getId())
                 .schoolId(ua.getSchoolId())
                 .userId(ua.getUser().getId())
                 .academicSessionId(ua.getAcademicSessionId())
+                .sessionName(sessionName)
                 .assignmentType(ua.getAssignmentType())
                 .classId(ua.getClassId())
+                .className(className)
                 .sectionId(ua.getSectionId())
+                .sectionName(sectionName)
                 .subjectId(ua.getSubjectId())
+                .subjectName(subjectName)
+                .subjectCode(subjectCode)
                 .departmentId(ua.getDepartmentId())
+                .departmentName(departmentName)
                 .effectiveFrom(ua.getEffectiveFrom())
                 .effectiveTo(ua.getEffectiveTo())
                 .isActive(ua.isActive())
