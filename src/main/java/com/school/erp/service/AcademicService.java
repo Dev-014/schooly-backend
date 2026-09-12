@@ -31,6 +31,7 @@ public class AcademicService {
     private final StudentSubjectEnrollmentRepository studentSubjectEnrollmentRepository;
     private final StudentRepository studentRepository;
     private final TimetableEntryRepository timetableEntryRepository;
+    private final com.school.erp.repository.auth.UserAssignmentRepository userAssignmentRepository;
 
     public AcademicService(
             AcademicYearRepository academicYearRepository,
@@ -47,7 +48,8 @@ public class AcademicService {
             ClassSubjectAssignmentRepository classSubjectAssignmentRepository,
             StudentSubjectEnrollmentRepository studentSubjectEnrollmentRepository,
             StudentRepository studentRepository,
-            TimetableEntryRepository timetableEntryRepository
+            TimetableEntryRepository timetableEntryRepository,
+            com.school.erp.repository.auth.UserAssignmentRepository userAssignmentRepository
     ) {
         this.academicYearRepository = academicYearRepository;
         this.sectionRepository = sectionRepository;
@@ -64,6 +66,7 @@ public class AcademicService {
         this.studentSubjectEnrollmentRepository = studentSubjectEnrollmentRepository;
         this.studentRepository = studentRepository;
         this.timetableEntryRepository = timetableEntryRepository;
+        this.userAssignmentRepository = userAssignmentRepository;
     }
 
     // --- Academic Years ---
@@ -334,10 +337,55 @@ public class AcademicService {
         if (currentUser == null || currentUser.userId() == null) {
             return List.of();
         }
-        return staffRepository.findByUserId(currentUser.userId())
-                .map(staff -> assignmentRepository.findBySchoolIdAndStaffIdAndStatus(effectiveSchoolId, staff.getId(), "ACTIVE")
-                        .stream().map(this::toAssignmentResponse).toList())
-                .orElse(List.of());
+
+        List<ClassTeacherAssignmentResponse> result = new java.util.ArrayList<>();
+        java.util.Set<String> seenKeys = new java.util.HashSet<>();
+
+        // 1. From class_teacher_assignments table
+        staffRepository.findByUserId(currentUser.userId()).ifPresent(staff -> {
+            List<ClassTeacherAssignment> assignments = assignmentRepository.findBySchoolIdAndStaffIdAndStatus(effectiveSchoolId, staff.getId(), "ACTIVE");
+            for (ClassTeacherAssignment a : assignments) {
+                String key = a.getSchoolClass().getId() + "_" + (a.getSection() != null ? a.getSection().getId() : "all");
+                seenKeys.add(key);
+                result.add(toAssignmentResponse(a));
+            }
+        });
+
+        // 2. From user_assignments table (HR / Staff profile role assignments)
+        List<com.school.erp.entity.auth.UserAssignment> userAssignments = userAssignmentRepository.findBySchoolIdAndUserIdAndAssignmentTypeAndIsActiveTrue(
+                effectiveSchoolId, currentUser.userId(), "class_teacher");
+
+        for (com.school.erp.entity.auth.UserAssignment ua : userAssignments) {
+            String key = ua.getClassId() + "_" + (ua.getSectionId() != null ? ua.getSectionId() : "all");
+            if (!seenKeys.contains(key)) {
+                seenKeys.add(key);
+
+                SchoolClass sc = ua.getClassId() != null ? classRepository.findById(ua.getClassId()).orElse(null) : null;
+                Section sec = ua.getSectionId() != null ? sectionRepository.findById(ua.getSectionId()).orElse(null) : null;
+                AcademicYear ay = ua.getAcademicSessionId() != null ? academicYearRepository.findById(ua.getAcademicSessionId()).orElse(null) : null;
+
+                Staff staff = staffRepository.findByUserId(currentUser.userId()).orElse(null);
+                String staffName = staff != null ? ((staff.getFirstName() != null ? staff.getFirstName() : "") + " " + (staff.getLastName() != null ? staff.getLastName() : "")).trim() : "Teacher";
+                String staffEmail = staff != null ? staff.getEmail() : null;
+
+                result.add(new ClassTeacherAssignmentResponse(
+                        ua.getId(),
+                        ua.getSchoolId(),
+                        staff != null ? staff.getId() : null,
+                        staffName,
+                        staffEmail,
+                        ua.getClassId(),
+                        sc != null ? sc.getName() : (ua.getClassId() != null ? "Class " + ua.getClassId() : null),
+                        ua.getSectionId(),
+                        sec != null ? sec.getName() : null,
+                        ua.getAcademicSessionId(),
+                        ay != null ? ay.getName() : null,
+                        "ACTIVE"
+                ));
+            }
+        }
+
+        return result;
     }
 
 

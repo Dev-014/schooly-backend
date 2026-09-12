@@ -11,4 +11,15 @@ public interface UserAssignmentRepository extends JpaRepository<UserAssignment, 
     List<UserAssignment> findBySchoolIdAndUserIdAndIsActiveTrue(Long schoolId, Long userId);
     
     List<UserAssignment> findBySchoolIdAndUserIdAndAcademicSessionIdAndIsActiveTrue(Long schoolId, Long userId, Long academicSessionId);
+
+    List<UserAssignment> findBySchoolIdAndUserIdAndAssignmentTypeAndIsActiveTrue(Long schoolId, Long userId, String assignmentType);
+
+    boolean existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSectionIdAndIsActiveTrue(Long schoolId, Long userId, String assignmentType, Long classId, Long sectionId);
+
+    boolean existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndIsActiveTrue(Long schoolId, Long userId, String assignmentType, Long classId);
+
+    boolean existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSectionIdAndSubjectIdAndIsActiveTrue(Long schoolId, Long userId, String assignmentType, Long classId, Long sectionId, Long subjectId);
+
+    boolean existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSubjectIdAndIsActiveTrue(Long schoolId, Long userId, String assignmentType, Long classId, Long subjectId);
 }
+

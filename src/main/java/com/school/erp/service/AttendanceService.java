@@ -26,6 +26,7 @@ public class AttendanceService {
     private final com.school.erp.repository.StudentLeaveRepository studentLeaveRepository;
     private final com.school.erp.repository.StaffRepository staffRepository;
     private final com.school.erp.repository.ClassTeacherAssignmentRepository assignmentRepository;
+    private final com.school.erp.repository.auth.UserAssignmentRepository userAssignmentRepository;
     private final AuthContextService authContextService;
 
     public AttendanceService(
@@ -35,6 +36,7 @@ public class AttendanceService {
             com.school.erp.repository.StudentLeaveRepository studentLeaveRepository,
             com.school.erp.repository.StaffRepository staffRepository,
             com.school.erp.repository.ClassTeacherAssignmentRepository assignmentRepository,
+            com.school.erp.repository.auth.UserAssignmentRepository userAssignmentRepository,
             AuthContextService authContextService
     ) {
         this.attendanceRepository = attendanceRepository;
@@ -43,6 +45,7 @@ public class AttendanceService {
         this.studentLeaveRepository = studentLeaveRepository;
         this.staffRepository = staffRepository;
         this.assignmentRepository = assignmentRepository;
+        this.userAssignmentRepository = userAssignmentRepository;
         this.authContextService = authContextService;
     }
 
@@ -186,30 +189,43 @@ public class AttendanceService {
 
         // For non-admin (e.g. TEACHER, STAFF), verify assignment
         if (currentUser.userId() != null) {
-            java.util.Optional<com.school.erp.entity.Staff> staffOpt = staffRepository.findByUserId(currentUser.userId());
-            if (staffOpt.isEmpty()) {
-                throw new com.school.erp.exception.ForbiddenException("Staff profile not found. Only the assigned Class Teacher or Administrator can mark daily roll call attendance.");
-            }
-            Long staffId = staffOpt.get().getId();
             Long classId = student.getSchoolClass() != null ? student.getSchoolClass().getId() : null;
             Long sectionId = student.getSectionId();
 
             if (classId != null) {
+                // Check 1: class_teacher_assignments table
+                boolean isAssignedInTable = false;
+                java.util.Optional<com.school.erp.entity.Staff> staffOpt = staffRepository.findByUserId(currentUser.userId());
+                if (staffOpt.isPresent()) {
+                    Long staffId = staffOpt.get().getId();
+                    if (sectionId != null) {
+                        isAssignedInTable = assignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndSectionIdAndStatus(
+                                schoolId, staffId, classId, sectionId, "ACTIVE");
+                    } else {
+                        isAssignedInTable = assignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndStatus(
+                                schoolId, staffId, classId, "ACTIVE");
+                    }
+                }
 
-                boolean isAssigned;
+                // Check 2: user_assignments table (HR / Staff assignments)
+                boolean isAssignedInUserAssignments;
                 if (sectionId != null) {
-                    isAssigned = assignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndSectionIdAndStatus(
-                            schoolId, staffId, classId, sectionId, "ACTIVE");
+                    isAssignedInUserAssignments = userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSectionIdAndIsActiveTrue(
+                            schoolId, currentUser.userId(), "class_teacher", classId, sectionId) ||
+                            userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndIsActiveTrue(
+                                    schoolId, currentUser.userId(), "class_teacher", classId);
                 } else {
-                    isAssigned = assignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndStatus(
-                            schoolId, staffId, classId, "ACTIVE");
+                    isAssignedInUserAssignments = userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndIsActiveTrue(
+                            schoolId, currentUser.userId(), "class_teacher", classId);
                 }
 
-                if (!isAssigned) {
-                    throw new com.school.erp.exception.ForbiddenException(
-                            "Access Denied: Only the assigned Class Teacher or School Administrator can mark daily roll call attendance for this class/section."
-                    );
+                if (isAssignedInTable || isAssignedInUserAssignments) {
+                    return;
                 }
+
+                throw new com.school.erp.exception.ForbiddenException(
+                        "Access Denied: Only the assigned Class Teacher or School Administrator can mark daily roll call attendance for this class/section."
+                );
             }
         }
     }

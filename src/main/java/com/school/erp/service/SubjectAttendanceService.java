@@ -30,6 +30,7 @@ public class SubjectAttendanceService {
     private final SubjectRepository subjectRepository;
     private final TimetableEntryRepository timetableEntryRepository;
     private final ClassTeacherAssignmentRepository classTeacherAssignmentRepository;
+    private final com.school.erp.repository.auth.UserAssignmentRepository userAssignmentRepository;
     private final StaffRepository staffRepository;
     private final AuthContextService authContextService;
 
@@ -42,6 +43,7 @@ public class SubjectAttendanceService {
             SubjectRepository subjectRepository,
             TimetableEntryRepository timetableEntryRepository,
             ClassTeacherAssignmentRepository classTeacherAssignmentRepository,
+            com.school.erp.repository.auth.UserAssignmentRepository userAssignmentRepository,
             StaffRepository staffRepository,
             AuthContextService authContextService
     ) {
@@ -53,6 +55,7 @@ public class SubjectAttendanceService {
         this.subjectRepository = subjectRepository;
         this.timetableEntryRepository = timetableEntryRepository;
         this.classTeacherAssignmentRepository = classTeacherAssignmentRepository;
+        this.userAssignmentRepository = userAssignmentRepository;
         this.staffRepository = staffRepository;
         this.authContextService = authContextService;
     }
@@ -223,37 +226,59 @@ public class SubjectAttendanceService {
         }
 
         if (currentUser.userId() != null) {
-            Optional<Staff> staffOpt = staffRepository.findByUserId(currentUser.userId());
-            if (staffOpt.isEmpty()) {
-                throw new ForbiddenException("Staff profile not found. Only the assigned Subject Teacher, Class Teacher, or Administrator can mark subject attendance.");
-            }
-            Long staffId = staffOpt.get().getId();
+            Long staffId = staffRepository.findByUserId(currentUser.userId()).map(Staff::getId).orElse(null);
 
             // 1. Check if assigned as Subject Teacher in Timetable
-            boolean isSubjectTeacher;
+            if (staffId != null) {
+                boolean isSubjectTeacher;
+                if (sectionId != null) {
+                    isSubjectTeacher = timetableEntryRepository.existsBySchoolIdAndTeacherIdAndSchoolClassIdAndSectionIdAndSubjectId(
+                            schoolId, staffId, classId, sectionId, subjectId);
+                } else {
+                    isSubjectTeacher = timetableEntryRepository.existsBySchoolIdAndTeacherIdAndSchoolClassIdAndSubjectId(
+                            schoolId, staffId, classId, subjectId);
+                }
+
+                if (isSubjectTeacher) {
+                    return;
+                }
+
+                // 2. Check if assigned as Class Teacher in class_teacher_assignments table
+                boolean isClassTeacher;
+                if (sectionId != null) {
+                    isClassTeacher = classTeacherAssignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndSectionIdAndStatus(
+                            schoolId, staffId, classId, sectionId, "ACTIVE");
+                } else {
+                    isClassTeacher = classTeacherAssignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndStatus(
+                            schoolId, staffId, classId, "ACTIVE");
+                }
+
+                if (isClassTeacher) {
+                    return;
+                }
+            }
+
+            // 3. Check user_assignments table (HR / Staff assignments)
+            boolean isAssignedInUserAssignments;
             if (sectionId != null) {
-                isSubjectTeacher = timetableEntryRepository.existsBySchoolIdAndTeacherIdAndSchoolClassIdAndSectionIdAndSubjectId(
-                        schoolId, staffId, classId, sectionId, subjectId);
+                isAssignedInUserAssignments =
+                        userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSectionIdAndSubjectIdAndIsActiveTrue(
+                                schoolId, currentUser.userId(), "subject_teacher", classId, sectionId, subjectId) ||
+                        userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSubjectIdAndIsActiveTrue(
+                                schoolId, currentUser.userId(), "subject_teacher", classId, subjectId) ||
+                        userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSectionIdAndIsActiveTrue(
+                                schoolId, currentUser.userId(), "class_teacher", classId, sectionId) ||
+                        userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndIsActiveTrue(
+                                schoolId, currentUser.userId(), "class_teacher", classId);
             } else {
-                isSubjectTeacher = timetableEntryRepository.existsBySchoolIdAndTeacherIdAndSchoolClassIdAndSubjectId(
-                        schoolId, staffId, classId, subjectId);
+                isAssignedInUserAssignments =
+                        userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSubjectIdAndIsActiveTrue(
+                                schoolId, currentUser.userId(), "subject_teacher", classId, subjectId) ||
+                        userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndIsActiveTrue(
+                                schoolId, currentUser.userId(), "class_teacher", classId);
             }
 
-            if (isSubjectTeacher) {
-                return;
-            }
-
-            // 2. Check if assigned as Class Teacher for this class/section
-            boolean isClassTeacher;
-            if (sectionId != null) {
-                isClassTeacher = classTeacherAssignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndSectionIdAndStatus(
-                        schoolId, staffId, classId, sectionId, "ACTIVE");
-            } else {
-                isClassTeacher = classTeacherAssignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndStatus(
-                        schoolId, staffId, classId, "ACTIVE");
-            }
-
-            if (isClassTeacher) {
+            if (isAssignedInUserAssignments) {
                 return;
             }
 
