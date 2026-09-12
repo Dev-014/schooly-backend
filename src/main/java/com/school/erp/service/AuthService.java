@@ -73,9 +73,23 @@ public class AuthService {
 
     @Transactional
     public AuthTokenResponse loginStudentWithCredentials(StudentLoginRequest request, String deviceInfo) {
-        // Find Student by admissionNo
-        Student student = studentRepository.findByAdmissionNo(request.admissionNo())
-                .orElseThrow(() -> new UnauthorizedException("Student not found for admission number: " + request.admissionNo()));
+        // Find Student by admissionNo and optional schoolCode
+        Student student;
+        if (request.schoolCode() != null && !request.schoolCode().isBlank()) {
+            School school = schoolRepository.findByCode(request.schoolCode().trim())
+                    .orElseThrow(() -> new UnauthorizedException("School not found with code: " + request.schoolCode()));
+            student = studentRepository.findBySchoolIdAndAdmissionNo(school.getId(), request.admissionNo().trim())
+                    .orElseThrow(() -> new UnauthorizedException("Student not found for admission number: " + request.admissionNo() + " in school " + request.schoolCode()));
+        } else {
+            List<Student> matchingStudents = studentRepository.findAllByAdmissionNo(request.admissionNo().trim());
+            if (matchingStudents.isEmpty()) {
+                throw new UnauthorizedException("Student not found for admission number: " + request.admissionNo());
+            }
+            if (matchingStudents.size() > 1) {
+                throw new UnauthorizedException("Multiple schools found for admission number: " + request.admissionNo() + ". Please provide your School Code.");
+            }
+            student = matchingStudents.get(0);
+        }
         
         if (student.getUserId() == null) {
             throw new UnauthorizedException("Student account is not fully set up.");
@@ -457,9 +471,17 @@ public class AuthService {
         User user = session.getUser();
         School school = session.getSchool();
 
-        UserRoleMapping userSchoolRole = userRoleMappingRepository
-                .findBySchoolIdAndUserIdAndIsActiveTrue(school.getId(), user.getId()).stream().findFirst()
-                .orElseThrow(() -> new UnauthorizedException("User no longer has active access to this school"));
+        // Extract original role from refresh token
+        UserRole tokenRole = jwtUtil.parseRefreshTokenRole(refreshToken);
+
+        List<UserRoleMapping> activeRoles = userRoleMappingRepository
+                .findBySchoolIdAndUserIdAndIsActiveTrue(school.getId(), user.getId());
+
+        UserRoleMapping userSchoolRole = activeRoles.stream()
+                .filter(m -> extractRoleEnum(m) == tokenRole)
+                .findFirst()
+                .orElseGet(() -> activeRoles.stream().findFirst()
+                        .orElseThrow(() -> new UnauthorizedException("User no longer has active access to this school")));
 
         // Generate new tokens
         String newAccessToken = jwtUtil.generateAccessToken(user.getId(), school.getId(), extractRoleEnum(userSchoolRole));
@@ -506,35 +528,48 @@ public class AuthService {
             throw new UnauthorizedException("User not authenticated");
         }
 
-        UserRoleMapping userSchoolRole = userRoleMappingRepository
-                .findBySchoolIdAndUserIdAndIsActiveTrue(authUser.schoolId(), authUser.userId()).stream().findFirst()
-                .orElseThrow(() -> new UnauthorizedException("Active school membership not found"));
+        List<UserRoleMapping> activeRoles = userRoleMappingRepository
+                .findBySchoolIdAndUserIdAndIsActiveTrue(authUser.schoolId(), authUser.userId());
 
-        // Temporary stub for Persona Switching: In a full deployment, this validates the roleId against user_roles table.
-        // For now, we simulate switching by refreshing the token for the requested role archetype.
-        
-        String newAccessToken = jwtUtil.generateAccessToken(authUser.userId(), authUser.schoolId(), parseRole(roleId));
-        String newRefreshToken = jwtUtil.generateRefreshToken(authUser.userId(), authUser.schoolId(), parseRole(roleId));
+        if (activeRoles.isEmpty()) {
+            throw new UnauthorizedException("Active school membership not found");
+        }
 
-        // Generate mock permission contexts depending on the persona
-        List<PermissionContextDto> permissions = authorizationService.getEffectivePermissions(authUser.schoolId(), authUser.userId())
+        // Validate that user actually possesses the requested role
+        UserRole targetRole = parseRole(roleId);
+        UserRoleMapping targetMapping = activeRoles.stream()
+                .filter(m -> (m.getRole() != null && m.getRole().getId().equalsIgnoreCase(roleId))
+                        || extractRoleEnum(m) == targetRole)
+                .findFirst()
+                .orElseThrow(() -> new UnauthorizedException("User does not have active role: " + roleId + " in this school"));
+
+        String newAccessToken = jwtUtil.generateAccessToken(authUser.userId(), authUser.schoolId(), targetRole);
+        String newRefreshToken = jwtUtil.generateRefreshToken(authUser.userId(), authUser.schoolId(), targetRole);
+
+        List<PermissionContextDto> permissions;
+        if (targetRole == UserRole.SUPER_ADMIN || targetRole == UserRole.ADMIN) {
+            permissions = List.of(new PermissionContextDto("ALL", "GLOBAL"));
+        } else {
+            permissions = authorizationService.getEffectivePermissions(authUser.schoolId(), authUser.userId())
                     .stream()
                     .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
                     .toList();
+        }
+
+        RoleArchetype personaArchetype = targetMapping.getRole() != null ? targetMapping.getRole().getArchetype() : RoleArchetype.STAFF;
+        PersonaDto persona = new PersonaDto(roleId, roleId, personaArchetype);
 
         return new AuthTokenResponse(
                 authUser.userId(),
                 authUser.schoolId(),
                 null,   // not a student login
-                userSchoolRole.getUser().getName() != null ? userSchoolRole.getUser().getName() : "",
+                targetMapping.getUser().getName() != null ? targetMapping.getUser().getName() : "",
                 roleId,
                 newAccessToken,
                 newRefreshToken,
                 permissions,
-                List.of(
-                        new PersonaDto(roleId, roleId, RoleArchetype.STAFF)
-                ),
-                new PersonaDto(roleId, roleId, RoleArchetype.STAFF)
+                List.of(persona),
+                persona
         );
     }
 
@@ -586,7 +621,15 @@ public class AuthService {
         if (archetype == RoleArchetype.SUPER_ADMIN) return UserRole.SUPER_ADMIN;
         if (archetype == RoleArchetype.SCHOOL_ADMIN) return UserRole.ADMIN;
         if (archetype == RoleArchetype.PARENT) return UserRole.PARENT;
-        if (archetype == RoleArchetype.STAFF) return UserRole.TEACHER;
+        if (archetype == RoleArchetype.STAFF) {
+            String roleId = mapping.getRole().getId();
+            String roleName = mapping.getRole().getName();
+            if ((roleId != null && roleId.toLowerCase().contains("teacher")) ||
+                (roleName != null && roleName.equalsIgnoreCase("teacher"))) {
+                return UserRole.TEACHER;
+            }
+            return UserRole.STAFF;
+        }
         return UserRole.STUDENT;
     }
     

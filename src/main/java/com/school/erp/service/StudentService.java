@@ -7,6 +7,7 @@ import com.school.erp.exception.BadRequestException;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.*;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.service.auth.RoleSyncService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,7 @@ public class StudentService {
     private final UserRepository userRepository;
     private final UserSchoolRoleRepository userSchoolRoleRepository;
     private final StudentParentRepository studentParentRepository;
+    private final RoleSyncService roleSyncService;
 
     public StudentService(
             StudentRepository studentRepository,
@@ -46,7 +48,8 @@ public class StudentService {
             FeeDueService feeDueService,
             UserRepository userRepository,
             UserSchoolRoleRepository userSchoolRoleRepository,
-            StudentParentRepository studentParentRepository
+            StudentParentRepository studentParentRepository,
+            RoleSyncService roleSyncService
     ) {
         this.studentRepository = studentRepository;
         this.schoolRepository = schoolRepository;
@@ -62,6 +65,7 @@ public class StudentService {
         this.userRepository = userRepository;
         this.userSchoolRoleRepository = userSchoolRoleRepository;
         this.studentParentRepository = studentParentRepository;
+        this.roleSyncService = roleSyncService;
     }
 
     public List<StudentResponse> getAllStudents(Long schoolId, Long classId, Long sectionId, String search) {
@@ -430,7 +434,8 @@ public class StudentService {
             usr.setSchool(student.getSchool());
             usr.setRole(UserRole.PARENT);
             usr.setStatus("ACTIVE");
-            userSchoolRoleRepository.save(usr);
+            usr = userSchoolRoleRepository.save(usr);
+            roleSyncService.syncUserSchoolRole(usr);
         }
 
         // 3. Link Student and Parent

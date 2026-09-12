@@ -103,6 +103,16 @@ public class JwtUtil {
         }
     }
 
+    public UserRole parseRefreshTokenRole(String token) {
+        Map<String, Object> claims = parseClaims(token);
+        String tokenType = (String) claims.get("tokenType");
+        if (!"REFRESH".equals(tokenType)) {
+            throw new IllegalArgumentException("Invalid refresh token");
+        }
+        String roleStr = (String) claims.get("role");
+        return roleStr != null ? UserRole.valueOf(roleStr) : null;
+    }
+
     private String buildToken(Map<String, Object> claims, long expirationMs) {
         try {
             Instant now = Instant.now();

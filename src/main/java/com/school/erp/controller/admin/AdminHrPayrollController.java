@@ -2,6 +2,7 @@ package com.school.erp.controller.admin;
 
 import com.school.erp.dto.hr.StaffPayrollDTO;
 import com.school.erp.dto.hr.StaffPayrollRequest;
+import com.school.erp.security.PermissionRequired;
 import com.school.erp.service.hr.StaffPayrollService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class AdminHrPayrollController {
     private final StaffPayrollService payrollService;
 
     @PostMapping
+    @PermissionRequired("staff_hr.payroll.view")
     public ResponseEntity<StaffPayrollDTO> runPayroll(
             @PathVariable Long schoolId,
             @Valid @RequestBody StaffPayrollRequest request) {
@@ -25,6 +27,7 @@ public class AdminHrPayrollController {
     }
 
     @GetMapping
+    @PermissionRequired("staff_hr.payroll.view")
     public ResponseEntity<List<StaffPayrollDTO>> getAllPayrolls(@PathVariable Long schoolId) {
         return ResponseEntity.ok(payrollService.getAllPayrolls(schoolId));
     }

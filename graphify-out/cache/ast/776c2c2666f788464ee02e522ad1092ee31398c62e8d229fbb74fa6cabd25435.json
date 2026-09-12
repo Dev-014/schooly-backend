@@ -1,0 +1,1 @@
+{"nodes": [{"id": "c_users_admin_desktop_my_project_schooly_backend_schooly_backend_main_deploy_aws_deploy_backend_ecs_ps1", "label": "deploy-backend-ecs.ps1", "file_type": "code", "source_file": "schooly-backend-main/deploy/aws/deploy-backend-ecs.ps1", "source_location": "L1"}], "edges": [], "raw_calls": []}

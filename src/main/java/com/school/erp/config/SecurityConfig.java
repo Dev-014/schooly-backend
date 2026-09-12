@@ -43,8 +43,7 @@ public class SecurityConfig {
                     "/api/online-admissions/**",
                     "/health",
                     "/v3/api-docs", "/v3/api-docs/**",
-                    "/swagger-ui", "/swagger-ui/**", "/swagger-ui.html",
-                    "/api/v1/super-admin/**"
+                    "/swagger-ui", "/swagger-ui/**", "/swagger-ui.html"
                 ).permitAll()
                 // All other endpoints require authentication
                 .anyRequest().permitAll()

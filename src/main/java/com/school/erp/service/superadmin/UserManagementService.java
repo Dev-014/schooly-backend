@@ -236,9 +236,10 @@ public class UserManagementService {
             pass.append(chars.charAt(rand.nextInt(chars.length())));
         }
         
-        // Normally use BCryptPasswordEncoder
+        String generatedPassword = pass.toString();
+        
         org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder encoder = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
-        user.setPasswordHash(encoder.encode("password")); // Default password
+        user.setPasswordHash(encoder.encode(generatedPassword));
         userRepository.save(user);
 
         UserActivityLog log = new UserActivityLog();
@@ -255,7 +256,7 @@ public class UserManagementService {
         log.setTimestamp(java.time.LocalDateTime.now());
         activityLogRepository.save(log);
 
-        return pass.toString();
+        return generatedPassword;
     }
 
     public List<String> getAvailableRoles() {

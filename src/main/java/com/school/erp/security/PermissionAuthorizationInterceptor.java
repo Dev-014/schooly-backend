@@ -31,12 +31,19 @@ public class PermissionAuthorizationInterceptor implements HandlerInterceptor {
         }
 
         AuthenticatedUser currentUser = AuthContextHolder.get();
-        if (currentUser == null || currentUser.schoolId() == null) {
+        if (currentUser == null) {
+            throw new ForbiddenException("Authentication required to access this resource");
+        }
+
+        // Super Admins have global administrative privileges
+        if (com.school.erp.entity.UserRole.SUPER_ADMIN.equals(currentUser.role())) {
+            return true;
+        }
+
+        if (currentUser.schoolId() == null) {
             throw new ForbiddenException("Authentication and valid school context required to access this resource");
         }
 
-        // Handle Super Admins bypassing normal tenant checks, if needed
-        // For MVP, we stick strictly to the multi-tenant permission framework
         String requiredPermissionKey = permissionRequired.value();
         
         if (authorizationService == null) {
