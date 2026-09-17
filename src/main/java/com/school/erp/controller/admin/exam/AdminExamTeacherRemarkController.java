@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping({"/api/v1/admin/exams/remarks", "/api/v1/exams/remarks"})
+@RequestMapping({"/api/v1/admin/exams/teacher-remarks", "/api/v1/admin/exams/remarks", "/api/v1/exams/teacher-remarks", "/api/v1/exams/remarks"})
 @RequiredArgsConstructor
 public class AdminExamTeacherRemarkController {
 
