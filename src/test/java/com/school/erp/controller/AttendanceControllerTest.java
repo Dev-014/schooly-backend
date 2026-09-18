@@ -4,7 +4,7 @@ import com.school.erp.dto.attendance.AttendanceResponse;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
-import com.school.erp.service.AttendanceService;
+import com.school.erp.service.attendance.AttendanceService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;

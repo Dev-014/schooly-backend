@@ -2,10 +2,10 @@ package com.school.erp.service.exam;
 
 import com.school.erp.dto.exam.DivisionRequest;
 import com.school.erp.dto.exam.DivisionResponse;
-import com.school.erp.entity.School;
+import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.exam.ExamDivision;
 import com.school.erp.exception.ResourceNotFoundException;
-import com.school.erp.repository.SchoolRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.exam.ExamDivisionRepository;
 import com.school.erp.security.AuthContextService;
 import lombok.RequiredArgsConstructor;

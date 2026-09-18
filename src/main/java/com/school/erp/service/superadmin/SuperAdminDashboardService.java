@@ -1,9 +1,9 @@
 package com.school.erp.service.superadmin;
 
 import com.school.erp.dto.superadmin.*;
-import com.school.erp.entity.PlatformModule;
-import com.school.erp.entity.School;
-import com.school.erp.entity.SubscriptionPlan;
+import com.school.erp.entity.superadmin.PlatformModule;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.superadmin.SubscriptionPlan;
 import com.school.erp.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

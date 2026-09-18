@@ -1,9 +1,9 @@
-package com.school.erp.controller;
+package com.school.erp.controller.academic;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.schoolclass.SchoolClassRequest;
 import com.school.erp.dto.schoolclass.SchoolClassResponse;
-import com.school.erp.service.SchoolClassService;
+import com.school.erp.service.academic.SchoolClassService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

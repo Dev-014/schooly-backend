@@ -1,10 +1,10 @@
 package com.school.erp.service.superadmin;
 
-import com.school.erp.dto.EmployeePayrollDTO;
-import com.school.erp.dto.RunPayrollRequest;
-import com.school.erp.entity.SuperAdminEmployee;
+import com.school.erp.dto.hr.EmployeePayrollDTO;
+import com.school.erp.dto.hr.RunPayrollRequest;
+import com.school.erp.entity.superadmin.SuperAdminEmployee;
 import com.school.erp.entity.superadmin.EmployeePayroll;
-import com.school.erp.repository.SuperAdminEmployeeRepository;
+import com.school.erp.repository.superadmin.SuperAdminEmployeeRepository;
 import com.school.erp.repository.superadmin.EmployeePayrollRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

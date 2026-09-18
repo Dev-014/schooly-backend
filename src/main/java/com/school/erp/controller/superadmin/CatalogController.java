@@ -1,8 +1,8 @@
-package com.school.erp.controller;
+package com.school.erp.controller.superadmin;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.catalog.*;
-import com.school.erp.service.CatalogService;
+import com.school.erp.service.superadmin.CatalogService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

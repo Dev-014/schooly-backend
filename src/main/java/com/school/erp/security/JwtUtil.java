@@ -2,7 +2,7 @@ package com.school.erp.security;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.school.erp.entity.UserRole;
+import com.school.erp.entity.auth.UserRole;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

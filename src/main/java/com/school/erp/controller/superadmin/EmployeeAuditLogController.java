@@ -1,6 +1,6 @@
 package com.school.erp.controller.superadmin;
 
-import com.school.erp.dto.EmployeeAuditLogDTO;
+import com.school.erp.dto.hr.EmployeeAuditLogDTO;
 import com.school.erp.service.superadmin.EmployeeAuditLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,37 +1,37 @@
-package com.school.erp.service;
+package com.school.erp.service.onboarding;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.school.erp.dto.onboarding.OnboardingDraftDTO;
 import com.school.erp.dto.onboarding.OnboardingInitRequest;
 import com.school.erp.dto.onboarding.OnboardingStepRequest;
-import com.school.erp.entity.DataImportError;
-import com.school.erp.entity.DataImportJob;
-import com.school.erp.entity.OnboardingDraft;
-import com.school.erp.entity.School;
+import com.school.erp.entity.onboarding.DataImportError;
+import com.school.erp.entity.onboarding.DataImportJob;
+import com.school.erp.entity.onboarding.OnboardingDraft;
+import com.school.erp.entity.superadmin.School;
 import com.school.erp.exception.BadRequestException;
 import com.school.erp.exception.ResourceNotFoundException;
-import com.school.erp.repository.DataImportErrorRepository;
-import com.school.erp.repository.DataImportJobRepository;
-import com.school.erp.repository.OnboardingDraftRepository;
-import com.school.erp.repository.SchoolRepository;
+import com.school.erp.repository.onboarding.DataImportErrorRepository;
+import com.school.erp.repository.onboarding.DataImportJobRepository;
+import com.school.erp.repository.onboarding.OnboardingDraftRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.school.erp.dto.onboarding.OnboardingActivationResponse;
 import com.school.erp.dto.onboarding.AdminCredentialsDTO;
-import com.school.erp.entity.User;
-import com.school.erp.entity.UserRole;
-import com.school.erp.entity.UserSchoolRole;
-import com.school.erp.entity.SchoolSubscription;
-import com.school.erp.entity.SchoolSubscriptionInstallment;
-import com.school.erp.entity.SubscriptionPlan;
-import com.school.erp.repository.UserRepository;
-import com.school.erp.repository.UserSchoolRoleRepository;
-import com.school.erp.repository.SchoolSubscriptionRepository;
-import com.school.erp.repository.SchoolSubscriptionInstallmentRepository;
-import com.school.erp.repository.SubscriptionPlanRepository;
+import com.school.erp.entity.auth.User;
+import com.school.erp.entity.auth.UserRole;
+import com.school.erp.entity.auth.UserSchoolRole;
+import com.school.erp.entity.superadmin.SchoolSubscription;
+import com.school.erp.entity.superadmin.SchoolSubscriptionInstallment;
+import com.school.erp.entity.superadmin.SubscriptionPlan;
+import com.school.erp.repository.auth.UserRepository;
+import com.school.erp.repository.auth.UserSchoolRoleRepository;
+import com.school.erp.repository.superadmin.SchoolSubscriptionRepository;
+import com.school.erp.repository.superadmin.SchoolSubscriptionInstallmentRepository;
+import com.school.erp.repository.superadmin.SubscriptionPlanRepository;
 import com.school.erp.service.auth.RoleSyncService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -55,8 +55,8 @@ public class OnboardingDraftService {
     private final SchoolSubscriptionRepository subscriptionRepository;
     private final SchoolSubscriptionInstallmentRepository installmentRepository;
     private final SubscriptionPlanRepository planRepository;
-    private final com.school.erp.repository.PlatformModuleRepository moduleRepository;
-    private final com.school.erp.repository.SchoolModuleAccessRepository moduleAccessRepository;
+    private final com.school.erp.repository.superadmin.PlatformModuleRepository moduleRepository;
+    private final com.school.erp.repository.superadmin.SchoolModuleAccessRepository moduleAccessRepository;
     private final RoleSyncService roleSyncService;
     private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
@@ -71,8 +71,8 @@ public class OnboardingDraftService {
                                   SchoolSubscriptionRepository subscriptionRepository,
                                   SchoolSubscriptionInstallmentRepository installmentRepository,
                                   SubscriptionPlanRepository planRepository,
-                                  com.school.erp.repository.PlatformModuleRepository moduleRepository,
-                                  com.school.erp.repository.SchoolModuleAccessRepository moduleAccessRepository,
+                                  com.school.erp.repository.superadmin.PlatformModuleRepository moduleRepository,
+                                  com.school.erp.repository.superadmin.SchoolModuleAccessRepository moduleAccessRepository,
                                   RoleSyncService roleSyncService) {
         this.draftRepository = draftRepository;
         this.schoolRepository = schoolRepository;
@@ -328,7 +328,7 @@ public class OnboardingDraftService {
 
         // Provision Module Access from Step 5
         Map<String, Object> step5 = parseJson(draft.getStep5Data());
-        List<com.school.erp.entity.PlatformModule> activeModules = moduleRepository.findAllByStatus("ACTIVE");
+        List<com.school.erp.entity.superadmin.PlatformModule> activeModules = moduleRepository.findAllByStatus("ACTIVE");
         
         List<String> enabledCodes = new java.util.ArrayList<>();
         if (step5.containsKey("enabledModuleCodes") && step5.get("enabledModuleCodes") instanceof List) {
@@ -340,10 +340,10 @@ public class OnboardingDraftService {
         }
 
         final School finalSchool = school;
-        for (com.school.erp.entity.PlatformModule pm : activeModules) {
+        for (com.school.erp.entity.superadmin.PlatformModule pm : activeModules) {
             boolean shouldEnable = pm.isDefault() || enabledCodes.contains(pm.getCode().toUpperCase());
-            com.school.erp.entity.SchoolModuleAccess access = moduleAccessRepository.findBySchoolAndModule(finalSchool, pm)
-                    .orElseGet(() -> new com.school.erp.entity.SchoolModuleAccess(finalSchool, pm));
+            com.school.erp.entity.superadmin.SchoolModuleAccess access = moduleAccessRepository.findBySchoolAndModule(finalSchool, pm)
+                    .orElseGet(() -> new com.school.erp.entity.superadmin.SchoolModuleAccess(finalSchool, pm));
             access.setEnabled(shouldEnable);
             moduleAccessRepository.save(access);
         }

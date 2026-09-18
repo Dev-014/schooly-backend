@@ -1,15 +1,15 @@
-package com.school.erp.service;
+package com.school.erp.service.onboarding;
 
 import com.school.erp.dto.onboarding.OnboardingRegisterRequest;
 import com.school.erp.dto.onboarding.OnboardingRegisterResponse;
-import com.school.erp.entity.School;
-import com.school.erp.entity.User;
-import com.school.erp.entity.UserRole;
-import com.school.erp.entity.UserSchoolRole;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.auth.User;
+import com.school.erp.entity.auth.UserRole;
+import com.school.erp.entity.auth.UserSchoolRole;
 import com.school.erp.exception.BadRequestException;
-import com.school.erp.repository.SchoolRepository;
-import com.school.erp.repository.UserRepository;
-import com.school.erp.repository.UserSchoolRoleRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.auth.UserRepository;
+import com.school.erp.repository.auth.UserSchoolRoleRepository;
 import com.school.erp.service.auth.RoleSyncService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

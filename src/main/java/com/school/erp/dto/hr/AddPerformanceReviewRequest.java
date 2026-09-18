@@ -1,4 +1,4 @@
-package com.school.erp.dto;
+package com.school.erp.dto.hr;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

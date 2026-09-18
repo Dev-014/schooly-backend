@@ -1,9 +1,9 @@
-package com.school.erp.controller;
+package com.school.erp.controller.finance;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.payment.FeeStatsDTO;
 import com.school.erp.dto.payment.StudentFeeRecordDTO;
-import com.school.erp.service.FeeRecordService;
+import com.school.erp.service.finance.FeeRecordService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;

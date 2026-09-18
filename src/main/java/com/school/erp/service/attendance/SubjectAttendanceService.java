@@ -1,4 +1,4 @@
-package com.school.erp.service;
+package com.school.erp.service.attendance;
 
 import com.school.erp.dto.attendance.BulkSubjectAttendanceRequest;
 import com.school.erp.dto.attendance.StudentSubjectAttendanceSummaryDTO;

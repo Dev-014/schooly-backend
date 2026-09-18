@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.academic;
 
-import com.school.erp.entity.ClassSubjectAssignment;
+import com.school.erp.entity.academic.ClassSubjectAssignment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

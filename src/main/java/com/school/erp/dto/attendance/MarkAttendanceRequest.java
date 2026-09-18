@@ -1,4 +1,4 @@
-package com.school.erp.dto;
+package com.school.erp.dto.attendance;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

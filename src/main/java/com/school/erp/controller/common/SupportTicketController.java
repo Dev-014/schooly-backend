@@ -1,8 +1,8 @@
-package com.school.erp.controller;
+package com.school.erp.controller.common;
 
 import com.school.erp.dto.*;
-import com.school.erp.service.SupportTicketService;
-import com.school.erp.service.TicketCategoryService;
+import com.school.erp.service.common.SupportTicketService;
+import com.school.erp.service.common.TicketCategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

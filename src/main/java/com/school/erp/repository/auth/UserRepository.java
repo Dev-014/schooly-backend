@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.auth;
 
-import com.school.erp.entity.User;
+import com.school.erp.entity.auth.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

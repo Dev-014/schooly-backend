@@ -1,8 +1,8 @@
-package com.school.erp.service;
+package com.school.erp.service.common;
 
-import com.school.erp.dto.TicketCategoryDTO;
-import com.school.erp.entity.TicketCategory;
-import com.school.erp.repository.TicketCategoryRepository;
+import com.school.erp.dto.common.TicketCategoryDTO;
+import com.school.erp.entity.common.TicketCategory;
+import com.school.erp.repository.common.TicketCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

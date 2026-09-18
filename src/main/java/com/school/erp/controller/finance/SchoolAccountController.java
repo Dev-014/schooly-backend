@@ -1,4 +1,4 @@
-package com.school.erp.controller;
+package com.school.erp.controller.finance;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.finance.SchoolAccountRequest;

@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.finance;
 
-import com.school.erp.entity.Payment;
+import com.school.erp.entity.finance.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

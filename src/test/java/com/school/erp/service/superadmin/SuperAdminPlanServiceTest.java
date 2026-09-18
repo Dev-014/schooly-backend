@@ -1,9 +1,9 @@
 package com.school.erp.service.superadmin;
 
 import com.school.erp.dto.superadmin.PlanDto;
-import com.school.erp.entity.SubscriptionPlan;
-import com.school.erp.repository.PlatformModuleRepository;
-import com.school.erp.repository.SubscriptionPlanRepository;
+import com.school.erp.entity.superadmin.SubscriptionPlan;
+import com.school.erp.repository.superadmin.PlatformModuleRepository;
+import com.school.erp.repository.superadmin.SubscriptionPlanRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

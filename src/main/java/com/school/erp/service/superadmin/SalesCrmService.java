@@ -3,7 +3,7 @@ package com.school.erp.service.superadmin;
 import com.school.erp.dto.crm.*;
 import com.school.erp.entity.crm.*;
 import com.school.erp.repository.crm.*;
-import com.school.erp.repository.UserRepository;
+import com.school.erp.repository.auth.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

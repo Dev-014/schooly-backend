@@ -1,4 +1,4 @@
-package com.school.erp.dto;
+package com.school.erp.dto.common;
 
 import lombok.Builder;
 import lombok.Data;

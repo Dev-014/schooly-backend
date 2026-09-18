@@ -14,9 +14,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.school.erp.repository.SchoolModuleAccessRepository;
-import com.school.erp.entity.SchoolModuleAccess;
-import com.school.erp.entity.PlatformModule;
+import com.school.erp.repository.superadmin.SchoolModuleAccessRepository;
+import com.school.erp.entity.superadmin.SchoolModuleAccess;
+import com.school.erp.entity.superadmin.PlatformModule;
 
 import java.time.LocalDateTime;
 import java.util.Collections;

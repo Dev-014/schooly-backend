@@ -1,9 +1,9 @@
-package com.school.erp.controller;
+package com.school.erp.controller.student;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.parent.ParentChildResponse;
 import com.school.erp.security.AuthContextService;
-import com.school.erp.service.ParentService;
+import com.school.erp.service.student.ParentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

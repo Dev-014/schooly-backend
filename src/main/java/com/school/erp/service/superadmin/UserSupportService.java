@@ -2,12 +2,12 @@ package com.school.erp.service.superadmin;
 
 import com.school.erp.dto.superadmin.PasswordResetDTO;
 import com.school.erp.dto.superadmin.UserRequestDTO;
-import com.school.erp.entity.PasswordReset;
-import com.school.erp.entity.User;
-import com.school.erp.entity.UserRequest;
-import com.school.erp.repository.PasswordResetRepository;
-import com.school.erp.repository.UserRepository;
-import com.school.erp.repository.UserRequestRepository;
+import com.school.erp.entity.common.PasswordReset;
+import com.school.erp.entity.auth.User;
+import com.school.erp.entity.common.UserRequest;
+import com.school.erp.repository.common.PasswordResetRepository;
+import com.school.erp.repository.auth.UserRepository;
+import com.school.erp.repository.common.UserRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

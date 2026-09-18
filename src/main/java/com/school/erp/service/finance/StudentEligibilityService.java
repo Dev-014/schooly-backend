@@ -1,7 +1,7 @@
 package com.school.erp.service.finance;
 
-import com.school.erp.entity.FeeDue;
-import com.school.erp.repository.FeeDueRepository;
+import com.school.erp.entity.finance.FeeDue;
+import com.school.erp.repository.finance.FeeDueRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

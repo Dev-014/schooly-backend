@@ -1,11 +1,11 @@
 package com.school.erp.service.superadmin;
 
-import com.school.erp.dto.EmployeeAttendanceDTO;
-import com.school.erp.dto.MarkAttendanceRequest;
+import com.school.erp.dto.hr.EmployeeAttendanceDTO;
+import com.school.erp.dto.attendance.MarkAttendanceRequest;
 import com.school.erp.entity.superadmin.EmployeeAttendance;
-import com.school.erp.entity.SuperAdminEmployee;
+import com.school.erp.entity.superadmin.SuperAdminEmployee;
 import com.school.erp.repository.superadmin.EmployeeAttendanceRepository;
-import com.school.erp.repository.SuperAdminEmployeeRepository;
+import com.school.erp.repository.superadmin.SuperAdminEmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

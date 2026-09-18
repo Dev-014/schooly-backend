@@ -1,8 +1,8 @@
-package com.school.erp.service;
+package com.school.erp.service.student;
 
 import com.school.erp.dto.parent.ParentChildResponse;
-import com.school.erp.entity.StudentParent;
-import com.school.erp.repository.StudentParentRepository;
+import com.school.erp.entity.student.StudentParent;
+import com.school.erp.repository.student.StudentParentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

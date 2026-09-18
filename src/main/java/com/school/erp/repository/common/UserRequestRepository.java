@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.common;
 
-import com.school.erp.entity.UserRequest;
+import com.school.erp.entity.common.UserRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

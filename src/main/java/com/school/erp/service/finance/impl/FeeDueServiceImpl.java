@@ -1,27 +1,27 @@
-package com.school.erp.service.impl;
+package com.school.erp.service.finance.impl;
 
 import com.school.erp.dto.payment.FeeDueResponse;
 import com.school.erp.dto.payment.FeeGenerationPreviewRequest;
 import com.school.erp.dto.payment.FeeGenerationPreviewResponse;
 import com.school.erp.dto.payment.FeeGenerationConfirmRequest;
-import com.school.erp.repository.FeeDueRepository;
-import com.school.erp.repository.FeeCategoryRepository;
-import com.school.erp.repository.SchoolRepository;
-import com.school.erp.repository.StudentRepository;
-import com.school.erp.repository.FeeGenerationBatchRepository;
-import com.school.erp.service.FeeDueService;
-import com.school.erp.entity.FeeDue;
-import com.school.erp.entity.FeeCategory;
-import com.school.erp.entity.School;
-import com.school.erp.entity.Student;
-import com.school.erp.entity.FeeStructure;
-import com.school.erp.entity.FeeStructureItem;
-import com.school.erp.entity.CollectionPlan;
-import com.school.erp.entity.CollectionPlanItem;
-import com.school.erp.entity.StudentFeeStructure;
-import com.school.erp.entity.FeeGenerationBatch;
-import com.school.erp.repository.FeeStructureRepository;
-import com.school.erp.repository.StudentFeeStructureRepository;
+import com.school.erp.repository.finance.FeeDueRepository;
+import com.school.erp.repository.finance.FeeCategoryRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.student.StudentRepository;
+import com.school.erp.repository.finance.FeeGenerationBatchRepository;
+import com.school.erp.service.finance.FeeDueService;
+import com.school.erp.entity.finance.FeeDue;
+import com.school.erp.entity.finance.FeeCategory;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.student.Student;
+import com.school.erp.entity.finance.FeeStructure;
+import com.school.erp.entity.finance.FeeStructureItem;
+import com.school.erp.entity.finance.CollectionPlan;
+import com.school.erp.entity.finance.CollectionPlanItem;
+import com.school.erp.entity.finance.StudentFeeStructure;
+import com.school.erp.entity.finance.FeeGenerationBatch;
+import com.school.erp.repository.finance.FeeStructureRepository;
+import com.school.erp.repository.finance.StudentFeeStructureRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +58,7 @@ public class FeeDueServiceImpl implements FeeDueService {
 
     @Override
     public List<FeeDueResponse> getStudentDues(Long studentId, Long schoolId, List<String> statuses) {
-        List<com.school.erp.entity.FeeDue> dues;
+        List<com.school.erp.entity.finance.FeeDue> dues;
         try {
             if (statuses == null || statuses.isEmpty()) {
                 dues = feeDueRepository.findByStudentIdAndSchoolIdOrderByDueDateAsc(studentId, schoolId);
@@ -94,7 +94,7 @@ public class FeeDueServiceImpl implements FeeDueService {
     @Override
     @Transactional
     public FeeDueResponse applyDiscount(Long studentId, Long dueId, Long schoolId, com.school.erp.dto.payment.ApplyDiscountRequest request) {
-        com.school.erp.entity.FeeDue due = feeDueRepository.findById(dueId)
+        com.school.erp.entity.finance.FeeDue due = feeDueRepository.findById(dueId)
                 .orElseThrow(() -> new RuntimeException("Fee due not found"));
 
         if (!due.getStudent().getId().equals(studentId) || !due.getSchool().getId().equals(schoolId)) {

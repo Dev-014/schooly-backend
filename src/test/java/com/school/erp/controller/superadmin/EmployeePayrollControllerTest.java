@@ -1,8 +1,8 @@
 package com.school.erp.controller.superadmin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.school.erp.dto.EmployeePayrollDTO;
-import com.school.erp.dto.RunPayrollRequest;
+import com.school.erp.dto.hr.EmployeePayrollDTO;
+import com.school.erp.dto.hr.RunPayrollRequest;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
 import com.school.erp.service.superadmin.EmployeePayrollService;

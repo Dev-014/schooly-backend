@@ -1,10 +1,10 @@
-package com.school.erp.controller;
+package com.school.erp.controller.common;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.dashboard.ActivityFeedResponse;
 import com.school.erp.dto.dashboard.CollectionExpensePointResponse;
 import com.school.erp.dto.dashboard.DashboardKpiResponse;
-import com.school.erp.service.DashboardService;
+import com.school.erp.service.common.DashboardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

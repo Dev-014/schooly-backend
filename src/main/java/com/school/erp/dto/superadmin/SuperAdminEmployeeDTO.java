@@ -1,4 +1,4 @@
-package com.school.erp.dto;
+package com.school.erp.dto.superadmin;
 
 import lombok.Data;
 

@@ -3,7 +3,7 @@ package com.school.erp.controller.student;
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.student.IdCardGenerationRequest;
 import com.school.erp.dto.student.IdCardGenerationResponse;
-import com.school.erp.service.IdCardGenerationService;
+import com.school.erp.service.student.IdCardGenerationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

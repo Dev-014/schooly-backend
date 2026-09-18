@@ -2,8 +2,8 @@ package com.school.erp.service.superadmin;
 
 import com.school.erp.dto.superadmin.SuperAdminLogEntryDto;
 import com.school.erp.dto.superadmin.SuperAdminLogStatsDto;
-import com.school.erp.entity.AuditLog;
-import com.school.erp.repository.AuditLogRepository;
+import com.school.erp.entity.common.AuditLog;
+import com.school.erp.repository.common.AuditLogRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;

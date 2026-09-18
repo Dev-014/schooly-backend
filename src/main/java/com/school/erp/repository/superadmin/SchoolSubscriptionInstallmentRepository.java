@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.superadmin;
 
-import com.school.erp.entity.SchoolSubscriptionInstallment;
+import com.school.erp.entity.superadmin.SchoolSubscriptionInstallment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

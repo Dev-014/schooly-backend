@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.common;
 
-import com.school.erp.entity.UserLoginHistory;
+import com.school.erp.entity.common.UserLoginHistory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -4,12 +4,12 @@ import com.school.erp.dto.finance.CollectionPlanItemRequest;
 import com.school.erp.dto.finance.CollectionPlanItemResponse;
 import com.school.erp.dto.finance.CollectionPlanRequest;
 import com.school.erp.dto.finance.CollectionPlanResponse;
-import com.school.erp.entity.CollectionPlan;
-import com.school.erp.entity.CollectionPlanItem;
-import com.school.erp.entity.School;
-import com.school.erp.repository.CollectionPlanItemRepository;
-import com.school.erp.repository.CollectionPlanRepository;
-import com.school.erp.repository.SchoolRepository;
+import com.school.erp.entity.finance.CollectionPlan;
+import com.school.erp.entity.finance.CollectionPlanItem;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.repository.finance.CollectionPlanItemRepository;
+import com.school.erp.repository.finance.CollectionPlanRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

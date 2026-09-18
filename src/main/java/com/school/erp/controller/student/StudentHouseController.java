@@ -4,7 +4,7 @@ import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.student.StudentHouseRequest;
 import com.school.erp.dto.student.StudentHouseResponse;
 import com.school.erp.dto.student.StudentResponse;
-import com.school.erp.service.StudentHouseService;
+import com.school.erp.service.student.StudentHouseService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

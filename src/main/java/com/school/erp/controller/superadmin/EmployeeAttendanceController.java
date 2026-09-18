@@ -1,7 +1,7 @@
 package com.school.erp.controller.superadmin;
 
-import com.school.erp.dto.EmployeeAttendanceDTO;
-import com.school.erp.dto.MarkAttendanceRequest;
+import com.school.erp.dto.hr.EmployeeAttendanceDTO;
+import com.school.erp.dto.attendance.MarkAttendanceRequest;
 import com.school.erp.service.superadmin.EmployeeAttendanceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

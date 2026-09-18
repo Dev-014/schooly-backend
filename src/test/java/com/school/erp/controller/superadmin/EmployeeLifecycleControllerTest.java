@@ -2,7 +2,7 @@ package com.school.erp.controller.superadmin;
 
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
-import com.school.erp.dto.EmployeeLifecycleDTO;
+import com.school.erp.dto.hr.EmployeeLifecycleDTO;
 import com.school.erp.service.superadmin.EmployeeLifecycleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

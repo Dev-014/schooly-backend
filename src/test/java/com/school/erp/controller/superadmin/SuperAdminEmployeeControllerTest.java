@@ -1,8 +1,8 @@
 package com.school.erp.controller.superadmin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.school.erp.dto.CreateSuperAdminEmployeeRequest;
-import com.school.erp.dto.SuperAdminEmployeeDTO;
+import com.school.erp.dto.superadmin.CreateSuperAdminEmployeeRequest;
+import com.school.erp.dto.superadmin.SuperAdminEmployeeDTO;
 import com.school.erp.service.superadmin.SuperAdminEmployeeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,11 +1,11 @@
-package com.school.erp.controller;
+package com.school.erp.controller.attendance;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.attendance.BulkSubjectAttendanceRequest;
 import com.school.erp.dto.attendance.StudentSubjectAttendanceSummaryDTO;
 import com.school.erp.dto.attendance.SubjectAttendanceRequest;
 import com.school.erp.dto.attendance.SubjectAttendanceResponse;
-import com.school.erp.service.SubjectAttendanceService;
+import com.school.erp.service.attendance.SubjectAttendanceService;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;

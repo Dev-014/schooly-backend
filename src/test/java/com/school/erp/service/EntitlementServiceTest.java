@@ -1,16 +1,16 @@
 package com.school.erp.service;
 
 import com.school.erp.dto.catalog.EntitlementEvaluationDto;
-import com.school.erp.entity.PlatformModule;
-import com.school.erp.entity.School;
-import com.school.erp.entity.SubscriptionPlan;
-import com.school.erp.entity.TenantEntitlementOverride;
+import com.school.erp.entity.superadmin.PlatformModule;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.superadmin.SubscriptionPlan;
+import com.school.erp.entity.superadmin.TenantEntitlementOverride;
 import com.school.erp.exception.ForbiddenException;
-import com.school.erp.repository.OnboardingDraftRepository;
-import com.school.erp.repository.SchoolRepository;
-import com.school.erp.repository.SubscriptionPlanRepository;
-import com.school.erp.repository.TenantEntitlementOverrideRepository;
-import com.school.erp.repository.StudentRepository;
+import com.school.erp.repository.onboarding.OnboardingDraftRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.superadmin.SubscriptionPlanRepository;
+import com.school.erp.repository.superadmin.TenantEntitlementOverrideRepository;
+import com.school.erp.repository.student.StudentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +37,7 @@ class EntitlementServiceTest {
     @Mock
     private StudentRepository studentRepo;
     @Mock
-    private com.school.erp.repository.SchoolModuleAccessRepository moduleAccessRepo;
+    private com.school.erp.repository.superadmin.SchoolModuleAccessRepository moduleAccessRepo;
 
     private EntitlementService entitlementService;
     private School testSchool;

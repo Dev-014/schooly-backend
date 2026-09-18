@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.common;
 
-import com.school.erp.entity.TicketHistory;
+import com.school.erp.entity.common.TicketHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

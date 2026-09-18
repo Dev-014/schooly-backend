@@ -7,7 +7,7 @@ import com.school.erp.entity.*;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.*;
 import com.school.erp.security.AuthContextService;
-import com.school.erp.service.EntitlementService;
+import com.school.erp.service.superadmin.EntitlementService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

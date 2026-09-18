@@ -1,11 +1,11 @@
 package com.school.erp.service.superadmin;
 
 import com.school.erp.dto.superadmin.PlanDto;
-import com.school.erp.entity.PlatformModule;
-import com.school.erp.entity.SubscriptionPlan;
+import com.school.erp.entity.superadmin.PlatformModule;
+import com.school.erp.entity.superadmin.SubscriptionPlan;
 import com.school.erp.exception.ResourceNotFoundException;
-import com.school.erp.repository.PlatformModuleRepository;
-import com.school.erp.repository.SubscriptionPlanRepository;
+import com.school.erp.repository.superadmin.PlatformModuleRepository;
+import com.school.erp.repository.superadmin.SubscriptionPlanRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,9 +1,9 @@
-package com.school.erp.controller;
+package com.school.erp.controller.onboarding;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.onboarding.*;
-import com.school.erp.service.OnboardingDraftService;
-import com.school.erp.service.OnboardingService;
+import com.school.erp.service.onboarding.OnboardingDraftService;
+import com.school.erp.service.onboarding.OnboardingService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

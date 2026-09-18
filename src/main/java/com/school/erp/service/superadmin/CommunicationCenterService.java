@@ -1,11 +1,11 @@
 package com.school.erp.service.superadmin;
 
 import com.school.erp.dto.communication.*;
-import com.school.erp.entity.School;
-import com.school.erp.entity.User;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.auth.User;
 import com.school.erp.entity.communication.*;
-import com.school.erp.repository.SchoolRepository;
-import com.school.erp.repository.UserRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.auth.UserRepository;
 import com.school.erp.repository.communication.CommunicationAnnouncementRepository;
 import com.school.erp.repository.communication.CommunicationDeliveryRepository;
 import com.school.erp.repository.communication.CommunicationTemplateRepository;

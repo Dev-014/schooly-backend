@@ -1,4 +1,4 @@
-package com.school.erp.service;
+package com.school.erp.service.onboarding;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

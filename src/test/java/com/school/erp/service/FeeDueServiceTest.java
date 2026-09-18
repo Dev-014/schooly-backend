@@ -1,13 +1,13 @@
 package com.school.erp.service;
 
-import com.school.erp.entity.FeeCategory;
-import com.school.erp.entity.FeeDue;
-import com.school.erp.entity.School;
-import com.school.erp.entity.Student;
-import com.school.erp.repository.FeeCategoryRepository;
-import com.school.erp.repository.FeeDueRepository;
-import com.school.erp.repository.SchoolRepository;
-import com.school.erp.repository.StudentRepository;
+import com.school.erp.entity.finance.FeeCategory;
+import com.school.erp.entity.finance.FeeDue;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.student.Student;
+import com.school.erp.repository.finance.FeeCategoryRepository;
+import com.school.erp.repository.finance.FeeDueRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.dto.payment.FeeDueResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

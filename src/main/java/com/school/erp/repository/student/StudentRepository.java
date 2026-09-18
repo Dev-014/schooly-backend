@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.student;
 
-import com.school.erp.entity.Student;
+import com.school.erp.entity.student.Student;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 

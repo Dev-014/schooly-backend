@@ -1,4 +1,4 @@
-package com.school.erp.controller;
+package com.school.erp.controller.student;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.service.finance.StudentEligibilityService;

@@ -1,11 +1,11 @@
-package com.school.erp.controller;
+package com.school.erp.controller.finance;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.feecategory.FeeCategoryRequest;
 import com.school.erp.dto.feecategory.FeeCategoryResponse;
 import com.school.erp.dto.feestructure.FeeStructureRequest;
 import com.school.erp.dto.feestructure.FeeStructureResponse;
-import com.school.erp.service.FeeMasterService;
+import com.school.erp.service.finance.FeeMasterService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

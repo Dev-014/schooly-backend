@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.finance;
 
-import com.school.erp.entity.FeeStructureItem;
+import com.school.erp.entity.finance.FeeStructureItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.school.erp.dto;
+package com.school.erp.dto.hr;
 
 import lombok.Data;
 import java.math.BigDecimal;

@@ -2,11 +2,11 @@ package com.school.erp.service.hr;
 
 import com.school.erp.dto.hr.StaffPayrollDTO;
 import com.school.erp.dto.hr.StaffPayrollRequest;
-import com.school.erp.entity.School;
-import com.school.erp.entity.Staff;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.hr.Staff;
 import com.school.erp.entity.hr.StaffPayroll;
-import com.school.erp.repository.SchoolRepository;
-import com.school.erp.repository.StaffRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.hr.StaffRepository;
 import com.school.erp.repository.hr.StaffPayrollRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

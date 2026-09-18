@@ -1,4 +1,4 @@
-package com.school.erp.repository;
+package com.school.erp.repository.finance;
 
 import java.math.BigDecimal;
 

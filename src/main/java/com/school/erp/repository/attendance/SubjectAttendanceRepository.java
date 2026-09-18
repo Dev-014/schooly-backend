@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.attendance;
 
-import com.school.erp.entity.SubjectAttendance;
+import com.school.erp.entity.attendance.SubjectAttendance;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

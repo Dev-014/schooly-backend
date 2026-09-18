@@ -1,10 +1,10 @@
-package com.school.erp.controller;
+package com.school.erp.controller.finance;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.payment.FeeReminderResponse;
 import com.school.erp.dto.payment.SendFeeReminderRequest;
 import com.school.erp.dto.payment.TeacherClassResponse;
-import com.school.erp.service.TeacherFeeService;
+import com.school.erp.service.finance.TeacherFeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

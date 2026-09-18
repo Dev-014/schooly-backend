@@ -1,4 +1,4 @@
-package com.school.erp.service;
+package com.school.erp.service.auth;
 
 import com.school.erp.dto.auth.*;
 import com.school.erp.entity.*;

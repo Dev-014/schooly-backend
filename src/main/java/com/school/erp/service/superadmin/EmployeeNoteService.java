@@ -1,6 +1,6 @@
 package com.school.erp.service.superadmin;
 
-import com.school.erp.dto.EmployeeNoteDTO;
+import com.school.erp.dto.hr.EmployeeNoteDTO;
 import com.school.erp.entity.superadmin.EmployeeNote;
 import com.school.erp.repository.superadmin.EmployeeNoteRepository;
 import lombok.RequiredArgsConstructor;

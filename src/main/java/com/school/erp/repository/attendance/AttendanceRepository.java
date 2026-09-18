@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.attendance;
 
-import com.school.erp.entity.Attendance;
+import com.school.erp.entity.attendance.Attendance;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

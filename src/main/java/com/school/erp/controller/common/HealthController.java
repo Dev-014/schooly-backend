@@ -1,4 +1,4 @@
-package com.school.erp.controller;
+package com.school.erp.controller.common;
 
 import java.util.Map;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.school.erp.entity;
+package com.school.erp.entity.auth;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

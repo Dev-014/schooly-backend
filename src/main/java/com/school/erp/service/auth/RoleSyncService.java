@@ -1,6 +1,6 @@
 package com.school.erp.service.auth;
 
-import com.school.erp.entity.UserSchoolRole;
+import com.school.erp.entity.auth.UserSchoolRole;
 import com.school.erp.entity.auth.Role;
 import com.school.erp.entity.auth.UserRoleMapping;
 import com.school.erp.repository.auth.RoleRepository;

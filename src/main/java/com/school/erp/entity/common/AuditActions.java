@@ -1,4 +1,4 @@
-package com.school.erp.entity;
+package com.school.erp.entity.common;
 
 /**
  * Audit action constants for super admin operations.

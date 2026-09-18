@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.hr;
 
-import com.school.erp.entity.Staff;
+import com.school.erp.entity.hr.Staff;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

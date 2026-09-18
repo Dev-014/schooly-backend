@@ -1,15 +1,15 @@
-package com.school.erp.service;
+package com.school.erp.service.attendance;
 
 import com.school.erp.dto.attendance.AttendanceRequest;
 import com.school.erp.dto.attendance.AttendanceResponse;
 import com.school.erp.dto.attendance.BulkAttendanceRequest;
-import com.school.erp.entity.Attendance;
-import com.school.erp.entity.School;
-import com.school.erp.entity.Student;
+import com.school.erp.entity.attendance.Attendance;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.student.Student;
 import com.school.erp.exception.ResourceNotFoundException;
-import com.school.erp.repository.AttendanceRepository;
-import com.school.erp.repository.SchoolRepository;
-import com.school.erp.repository.StudentRepository;
+import com.school.erp.repository.attendance.AttendanceRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.security.AuthContextService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +23,9 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final SchoolRepository schoolRepository;
     private final StudentRepository studentRepository;
-    private final com.school.erp.repository.StudentLeaveRepository studentLeaveRepository;
-    private final com.school.erp.repository.StaffRepository staffRepository;
-    private final com.school.erp.repository.ClassTeacherAssignmentRepository assignmentRepository;
+    private final com.school.erp.repository.student.StudentLeaveRepository studentLeaveRepository;
+    private final com.school.erp.repository.hr.StaffRepository staffRepository;
+    private final com.school.erp.repository.academic.ClassTeacherAssignmentRepository assignmentRepository;
     private final com.school.erp.repository.auth.UserAssignmentRepository userAssignmentRepository;
     private final AuthContextService authContextService;
 
@@ -33,9 +33,9 @@ public class AttendanceService {
             AttendanceRepository attendanceRepository,
             SchoolRepository schoolRepository,
             StudentRepository studentRepository,
-            com.school.erp.repository.StudentLeaveRepository studentLeaveRepository,
-            com.school.erp.repository.StaffRepository staffRepository,
-            com.school.erp.repository.ClassTeacherAssignmentRepository assignmentRepository,
+            com.school.erp.repository.student.StudentLeaveRepository studentLeaveRepository,
+            com.school.erp.repository.hr.StaffRepository staffRepository,
+            com.school.erp.repository.academic.ClassTeacherAssignmentRepository assignmentRepository,
             com.school.erp.repository.auth.UserAssignmentRepository userAssignmentRepository,
             AuthContextService authContextService
     ) {
@@ -182,8 +182,8 @@ public class AttendanceService {
             return;
         }
         // Super Admins and Admins can always mark attendance
-        if (currentUser.role() == com.school.erp.entity.UserRole.SUPER_ADMIN ||
-            currentUser.role() == com.school.erp.entity.UserRole.ADMIN) {
+        if (currentUser.role() == com.school.erp.entity.auth.UserRole.SUPER_ADMIN ||
+            currentUser.role() == com.school.erp.entity.auth.UserRole.ADMIN) {
             return;
         }
 
@@ -195,7 +195,7 @@ public class AttendanceService {
             if (classId != null) {
                 // Check 1: class_teacher_assignments table
                 boolean isAssignedInTable = false;
-                java.util.Optional<com.school.erp.entity.Staff> staffOpt = staffRepository.findByUserId(currentUser.userId());
+                java.util.Optional<com.school.erp.entity.hr.Staff> staffOpt = staffRepository.findByUserId(currentUser.userId());
                 if (staffOpt.isPresent()) {
                     Long staffId = staffOpt.get().getId();
                     if (sectionId != null) {

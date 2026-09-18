@@ -2,9 +2,9 @@ package com.school.erp.service.hr;
 
 import com.school.erp.dto.hr.StaffAttendanceDTO;
 import com.school.erp.dto.hr.StaffAttendanceRequest;
-import com.school.erp.entity.Staff;
+import com.school.erp.entity.hr.Staff;
 import com.school.erp.entity.hr.StaffAttendance;
-import com.school.erp.repository.StaffRepository;
+import com.school.erp.repository.hr.StaffRepository;
 import com.school.erp.repository.hr.StaffAttendanceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,10 +1,10 @@
-package com.school.erp.controller;
+package com.school.erp.controller.auth;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.auth.*;
 import com.school.erp.security.AuthContextHolder;
 import com.school.erp.security.AuthenticatedUser;
-import com.school.erp.service.AuthService;
+import com.school.erp.service.auth.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;

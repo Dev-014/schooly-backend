@@ -1,10 +1,10 @@
-package com.school.erp.controller;
+package com.school.erp.controller.finance;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.payment.FeeGenerationPreviewRequest;
 import com.school.erp.dto.payment.FeeGenerationPreviewResponse;
 import com.school.erp.dto.payment.FeeGenerationConfirmRequest;
-import com.school.erp.service.FeeDueService;
+import com.school.erp.service.finance.FeeDueService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

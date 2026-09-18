@@ -1,6 +1,6 @@
 package com.school.erp.service.superadmin;
 
-import com.school.erp.dto.EmployeeTimelineDTO;
+import com.school.erp.dto.hr.EmployeeTimelineDTO;
 import com.school.erp.entity.superadmin.EmployeeTimeline;
 import com.school.erp.repository.superadmin.EmployeeTimelineRepository;
 import lombok.RequiredArgsConstructor;

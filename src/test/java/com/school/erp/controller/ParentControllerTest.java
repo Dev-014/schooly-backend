@@ -1,12 +1,12 @@
 package com.school.erp.controller;
 
 import com.school.erp.dto.parent.ParentChildResponse;
-import com.school.erp.entity.UserRole;
+import com.school.erp.entity.auth.UserRole;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.AuthenticatedUser;
 import com.school.erp.security.JwtAuthenticationFilter;
-import com.school.erp.service.ParentService;
+import com.school.erp.service.student.ParentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;

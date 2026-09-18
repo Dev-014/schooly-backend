@@ -1,7 +1,7 @@
 package com.school.erp.controller.superadmin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.school.erp.dto.EmployeeAuditLogDTO;
+import com.school.erp.dto.hr.EmployeeAuditLogDTO;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
 import com.school.erp.service.superadmin.EmployeeAuditLogService;

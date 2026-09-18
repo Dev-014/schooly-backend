@@ -36,7 +36,7 @@ public class PermissionAuthorizationInterceptor implements HandlerInterceptor {
         }
 
         // Super Admins have global administrative privileges
-        if (com.school.erp.entity.UserRole.SUPER_ADMIN.equals(currentUser.role())) {
+        if (com.school.erp.entity.auth.UserRole.SUPER_ADMIN.equals(currentUser.role())) {
             return true;
         }
 

@@ -3,7 +3,7 @@ package com.school.erp.controller.student;
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.student.StudentSiblingRequest;
 import com.school.erp.dto.student.StudentSiblingResponse;
-import com.school.erp.service.StudentSiblingService;
+import com.school.erp.service.student.StudentSiblingService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

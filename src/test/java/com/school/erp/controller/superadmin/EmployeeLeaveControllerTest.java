@@ -1,8 +1,8 @@
 package com.school.erp.controller.superadmin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.school.erp.dto.ApplyLeaveRequest;
-import com.school.erp.dto.EmployeeLeaveDTO;
+import com.school.erp.dto.hr.ApplyLeaveRequest;
+import com.school.erp.dto.hr.EmployeeLeaveDTO;
 import com.school.erp.service.superadmin.EmployeeLeaveService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

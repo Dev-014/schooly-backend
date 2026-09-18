@@ -24,9 +24,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
-    private final com.school.erp.repository.SchoolRepository schoolRepository;
+    private final com.school.erp.repository.superadmin.SchoolRepository schoolRepository;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, ObjectMapper objectMapper, com.school.erp.repository.SchoolRepository schoolRepository) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, ObjectMapper objectMapper, com.school.erp.repository.superadmin.SchoolRepository schoolRepository) {
         this.jwtUtil = jwtUtil;
         this.objectMapper = objectMapper;
         this.schoolRepository = schoolRepository;
@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             AuthenticatedUser authenticatedUser = jwtUtil.parseAccessToken(token);
 
             if (authenticatedUser.schoolId() != null) {
-                com.school.erp.entity.School school = schoolRepository.findById(authenticatedUser.schoolId()).orElse(null);
+                com.school.erp.entity.superadmin.School school = schoolRepository.findById(authenticatedUser.schoolId()).orElse(null);
                 if (school != null && "SUSPENDED".equalsIgnoreCase(school.getStatus())) {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);

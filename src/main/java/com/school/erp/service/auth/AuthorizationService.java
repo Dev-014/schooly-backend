@@ -21,7 +21,7 @@ public class AuthorizationService {
     private final UserRoleMappingRepository userRoleMappingRepository;
     private final RolePermissionRepository rolePermissionRepository;
     private final UserAssignmentRepository userAssignmentRepository;
-    private final com.school.erp.service.EntitlementService entitlementService;
+    private final com.school.erp.service.superadmin.EntitlementService entitlementService;
 
     /**
      * Checks if a user has a specific permission within a school context.

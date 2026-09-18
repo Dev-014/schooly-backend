@@ -1,10 +1,10 @@
-package com.school.erp.controller;
+package com.school.erp.controller.attendance;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.attendance.AttendanceRequest;
 import com.school.erp.dto.attendance.AttendanceResponse;
 import com.school.erp.dto.attendance.BulkAttendanceRequest;
-import com.school.erp.service.AttendanceService;
+import com.school.erp.service.attendance.AttendanceService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

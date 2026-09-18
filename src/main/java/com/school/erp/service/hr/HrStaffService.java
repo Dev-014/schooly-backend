@@ -4,7 +4,7 @@ import com.school.erp.entity.*;
 import com.school.erp.repository.*;
 import com.school.erp.repository.auth.UserAssignmentRepository;
 import com.school.erp.repository.hr.SchoolDepartmentRepository;
-import com.school.erp.entity.User;
+import com.school.erp.entity.auth.User;
 import com.school.erp.entity.auth.UserAssignment;
 import com.school.erp.entity.hr.SchoolDepartment;
 import com.school.erp.dto.auth.UserAssignmentRequest;

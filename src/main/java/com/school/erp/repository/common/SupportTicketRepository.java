@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.common;
 
-import com.school.erp.entity.SupportTicket;
+import com.school.erp.entity.common.SupportTicket;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

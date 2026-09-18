@@ -1,10 +1,10 @@
-package com.school.erp.service;
+package com.school.erp.service.superadmin;
 
 import com.school.erp.dto.school.SchoolRequest;
 import com.school.erp.dto.school.SchoolResponse;
-import com.school.erp.entity.School;
+import com.school.erp.entity.superadmin.School;
 import com.school.erp.exception.ResourceNotFoundException;
-import com.school.erp.repository.SchoolRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +16,13 @@ public class SchoolService {
 
     private final SchoolRepository schoolRepository;
     private final com.school.erp.service.auth.RoleManagementService roleManagementService;
-    private final com.school.erp.repository.PlatformModuleRepository platformModuleRepository;
-    private final com.school.erp.repository.SchoolModuleAccessRepository schoolModuleAccessRepository;
+    private final com.school.erp.repository.superadmin.PlatformModuleRepository platformModuleRepository;
+    private final com.school.erp.repository.superadmin.SchoolModuleAccessRepository schoolModuleAccessRepository;
 
     public SchoolService(SchoolRepository schoolRepository, 
                          com.school.erp.service.auth.RoleManagementService roleManagementService,
-                         com.school.erp.repository.PlatformModuleRepository platformModuleRepository,
-                         com.school.erp.repository.SchoolModuleAccessRepository schoolModuleAccessRepository) {
+                         com.school.erp.repository.superadmin.PlatformModuleRepository platformModuleRepository,
+                         com.school.erp.repository.superadmin.SchoolModuleAccessRepository schoolModuleAccessRepository) {
         this.schoolRepository = schoolRepository;
         this.roleManagementService = roleManagementService;
         this.platformModuleRepository = platformModuleRepository;
@@ -45,9 +45,9 @@ public class SchoolService {
         
         // Grant default platform modules
         platformModuleRepository.findAllByStatus("ACTIVE").stream()
-                .filter(com.school.erp.entity.PlatformModule::isDefault)
+                .filter(com.school.erp.entity.superadmin.PlatformModule::isDefault)
                 .forEach(module -> {
-                    com.school.erp.entity.SchoolModuleAccess access = new com.school.erp.entity.SchoolModuleAccess();
+                    com.school.erp.entity.superadmin.SchoolModuleAccess access = new com.school.erp.entity.superadmin.SchoolModuleAccess();
                     access.setSchool(saved);
                     access.setModule(module);
                     access.setEnabled(true);

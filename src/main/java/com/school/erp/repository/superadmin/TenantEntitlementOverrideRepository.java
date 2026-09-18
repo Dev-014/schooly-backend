@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.superadmin;
 
-import com.school.erp.entity.TenantEntitlementOverride;
+import com.school.erp.entity.superadmin.TenantEntitlementOverride;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

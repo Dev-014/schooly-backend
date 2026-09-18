@@ -1,12 +1,12 @@
-package com.school.erp.service;
+package com.school.erp.service.common;
 
 import com.school.erp.dto.dashboard.ActivityFeedResponse;
 import com.school.erp.dto.dashboard.CollectionExpensePointResponse;
 import com.school.erp.dto.dashboard.DashboardKpiResponse;
-import com.school.erp.repository.AttendanceRepository;
-import com.school.erp.repository.PaymentRepository;
-import com.school.erp.repository.StaffRepository;
-import com.school.erp.repository.StudentRepository;
+import com.school.erp.repository.attendance.AttendanceRepository;
+import com.school.erp.repository.finance.PaymentRepository;
+import com.school.erp.repository.hr.StaffRepository;
+import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.security.AuthContextService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

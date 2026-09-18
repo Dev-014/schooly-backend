@@ -3,7 +3,7 @@ package com.school.erp.controller;
 import com.school.erp.dto.catalog.*;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
-import com.school.erp.service.CatalogService;
+import com.school.erp.service.superadmin.CatalogService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;

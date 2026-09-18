@@ -1,4 +1,4 @@
-package com.school.erp.entity;
+package com.school.erp.entity.hr;
 
 import jakarta.persistence.*;
 import lombok.Getter;

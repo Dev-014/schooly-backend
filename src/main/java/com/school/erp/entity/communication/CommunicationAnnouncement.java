@@ -1,6 +1,6 @@
 package com.school.erp.entity.communication;
 
-import com.school.erp.entity.User;
+import com.school.erp.entity.auth.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

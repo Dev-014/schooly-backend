@@ -1,7 +1,7 @@
 package com.school.erp.entity.crm;
 
-import com.school.erp.entity.School;
-import com.school.erp.entity.User;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.auth.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

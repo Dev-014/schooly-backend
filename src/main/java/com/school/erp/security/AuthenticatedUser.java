@@ -1,6 +1,6 @@
 package com.school.erp.security;
 
-import com.school.erp.entity.UserRole;
+import com.school.erp.entity.auth.UserRole;
 
 public record AuthenticatedUser(
         Long userId,

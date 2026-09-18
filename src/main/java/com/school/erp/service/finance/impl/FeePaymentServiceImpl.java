@@ -1,10 +1,10 @@
-package com.school.erp.service.impl;
+package com.school.erp.service.finance.impl;
 
 import com.school.erp.dto.payment.FeePaymentRequest;
 import com.school.erp.dto.payment.PaymentResponse;
 import com.school.erp.entity.*;
 import com.school.erp.repository.*;
-import com.school.erp.service.FeePaymentService;
+import com.school.erp.service.finance.FeePaymentService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

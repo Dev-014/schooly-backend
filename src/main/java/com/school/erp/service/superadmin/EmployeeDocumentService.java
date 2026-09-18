@@ -1,10 +1,10 @@
 package com.school.erp.service.superadmin;
 
-import com.school.erp.dto.EmployeeDocumentDTO;
-import com.school.erp.dto.UploadDocumentRequest;
-import com.school.erp.entity.SuperAdminEmployee;
+import com.school.erp.dto.hr.EmployeeDocumentDTO;
+import com.school.erp.dto.hr.UploadDocumentRequest;
+import com.school.erp.entity.superadmin.SuperAdminEmployee;
 import com.school.erp.entity.superadmin.EmployeeDocument;
-import com.school.erp.repository.SuperAdminEmployeeRepository;
+import com.school.erp.repository.superadmin.SuperAdminEmployeeRepository;
 import com.school.erp.repository.superadmin.EmployeeDocumentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

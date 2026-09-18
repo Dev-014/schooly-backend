@@ -2,10 +2,10 @@ package com.school.erp.service.superadmin;
 
 import com.school.erp.dto.superadmin.SchoolSubscriptionDTO;
 import com.school.erp.dto.superadmin.SchoolSubscriptionInstallmentDTO;
-import com.school.erp.entity.SchoolSubscription;
-import com.school.erp.entity.SchoolSubscriptionInstallment;
-import com.school.erp.repository.SchoolSubscriptionInstallmentRepository;
-import com.school.erp.repository.SchoolSubscriptionRepository;
+import com.school.erp.entity.superadmin.SchoolSubscription;
+import com.school.erp.entity.superadmin.SchoolSubscriptionInstallment;
+import com.school.erp.repository.superadmin.SchoolSubscriptionInstallmentRepository;
+import com.school.erp.repository.superadmin.SchoolSubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

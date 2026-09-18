@@ -1,16 +1,16 @@
-package com.school.erp.service;
+package com.school.erp.service.student;
 
 import com.school.erp.dto.student.OnlineAdmissionRequest;
 import com.school.erp.dto.student.OnlineAdmissionResponse;
-import com.school.erp.entity.OnlineAdmission;
-import com.school.erp.entity.School;
-import com.school.erp.entity.SchoolClass;
-import com.school.erp.entity.StudentCategory;
+import com.school.erp.entity.student.OnlineAdmission;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.academic.SchoolClass;
+import com.school.erp.entity.student.StudentCategory;
 import com.school.erp.exception.ResourceNotFoundException;
-import com.school.erp.repository.OnlineAdmissionRepository;
-import com.school.erp.repository.SchoolClassRepository;
-import com.school.erp.repository.SchoolRepository;
-import com.school.erp.repository.StudentCategoryRepository;
+import com.school.erp.repository.student.OnlineAdmissionRepository;
+import com.school.erp.repository.academic.SchoolClassRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.student.StudentCategoryRepository;
 import com.school.erp.security.AuthContextService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

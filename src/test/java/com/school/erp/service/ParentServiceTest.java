@@ -1,12 +1,12 @@
 package com.school.erp.service;
 
 import com.school.erp.dto.parent.ParentChildResponse;
-import com.school.erp.entity.School;
-import com.school.erp.entity.SchoolClass;
-import com.school.erp.entity.Student;
-import com.school.erp.entity.StudentParent;
-import com.school.erp.entity.User;
-import com.school.erp.repository.StudentParentRepository;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.academic.SchoolClass;
+import com.school.erp.entity.student.Student;
+import com.school.erp.entity.student.StudentParent;
+import com.school.erp.entity.auth.User;
+import com.school.erp.repository.student.StudentParentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

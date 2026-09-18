@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.onboarding;
 
-import com.school.erp.entity.DataImportJob;
+import com.school.erp.entity.onboarding.DataImportJob;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,7 +1,7 @@
-package com.school.erp.service;
+package com.school.erp.service.common;
 
-import com.school.erp.entity.AuditLog;
-import com.school.erp.repository.AuditLogRepository;
+import com.school.erp.entity.common.AuditLog;
+import com.school.erp.repository.common.AuditLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

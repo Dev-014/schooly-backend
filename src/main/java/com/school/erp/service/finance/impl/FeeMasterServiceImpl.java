@@ -1,4 +1,4 @@
-package com.school.erp.service.impl;
+package com.school.erp.service.finance.impl;
 
 import com.school.erp.dto.feecategory.FeeCategoryRequest;
 import com.school.erp.dto.feecategory.FeeCategoryResponse;
@@ -6,19 +6,19 @@ import com.school.erp.dto.feestructure.FeeStructureItemRequest;
 import com.school.erp.dto.feestructure.FeeStructureItemResponse;
 import com.school.erp.dto.feestructure.FeeStructureRequest;
 import com.school.erp.dto.feestructure.FeeStructureResponse;
-import com.school.erp.entity.CollectionPlan;
-import com.school.erp.entity.FeeCategory;
-import com.school.erp.entity.FeeStructure;
-import com.school.erp.entity.FeeStructureItem;
-import com.school.erp.entity.School;
-import com.school.erp.entity.SchoolClass;
-import com.school.erp.repository.CollectionPlanRepository;
-import com.school.erp.repository.FeeCategoryRepository;
-import com.school.erp.repository.FeeStructureItemRepository;
-import com.school.erp.repository.FeeStructureRepository;
-import com.school.erp.repository.SchoolClassRepository;
-import com.school.erp.repository.SchoolRepository;
-import com.school.erp.service.FeeMasterService;
+import com.school.erp.entity.finance.CollectionPlan;
+import com.school.erp.entity.finance.FeeCategory;
+import com.school.erp.entity.finance.FeeStructure;
+import com.school.erp.entity.finance.FeeStructureItem;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.academic.SchoolClass;
+import com.school.erp.repository.finance.CollectionPlanRepository;
+import com.school.erp.repository.finance.FeeCategoryRepository;
+import com.school.erp.repository.finance.FeeStructureItemRepository;
+import com.school.erp.repository.finance.FeeStructureRepository;
+import com.school.erp.repository.academic.SchoolClassRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.service.finance.FeeMasterService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

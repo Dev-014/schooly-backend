@@ -1,10 +1,10 @@
-package com.school.erp.controller;
+package com.school.erp.controller.onboarding;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.importing.DataImportErrorDTO;
 import com.school.erp.dto.importing.DataImportJobDTO;
 import com.school.erp.dto.importing.ResolveErrorRequest;
-import com.school.erp.service.DataImportService;
+import com.school.erp.service.onboarding.DataImportService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

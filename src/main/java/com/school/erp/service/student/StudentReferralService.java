@@ -1,12 +1,12 @@
-package com.school.erp.service;
+package com.school.erp.service.student;
 
 import com.school.erp.dto.student.StudentReferralRequest;
 import com.school.erp.dto.student.StudentReferralResponse;
-import com.school.erp.entity.School;
-import com.school.erp.entity.StudentReferral;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.student.StudentReferral;
 import com.school.erp.exception.ResourceNotFoundException;
-import com.school.erp.repository.SchoolRepository;
-import com.school.erp.repository.StudentReferralRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.student.StudentReferralRepository;
 import com.school.erp.security.AuthContextService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

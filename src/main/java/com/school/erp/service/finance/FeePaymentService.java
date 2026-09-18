@@ -1,4 +1,4 @@
-package com.school.erp.service;
+package com.school.erp.service.finance;
 
 import com.school.erp.dto.payment.FeePaymentRequest;
 import com.school.erp.dto.payment.PaymentResponse;

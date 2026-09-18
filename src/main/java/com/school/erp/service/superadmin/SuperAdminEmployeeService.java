@@ -1,14 +1,14 @@
 package com.school.erp.service.superadmin;
 
-import com.school.erp.dto.CreateSuperAdminEmployeeRequest;
-import com.school.erp.dto.SuperAdminEmployeeDTO;
-import com.school.erp.dto.UpdateSuperAdminEmployeeRequest;
-import com.school.erp.entity.User;
-import com.school.erp.entity.UserRole;
-import com.school.erp.entity.UserSchoolRole;
-import com.school.erp.repository.SupportTicketRepository;
-import com.school.erp.repository.UserRepository;
-import com.school.erp.repository.UserSchoolRoleRepository;
+import com.school.erp.dto.superadmin.CreateSuperAdminEmployeeRequest;
+import com.school.erp.dto.superadmin.SuperAdminEmployeeDTO;
+import com.school.erp.dto.superadmin.UpdateSuperAdminEmployeeRequest;
+import com.school.erp.entity.auth.User;
+import com.school.erp.entity.auth.UserRole;
+import com.school.erp.entity.auth.UserSchoolRole;
+import com.school.erp.repository.common.SupportTicketRepository;
+import com.school.erp.repository.auth.UserRepository;
+import com.school.erp.repository.auth.UserSchoolRoleRepository;
 import com.school.erp.service.auth.RoleSyncService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,13 +27,13 @@ public class SuperAdminEmployeeService {
     private final UserRepository userRepository;
     private final UserSchoolRoleRepository userSchoolRoleRepository;
     private final SupportTicketRepository supportTicketRepository;
-    private final com.school.erp.repository.SuperAdminEmployeeRepository employeeRepository;
+    private final com.school.erp.repository.superadmin.SuperAdminEmployeeRepository employeeRepository;
     private final RoleSyncService roleSyncService;
 
     @Transactional(readOnly = true)
     public SuperAdminEmployeeDTO getEmployeeById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        com.school.erp.entity.SuperAdminEmployee emp = employeeRepository.findByUserId(id).orElse(new com.school.erp.entity.SuperAdminEmployee());
+        com.school.erp.entity.superadmin.SuperAdminEmployee emp = employeeRepository.findByUserId(id).orElse(new com.school.erp.entity.superadmin.SuperAdminEmployee());
 
         SuperAdminEmployeeDTO dto = new SuperAdminEmployeeDTO();
         dto.setId(user.getId());
@@ -53,7 +53,7 @@ public class SuperAdminEmployeeService {
 
     @Transactional(readOnly = true)
     public List<SuperAdminEmployeeDTO> getAllEmployees() {
-        List<com.school.erp.entity.SuperAdminEmployee> employees = employeeRepository.findAllWithUser();
+        List<com.school.erp.entity.superadmin.SuperAdminEmployee> employees = employeeRepository.findAllWithUser();
         
         return employees.stream()
                 .map(emp -> {
@@ -105,7 +105,7 @@ public class SuperAdminEmployeeService {
         userSchoolRoleRepository.save(role);
         roleSyncService.syncUserSchoolRole(role);
 
-        com.school.erp.entity.SuperAdminEmployee emp = new com.school.erp.entity.SuperAdminEmployee();
+        com.school.erp.entity.superadmin.SuperAdminEmployee emp = new com.school.erp.entity.superadmin.SuperAdminEmployee();
         emp.setUser(user);
         emp.setJoinedAt(java.time.LocalDate.now());
         emp.setDepartment(request.getDepartment());
@@ -141,7 +141,7 @@ public class SuperAdminEmployeeService {
         }
         user = userRepository.save(user);
 
-        com.school.erp.entity.SuperAdminEmployee emp = employeeRepository.findByUserId(id).orElse(null);
+        com.school.erp.entity.superadmin.SuperAdminEmployee emp = employeeRepository.findByUserId(id).orElse(null);
         String joinedAt = null;
         if (emp != null) {
             joinedAt = emp.getJoinedAt() != null ? emp.getJoinedAt().toString() : null;

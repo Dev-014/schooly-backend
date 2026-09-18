@@ -1,6 +1,6 @@
-package com.school.erp.repository;
+package com.school.erp.repository.superadmin;
 
-import com.school.erp.entity.PlatformModule;
+import com.school.erp.entity.superadmin.PlatformModule;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

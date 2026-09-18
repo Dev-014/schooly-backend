@@ -2,11 +2,11 @@ package com.school.erp.service.finance;
 
 import com.school.erp.dto.finance.SchoolAccountRequest;
 import com.school.erp.dto.finance.SchoolAccountResponse;
-import com.school.erp.entity.School;
-import com.school.erp.entity.SchoolAccount;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.finance.SchoolAccount;
 import com.school.erp.exception.ResourceNotFoundException;
-import com.school.erp.repository.SchoolAccountRepository;
-import com.school.erp.repository.SchoolRepository;
+import com.school.erp.repository.finance.SchoolAccountRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

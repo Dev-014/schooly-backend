@@ -1,8 +1,8 @@
 package com.school.erp.controller.superadmin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.school.erp.dto.EmployeeAttendanceDTO;
-import com.school.erp.dto.MarkAttendanceRequest;
+import com.school.erp.dto.hr.EmployeeAttendanceDTO;
+import com.school.erp.dto.attendance.MarkAttendanceRequest;
 import com.school.erp.service.superadmin.EmployeeAttendanceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

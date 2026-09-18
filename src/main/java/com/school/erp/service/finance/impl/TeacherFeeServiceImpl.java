@@ -1,29 +1,29 @@
-package com.school.erp.service.impl;
+package com.school.erp.service.finance.impl;
 
 import com.school.erp.dto.payment.FeeReminderResponse;
 import com.school.erp.dto.payment.SendFeeReminderRequest;
 import com.school.erp.dto.payment.TeacherClassResponse;
-import com.school.erp.entity.ClassTeacherAssignment;
-import com.school.erp.entity.FeeReminder;
-import com.school.erp.entity.School;
-import com.school.erp.entity.Staff;
-import com.school.erp.entity.Student;
+import com.school.erp.entity.academic.ClassTeacherAssignment;
+import com.school.erp.entity.finance.FeeReminder;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.hr.Staff;
+import com.school.erp.entity.student.Student;
 import com.school.erp.exception.ResourceNotFoundException;
-import com.school.erp.repository.ClassTeacherAssignmentRepository;
-import com.school.erp.repository.FeeReminderRepository;
-import com.school.erp.repository.FeeDueRepository;
-import com.school.erp.repository.SchoolRepository;
-import com.school.erp.repository.StaffRepository;
-import com.school.erp.repository.StudentRepository;
-import com.school.erp.repository.SchoolClassRepository;
-import com.school.erp.repository.SectionRepository;
+import com.school.erp.repository.academic.ClassTeacherAssignmentRepository;
+import com.school.erp.repository.finance.FeeReminderRepository;
+import com.school.erp.repository.finance.FeeDueRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.hr.StaffRepository;
+import com.school.erp.repository.student.StudentRepository;
+import com.school.erp.repository.academic.SchoolClassRepository;
+import com.school.erp.repository.academic.SectionRepository;
 import com.school.erp.repository.auth.UserAssignmentRepository;
 import com.school.erp.entity.auth.UserAssignment;
-import com.school.erp.entity.SchoolClass;
-import com.school.erp.entity.Section;
+import com.school.erp.entity.academic.SchoolClass;
+import com.school.erp.entity.academic.Section;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.security.AuthenticatedUser;
-import com.school.erp.service.TeacherFeeService;
+import com.school.erp.service.finance.TeacherFeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -112,7 +112,7 @@ public class TeacherFeeServiceImpl implements TeacherFeeService {
             Student student = studentRepository.findByIdAndSchoolId(studentId, schoolId)
                     .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
 
-            List<com.school.erp.entity.FeeDue> dues = feeDueRepository.findByStudentIdAndSchoolIdAndStatusInOrderByDueDateAsc(
+            List<com.school.erp.entity.finance.FeeDue> dues = feeDueRepository.findByStudentIdAndSchoolIdAndStatusInOrderByDueDateAsc(
                     studentId, schoolId, List.of("UNPAID", "PARTIALLY_PAID", "OVERDUE"));
             BigDecimal totalPending = dues.stream()
                     .map(d -> d.getAmount().subtract(d.getPaidAmount() != null ? d.getPaidAmount() : BigDecimal.ZERO))

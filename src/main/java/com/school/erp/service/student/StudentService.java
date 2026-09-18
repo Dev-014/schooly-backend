@@ -1,4 +1,4 @@
-package com.school.erp.service;
+package com.school.erp.service.student;
 
 import com.school.erp.dto.catalog.EntitlementEvaluationDto;
 import com.school.erp.dto.student.*;

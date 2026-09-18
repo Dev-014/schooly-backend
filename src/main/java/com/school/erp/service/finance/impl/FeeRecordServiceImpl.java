@@ -1,12 +1,12 @@
-package com.school.erp.service.impl;
+package com.school.erp.service.finance.impl;
 
 import com.school.erp.dto.payment.FeeStatsDTO;
 import com.school.erp.dto.payment.StudentFeeRecordDTO;
-import com.school.erp.entity.Student;
-import com.school.erp.repository.FeeDueRepository;
-import com.school.erp.repository.StudentFeeAggregation;
-import com.school.erp.repository.StudentRepository;
-import com.school.erp.service.FeeRecordService;
+import com.school.erp.entity.student.Student;
+import com.school.erp.repository.finance.FeeDueRepository;
+import com.school.erp.repository.finance.StudentFeeAggregation;
+import com.school.erp.repository.student.StudentRepository;
+import com.school.erp.service.finance.FeeRecordService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

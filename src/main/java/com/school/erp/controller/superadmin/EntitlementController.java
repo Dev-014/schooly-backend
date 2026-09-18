@@ -1,8 +1,8 @@
-package com.school.erp.controller;
+package com.school.erp.controller.superadmin;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.catalog.EntitlementEvaluationDto;
-import com.school.erp.service.EntitlementService;
+import com.school.erp.service.superadmin.EntitlementService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

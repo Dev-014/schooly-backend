@@ -1,6 +1,6 @@
 package com.school.erp.service.superadmin;
 
-import com.school.erp.dto.EmployeeLifecycleDTO;
+import com.school.erp.dto.hr.EmployeeLifecycleDTO;
 import com.school.erp.entity.superadmin.EmployeeLifecycle;
 import com.school.erp.repository.superadmin.EmployeeLifecycleRepository;
 import lombok.RequiredArgsConstructor;

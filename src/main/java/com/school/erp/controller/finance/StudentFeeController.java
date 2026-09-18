@@ -1,15 +1,15 @@
-package com.school.erp.controller;
+package com.school.erp.controller.finance;
 
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.payment.FeeDueResponse;
 import com.school.erp.dto.payment.PaymentResponse;
 import com.school.erp.dto.student.StudentFeeSummaryResponse;
-import com.school.erp.repository.StudentRepository;
+import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.security.AuthContextHolder;
 import com.school.erp.security.AuthenticatedUser;
 import com.school.erp.security.PermissionRequired;
-import com.school.erp.service.FeeDueService;
-import com.school.erp.service.FeePaymentService;
+import com.school.erp.service.finance.FeeDueService;
+import com.school.erp.service.finance.FeePaymentService;
 import com.school.erp.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

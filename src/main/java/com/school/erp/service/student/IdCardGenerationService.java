@@ -1,14 +1,14 @@
-package com.school.erp.service;
+package com.school.erp.service.student;
 
 import com.school.erp.dto.student.IdCardGenerationRequest;
 import com.school.erp.dto.student.IdCardGenerationResponse;
-import com.school.erp.entity.IdCardGeneration;
-import com.school.erp.entity.School;
-import com.school.erp.entity.Student;
+import com.school.erp.entity.student.IdCardGeneration;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.student.Student;
 import com.school.erp.exception.ResourceNotFoundException;
-import com.school.erp.repository.IdCardGenerationRepository;
-import com.school.erp.repository.SchoolRepository;
-import com.school.erp.repository.StudentRepository;
+import com.school.erp.repository.student.IdCardGenerationRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.security.AuthContextService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

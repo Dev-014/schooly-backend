@@ -1,7 +1,7 @@
-package com.school.erp.repository;
+package com.school.erp.repository.auth;
 
-import com.school.erp.entity.UserRole;
-import com.school.erp.entity.UserSchoolRole;
+import com.school.erp.entity.auth.UserRole;
+import com.school.erp.entity.auth.UserSchoolRole;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 

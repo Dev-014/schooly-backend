@@ -1,4 +1,4 @@
-package com.school.erp.service;
+package com.school.erp.service.academic;
 
 import com.school.erp.dto.academic.*;
 import com.school.erp.entity.*;
@@ -26,7 +26,7 @@ public class AcademicService {
     private final EntitlementService entitlementService;
     private final ClassTeacherAssignmentRepository assignmentRepository;
     private final StaffRepository staffRepository;
-    private final com.school.erp.repository.UserRepository userRepository;
+    private final com.school.erp.repository.auth.UserRepository userRepository;
     private final ClassSubjectAssignmentRepository classSubjectAssignmentRepository;
     private final StudentSubjectEnrollmentRepository studentSubjectEnrollmentRepository;
     private final StudentRepository studentRepository;
@@ -44,7 +44,7 @@ public class AcademicService {
             EntitlementService entitlementService,
             ClassTeacherAssignmentRepository assignmentRepository,
             StaffRepository staffRepository,
-            com.school.erp.repository.UserRepository userRepository,
+            com.school.erp.repository.auth.UserRepository userRepository,
             ClassSubjectAssignmentRepository classSubjectAssignmentRepository,
             StudentSubjectEnrollmentRepository studentSubjectEnrollmentRepository,
             StudentRepository studentRepository,

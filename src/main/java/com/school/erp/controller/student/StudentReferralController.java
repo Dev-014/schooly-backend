@@ -3,7 +3,7 @@ package com.school.erp.controller.student;
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.student.StudentReferralRequest;
 import com.school.erp.dto.student.StudentReferralResponse;
-import com.school.erp.service.StudentReferralService;
+import com.school.erp.service.student.StudentReferralService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
