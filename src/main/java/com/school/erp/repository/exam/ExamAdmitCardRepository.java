@@ -40,6 +40,10 @@ public interface ExamAdmitCardRepository extends JpaRepository<ExamAdmitCard, Lo
 
     long countBySchoolIdAndExamSetupIdAndStatus(Long schoolId, Long examSetupId, String status);
 
+    long countBySchoolIdAndExamSetupIdAndSchoolClassId(Long schoolId, Long examSetupId, Long classId);
+
+    long countBySchoolIdAndExamSetupIdAndSchoolClassIdAndStatus(Long schoolId, Long examSetupId, Long classId, String status);
+
     @Modifying
     @Query("UPDATE ExamAdmitCard c SET c.status = 'RELEASED', c.releasedAt = :releasedAt " +
            "WHERE c.school.id = :schoolId AND c.examSetup.id = :examSetupId AND c.status = 'GENERATED'")

@@ -38,7 +38,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints (e.g., auth, health, onboarding, import, students, staff, swagger, catalog)
                 .requestMatchers(
-                    "/auth/**", "/onboarding/**", "/api/v1/onboarding/**",
+                    "/auth/**", "/api/v1/auth/**", "/onboarding/**", "/api/v1/onboarding/**",
                     "/import/**", "/api/v1/import/**",
                     "/api/online-admissions/**",
                     "/health",

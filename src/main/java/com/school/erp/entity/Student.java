@@ -95,6 +95,57 @@ public class Student {
     @Column(name = "guardian_occupation")
     private String guardianOccupation;
 
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "caste")
+    private String caste;
+
+    @Column(name = "permanent_address", columnDefinition = "TEXT")
+    private String permanentAddress;
+
+    @Column(name = "father_name")
+    private String fatherName;
+
+    @Column(name = "father_phone")
+    private String fatherPhone;
+
+    @Column(name = "father_email")
+    private String fatherEmail;
+
+    @Column(name = "father_occupation")
+    private String fatherOccupation;
+
+    @Column(name = "mother_name")
+    private String motherName;
+
+    @Column(name = "mother_phone")
+    private String motherPhone;
+
+    @Column(name = "mother_email")
+    private String motherEmail;
+
+    @Column(name = "mother_occupation")
+    private String motherOccupation;
+
+    @Column(name = "bank_name")
+    private String bankName;
+
+    @Column(name = "bank_account_no")
+    private String bankAccountNo;
+
+    @Column(name = "bank_ifsc")
+    private String bankIfsc;
+
+    @Column(name = "student_house_name")
+    private String studentHouseName;
+
+    @Column(name = "academic_merit", columnDefinition = "TEXT")
+    private String academicMerit;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private StudentCategory category;

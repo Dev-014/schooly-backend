@@ -89,4 +89,51 @@ class AttendanceControllerTest {
                 .andExpect(jsonPath("$.data[0].id").value(2L))
                 .andExpect(jsonPath("$.data[0].studentId").value(5L));
     }
+
+    @Test
+    void getSummaryToday_ShouldReturnSummaryDto() throws Exception {
+        com.school.erp.dto.attendance.AttendanceSummaryDTO summary =
+                new com.school.erp.dto.attendance.AttendanceSummaryDTO(100, 90, 5, 5, 95, 2);
+        when(attendanceService.getSummaryToday(4L, null)).thenReturn(summary);
+
+        mockMvc.perform(get("/api/attendance/summary/today")
+                        .param("schoolId", "4")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.totalStudents").value(100))
+                .andExpect(jsonPath("$.data.presentPercent").value(95))
+                .andExpect(jsonPath("$.data.pendingLeaves").value(2));
+    }
+
+    @Test
+    void getAttendanceTrends_ShouldReturnTrendList() throws Exception {
+        com.school.erp.dto.attendance.analytics.AttendanceTrendDTO trend =
+                new com.school.erp.dto.attendance.analytics.AttendanceTrendDTO(LocalDate.of(2026, 9, 11), 94);
+        when(attendanceService.getAttendanceTrends(4L, 30, null)).thenReturn(List.of(trend));
+
+        mockMvc.perform(get("/api/attendance/analytics/trend")
+                        .param("schoolId", "4")
+                        .param("days", "30")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data[0].presentPercent").value(94));
+    }
+
+    @Test
+    void getGradeWiseAttendance_ShouldReturnGradeWiseList() throws Exception {
+        com.school.erp.dto.attendance.analytics.GradeAttendanceDTO grade =
+                new com.school.erp.dto.attendance.analytics.GradeAttendanceDTO("Grade 10", 35, 94.2, 2.5, "EXCELLENT");
+        when(attendanceService.getGradeWiseAttendance(4L)).thenReturn(List.of(grade));
+
+        mockMvc.perform(get("/api/attendance/analytics/grade-wise")
+                        .param("schoolId", "4")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data[0].className").value("Grade 10"))
+                .andExpect(jsonPath("$.data[0].avgAttendance").value(94.2))
+                .andExpect(jsonPath("$.data[0].performance").value("EXCELLENT"));
+    }
 }

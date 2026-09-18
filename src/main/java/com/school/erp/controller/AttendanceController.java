@@ -35,10 +35,11 @@ public class AttendanceController {
 
     @GetMapping("/summary/today")
     public ResponseEntity<ApiResponse<com.school.erp.dto.attendance.AttendanceSummaryDTO>> getSummaryToday(
-            @RequestParam(required = false) Long schoolId
+            @RequestParam(required = false) Long schoolId,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate date
     ) {
         return ResponseEntity.ok(ApiResponse.success(
-                attendanceService.getSummaryToday(schoolId),
+                attendanceService.getSummaryToday(schoolId, date),
                 "Daily attendance summary fetched successfully"
         ));
     }
@@ -46,10 +47,11 @@ public class AttendanceController {
     @GetMapping("/analytics/trend")
     public ResponseEntity<ApiResponse<List<com.school.erp.dto.attendance.analytics.AttendanceTrendDTO>>> getAttendanceTrends(
             @RequestParam(required = false) Long schoolId,
-            @RequestParam(defaultValue = "30") int days
+            @RequestParam(defaultValue = "30") int days,
+            @RequestParam(required = false) Long classId
     ) {
         return ResponseEntity.ok(ApiResponse.success(
-                attendanceService.getAttendanceTrends(schoolId, days),
+                attendanceService.getAttendanceTrends(schoolId, days, classId),
                 "Attendance trends fetched successfully"
         ));
     }

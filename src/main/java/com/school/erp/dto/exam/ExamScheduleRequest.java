@@ -13,13 +13,15 @@ public class ExamScheduleRequest {
     @NotNull(message = "Exam setup ID is required")
     private Long examSetupId;
 
-    @NotNull(message = "Class ID is required")
     private Long classId;
 
     private Long sectionId;
 
-    @NotNull(message = "Subject ID is required")
     private Long subjectId;
+
+    private String subjectCode;
+
+    private String subjectName;
 
     @NotNull(message = "Exam date is required")
     private LocalDate examDate;

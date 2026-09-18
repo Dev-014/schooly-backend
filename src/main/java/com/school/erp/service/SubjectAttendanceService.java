@@ -264,11 +264,11 @@ public class SubjectAttendanceService {
                 isAssignedInUserAssignments =
                         userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSectionIdAndSubjectIdAndIsActiveTrue(
                                 schoolId, currentUser.userId(), "subject_teacher", classId, sectionId, subjectId) ||
-                        userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSubjectIdAndIsActiveTrue(
+                        userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSubjectIdAndSectionIdIsNullAndIsActiveTrue(
                                 schoolId, currentUser.userId(), "subject_teacher", classId, subjectId) ||
                         userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSectionIdAndIsActiveTrue(
                                 schoolId, currentUser.userId(), "class_teacher", classId, sectionId) ||
-                        userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndIsActiveTrue(
+                        userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSectionIdIsNullAndIsActiveTrue(
                                 schoolId, currentUser.userId(), "class_teacher", classId);
             } else {
                 isAssignedInUserAssignments =

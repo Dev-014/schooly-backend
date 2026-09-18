@@ -388,6 +388,50 @@ public class AcademicService {
         return result;
     }
 
+    public List<ClassSubjectAssignmentResponse> getMySubjectTeacherAssignments(Long schoolId) {
+        Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
+        com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+        if (currentUser == null || currentUser.userId() == null) {
+            return List.of();
+        }
+
+        List<ClassSubjectAssignmentResponse> result = new java.util.ArrayList<>();
+        java.util.Set<String> seenKeys = new java.util.HashSet<>();
+
+        List<com.school.erp.entity.auth.UserAssignment> userAssignments = userAssignmentRepository.findBySchoolIdAndUserIdAndAssignmentTypeAndIsActiveTrue(
+                effectiveSchoolId, currentUser.userId(), "subject_teacher");
+
+        for (com.school.erp.entity.auth.UserAssignment ua : userAssignments) {
+            String key = ua.getClassId() + "_" + (ua.getSectionId() != null ? ua.getSectionId() : "all") + "_" + ua.getSubjectId();
+            if (!seenKeys.contains(key)) {
+                seenKeys.add(key);
+
+                SchoolClass sc = ua.getClassId() != null ? classRepository.findById(ua.getClassId()).orElse(null) : null;
+                Section sec = ua.getSectionId() != null ? sectionRepository.findById(ua.getSectionId()).orElse(null) : null;
+                Subject sub = ua.getSubjectId() != null ? subjectRepository.findById(ua.getSubjectId()).orElse(null) : null;
+                AcademicYear ay = ua.getAcademicSessionId() != null ? academicYearRepository.findById(ua.getAcademicSessionId()).orElse(null) : null;
+
+                result.add(new ClassSubjectAssignmentResponse(
+                        ua.getId(),
+                        ua.getSchoolId(),
+                        ua.getClassId(),
+                        sc != null ? sc.getName() : (ua.getClassId() != null ? "Class " + ua.getClassId() : null),
+                        ua.getSectionId(),
+                        sec != null ? sec.getName() : null,
+                        ua.getSubjectId(),
+                        sub != null ? sub.getName() : (ua.getSubjectId() != null ? "Subject " + ua.getSubjectId() : null),
+                        sub != null ? sub.getCode() : null,
+                        ua.getAcademicSessionId(),
+                        ay != null ? ay.getName() : null,
+                        sub != null ? sub.getType() : "THEORY",
+                        "ACTIVE"
+                ));
+            }
+        }
+
+        return result;
+    }
+
 
     @Transactional
     public ClassTeacherAssignmentResponse assignClassTeacher(ClassTeacherAssignmentRequest request) {

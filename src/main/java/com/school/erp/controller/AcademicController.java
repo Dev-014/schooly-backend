@@ -210,6 +210,16 @@ public class AcademicController {
         ));
     }
 
+    @GetMapping("/subjects/my-assignments")
+    public ResponseEntity<ApiResponse<List<ClassSubjectAssignmentResponse>>> getMySubjectTeacherAssignments(
+            @RequestParam(required = false) Long schoolId
+    ) {
+        return ResponseEntity.ok(ApiResponse.success(
+                academicService.getMySubjectTeacherAssignments(schoolId),
+                "My subject teacher assignments fetched successfully"
+        ));
+    }
+
 
     @PostMapping("/class-teachers")
     public ResponseEntity<ApiResponse<ClassTeacherAssignmentResponse>> assignClassTeacher(

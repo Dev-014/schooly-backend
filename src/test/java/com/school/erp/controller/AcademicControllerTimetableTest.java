@@ -94,4 +94,22 @@ class AcademicControllerTimetableTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"));
     }
+
+    @Test
+    void getMySubjectTeacherAssignments_ShouldReturnList() throws Exception {
+        com.school.erp.dto.academic.ClassSubjectAssignmentResponse response = new com.school.erp.dto.academic.ClassSubjectAssignmentResponse(
+                5L, 4L, 5L, "Grade 10", 7L, "Section B", 11L, "English", "ENG-001", 5L, "2025-26", "THEORY", "ACTIVE"
+        );
+
+        when(academicService.getMySubjectTeacherAssignments(4L))
+                .thenReturn(List.of(response));
+
+        mockMvc.perform(get("/api/v1/academics/subjects/my-assignments")
+                        .param("schoolId", "4")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data[0].subjectName").value("English"))
+                .andExpect(jsonPath("$.data[0].sectionName").value("Section B"));
+    }
 }

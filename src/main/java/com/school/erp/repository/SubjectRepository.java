@@ -13,4 +13,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     List<Subject> findBySchoolIdAndGradeLevel(Long schoolId, String gradeLevel);
     Optional<Subject> findByIdAndSchoolId(Long id, Long schoolId);
     List<Subject> findBySchoolIdAndCodeStartingWith(Long schoolId, String prefix);
+    Optional<Subject> findBySchoolIdAndCode(Long schoolId, String code);
+    Optional<Subject> findBySchoolIdAndNameIgnoreCase(Long schoolId, String name);
 }

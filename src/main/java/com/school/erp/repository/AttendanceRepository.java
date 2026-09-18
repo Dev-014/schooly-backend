@@ -26,6 +26,19 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
             "ORDER BY a.attendanceDate ASC")
     List<Object[]> getAttendanceTrendsByDate(@org.springframework.data.repository.query.Param("schoolId") Long schoolId, @org.springframework.data.repository.query.Param("startDate") java.time.LocalDate startDate);
 
+    @org.springframework.data.jpa.repository.Query("SELECT a.attendanceDate, " +
+            "SUM(CASE WHEN a.status = 'PRESENT' OR a.status = 'LATE' THEN 1 ELSE 0 END), " +
+            "COUNT(a.id) " +
+            "FROM Attendance a JOIN a.student s " +
+            "WHERE a.school.id = :schoolId AND s.schoolClass.id = :classId AND a.attendanceDate >= :startDate " +
+            "GROUP BY a.attendanceDate " +
+            "ORDER BY a.attendanceDate ASC")
+    List<Object[]> getAttendanceTrendsByDateAndClass(
+            @org.springframework.data.repository.query.Param("schoolId") Long schoolId,
+            @org.springframework.data.repository.query.Param("startDate") java.time.LocalDate startDate,
+            @org.springframework.data.repository.query.Param("classId") Long classId
+    );
+
     @org.springframework.data.jpa.repository.Query("SELECT c.name, " +
             "COUNT(DISTINCT s.id), " +
             "SUM(CASE WHEN a.status = 'PRESENT' OR a.status = 'LATE' THEN 1 ELSE 0 END), " +
