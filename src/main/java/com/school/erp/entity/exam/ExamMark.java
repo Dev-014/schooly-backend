@@ -56,6 +56,9 @@ public class ExamMark {
     @Column(name = "max_marks", precision = 6, scale = 2, nullable = false)
     private BigDecimal maxMarks = new BigDecimal("100.00");
 
+    @Column(name = "component_type", nullable = false, length = 50)
+    private String componentType = "THEORY";
+
     @Column(name = "attendance_status", nullable = false, length = 20)
     private String attendanceStatus = "PRESENT";
 

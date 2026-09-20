@@ -1,0 +1,1 @@
+ALTER TABLE student ADD COLUMN IF NOT EXISTS academic_merit VARCHAR(255);

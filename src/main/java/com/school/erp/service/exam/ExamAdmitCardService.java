@@ -90,7 +90,10 @@ public class ExamAdmitCardService {
         // Retrieve schedules for student's class
         List<ExamSchedule> schedules = examScheduleRepository
                 .findBySchoolIdAndExamSetupIdAndSchoolClassIdOrderByExamDateAscStartTimeAsc(
-                        schoolId, examSetupId, student.getSchoolClass().getId());
+                        schoolId, examSetupId, student.getSchoolClass().getId())
+                .stream()
+                .filter(s -> "PUBLISHED".equals(s.getStatus()))
+                .collect(Collectors.toList());
 
         List<AdmitCardPreviewResponse.AdmitCardScheduleItem> scheduleItems = schedules.stream()
                 .map(s -> AdmitCardPreviewResponse.AdmitCardScheduleItem.builder()

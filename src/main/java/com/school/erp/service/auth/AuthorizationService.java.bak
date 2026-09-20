@@ -53,7 +53,7 @@ public class AuthorizationService {
         try {
             enabledModules = entitlementService.evaluateEntitlements(schoolId).getEnabledModules();
         } catch (Exception e) {
-            throw new RuntimeException("ERROR IN EVAL: " + e.getMessage(), e);
+            enabledModules = java.util.Collections.emptySet();
         }
 
         for (UserRoleMapping mapping : roleMappings) {

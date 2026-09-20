@@ -25,7 +25,7 @@ public class UserRoleMapping {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "school_id", nullable = false)
+    @Column(name = "school_id")
     private Long schoolId;
 
     @ManyToOne(fetch = FetchType.LAZY)

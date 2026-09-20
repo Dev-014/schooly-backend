@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS academic_years (
     id BIGSERIAL PRIMARY KEY,
     school_id BIGINT NOT NULL,
     name VARCHAR(100) NOT NULL,
+    display_name VARCHAR(100),
     start_date DATE,
     end_date DATE,
     status VARCHAR(50) DEFAULT 'ACTIVE',
@@ -64,9 +65,9 @@ CREATE TABLE IF NOT EXISTS student_documents (
 CREATE INDEX IF NOT EXISTS idx_doc_student_id ON student_documents(student_id);
 
 -- Seed Academic Years for School 1
-INSERT INTO academic_years (id, school_id, name, start_date, end_date, status) VALUES
-(1, 1, 'Academic Year 2025-2026', '2025-04-01', '2026-03-31', 'ACTIVE'),
-(2, 1, 'Academic Year 2026-2027 (Upcoming)', '2026-04-01', '2027-03-31', 'UPCOMING')
+INSERT INTO academic_years (id, school_id, name, display_name, start_date, end_date, status) VALUES
+(1, 1, 'Academic Year 2025-2026', 'Academic Year 2025-2026', '2025-04-01', '2026-03-31', 'ACTIVE'),
+(2, 1, 'Academic Year 2026-2027 (Upcoming)', 'Academic Year 2026-2027 (Upcoming)', '2026-04-01', '2027-03-31', 'UPCOMING')
 ON CONFLICT DO NOTHING;
 
 -- Seed Classes if missing for School 1

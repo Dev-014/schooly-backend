@@ -41,4 +41,19 @@ public interface ExamScheduleRepository extends JpaRepository<ExamSchedule, Long
 
     Optional<ExamSchedule> findBySchoolIdAndExamSetupIdAndSchoolClassIdAndSectionIdAndSubjectId(
             Long schoolId, Long examSetupId, Long classId, Long sectionId, Long subjectId);
+
+    @Query("SELECT COUNT(s) > 0 FROM ExamSchedule s WHERE s.school.id = :schoolId " +
+           "AND s.schoolClass.id = :classId " +
+           "AND (:sectionId IS NULL OR s.section IS NULL OR s.section.id = :sectionId) " +
+           "AND s.examDate = :examDate " +
+           "AND s.startTime < :endTime AND s.endTime > :startTime " +
+           "AND (:excludeId IS NULL OR s.id != :excludeId)")
+    boolean hasOverlappingSchedule(
+            @Param("schoolId") Long schoolId,
+            @Param("classId") Long classId,
+            @Param("sectionId") Long sectionId,
+            @Param("examDate") LocalDate examDate,
+            @Param("startTime") java.time.LocalTime startTime,
+            @Param("endTime") java.time.LocalTime endTime,
+            @Param("excludeId") Long excludeId);
 }

@@ -95,6 +95,26 @@ public class AdminExamScheduleController {
         return ResponseEntity.ok(ApiResponse.success(null, "Exam schedule deleted successfully"));
     }
 
+    @PostMapping("/{id}/publish")
+    @PermissionRequired("exams_results.exam_schedule_student.edit")
+    public ResponseEntity<ApiResponse<ExamScheduleResponse>> publishSchedule(
+            @RequestParam(required = false) Long schoolId,
+            @PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(
+                examScheduleService.updateScheduleStatus(schoolId, id, "PUBLISHED"),
+                "Exam schedule published successfully"));
+    }
+
+    @PostMapping("/{id}/unpublish")
+    @PermissionRequired("exams_results.exam_schedule_student.edit")
+    public ResponseEntity<ApiResponse<ExamScheduleResponse>> unpublishSchedule(
+            @RequestParam(required = false) Long schoolId,
+            @PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(
+                examScheduleService.updateScheduleStatus(schoolId, id, "DRAFT"),
+                "Exam schedule unpublished successfully"));
+    }
+
     @GetMapping("/stats")
     @PermissionRequired("exams_results.exam_schedule_student.view")
     public ResponseEntity<ApiResponse<ExamScheduleStatsResponse>> getStats(

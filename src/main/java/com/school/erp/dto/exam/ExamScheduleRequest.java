@@ -40,5 +40,7 @@ public class ExamScheduleRequest {
 
     private String instructions;
 
-    private String status = "SCHEDULED";
+    private String componentType = "THEORY";
+
+    private String status = "DRAFT";
 }

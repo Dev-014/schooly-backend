@@ -23,6 +23,7 @@ public class ExamScheduleResponse {
     private Long subjectId;
     private String subjectName;
     private String subjectCode;
+    private String componentType;
     private LocalDate examDate;
     private LocalTime startTime;
     private LocalTime endTime;

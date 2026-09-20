@@ -75,6 +75,10 @@ public class ExamScheduleService {
             throw new BadRequestException("Exam end time cannot be before start time");
         }
 
+        if (examScheduleRepository.hasOverlappingSchedule(schoolId, request.getClassId(), request.getSectionId(), request.getExamDate(), request.getStartTime(), request.getEndTime(), null)) {
+            throw new BadRequestException("Class/Section already has an overlapping exam scheduled during this time");
+        }
+
         School school = schoolRepository.findById(schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("School not found with id: " + schoolId));
 
@@ -103,7 +107,8 @@ public class ExamScheduleService {
         if (request.getFullMarks() != null) schedule.setFullMarks(request.getFullMarks());
         if (request.getPassingMarks() != null) schedule.setPassingMarks(request.getPassingMarks());
         schedule.setInstructions(request.getInstructions());
-        schedule.setStatus(request.getStatus() != null ? request.getStatus().toUpperCase() : "SCHEDULED");
+        if (request.getComponentType() != null) schedule.setComponentType(request.getComponentType().toUpperCase());
+        schedule.setStatus(request.getStatus() != null ? request.getStatus().toUpperCase() : "DRAFT");
 
         ExamSchedule saved = examScheduleRepository.save(schedule);
         return mapToResponse(saved);
@@ -129,6 +134,10 @@ public class ExamScheduleService {
 
         if (request.getEndTime().isBefore(request.getStartTime())) {
             throw new BadRequestException("Exam end time cannot be before start time");
+        }
+
+        if (examScheduleRepository.hasOverlappingSchedule(schoolId, request.getClassId(), request.getSectionId(), request.getExamDate(), request.getStartTime(), request.getEndTime(), id)) {
+            throw new BadRequestException("Class/Section already has an overlapping exam scheduled during this time");
         }
 
         ExamSchedule schedule = examScheduleRepository.findByIdAndSchoolId(id, schoolId)
@@ -162,6 +171,7 @@ public class ExamScheduleService {
         if (request.getFullMarks() != null) schedule.setFullMarks(request.getFullMarks());
         if (request.getPassingMarks() != null) schedule.setPassingMarks(request.getPassingMarks());
         schedule.setInstructions(request.getInstructions());
+        if (request.getComponentType() != null) schedule.setComponentType(request.getComponentType().toUpperCase());
         if (request.getStatus() != null) schedule.setStatus(request.getStatus().toUpperCase());
 
         ExamSchedule saved = examScheduleRepository.save(schedule);
@@ -173,7 +183,23 @@ public class ExamScheduleService {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
         ExamSchedule schedule = examScheduleRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Exam schedule not found with id: " + id));
+                
+        if ("PUBLISHED".equals(schedule.getStatus())) {
+            throw new BadRequestException("Cannot delete a published schedule. Unpublish or cancel it first.");
+        }
+        
         examScheduleRepository.delete(schedule);
+    }
+
+    @Transactional
+    public ExamScheduleResponse updateScheduleStatus(Long rawSchoolId, Long id, String newStatus) {
+        Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        ExamSchedule schedule = examScheduleRepository.findByIdAndSchoolId(id, schoolId)
+                .orElseThrow(() -> new ResourceNotFoundException("Exam schedule not found with id: " + id));
+                
+        schedule.setStatus(newStatus.toUpperCase());
+        ExamSchedule saved = examScheduleRepository.save(schedule);
+        return mapToResponse(saved);
     }
 
     @Transactional(readOnly = true)
@@ -210,6 +236,7 @@ public class ExamScheduleService {
                 .subjectId(s.getSubject().getId())
                 .subjectName(s.getSubject().getName())
                 .subjectCode(s.getSubject().getCode())
+                .componentType(s.getComponentType())
                 .examDate(s.getExamDate())
                 .startTime(s.getStartTime())
                 .endTime(s.getEndTime())

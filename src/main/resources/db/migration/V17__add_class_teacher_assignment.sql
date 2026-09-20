@@ -1,4 +1,4 @@
-CREATE TABLE class_teacher_assignments (
+CREATE TABLE IF NOT EXISTS class_teacher_assignments (
     id BIGSERIAL PRIMARY KEY,
     school_id BIGINT NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     staff_id BIGINT NOT NULL REFERENCES staff(id) ON DELETE CASCADE,
@@ -11,9 +11,9 @@ CREATE TABLE class_teacher_assignments (
 );
 
 -- Ensure a section only has one active primary teacher per academic year
-CREATE UNIQUE INDEX idx_unique_active_class_teacher
+CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_active_class_teacher
 ON class_teacher_assignments(section_id, academic_year_id)
 WHERE status = 'ACTIVE' AND section_id IS NOT NULL;
 
-CREATE INDEX idx_class_teacher_assignments_school_id ON class_teacher_assignments(school_id);
-CREATE INDEX idx_class_teacher_assignments_staff_id ON class_teacher_assignments(staff_id);
+CREATE INDEX IF NOT EXISTS idx_class_teacher_assignments_school_id ON class_teacher_assignments(school_id);
+CREATE INDEX IF NOT EXISTS idx_class_teacher_assignments_staff_id ON class_teacher_assignments(staff_id);

@@ -68,8 +68,11 @@ public class ExamSchedule {
     @Column(name = "instructions", columnDefinition = "TEXT")
     private String instructions;
 
+    @Column(name = "component_type", nullable = false, length = 50)
+    private String componentType = "THEORY";
+
     @Column(name = "status", nullable = false, length = 30)
-    private String status = "SCHEDULED";
+    private String status = "DRAFT";
 
     @CreationTimestamp
     @Column(name = "created_at", insertable = false, updatable = false)
