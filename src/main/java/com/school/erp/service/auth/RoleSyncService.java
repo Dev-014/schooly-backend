@@ -22,11 +22,11 @@ public class RoleSyncService {
 
     @Transactional
     public void syncUserSchoolRole(UserSchoolRole userSchoolRole) {
-        if (userSchoolRole == null || userSchoolRole.getUser() == null || userSchoolRole.getSchool() == null) {
+        if (userSchoolRole == null || userSchoolRole.getUser() == null) {
             return;
         }
 
-        Long schoolId = userSchoolRole.getSchool().getId();
+        Long schoolId = userSchoolRole.getSchool() != null ? userSchoolRole.getSchool().getId() : null;
         Long userId = userSchoolRole.getUser().getId();
         String roleId = mapLegacyRoleToNewRoleId(userSchoolRole.getRole().name());
 
@@ -37,9 +37,9 @@ public class RoleSyncService {
 
         // Check if mapping already exists
         boolean mappingExists = userRoleMappingRepository
-                .findBySchoolIdAndUserIdAndIsActiveTrue(schoolId, userId)
+                .findByUserIdAndIsActiveTrue(userId)
                 .stream()
-                .anyMatch(mapping -> mapping.getRole().getId().equals(roleId));
+                .anyMatch(mapping -> java.util.Objects.equals(mapping.getSchoolId(), schoolId) && mapping.getRole().getId().equals(roleId));
 
         if (!mappingExists) {
             Optional<Role> roleOpt = roleRepository.findById(roleId); // Fetch by absolute ID
@@ -60,7 +60,8 @@ public class RoleSyncService {
     private String mapLegacyRoleToNewRoleId(String legacyRole) {
         if (legacyRole == null) return null;
         return switch (legacyRole.toUpperCase()) {
-            case "ADMIN", "SUPERADMIN", "SUPER_ADMIN" -> "role_school_admin_global";
+            case "SUPERADMIN", "SUPER_ADMIN" -> "role_super_admin_global";
+            case "ADMIN" -> "role_school_admin_global";
             case "TEACHER" -> "role_teacher_global";
             case "STUDENT" -> "role_student_global";
             case "PARENT" -> "role_parent_global";

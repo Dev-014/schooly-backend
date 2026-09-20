@@ -10,6 +10,7 @@ import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.auth.UserRepository;
 import com.school.erp.repository.auth.UserSchoolRoleRepository;
 import com.school.erp.service.auth.RoleSyncService;
+import com.school.erp.service.onboarding.OnboardingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

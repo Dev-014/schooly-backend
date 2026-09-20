@@ -3,15 +3,19 @@ package com.school.erp.exception;
 import com.school.erp.api.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -52,6 +56,27 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(ApiResponse.error(exception.getMessage()));
     }
 
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException exception,
+            HttpServletRequest request
+    ) {
+        String requiredType = exception.getRequiredType() != null ? exception.getRequiredType().getSimpleName() : "valid type";
+        String message = String.format("Invalid value '%s' for parameter '%s'. Expected %s.",
+                exception.getValue(), exception.getName(), requiredType);
+        log.warn("Invalid parameter format at [{} {}]: {}", request.getMethod(), request.getRequestURI(), message);
+        return ResponseEntity.badRequest().body(ApiResponse.error(message));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse<Void>> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException exception,
+            HttpServletRequest request
+    ) {
+        log.warn("Malformed JSON request body at [{} {}]: {}", request.getMethod(), request.getRequestURI(), exception.getMessage());
+        return ResponseEntity.badRequest().body(ApiResponse.error("Malformed or unreadable request body"));
+    }
+
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiResponse<Void>> handleBadRequest(
             BadRequestException exception,
@@ -81,7 +106,7 @@ public class GlobalExceptionHandler {
             Exception exception,
             HttpServletRequest request
     ) {
-        exception.printStackTrace();
+        log.error("Unhandled exception at [{} {}]: {}", request.getMethod(), request.getRequestURI(), exception.getMessage(), exception);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(exception.getMessage()));
     }
 

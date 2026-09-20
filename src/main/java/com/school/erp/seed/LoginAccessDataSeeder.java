@@ -1,7 +1,15 @@
 package com.school.erp.seed;
 
-import com.school.erp.entity.*;
-import com.school.erp.repository.*;
+import com.school.erp.entity.common.AccountRequest;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.auth.User;
+import com.school.erp.entity.common.UserActivityLog;
+import com.school.erp.entity.common.UserLoginHistory;
+import com.school.erp.repository.auth.UserRepository;
+import com.school.erp.repository.common.AccountRequestRepository;
+import com.school.erp.repository.common.UserActivityLogRepository;
+import com.school.erp.repository.common.UserLoginHistoryRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;

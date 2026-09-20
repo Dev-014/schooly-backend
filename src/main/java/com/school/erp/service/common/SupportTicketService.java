@@ -1,8 +1,12 @@
 package com.school.erp.service.common;
 
-import com.school.erp.dto.*;
-import com.school.erp.entity.*;
-import com.school.erp.repository.*;
+import com.school.erp.dto.common.*;
+import com.school.erp.entity.auth.User;
+import com.school.erp.entity.common.*;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.repository.auth.UserRepository;
+import com.school.erp.repository.common.*;
+import com.school.erp.repository.superadmin.SchoolRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

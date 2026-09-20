@@ -6,6 +6,7 @@ import com.school.erp.dto.academic.TimetableEntryRequest;
 import com.school.erp.dto.academic.TimetableEntryResponse;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
+import com.school.erp.controller.academic.AcademicController;
 import com.school.erp.service.academic.AcademicService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

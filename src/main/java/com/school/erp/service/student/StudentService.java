@@ -2,12 +2,25 @@ package com.school.erp.service.student;
 
 import com.school.erp.dto.catalog.EntitlementEvaluationDto;
 import com.school.erp.dto.student.*;
-import com.school.erp.entity.*;
+import com.school.erp.entity.academic.AcademicYear;
+import com.school.erp.entity.academic.SchoolClass;
+import com.school.erp.entity.auth.User;
+import com.school.erp.entity.auth.UserRole;
+import com.school.erp.entity.auth.UserSchoolRole;
+import com.school.erp.entity.student.*;
+import com.school.erp.entity.superadmin.School;
 import com.school.erp.exception.BadRequestException;
 import com.school.erp.exception.ResourceNotFoundException;
-import com.school.erp.repository.*;
+import com.school.erp.repository.academic.AcademicYearRepository;
+import com.school.erp.repository.academic.SchoolClassRepository;
+import com.school.erp.repository.auth.UserRepository;
+import com.school.erp.repository.auth.UserSchoolRoleRepository;
+import com.school.erp.repository.student.*;
+import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.service.auth.RoleSyncService;
+import com.school.erp.service.finance.FeeDueService;
+import com.school.erp.service.superadmin.EntitlementService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

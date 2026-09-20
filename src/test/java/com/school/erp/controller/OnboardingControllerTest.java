@@ -3,6 +3,7 @@ package com.school.erp.controller;
 import com.school.erp.dto.onboarding.*;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
+import com.school.erp.controller.onboarding.OnboardingController;
 import com.school.erp.service.onboarding.OnboardingDraftService;
 import com.school.erp.service.onboarding.OnboardingService;
 import org.junit.jupiter.api.Test;

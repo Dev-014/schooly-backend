@@ -1,5 +1,7 @@
 package com.school.erp.entity.student;
 
+import com.school.erp.entity.academic.SchoolClass;
+import com.school.erp.entity.superadmin.School;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -19,7 +19,11 @@ public class ParentService {
     }
 
     public List<ParentChildResponse> getChildren(Long userId, Long schoolId) {
-        return studentParentRepository.findByIdParentUserIdAndStudentSchoolId(userId, schoolId)
+        List<StudentParent> studentParents = (schoolId != null)
+                ? studentParentRepository.findByIdParentUserIdAndStudentSchoolId(userId, schoolId)
+                : studentParentRepository.findByIdParentUserId(userId);
+
+        return studentParents
                 .stream()
                 .map(this::toResponse)
                 .toList();

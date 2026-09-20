@@ -1,6 +1,7 @@
 package com.school.erp.service;
 
 import com.school.erp.dto.parent.ParentChildResponse;
+import com.school.erp.service.student.ParentService;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.academic.SchoolClass;
 import com.school.erp.entity.student.Student;
@@ -67,5 +68,38 @@ class ParentServiceTest {
         assertEquals("ADM-21", result.get(0).admissionNo());
         assertEquals(10L, result.get(0).schoolId());
         assertEquals(3L, result.get(0).classId());
+    }
+
+    @Test
+    void getChildren_shouldReturnChildrenWhenSchoolIdIsNull() {
+        User parent = new User();
+        parent.setId(7L);
+
+        School school = new School();
+        school.setId(10L);
+        school.setName("Greenwood High");
+
+        SchoolClass schoolClass = new SchoolClass();
+        schoolClass.setId(3L);
+        schoolClass.setName("Grade 10");
+
+        Student student = new Student();
+        student.setId(21L);
+        student.setName("Alex");
+        student.setAdmissionNo("ADM-21");
+        student.setSchool(school);
+        student.setSchoolClass(schoolClass);
+
+        StudentParent sp = new StudentParent();
+        sp.setParentUser(parent);
+        sp.setStudent(student);
+
+        when(studentParentRepository.findByIdParentUserId(7L))
+                .thenReturn(List.of(sp));
+
+        List<ParentChildResponse> result = parentService.getChildren(7L, null);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(21L, result.get(0).studentId());
     }
 }

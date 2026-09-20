@@ -17,6 +17,7 @@ import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.repository.auth.UserRepository;
 import com.school.erp.repository.auth.UserRoleMappingRepository;
 import com.school.erp.security.JwtUtil;
+import com.school.erp.service.auth.AuthService;
 import com.school.erp.service.auth.AuthorizationService;
 import com.school.erp.service.auth.RoleSyncService;
 import org.junit.jupiter.api.BeforeEach;

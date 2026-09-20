@@ -1,11 +1,18 @@
 package com.school.erp.service.auth;
 
 import com.school.erp.dto.auth.*;
-import com.school.erp.entity.*;
+import com.school.erp.entity.auth.*;
+import com.school.erp.entity.academic.SchoolClass;
+import com.school.erp.entity.student.Student;
+import com.school.erp.entity.student.StudentParent;
+import com.school.erp.entity.superadmin.School;
 import com.school.erp.exception.BadRequestException;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.exception.UnauthorizedException;
-import com.school.erp.repository.*;
+import com.school.erp.repository.auth.*;
+import com.school.erp.repository.student.StudentParentRepository;
+import com.school.erp.repository.student.StudentRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.security.JwtUtil;
 import com.school.erp.service.auth.AuthorizationService;
 import com.school.erp.service.auth.RoleSyncService;
@@ -247,6 +254,14 @@ public class AuthService {
             permissions = List.of();
         }
 
+        RoleArchetype personaArchetype = switch (primaryRole.toUpperCase()) {
+            case "SUPER_ADMIN", "SUPERADMIN" -> RoleArchetype.SUPER_ADMIN;
+            case "ADMIN" -> RoleArchetype.SCHOOL_ADMIN;
+            case "PARENT" -> RoleArchetype.PARENT;
+            case "STUDENT" -> RoleArchetype.STUDENT;
+            default -> RoleArchetype.STAFF;
+        };
+
         return new LoginVerifyResponse(
                 user.getId(),
                 user.getPhone(),
@@ -261,8 +276,8 @@ public class AuthService {
                 accessToken,
                 refreshToken,
                 permissions,
-                List.of(new PersonaDto(primaryRole, primaryRole, RoleArchetype.STAFF)),
-                new PersonaDto(primaryRole, primaryRole, RoleArchetype.STAFF)
+                List.of(new PersonaDto(primaryRole, primaryRole, personaArchetype)),
+                new PersonaDto(primaryRole, primaryRole, personaArchetype)
         );
     }
 

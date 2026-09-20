@@ -851,3 +851,9 @@ ON CONFLICT DO NOTHING;
 SELECT setval('platform_modules_id_seq', COALESCE((SELECT MAX(id) FROM platform_modules), 0) + 1, false);
 SELECT setval('subscription_plans_id_seq', COALESCE((SELECT MAX(id) FROM subscription_plans), 0) + 1, false);
 SELECT setval('role_permissions_id_seq', COALESCE((SELECT MAX(id) FROM role_permissions), 0) + 1, false);
+
+-- Fix Super Admin role mapping
+UPDATE user_role_mappings 
+SET role_id = 'role_super_admin_global' 
+WHERE user_id IN (SELECT id FROM users WHERE phone = '0000000000');
+

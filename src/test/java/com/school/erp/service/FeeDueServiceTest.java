@@ -9,6 +9,7 @@ import com.school.erp.repository.finance.FeeDueRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.dto.payment.FeeDueResponse;
+import com.school.erp.service.finance.FeeDueService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

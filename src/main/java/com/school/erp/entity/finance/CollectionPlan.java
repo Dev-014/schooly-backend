@@ -1,5 +1,6 @@
 package com.school.erp.entity.finance;
 
+import com.school.erp.entity.superadmin.School;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

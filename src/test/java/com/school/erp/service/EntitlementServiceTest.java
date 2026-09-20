@@ -1,6 +1,7 @@
 package com.school.erp.service;
 
 import com.school.erp.dto.catalog.EntitlementEvaluationDto;
+import com.school.erp.service.superadmin.EntitlementService;
 import com.school.erp.entity.superadmin.PlatformModule;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.superadmin.SubscriptionPlan;

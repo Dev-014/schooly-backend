@@ -3,6 +3,7 @@ package com.school.erp.controller;
 import com.school.erp.dto.catalog.EntitlementEvaluationDto;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
+import com.school.erp.controller.superadmin.EntitlementController;
 import com.school.erp.service.superadmin.EntitlementService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

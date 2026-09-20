@@ -6,6 +6,7 @@ import com.school.erp.dto.attendance.SubjectAttendanceResponse;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
+import com.school.erp.controller.attendance.SubjectAttendanceController;
 import com.school.erp.service.attendance.SubjectAttendanceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

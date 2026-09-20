@@ -10,6 +10,7 @@ import com.school.erp.dto.auth.LoginVerifyResponse;
 import com.school.erp.dto.auth.OtpVerifyRequest;
 import com.school.erp.dto.auth.PersonaDto;
 import com.school.erp.entity.auth.RoleArchetype;
+import com.school.erp.controller.auth.AuthController;
 import com.school.erp.service.auth.AuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

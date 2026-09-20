@@ -1,5 +1,6 @@
 package com.school.erp.entity.auth;
 
+import com.school.erp.entity.superadmin.School;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

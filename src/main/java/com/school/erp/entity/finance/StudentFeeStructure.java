@@ -1,5 +1,7 @@
 package com.school.erp.entity.finance;
 
+import com.school.erp.entity.student.Student;
+import com.school.erp.entity.academic.AcademicYear;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

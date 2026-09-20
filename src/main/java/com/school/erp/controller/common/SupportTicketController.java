@@ -1,6 +1,6 @@
 package com.school.erp.controller.common;
 
-import com.school.erp.dto.*;
+import com.school.erp.dto.common.*;
 import com.school.erp.service.common.SupportTicketService;
 import com.school.erp.service.common.TicketCategoryService;
 import jakarta.validation.Valid;

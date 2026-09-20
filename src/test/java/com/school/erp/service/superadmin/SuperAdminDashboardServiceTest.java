@@ -1,7 +1,9 @@
 package com.school.erp.service.superadmin;
 
 import com.school.erp.dto.superadmin.SuperAdminDashboardMetricsDto;
-import com.school.erp.repository.*;
+import com.school.erp.repository.superadmin.*;
+import com.school.erp.repository.student.StudentRepository;
+import com.school.erp.repository.hr.StaffRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

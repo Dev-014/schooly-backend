@@ -4,7 +4,9 @@ import com.school.erp.dto.superadmin.*;
 import com.school.erp.entity.superadmin.PlatformModule;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.superadmin.SubscriptionPlan;
-import com.school.erp.repository.*;
+import com.school.erp.repository.hr.StaffRepository;
+import com.school.erp.repository.student.StudentRepository;
+import com.school.erp.repository.superadmin.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

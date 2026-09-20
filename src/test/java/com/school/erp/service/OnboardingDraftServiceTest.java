@@ -19,6 +19,7 @@ import com.school.erp.repository.superadmin.SubscriptionPlanRepository;
 import com.school.erp.repository.superadmin.PlatformModuleRepository;
 import com.school.erp.repository.superadmin.SchoolModuleAccessRepository;
 import com.school.erp.service.auth.RoleSyncService;
+import com.school.erp.service.onboarding.OnboardingDraftService;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

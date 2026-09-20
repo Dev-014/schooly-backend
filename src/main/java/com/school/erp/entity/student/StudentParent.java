@@ -1,5 +1,6 @@
 package com.school.erp.entity.student;
 
+import com.school.erp.entity.auth.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;

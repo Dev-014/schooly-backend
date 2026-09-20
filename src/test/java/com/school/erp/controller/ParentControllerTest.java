@@ -6,6 +6,7 @@ import com.school.erp.security.AuthContextService;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.AuthenticatedUser;
 import com.school.erp.security.JwtAuthenticationFilter;
+import com.school.erp.controller.student.ParentController;
 import com.school.erp.service.student.ParentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
