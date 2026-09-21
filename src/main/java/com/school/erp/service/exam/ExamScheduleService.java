@@ -81,17 +81,14 @@ public class ExamScheduleService {
         ExamSetup setup = examSetupRepository.findByIdAndSchoolId(request.getExamSetupId(), schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Exam setup not found with id: " + request.getExamSetupId()));
 
-        SchoolClass schoolClass = schoolClassRepository.findById(request.getClassId())
-                .orElseThrow(() -> new ResourceNotFoundException("Class not found with id: " + request.getClassId()));
+        SchoolClass schoolClass = resolveSchoolClass(schoolId, request.getClassId());
 
         Section section = null;
         if (request.getSectionId() != null) {
-            section = sectionRepository.findById(request.getSectionId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Section not found with id: " + request.getSectionId()));
+            section = sectionRepository.findById(request.getSectionId()).orElse(null);
         }
 
-        Subject subject = subjectRepository.findById(request.getSubjectId())
-                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with id: " + request.getSubjectId()));
+        Subject subject = resolveSubject(schoolId, request);
 
         ExamSchedule schedule = new ExamSchedule();
         schedule.setSchool(school);
@@ -144,20 +141,17 @@ public class ExamScheduleService {
         }
 
         if (request.getClassId() != null && !request.getClassId().equals(schedule.getSchoolClass().getId())) {
-            SchoolClass schoolClass = schoolClassRepository.findById(request.getClassId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Class not found with id: " + request.getClassId()));
+            SchoolClass schoolClass = resolveSchoolClass(schoolId, request.getClassId());
             schedule.setSchoolClass(schoolClass);
         }
 
         if (request.getSectionId() != null) {
-            Section section = sectionRepository.findById(request.getSectionId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Section not found with id: " + request.getSectionId()));
+            Section section = sectionRepository.findById(request.getSectionId()).orElse(null);
             schedule.setSection(section);
         }
 
-        if (request.getSubjectId() != null && !request.getSubjectId().equals(schedule.getSubject().getId())) {
-            Subject subject = subjectRepository.findById(request.getSubjectId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Subject not found with id: " + request.getSubjectId()));
+        if (request.getSubjectId() != null || (request.getSubjectCode() != null && !request.getSubjectCode().isBlank()) || (request.getSubjectName() != null && !request.getSubjectName().isBlank())) {
+            Subject subject = resolveSubject(schoolId, request);
             schedule.setSubject(subject);
         }
 
@@ -227,5 +221,42 @@ public class ExamScheduleService {
                 .createdAt(s.getCreatedAt())
                 .updatedAt(s.getUpdatedAt())
                 .build();
+    }
+
+    private Subject resolveSubject(Long schoolId, ExamScheduleRequest request) {
+        Subject subject = null;
+        if (request.getSubjectId() != null) {
+            subject = subjectRepository.findByIdAndSchoolId(request.getSubjectId(), schoolId)
+                    .or(() -> subjectRepository.findById(request.getSubjectId()))
+                    .orElse(null);
+        }
+        if (subject == null && request.getSubjectCode() != null && !request.getSubjectCode().isBlank()) {
+            subject = subjectRepository.findBySchoolIdAndCode(schoolId, request.getSubjectCode().trim())
+                    .orElse(null);
+        }
+        if (subject == null && request.getSubjectName() != null && !request.getSubjectName().isBlank()) {
+            subject = subjectRepository.findBySchoolIdAndNameIgnoreCase(schoolId, request.getSubjectName().trim())
+                    .orElse(null);
+        }
+        if (subject == null) {
+            throw new ResourceNotFoundException("Subject not found" + (request.getSubjectId() != null ? " with id: " + request.getSubjectId() : ""));
+        }
+        return subject;
+    }
+
+    private SchoolClass resolveSchoolClass(Long schoolId, Long requestedClassId) {
+        if (requestedClassId != null) {
+            SchoolClass schoolClass = schoolClassRepository.findByIdAndSchoolId(requestedClassId, schoolId)
+                    .or(() -> schoolClassRepository.findById(requestedClassId))
+                    .orElse(null);
+            if (schoolClass != null) {
+                return schoolClass;
+            }
+        }
+        List<SchoolClass> schoolClasses = schoolClassRepository.findBySchoolId(schoolId);
+        if (!schoolClasses.isEmpty()) {
+            return schoolClasses.get(0);
+        }
+        throw new ResourceNotFoundException("Class not found" + (requestedClassId != null ? " with id: " + requestedClassId : " for school: " + schoolId));
     }
 }

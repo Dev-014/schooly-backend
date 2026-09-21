@@ -56,9 +56,13 @@ public class ExamAdmitCardService {
             Pageable pageable) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
-        // If examSetupId and classId are provided, ensure student entries are synced in admit card table
-        if (examSetupId != null && classId != null) {
-            syncRosterForClass(schoolId, examSetupId, classId, sectionId);
+        // Ensure student entries are synced in admit card table
+        if (examSetupId != null) {
+            if (classId != null) {
+                syncRosterForClass(schoolId, examSetupId, classId, sectionId);
+            } else {
+                syncRosterForSchool(schoolId, examSetupId);
+            }
         }
 
         Page<ExamAdmitCard> page = examAdmitCardRepository.filterAdmitCards(
@@ -170,7 +174,10 @@ public class ExamAdmitCardService {
             card.setStatus("GENERATED");
             card.setGeneratedAt(LocalDateTime.now());
             if (card.getCardNumber() == null) {
-                card.setCardNumber("AC-" + (student.getRollNumber() != null ? student.getRollNumber() : student.getId()));
+                String identifier = (student.getAdmissionNo() != null && !student.getAdmissionNo().isBlank())
+                        ? student.getAdmissionNo()
+                        : String.valueOf(student.getId());
+                card.setCardNumber("AC-" + schoolId + "-" + setup.getId() + "-" + identifier);
             }
             if (request.getTemplateName() != null) {
                 card.setTemplateName(request.getTemplateName());
@@ -190,20 +197,38 @@ public class ExamAdmitCardService {
         return examAdmitCardRepository.releaseAllGeneratedCards(schoolId, setup.getId(), LocalDateTime.now());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public AdmitCardStatsResponse getStats(Long rawSchoolId, Long examSetupId) {
+        return getStats(rawSchoolId, examSetupId, null);
+    }
+
+    @Transactional
+    public AdmitCardStatsResponse getStats(Long rawSchoolId, Long examSetupId, Long classId) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
-        long total = examAdmitCardRepository.countBySchoolIdAndExamSetupId(schoolId, examSetupId);
-        long generated = examAdmitCardRepository.countBySchoolIdAndExamSetupIdAndStatus(schoolId, examSetupId, "GENERATED");
-        long pending = examAdmitCardRepository.countBySchoolIdAndExamSetupIdAndStatus(schoolId, examSetupId, "PENDING");
-        long released = examAdmitCardRepository.countBySchoolIdAndExamSetupIdAndStatus(schoolId, examSetupId, "RELEASED");
+        if (examSetupId != null) {
+            if (classId != null) {
+                syncRosterForClass(schoolId, examSetupId, classId, null);
+            } else {
+                syncRosterForSchool(schoolId, examSetupId);
+            }
+        }
 
-        if (total == 0) {
-            total = 42;
-            generated = 38;
-            pending = 4;
-            released = 0;
+        long total;
+        long generated;
+        long pending;
+        long released;
+
+        if (classId != null) {
+            total = examAdmitCardRepository.countBySchoolIdAndExamSetupIdAndSchoolClassId(schoolId, examSetupId, classId);
+            generated = examAdmitCardRepository.countBySchoolIdAndExamSetupIdAndSchoolClassIdAndStatus(schoolId, examSetupId, classId, "GENERATED");
+            pending = examAdmitCardRepository.countBySchoolIdAndExamSetupIdAndSchoolClassIdAndStatus(schoolId, examSetupId, classId, "PENDING");
+            released = examAdmitCardRepository.countBySchoolIdAndExamSetupIdAndSchoolClassIdAndStatus(schoolId, examSetupId, classId, "RELEASED");
+        } else {
+            total = examAdmitCardRepository.countBySchoolIdAndExamSetupId(schoolId, examSetupId);
+            generated = examAdmitCardRepository.countBySchoolIdAndExamSetupIdAndStatus(schoolId, examSetupId, "GENERATED");
+            pending = examAdmitCardRepository.countBySchoolIdAndExamSetupIdAndStatus(schoolId, examSetupId, "PENDING");
+            released = examAdmitCardRepository.countBySchoolIdAndExamSetupIdAndStatus(schoolId, examSetupId, "RELEASED");
         }
 
         return AdmitCardStatsResponse.builder()
@@ -214,6 +239,14 @@ public class ExamAdmitCardService {
                 .build();
     }
 
+    private void syncRosterForSchool(Long schoolId, Long examSetupId) {
+        ExamSetup setup = examSetupRepository.findByIdAndSchoolId(examSetupId, schoolId).orElse(null);
+        if (setup == null) return;
+
+        List<Student> students = studentRepository.findBySchoolId(schoolId);
+        syncStudentsToRoster(setup, students);
+    }
+
     private void syncRosterForClass(Long schoolId, Long examSetupId, Long classId, Long sectionId) {
         ExamSetup setup = examSetupRepository.findByIdAndSchoolId(examSetupId, schoolId).orElse(null);
         if (setup == null) return;
@@ -221,11 +254,18 @@ public class ExamAdmitCardService {
         List<Student> students = (sectionId != null)
                 ? studentRepository.findBySchoolIdAndSchoolClassIdAndSectionId(schoolId, classId, sectionId)
                 : studentRepository.findBySchoolIdAndSchoolClassId(schoolId, classId);
+        syncStudentsToRoster(setup, students);
+    }
 
+    private void syncStudentsToRoster(ExamSetup setup, List<Student> students) {
+        Long schoolId = setup.getSchool().getId();
         School school = setup.getSchool();
         for (Student student : students) {
+            if (student.getSchoolClass() == null) {
+                continue;
+            }
             Optional<ExamAdmitCard> existing = examAdmitCardRepository
-                    .findBySchoolIdAndExamSetupIdAndStudentId(schoolId, examSetupId, student.getId());
+                    .findBySchoolIdAndExamSetupIdAndStudentId(schoolId, setup.getId(), student.getId());
             if (existing.isEmpty()) {
                 ExamAdmitCard card = new ExamAdmitCard();
                 card.setSchool(school);
@@ -236,7 +276,10 @@ public class ExamAdmitCardService {
                     card.setSection(sectionRepository.findById(student.getSectionId()).orElse(null));
                 }
                 card.setRollNumber(student.getRollNumber());
-                card.setCardNumber("AC-" + (student.getRollNumber() != null ? student.getRollNumber() : student.getId()));
+                String identifier = (student.getAdmissionNo() != null && !student.getAdmissionNo().isBlank())
+                        ? student.getAdmissionNo()
+                        : String.valueOf(student.getId());
+                card.setCardNumber("AC-" + schoolId + "-" + setup.getId() + "-" + identifier);
                 card.setStatus("PENDING");
                 examAdmitCardRepository.save(card);
             }

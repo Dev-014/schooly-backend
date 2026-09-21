@@ -80,9 +80,10 @@ public class AdminExamAdmitCardController {
     @PermissionRequired("exams_results.admit_card_students.view")
     public ResponseEntity<ApiResponse<AdmitCardStatsResponse>> getStats(
             @RequestParam(required = false) Long schoolId,
-            @RequestParam(required = false) Long examSetupId) {
+            @RequestParam(required = false) Long examSetupId,
+            @RequestParam(required = false) Long classId) {
         return ResponseEntity.ok(ApiResponse.success(
-                examAdmitCardService.getStats(schoolId, examSetupId),
+                examAdmitCardService.getStats(schoolId, examSetupId, classId),
                 "Admit card statistics retrieved successfully"));
     }
 }

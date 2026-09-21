@@ -18,8 +18,12 @@ public interface UserAssignmentRepository extends JpaRepository<UserAssignment, 
 
     boolean existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndIsActiveTrue(Long schoolId, Long userId, String assignmentType, Long classId);
 
+    boolean existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSectionIdIsNullAndIsActiveTrue(Long schoolId, Long userId, String assignmentType, Long classId);
+
     boolean existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSectionIdAndSubjectIdAndIsActiveTrue(Long schoolId, Long userId, String assignmentType, Long classId, Long sectionId, Long subjectId);
 
     boolean existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSubjectIdAndIsActiveTrue(Long schoolId, Long userId, String assignmentType, Long classId, Long subjectId);
+
+    boolean existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSubjectIdAndSectionIdIsNullAndIsActiveTrue(Long schoolId, Long userId, String assignmentType, Long classId, Long subjectId);
 }
 

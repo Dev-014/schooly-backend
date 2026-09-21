@@ -23,6 +23,7 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final SchoolRepository schoolRepository;
     private final StudentRepository studentRepository;
+    private final com.school.erp.repository.academic.SchoolClassRepository schoolClassRepository;
     private final com.school.erp.repository.student.StudentLeaveRepository studentLeaveRepository;
     private final com.school.erp.repository.hr.StaffRepository staffRepository;
     private final com.school.erp.repository.academic.ClassTeacherAssignmentRepository assignmentRepository;
@@ -33,6 +34,7 @@ public class AttendanceService {
             AttendanceRepository attendanceRepository,
             SchoolRepository schoolRepository,
             StudentRepository studentRepository,
+            com.school.erp.repository.academic.SchoolClassRepository schoolClassRepository,
             com.school.erp.repository.student.StudentLeaveRepository studentLeaveRepository,
             com.school.erp.repository.hr.StaffRepository staffRepository,
             com.school.erp.repository.academic.ClassTeacherAssignmentRepository assignmentRepository,
@@ -42,6 +44,7 @@ public class AttendanceService {
         this.attendanceRepository = attendanceRepository;
         this.schoolRepository = schoolRepository;
         this.studentRepository = studentRepository;
+        this.schoolClassRepository = schoolClassRepository;
         this.studentLeaveRepository = studentLeaveRepository;
         this.staffRepository = staffRepository;
         this.assignmentRepository = assignmentRepository;
@@ -69,36 +72,38 @@ public class AttendanceService {
     }
 
     public com.school.erp.dto.attendance.AttendanceSummaryDTO getSummaryToday(Long schoolId) {
+        return getSummaryToday(schoolId, null);
+    }
+
+    public com.school.erp.dto.attendance.AttendanceSummaryDTO getSummaryToday(Long schoolId, java.time.LocalDate targetDate) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
-        java.time.LocalDate today = java.time.LocalDate.now();
+        java.time.LocalDate date = targetDate != null ? targetDate : java.time.LocalDate.now();
         
         long totalStudents = studentRepository.countBySchoolId(effectiveSchoolId);
-        List<Object[]> statusCounts = attendanceRepository.countStatusBySchoolIdAndDate(effectiveSchoolId, today);
-        java.util.Map<String, Long> countMap = new java.util.HashMap<>();
-        if (statusCounts != null) {
-            for (Object[] row : statusCounts) {
-                if (row != null && row.length >= 2 && row[0] != null && row[1] != null) {
-                    countMap.put(row[0].toString().toUpperCase(), ((Number) row[1]).longValue());
-                }
-            }
-        }
-
-        long present = countMap.getOrDefault("PRESENT", 0L);
-        long absent = countMap.getOrDefault("ABSENT", 0L);
-        long late = countMap.getOrDefault("LATE", 0L);
+        long present = attendanceRepository.countBySchoolIdAndAttendanceDateAndStatus(effectiveSchoolId, date, "PRESENT");
+        long absent = attendanceRepository.countBySchoolIdAndAttendanceDateAndStatus(effectiveSchoolId, date, "ABSENT");
+        long late = attendanceRepository.countBySchoolIdAndAttendanceDateAndStatus(effectiveSchoolId, date, "LATE");
+        long excused = attendanceRepository.countBySchoolIdAndAttendanceDateAndStatus(effectiveSchoolId, date, "EXCUSED");
         
         long pendingLeaves = studentLeaveRepository.countBySchoolIdAndStatus(effectiveSchoolId, "PENDING");
 
-        present += late; // late is considered present in overall count
-        int presentPercent = totalStudents == 0 ? 0 : (int) (((double) (present) / totalStudents) * 100);
+        long onCampus = present + late;
+        int presentPercent = totalStudents == 0 ? 0 : (int) Math.round(((double) onCampus / totalStudents) * 100);
         
-        return new com.school.erp.dto.attendance.AttendanceSummaryDTO((int)totalStudents, (int)present, (int)absent, (int)late, presentPercent, (int)pendingLeaves);
+        return new com.school.erp.dto.attendance.AttendanceSummaryDTO((int) totalStudents, (int) present, (int) absent, (int) late, presentPercent, (int) pendingLeaves);
     }
 
     public List<com.school.erp.dto.attendance.analytics.AttendanceTrendDTO> getAttendanceTrends(Long schoolId, int days) {
+        return getAttendanceTrends(schoolId, days, null);
+    }
+
+    public List<com.school.erp.dto.attendance.analytics.AttendanceTrendDTO> getAttendanceTrends(Long schoolId, int days, Long classId) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
-        java.time.LocalDate startDate = java.time.LocalDate.now().minusDays(days);
-        List<Object[]> rawData = attendanceRepository.getAttendanceTrendsByDate(effectiveSchoolId, startDate);
+        java.time.LocalDate startDate = java.time.LocalDate.now().minusDays(Math.max(1, days));
+        List<Object[]> rawData = classId != null
+                ? attendanceRepository.getAttendanceTrendsByDateAndClass(effectiveSchoolId, startDate, classId)
+                : attendanceRepository.getAttendanceTrendsByDate(effectiveSchoolId, startDate);
+
         return rawData.stream().map(row -> new com.school.erp.dto.attendance.analytics.AttendanceTrendDTO(
                 (java.time.LocalDate) row[0],
                 ((Number) row[1]).intValue() * 100 / Math.max(1, ((Number) row[2]).intValue())
@@ -108,19 +113,39 @@ public class AttendanceService {
     public List<com.school.erp.dto.attendance.analytics.GradeAttendanceDTO> getGradeWiseAttendance(Long schoolId) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
         List<Object[]> rawData = attendanceRepository.getGradeWiseAttendance(effectiveSchoolId);
-        return rawData.stream().map(row -> {
+        java.util.Map<String, com.school.erp.dto.attendance.analytics.GradeAttendanceDTO> resultMap = new java.util.LinkedHashMap<>();
+
+        for (Object[] row : rawData) {
+            String className = (String) row[0];
             int total = ((Number) row[4]).intValue();
             double avgAttendance = total == 0 ? 0 : ((Number) row[2]).doubleValue() * 100.0 / total;
             double lateFreq = total == 0 ? 0 : ((Number) row[3]).doubleValue() * 100.0 / total;
             String performance = avgAttendance >= 90 ? "EXCELLENT" : (avgAttendance >= 80 ? "GOOD" : "NEEDS_IMPROVEMENT");
-            return new com.school.erp.dto.attendance.analytics.GradeAttendanceDTO(
-                    (String) row[0],
-                    ((Number) row[1]).intValue(), // proxy for capacity using DISTINCT student ids
+            resultMap.put(className, new com.school.erp.dto.attendance.analytics.GradeAttendanceDTO(
+                    className,
+                    ((Number) row[1]).intValue(),
                     Math.round(avgAttendance * 10.0) / 10.0,
                     Math.round(lateFreq * 10.0) / 10.0,
                     performance
-            );
-        }).toList();
+            ));
+        }
+
+        // Ensure all registered classes for the school appear in analytics
+        List<com.school.erp.entity.academic.SchoolClass> allClasses = schoolClassRepository.findBySchoolId(effectiveSchoolId);
+        for (com.school.erp.entity.academic.SchoolClass sc : allClasses) {
+            if (!resultMap.containsKey(sc.getName())) {
+                long classStudentCount = studentRepository.findBySchoolIdAndSchoolClassId(effectiveSchoolId, sc.getId()).size();
+                resultMap.put(sc.getName(), new com.school.erp.dto.attendance.analytics.GradeAttendanceDTO(
+                        sc.getName(),
+                        (int) classStudentCount,
+                        0.0,
+                        0.0,
+                        "NEEDS_IMPROVEMENT"
+                ));
+            }
+        }
+
+        return new java.util.ArrayList<>(resultMap.values());
     }
 
     public List<AttendanceResponse> getAttendanceByDate(Long schoolId, Long classId, Long sectionId, java.time.LocalDate attendanceDate) {
@@ -221,7 +246,7 @@ public class AttendanceService {
                 if (sectionId != null) {
                     isAssignedInUserAssignments = userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSectionIdAndIsActiveTrue(
                             schoolId, currentUser.userId(), "class_teacher", classId, sectionId) ||
-                            userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndIsActiveTrue(
+                            userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndSectionIdIsNullAndIsActiveTrue(
                                     schoolId, currentUser.userId(), "class_teacher", classId);
                 } else {
                     isAssignedInUserAssignments = userAssignmentRepository.existsBySchoolIdAndUserIdAndAssignmentTypeAndClassIdAndIsActiveTrue(
