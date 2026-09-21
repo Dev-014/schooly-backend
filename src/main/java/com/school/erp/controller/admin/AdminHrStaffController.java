@@ -3,7 +3,7 @@ package com.school.erp.controller.admin;
 import com.school.erp.dto.staff.StaffRequest;
 import com.school.erp.dto.auth.UserAssignmentRequest;
 import com.school.erp.dto.auth.UserAssignmentResponse;
-import com.school.erp.entity.Staff;
+import com.school.erp.entity.hr.Staff;
 import com.school.erp.security.PermissionRequired;
 import com.school.erp.service.hr.HrStaffService;
 import jakarta.validation.Valid;

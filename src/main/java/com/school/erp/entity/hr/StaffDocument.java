@@ -1,6 +1,6 @@
 package com.school.erp.entity.hr;
 
-import com.school.erp.entity.Staff;
+import com.school.erp.entity.hr.Staff;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

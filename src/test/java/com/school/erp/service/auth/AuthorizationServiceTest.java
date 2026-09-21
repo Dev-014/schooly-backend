@@ -14,9 +14,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.school.erp.repository.SchoolModuleAccessRepository;
-import com.school.erp.entity.SchoolModuleAccess;
-import com.school.erp.entity.PlatformModule;
+import com.school.erp.repository.superadmin.SchoolModuleAccessRepository;
+import com.school.erp.entity.superadmin.SchoolModuleAccess;
+import com.school.erp.entity.superadmin.PlatformModule;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -41,7 +41,7 @@ class AuthorizationServiceTest {
     private UserAssignmentRepository userAssignmentRepository;
 
     @Mock
-    private com.school.erp.service.EntitlementService entitlementService;
+    private com.school.erp.service.superadmin.EntitlementService entitlementService;
 
     @InjectMocks
     private AuthorizationService authorizationService;
@@ -52,11 +52,12 @@ class AuthorizationServiceTest {
 
     @BeforeEach
     void setUp() {
-        org.mockito.Mockito.lenient().when(entitlementService.evaluateEntitlements(any())).thenAnswer(invocation -> {
-            com.school.erp.dto.catalog.EntitlementEvaluationDto response = new com.school.erp.dto.catalog.EntitlementEvaluationDto();
-            response.setEnabledModules(java.util.Set.of("attendance"));
-            return response;
-        });
+        com.school.erp.dto.catalog.EntitlementEvaluationDto eval = new com.school.erp.dto.catalog.EntitlementEvaluationDto(
+                SCHOOL_ID, "GROWTH", "Growth Plan",
+                java.util.Set.of("attendance", "fees", "exams"),
+                java.util.Map.of(), false, java.time.LocalDateTime.now()
+        );
+        org.mockito.Mockito.lenient().when(entitlementService.evaluateEntitlements(any())).thenReturn(eval);
     }
 
     @Test

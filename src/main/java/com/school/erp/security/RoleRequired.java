@@ -1,6 +1,6 @@
 package com.school.erp.security;
 
-import com.school.erp.entity.UserRole;
+import com.school.erp.entity.auth.UserRole;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

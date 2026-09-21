@@ -1,16 +1,16 @@
 package com.school.erp.service.frontoffice;
 
 import com.school.erp.dto.frontoffice.*;
-import com.school.erp.entity.School;
-import com.school.erp.entity.SchoolClass;
-import com.school.erp.entity.Staff;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.academic.SchoolClass;
+import com.school.erp.entity.hr.Staff;
 import com.school.erp.entity.frontoffice.AdmissionEnquiry;
 import com.school.erp.entity.frontoffice.AdmissionEnquiryFollowUp;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.security.AuthContextService;
-import com.school.erp.repository.SchoolClassRepository;
-import com.school.erp.repository.SchoolRepository;
-import com.school.erp.repository.StaffRepository;
+import com.school.erp.repository.academic.SchoolClassRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.hr.StaffRepository;
 import com.school.erp.repository.frontoffice.AdmissionEnquiryFollowUpRepository;
 import com.school.erp.repository.frontoffice.AdmissionEnquiryRepository;
 import lombok.RequiredArgsConstructor;

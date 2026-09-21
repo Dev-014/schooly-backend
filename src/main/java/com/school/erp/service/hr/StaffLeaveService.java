@@ -2,11 +2,11 @@ package com.school.erp.service.hr;
 
 import com.school.erp.dto.hr.StaffLeaveDTO;
 import com.school.erp.dto.hr.StaffLeaveRequest;
-import com.school.erp.entity.Staff;
+import com.school.erp.entity.hr.Staff;
 import com.school.erp.entity.hr.SchoolLeaveType;
 import com.school.erp.entity.hr.StaffLeave;
 import com.school.erp.entity.hr.StaffLeaveBalance;
-import com.school.erp.repository.StaffRepository;
+import com.school.erp.repository.hr.StaffRepository;
 import com.school.erp.repository.hr.SchoolLeaveTypeRepository;
 import com.school.erp.repository.hr.StaffLeaveBalanceRepository;
 import com.school.erp.repository.hr.StaffLeaveRepository;

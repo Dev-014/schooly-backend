@@ -2,7 +2,7 @@ package com.school.erp.controller.superadmin;
 
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
-import com.school.erp.dto.EmployeeNoteDTO;
+import com.school.erp.dto.hr.EmployeeNoteDTO;
 import com.school.erp.service.superadmin.EmployeeNoteService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

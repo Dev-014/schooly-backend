@@ -1,8 +1,8 @@
 package com.school.erp.controller.superadmin;
 
-import com.school.erp.dto.CreateSuperAdminEmployeeRequest;
-import com.school.erp.dto.SuperAdminEmployeeDTO;
-import com.school.erp.dto.UpdateSuperAdminEmployeeRequest;
+import com.school.erp.dto.superadmin.CreateSuperAdminEmployeeRequest;
+import com.school.erp.dto.superadmin.SuperAdminEmployeeDTO;
+import com.school.erp.dto.superadmin.UpdateSuperAdminEmployeeRequest;
 import com.school.erp.service.superadmin.SuperAdminEmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

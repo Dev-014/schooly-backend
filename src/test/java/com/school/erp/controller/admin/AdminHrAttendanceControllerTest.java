@@ -59,7 +59,7 @@ class AdminHrAttendanceControllerTest {
     void setUp() {
         today = LocalDate.of(2026, 9, 13);
         com.school.erp.security.AuthContextHolder.set(
-                new com.school.erp.security.AuthenticatedUser(100L, 1L, com.school.erp.entity.UserRole.ADMIN)
+                new com.school.erp.security.AuthenticatedUser(100L, 1L, com.school.erp.entity.auth.UserRole.ADMIN)
         );
         when(authorizationService.hasPermission(any(), any(), any())).thenReturn(true);
 

@@ -1,12 +1,12 @@
 package com.school.erp.service.exam;
 
 import com.school.erp.dto.exam.*;
-import com.school.erp.entity.SchoolClass;
-import com.school.erp.entity.Student;
+import com.school.erp.entity.academic.SchoolClass;
+import com.school.erp.entity.student.Student;
 import com.school.erp.entity.exam.ExamMark;
 import com.school.erp.entity.exam.ExamReportCard;
-import com.school.erp.repository.SchoolClassRepository;
-import com.school.erp.repository.StudentRepository;
+import com.school.erp.repository.academic.SchoolClassRepository;
+import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.repository.exam.ExamMarkRepository;
 import com.school.erp.repository.exam.ExamReportCardRepository;
 import com.school.erp.security.AuthContextService;

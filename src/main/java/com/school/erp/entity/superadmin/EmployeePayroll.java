@@ -1,6 +1,6 @@
 package com.school.erp.entity.superadmin;
 
-import com.school.erp.entity.SuperAdminEmployee;
+import com.school.erp.entity.superadmin.SuperAdminEmployee;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;

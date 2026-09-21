@@ -4,7 +4,7 @@ import com.school.erp.dto.crm.CrmDashboardStatsDto;
 import com.school.erp.entity.crm.CrmLead;
 import com.school.erp.entity.crm.CrmPipelineStage;
 import com.school.erp.repository.crm.*;
-import com.school.erp.repository.UserRepository;
+import com.school.erp.repository.auth.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

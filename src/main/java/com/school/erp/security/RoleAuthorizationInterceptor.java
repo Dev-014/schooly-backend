@@ -1,6 +1,6 @@
 package com.school.erp.security;
 
-import com.school.erp.entity.UserRole;
+import com.school.erp.entity.auth.UserRole;
 import com.school.erp.exception.ForbiddenException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

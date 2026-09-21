@@ -83,4 +83,10 @@ deploy/aws/ecs-taskdef.generated.json
 
 ### Others ###
 HELP.md
-
+*.orig
+*.rej
+*.diff
+*.patch
+cookies.txt
+*.dump
+scripts/scratch/

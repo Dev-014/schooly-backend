@@ -1,15 +1,15 @@
 package com.school.erp.service.superadmin;
 
 import com.school.erp.dto.superadmin.SchoolDto;
-import com.school.erp.entity.School;
-import com.school.erp.entity.SchoolModuleAccess;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.superadmin.SchoolModuleAccess;
 import com.school.erp.exception.ResourceNotFoundException;
-import com.school.erp.repository.SchoolModuleAccessRepository;
-import com.school.erp.repository.SchoolRepository;
-import com.school.erp.repository.StaffRepository;
-import com.school.erp.repository.StudentRepository;
-import com.school.erp.repository.SubscriptionPlanRepository;
-import com.school.erp.entity.SubscriptionPlan;
+import com.school.erp.repository.superadmin.SchoolModuleAccessRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.hr.StaffRepository;
+import com.school.erp.repository.student.StudentRepository;
+import com.school.erp.repository.superadmin.SubscriptionPlanRepository;
+import com.school.erp.entity.superadmin.SubscriptionPlan;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,8 +1,8 @@
 package com.school.erp.controller.superadmin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.school.erp.dto.AddPerformanceReviewRequest;
-import com.school.erp.dto.EmployeePerformanceDTO;
+import com.school.erp.dto.hr.AddPerformanceReviewRequest;
+import com.school.erp.dto.hr.EmployeePerformanceDTO;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
 import com.school.erp.service.superadmin.EmployeePerformanceService;

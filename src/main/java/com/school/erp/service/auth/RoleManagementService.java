@@ -9,9 +9,9 @@ import com.school.erp.repository.auth.PermissionDefinitionRepository;
 import com.school.erp.repository.auth.RolePermissionRepository;
 import com.school.erp.repository.auth.RoleRepository;
 import com.school.erp.repository.auth.UserRoleMappingRepository;
-import com.school.erp.repository.PlatformModuleRepository;
-import com.school.erp.entity.PlatformModule;
-import com.school.erp.entity.SchoolModuleAccess;
+import com.school.erp.repository.superadmin.PlatformModuleRepository;
+import com.school.erp.entity.superadmin.PlatformModule;
+import com.school.erp.entity.superadmin.SchoolModuleAccess;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +27,7 @@ public class RoleManagementService {
     private final RolePermissionRepository rolePermissionRepository;
     private final PermissionDefinitionRepository permissionDefinitionRepository;
     private final UserRoleMappingRepository userRoleMappingRepository;
-    private final com.school.erp.repository.SchoolModuleAccessRepository moduleAccessRepository;
+    private final com.school.erp.repository.superadmin.SchoolModuleAccessRepository moduleAccessRepository;
     private final PlatformModuleRepository platformModuleRepository;
 
     @Transactional(readOnly = true)
@@ -133,6 +133,7 @@ public class RoleManagementService {
     }
 
     @Transactional
+    @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_USER_PERMISSIONS, allEntries = true)
     public void updateRolePermissions(Long schoolId, String roleId, UpdateRolePermissionsRequest request) {
         Role role = roleRepository.findById(roleId)
                 .filter(r -> r.isSystemRole() || r.getSchoolId().equals(schoolId))
@@ -183,6 +184,7 @@ public class RoleManagementService {
     }
     
     @Transactional
+    @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_USER_PERMISSIONS, allEntries = true)
     public void updateSystemRolePermissions(String roleId, UpdateRolePermissionsRequest request) {
         Role role = roleRepository.findById(roleId)
                 .filter(Role::isSystemRole)

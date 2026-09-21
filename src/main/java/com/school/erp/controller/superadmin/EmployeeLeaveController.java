@@ -1,7 +1,7 @@
 package com.school.erp.controller.superadmin;
 
-import com.school.erp.dto.ApplyLeaveRequest;
-import com.school.erp.dto.EmployeeLeaveDTO;
+import com.school.erp.dto.hr.ApplyLeaveRequest;
+import com.school.erp.dto.hr.EmployeeLeaveDTO;
 import com.school.erp.service.superadmin.EmployeeLeaveService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

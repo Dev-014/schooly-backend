@@ -2,8 +2,14 @@ package com.school.erp.service.user;
 
 import com.school.erp.dto.user.GrantAccessDTO;
 import com.school.erp.dto.user.GrantAccessResponseDTO;
-import com.school.erp.entity.*;
-import com.school.erp.repository.*;
+import com.school.erp.entity.auth.User;
+import com.school.erp.entity.auth.UserRole;
+import com.school.erp.entity.auth.UserSchoolRole;
+import com.school.erp.entity.student.Student;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.repository.auth.UserRepository;
+import com.school.erp.repository.auth.UserSchoolRoleRepository;
+import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.service.superadmin.UserSupportService;
 import com.school.erp.service.auth.RoleSyncService;
 import lombok.RequiredArgsConstructor;

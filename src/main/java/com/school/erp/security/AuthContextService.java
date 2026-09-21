@@ -34,7 +34,7 @@ public class AuthContextService {
             }
 
             // Super Admin can access any school
-            if (authenticatedUser.role() == com.school.erp.entity.UserRole.SUPER_ADMIN) {
+            if (authenticatedUser.role() == com.school.erp.entity.auth.UserRole.SUPER_ADMIN) {
                 return requestedSchoolId;
             }
 

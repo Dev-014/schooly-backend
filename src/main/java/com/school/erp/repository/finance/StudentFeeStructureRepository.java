@@ -1,0 +1,13 @@
+package com.school.erp.repository.finance;
+
+import com.school.erp.entity.finance.StudentFeeStructure;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface StudentFeeStructureRepository extends JpaRepository<StudentFeeStructure, Long> {
+    List<StudentFeeStructure> findByStudentId(Long studentId);
+    java.util.Optional<StudentFeeStructure> findFirstByStudentIdAndAcademicYearId(Long studentId, Long academicYearId);
+}

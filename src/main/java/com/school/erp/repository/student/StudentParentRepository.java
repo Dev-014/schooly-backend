@@ -1,0 +1,19 @@
+package com.school.erp.repository.student;
+
+import com.school.erp.entity.student.StudentParent;
+import com.school.erp.entity.student.StudentParentId;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface StudentParentRepository extends JpaRepository<StudentParent, StudentParentId> {
+
+    @EntityGraph(attributePaths = {"student", "student.school", "student.schoolClass"})
+    List<StudentParent> findByIdParentUserIdAndStudentSchoolId(Long parentUserId, Long schoolId);
+
+    @EntityGraph(attributePaths = {"student", "student.school", "student.schoolClass"})
+    List<StudentParent> findByIdParentUserId(Long parentUserId);
+
+    java.util.Optional<StudentParent> findByIdParentUserIdAndStudentId(Long parentUserId, Long studentId);
+}

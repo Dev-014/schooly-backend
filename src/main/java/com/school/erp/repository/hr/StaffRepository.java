@@ -1,0 +1,18 @@
+package com.school.erp.repository.hr;
+
+import com.school.erp.entity.hr.Staff;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface StaffRepository extends JpaRepository<Staff, Long> {
+
+    List<Staff> findBySchoolId(Long schoolId);
+
+    Optional<Staff> findByIdAndSchoolId(Long id, Long schoolId);
+
+    Optional<Staff> findByUserId(Long userId);
+
+    long countBySchoolId(Long schoolId);
+}

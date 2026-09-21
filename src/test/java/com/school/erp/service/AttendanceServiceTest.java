@@ -3,9 +3,16 @@ package com.school.erp.service;
 import com.school.erp.dto.attendance.AttendanceSummaryDTO;
 import com.school.erp.dto.attendance.analytics.AttendanceTrendDTO;
 import com.school.erp.dto.attendance.analytics.GradeAttendanceDTO;
-import com.school.erp.entity.SchoolClass;
-import com.school.erp.repository.*;
+import com.school.erp.entity.academic.SchoolClass;
+import com.school.erp.repository.academic.SchoolClassRepository;
+import com.school.erp.repository.academic.ClassTeacherAssignmentRepository;
+import com.school.erp.repository.attendance.AttendanceRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.student.StudentRepository;
+import com.school.erp.repository.student.StudentLeaveRepository;
+import com.school.erp.repository.hr.StaffRepository;
 import com.school.erp.repository.auth.UserAssignmentRepository;
+import com.school.erp.service.attendance.AttendanceService;
 import com.school.erp.security.AuthContextService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -141,18 +148,18 @@ class AttendanceServiceTest {
                 new com.school.erp.security.AuthenticatedUser(
                         teacherUserId,
                         schoolId,
-                        com.school.erp.entity.UserRole.TEACHER
+                        com.school.erp.entity.auth.UserRole.TEACHER
                 )
         );
 
-        com.school.erp.entity.School school = new com.school.erp.entity.School();
+        com.school.erp.entity.superadmin.School school = new com.school.erp.entity.superadmin.School();
         school.setId(schoolId);
         when(schoolRepository.findById(schoolId)).thenReturn(java.util.Optional.of(school));
 
         SchoolClass schoolClass = new SchoolClass();
         schoolClass.setId(classId);
 
-        com.school.erp.entity.Student student = new com.school.erp.entity.Student();
+        com.school.erp.entity.student.Student student = new com.school.erp.entity.student.Student();
         student.setId(studentId);
         student.setSchool(school);
         student.setSchoolClass(schoolClass);
@@ -193,18 +200,18 @@ class AttendanceServiceTest {
                 new com.school.erp.security.AuthenticatedUser(
                         teacherUserId,
                         schoolId,
-                        com.school.erp.entity.UserRole.TEACHER
+                        com.school.erp.entity.auth.UserRole.TEACHER
                 )
         );
 
-        com.school.erp.entity.School school = new com.school.erp.entity.School();
+        com.school.erp.entity.superadmin.School school = new com.school.erp.entity.superadmin.School();
         school.setId(schoolId);
         when(schoolRepository.findById(schoolId)).thenReturn(java.util.Optional.of(school));
 
         SchoolClass schoolClass = new SchoolClass();
         schoolClass.setId(classId);
 
-        com.school.erp.entity.Student student = new com.school.erp.entity.Student();
+        com.school.erp.entity.student.Student student = new com.school.erp.entity.student.Student();
         student.setId(studentId);
         student.setSchool(school);
         student.setSchoolClass(schoolClass);
@@ -216,8 +223,8 @@ class AttendanceServiceTest {
                 schoolId, teacherUserId, "class_teacher", classId, sectionBId
         )).thenReturn(true);
 
-        when(attendanceRepository.save(any(com.school.erp.entity.Attendance.class))).thenAnswer(invocation -> {
-            com.school.erp.entity.Attendance a = invocation.getArgument(0);
+        when(attendanceRepository.save(any(com.school.erp.entity.attendance.Attendance.class))).thenAnswer(invocation -> {
+            com.school.erp.entity.attendance.Attendance a = invocation.getArgument(0);
             a.setId(999L);
             return a;
         });

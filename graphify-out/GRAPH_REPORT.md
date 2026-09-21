@@ -1,2005 +1,1816 @@
-# Graph Report - schooly-backend  (2026-09-10)
+# Graph Report - .  (2026-09-18)
 
 ## Corpus Check
-- 928 files · ~145,739 words
-- Verdict: corpus is large enough that graph structure adds value.
+- Large corpus: 920 files À ~188,972 words. Semantic extraction will be expensive (many Claude tokens). Consider running on a subfolder.
 
 ## Summary
-- 6598 nodes · 12930 edges · 783 communities (519 shown, 264 thin omitted)
-- Extraction: 91% EXTRACTED · 9% INFERRED · 0% AMBIGUOUS · INFERRED: 1161 edges (avg confidence: 0.8)
+- 5769 nodes · 11629 edges · 711 communities (410 shown, 301 thin omitted)
+- Extraction: 87% EXTRACTED · 13% INFERRED · 0% AMBIGUOUS · INFERRED: 1479 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
-## Graph Freshness
-- Built from commit: `69c6b175`
-- Run `git rev-parse HEAD` and compare to check if the graph is stale.
-- Run `graphify update .` after code changes (no API cost).
-
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_Online Admission Workflow|Online Admission Workflow]]
-- [[_COMMUNITY_RBAC & Authorization Engine|RBAC & Authorization Engine]]
-- [[_COMMUNITY_School Onboarding & Setup|School Onboarding & Setup]]
-- [[_COMMUNITY_Academic Curriculum & Cycles|Academic Curriculum & Cycles]]
-- [[_COMMUNITY_School Onboarding & Setup|School Onboarding & Setup]]
-- [[_COMMUNITY_Announcements & Communication|Announcements & Communication]]
-- [[_COMMUNITY_Attendance Management|Attendance Management]]
-- [[_COMMUNITY_Academic Curriculum & Cycles|Academic Curriculum & Cycles]]
-- [[_COMMUNITY_Studentrepository Studenthouseservice Module|Studentrepository Studenthouseservice Module]]
-- [[_COMMUNITY_Authentication & Session Flow|Authentication & Session Flow]]
-- [[_COMMUNITY_Module & Plan Catalog|Module & Plan Catalog]]
-- [[_COMMUNITY_SuperAdmin Analytics Dashboard|SuperAdmin Analytics Dashboard]]
-- [[_COMMUNITY_User Management & Impersonation|User Management & Impersonation]]
-- [[_COMMUNITY_User Management & Impersonation|User Management & Impersonation]]
-- [[_COMMUNITY_Student Management API|Student Management API]]
-- [[_COMMUNITY_User Management & Impersonation|User Management & Impersonation]]
-- [[_COMMUNITY_Student Information System|Student Information System]]
-- [[_COMMUNITY_Authentication Core Services|Authentication Core Services]]
-- [[_COMMUNITY_Schoolclassservice Auth Module|Schoolclassservice Auth Module]]
-- [[_COMMUNITY_Support Ticket System|Support Ticket System]]
-- [[_COMMUNITY_SuperAdmin Analytics Dashboard|SuperAdmin Analytics Dashboard]]
-- [[_COMMUNITY_RBAC & Authorization Engine|RBAC & Authorization Engine]]
-- [[_COMMUNITY_Parent & Family Portal|Parent & Family Portal]]
-- [[_COMMUNITY_Sales CRM & Leads|Sales CRM & Leads]]
-- [[_COMMUNITY_Fee Master & Fee Structure|Fee Master & Fee Structure]]
-- [[_COMMUNITY_Schoolaccountcontroller Schoolaccountservice Module|Schoolaccountcontroller Schoolaccountservice Module]]
-- [[_COMMUNITY_Online Admission Workflow|Online Admission Workflow]]
-- [[_COMMUNITY_Auditlogservice Auditlogrepository Module|Auditlogservice Auditlogrepository Module]]
-- [[_COMMUNITY_Parent & Family Portal|Parent & Family Portal]]
-- [[_COMMUNITY_Bulk Data Import Engine|Bulk Data Import Engine]]
-- [[_COMMUNITY_Studentsiblingservice Studentsiblingrepository Module|Studentsiblingservice Studentsiblingrepository Module]]
-- [[_COMMUNITY_Superadminschoolcontroller Superadmin Module|Superadminschoolcontroller Superadmin Module]]
-- [[_COMMUNITY_Support Ticket System|Support Ticket System]]
-- [[_COMMUNITY_Superadminmodulecontroller Superadmin Module|Superadminmodulecontroller Superadmin Module]]
-- [[_COMMUNITY_Sales CRM & Leads|Sales CRM & Leads]]
-- [[_COMMUNITY_Parentservice Studentparentrepository Module|Parentservice Studentparentrepository Module]]
-- [[_COMMUNITY_School Onboarding & Setup|School Onboarding & Setup]]
-- [[_COMMUNITY_Attendance Management|Attendance Management]]
-- [[_COMMUNITY_Staffcontroller Createstaff Module|Staffcontroller Createstaff Module]]
-- [[_COMMUNITY_Fee Dues & Discounts|Fee Dues & Discounts]]
-- [[_COMMUNITY_Superadminplanservice Superadmin Module|Superadminplanservice Superadmin Module]]
-- [[_COMMUNITY_Authmanagementservice Auth Module|Authmanagementservice Auth Module]]
-- [[_COMMUNITY_Online Admission Workflow|Online Admission Workflow]]
-- [[_COMMUNITY_Fee Master & Fee Structure|Fee Master & Fee Structure]]
-- [[_COMMUNITY_Schoolservice Createschool Module|Schoolservice Createschool Module]]
-- [[_COMMUNITY_Studenthousecontroller Student Module|Studenthousecontroller Student Module]]
-- [[_COMMUNITY_Superadminplancontroller Superadmin Module|Superadminplancontroller Superadmin Module]]
-- [[_COMMUNITY_Superadminmoduleservice Superadmin Module|Superadminmoduleservice Superadmin Module]]
-- [[_COMMUNITY_Bulk Data Import Engine|Bulk Data Import Engine]]
-- [[_COMMUNITY_Schoolclasscontroller Createclass Module|Schoolclasscontroller Createclass Module]]
-- [[_COMMUNITY_Schoolcontroller Createschool Module|Schoolcontroller Createschool Module]]
-- [[_COMMUNITY_Family Getfamilycode Module|Family Getfamilycode Module]]
-- [[_COMMUNITY_Jwtutil Security Module|Jwtutil Security Module]]
-- [[_COMMUNITY_Attendance Management|Attendance Management]]
-- [[_COMMUNITY_Fee Dues & Discounts|Fee Dues & Discounts]]
-- [[_COMMUNITY_Collectionplancontroller Collectionplanservice Module|Collectionplancontroller Collectionplanservice Module]]
-- [[_COMMUNITY_Fee Dues & Discounts|Fee Dues & Discounts]]
-- [[_COMMUNITY_Studentcategorycontroller Student Module|Studentcategorycontroller Student Module]]
-- [[_COMMUNITY_Studentcertificatecontroller Student Module|Studentcertificatecontroller Student Module]]
-- [[_COMMUNITY_Studentleavecontroller Student Module|Studentleavecontroller Student Module]]
-- [[_COMMUNITY_Studentreferralcontroller Student Module|Studentreferralcontroller Student Module]]
-- [[_COMMUNITY_Announcements & Communication|Announcements & Communication]]
-- [[_COMMUNITY_Employee Asset Tracking|Employee Asset Tracking]]
-- [[_COMMUNITY_Rolemanagementservice Auth Module|Rolemanagementservice Auth Module]]
-- [[_COMMUNITY_Fee Dues & Discounts|Fee Dues & Discounts]]
-- [[_COMMUNITY_Fee Dues & Discounts|Fee Dues & Discounts]]
-- [[_COMMUNITY_Online Admission Workflow|Online Admission Workflow]]
-- [[_COMMUNITY_Studentcategoryservice Resourcenotfoundexception Module|Studentcategoryservice Resourcenotfoundexception Module]]
-- [[_COMMUNITY_Studentcertificateservice Createcertificate Module|Studentcertificateservice Createcertificate Module]]
-- [[_COMMUNITY_Studentleaveservice Createleave Module|Studentleaveservice Createleave Module]]
-- [[_COMMUNITY_Role & Permission Management|Role & Permission Management]]
-- [[_COMMUNITY_Sales CRM & Leads|Sales CRM & Leads]]
-- [[_COMMUNITY_Collectionplanservice Finance Module|Collectionplanservice Finance Module]]
-- [[_COMMUNITY_Exception Badrequestexception Module|Exception Badrequestexception Module]]
-- [[_COMMUNITY_Authentication Core Services|Authentication Core Services]]
-- [[_COMMUNITY_Fee Master & Fee Structure|Fee Master & Fee Structure]]
-- [[_COMMUNITY_Studentreferralservice Createreferral Module|Studentreferralservice Createreferral Module]]
-- [[_COMMUNITY_Studentsiblingcontroller Student Module|Studentsiblingcontroller Student Module]]
-- [[_COMMUNITY_Usersupportcontroller Superadmin Module|Usersupportcontroller Superadmin Module]]
-- [[_COMMUNITY_Usersupportservice Superadmin Module|Usersupportservice Superadmin Module]]
-- [[_COMMUNITY_Academic Curriculum & Cycles|Academic Curriculum & Cycles]]
-- [[_COMMUNITY_Fee Payment Processing|Fee Payment Processing]]
-- [[_COMMUNITY_Idcardgenerationservice Idcardgenerationrepository Module|Idcardgenerationservice Idcardgenerationrepository Module]]
-- [[_COMMUNITY_Superadminsampledatainitializer Config Module|Superadminsampledatainitializer Config Module]]
-- [[_COMMUNITY_School Feature Entitlements|School Feature Entitlements]]
-- [[_COMMUNITY_Parentcontroller Parentcontrollertest Module|Parentcontroller Parentcontrollertest Module]]
-- [[_COMMUNITY_Online Admission Workflow|Online Admission Workflow]]
-- [[_COMMUNITY_Online Admission Workflow|Online Admission Workflow]]
-- [[_COMMUNITY_Timetableentryrepository Deletebyschoolidandschoolclassidandsectionidandacademicyearid Module|Timetableentryrepository Deletebyschoolidandschoolclassidandsectionidandacademicyearid Module]]
-- [[_COMMUNITY_Student Information System|Student Information System]]
-- [[_COMMUNITY_Employee Leave & Lifecycle|Employee Leave & Lifecycle]]
-- [[_COMMUNITY_Superadminemployeecontroller Superadmin Module|Superadminemployeecontroller Superadmin Module]]
-- [[_COMMUNITY_Superadmin Employeetimelineservice Module|Superadmin Employeetimelineservice Module]]
-- [[_COMMUNITY_Attendance Management|Attendance Management]]
-- [[_COMMUNITY_Fee Dues & Discounts|Fee Dues & Discounts]]
-- [[_COMMUNITY_Feerecordcontroller Getfeerecords Module|Feerecordcontroller Getfeerecords Module]]
-- [[_COMMUNITY_Sales CRM & Leads|Sales CRM & Leads]]
-- [[_COMMUNITY_Idcardgenerationcontroller Student Module|Idcardgenerationcontroller Student Module]]
-- [[_COMMUNITY_Studentsubjectenrollmentrepository Countbyschoolidandacademicyearidandenrollmenttype Module|Studentsubjectenrollmentrepository Countbyschoolidandacademicyearidandenrollmenttype Module]]
-- [[_COMMUNITY_Userschoolrolerepository Existsbyuseridandschoolidandroleandstatusignorecase Module|Userschoolrolerepository Existsbyuseridandschoolidandroleandstatusignorecase Module]]
-- [[_COMMUNITY_Employee Payroll|Employee Payroll]]
-- [[_COMMUNITY_Employee Leave & Lifecycle|Employee Leave & Lifecycle]]
-- [[_COMMUNITY_Superadminlogservice Superadmin Module|Superadminlogservice Superadmin Module]]
-- [[_COMMUNITY_Staffservice Auth Module|Staffservice Auth Module]]
-- [[_COMMUNITY_Rolesyncservice Useraccessservice Module|Rolesyncservice Useraccessservice Module]]
-- [[_COMMUNITY_Attendance Management|Attendance Management]]
-- [[_COMMUNITY_Superadminlogcontroller Superadmin Module|Superadminlogcontroller Superadmin Module]]
-- [[_COMMUNITY_Employee Payroll|Employee Payroll]]
-- [[_COMMUNITY_Department Management|Department Management]]
-- [[_COMMUNITY_Passwordreset Passwordresetrepository Module|Passwordreset Passwordresetrepository Module]]
-- [[_COMMUNITY_Fee Payment Processing|Fee Payment Processing]]
-- [[_COMMUNITY_Classteacherassignmentrepository Findbyidandschoolid Module|Classteacherassignmentrepository Findbyidandschoolid Module]]
-- [[_COMMUNITY_Fee Dues & Discounts|Fee Dues & Discounts]]
-- [[_COMMUNITY_Schoolmoduleaccessrepository Findbymoduleid Module|Schoolmoduleaccessrepository Findbymoduleid Module]]
-- [[_COMMUNITY_Support Ticket System|Support Ticket System]]
-- [[_COMMUNITY_Fee Dues & Discounts|Fee Dues & Discounts]]
-- [[_COMMUNITY_RBAC & Authorization Engine|RBAC & Authorization Engine]]
-- [[_COMMUNITY_Announcements & Communication|Announcements & Communication]]
-- [[_COMMUNITY_Sales CRM & Leads|Sales CRM & Leads]]
-- [[_COMMUNITY_Fee Master & Fee Structure|Fee Master & Fee Structure]]
-- [[_COMMUNITY_Classsubjectassignmentrepository Deletebyschoolidandschoolclassidandacademicyearid Module|Classsubjectassignmentrepository Deletebyschoolidandschoolclassidandacademicyearid Module]]
-- [[_COMMUNITY_Subjectrepository Findbyidandschoolid Module|Subjectrepository Findbyidandschoolid Module]]
-- [[_COMMUNITY_Superadminconfigcontroller Superadmin Module|Superadminconfigcontroller Superadmin Module]]
-- [[_COMMUNITY_Rolerepository Auth Module|Rolerepository Auth Module]]
-- [[_COMMUNITY_Securityconfig Config Module|Securityconfig Config Module]]
-- [[_COMMUNITY_Studenteligibilitycontroller Geteligibility Module|Studenteligibilitycontroller Geteligibility Module]]
-- [[_COMMUNITY_Module & Plan Catalog|Module & Plan Catalog]]
-- [[_COMMUNITY_Familyrepository Findbyfamilycode Module|Familyrepository Findbyfamilycode Module]]
-- [[_COMMUNITY_Superadminemployeerepository Existsbyemployeecode Module|Superadminemployeerepository Existsbyemployeecode Module]]
-- [[_COMMUNITY_Fee Payment Processing|Fee Payment Processing]]
-- [[_COMMUNITY_Feerecordservice Getfeestats Module|Feerecordservice Getfeestats Module]]
-- [[_COMMUNITY_Department Management|Department Management]]
-- [[_COMMUNITY_Employeedocumentcontroller Superadmin Module|Employeedocumentcontroller Superadmin Module]]
-- [[_COMMUNITY_Employeeperformancecontroller Superadmin Module|Employeeperformancecontroller Superadmin Module]]
-- [[_COMMUNITY_Employeedocumentservice Superadmin Module|Employeedocumentservice Superadmin Module]]
-- [[_COMMUNITY_Employeeperformanceservice Superadmin Module|Employeeperformanceservice Superadmin Module]]
-- [[_COMMUNITY_Corsconfig Config Module|Corsconfig Config Module]]
-- [[_COMMUNITY_Webmvcconfig Config Module|Webmvcconfig Config Module]]
-- [[_COMMUNITY_Online Admission Workflow|Online Admission Workflow]]
-- [[_COMMUNITY_Studentparentid Getparentuserid Module|Studentparentid Getparentuserid Module]]
-- [[_COMMUNITY_Fee Invoice & Billing|Fee Invoice & Billing]]
-- [[_COMMUNITY_Platformmodulerepository Findallbycategory Module|Platformmodulerepository Findallbycategory Module]]
-- [[_COMMUNITY_Sectionrepository Findbyidandschoolid Module|Sectionrepository Findbyidandschoolid Module]]
-- [[_COMMUNITY_Staffrepository Countbyschoolid Module|Staffrepository Countbyschoolid Module]]
-- [[_COMMUNITY_School Onboarding & Setup|School Onboarding & Setup]]
-- [[_COMMUNITY_Familyrequest Student Module|Familyrequest Student Module]]
-- [[_COMMUNITY_Employee Payroll|Employee Payroll]]
-- [[_COMMUNITY_Employee Asset Tracking|Employee Asset Tracking]]
-- [[_COMMUNITY_Employeelifecycleservice Superadmin Module|Employeelifecycleservice Superadmin Module]]
-- [[_COMMUNITY_Employeenoteservice Superadmin Module|Employeenoteservice Superadmin Module]]
-- [[_COMMUNITY_Accountrequestrepository Accountrequest Module|Accountrequestrepository Accountrequest Module]]
-- [[_COMMUNITY_Userrolemappingrepository Auth Module|Userrolemappingrepository Auth Module]]
-- [[_COMMUNITY_Authsessionrepository Authsession Module|Authsessionrepository Authsession Module]]
-- [[_COMMUNITY_Academicyearrepository Findbyidandschoolid Module|Academicyearrepository Findbyidandschoolid Module]]
-- [[_COMMUNITY_Idcardgenerationrepository Findbyschoolid Module|Idcardgenerationrepository Findbyschoolid Module]]
-- [[_COMMUNITY_Online Admission Workflow|Online Admission Workflow]]
-- [[_COMMUNITY_Schoolclassrepository Findbyidandschoolid Module|Schoolclassrepository Findbyidandschoolid Module]]
-- [[_COMMUNITY_Studentcategoryrepository Findbyidandschoolid Module|Studentcategoryrepository Findbyidandschoolid Module]]
-- [[_COMMUNITY_Studentcertificaterepository Findbyidandschoolid Module|Studentcertificaterepository Findbyidandschoolid Module]]
-- [[_COMMUNITY_Studentdocumentrepository Findbyidandschoolid Module|Studentdocumentrepository Findbyidandschoolid Module]]
-- [[_COMMUNITY_Studentfeestructurerepository Findbystudentid Module|Studentfeestructurerepository Findbystudentid Module]]
-- [[_COMMUNITY_Studenthouserepository Findbyidandschoolid Module|Studenthouserepository Findbyidandschoolid Module]]
-- [[_COMMUNITY_Studentleaverepository Findbyidandschoolid Module|Studentleaverepository Findbyidandschoolid Module]]
-- [[_COMMUNITY_Studentreferralrepository Findbyidandschoolid Module|Studentreferralrepository Findbyidandschoolid Module]]
-- [[_COMMUNITY_Subscriptionplanrepository Findallbystatus Module|Subscriptionplanrepository Findallbystatus Module]]
-- [[_COMMUNITY_Timetableperiodrepository Findbyidandschoolid Module|Timetableperiodrepository Findbyidandschoolid Module]]
-- [[_COMMUNITY_Useractivitylogrepository Findallbyorderbytimestampdesc Module|Useractivitylogrepository Findallbyorderbytimestampdesc Module]]
-- [[_COMMUNITY_Userloginhistoryrepository Countbylogintimeafter Module|Userloginhistoryrepository Countbylogintimeafter Module]]
-- [[_COMMUNITY_Employee Asset Tracking|Employee Asset Tracking]]
-- [[_COMMUNITY_Employeelifecyclecontroller Superadmin Module|Employeelifecyclecontroller Superadmin Module]]
-- [[_COMMUNITY_Employeenotecontroller Superadmin Module|Employeenotecontroller Superadmin Module]]
-- [[_COMMUNITY_Employeetimelinecontroller Superadmin Module|Employeetimelinecontroller Superadmin Module]]
-- [[_COMMUNITY_Useraccesscontroller Superadmin Module|Useraccesscontroller Superadmin Module]]
-- [[_COMMUNITY_Employee Leave & Lifecycle|Employee Leave & Lifecycle]]
-- [[_COMMUNITY_Employeeauditlogservice Superadmin Module|Employeeauditlogservice Superadmin Module]]
-- [[_COMMUNITY_Userassignmentrepository Auth Module|Userassignmentrepository Auth Module]]
-- [[_COMMUNITY_Fee Payment Processing|Fee Payment Processing]]
-- [[_COMMUNITY_Fee Dues & Discounts|Fee Dues & Discounts]]
-- [[_COMMUNITY_Bulk Data Import Engine|Bulk Data Import Engine]]
-- [[_COMMUNITY_Feestructurerepository Findbyschoolid Module|Feestructurerepository Findbyschoolid Module]]
-- [[_COMMUNITY_Employeeauditlogcontroller Superadmin Module|Employeeauditlogcontroller Superadmin Module]]
-- [[_COMMUNITY_Department Management|Department Management]]
-- [[_COMMUNITY_Attendance Management|Attendance Management]]
-- [[_COMMUNITY_Employeedocumentcontrollertest Superadmin Module|Employeedocumentcontrollertest Superadmin Module]]
-- [[_COMMUNITY_Employee Leave & Lifecycle|Employee Leave & Lifecycle]]
-- [[_COMMUNITY_Employee Payroll|Employee Payroll]]
-- [[_COMMUNITY_Employeeperformancecontrollertest Superadmin Module|Employeeperformancecontrollertest Superadmin Module]]
-- [[_COMMUNITY_Superadminplanservicetest Superadmin Module|Superadminplanservicetest Superadmin Module]]
-- [[_COMMUNITY_Permissiondefinitionrepository Auth Module|Permissiondefinitionrepository Auth Module]]
-- [[_COMMUNITY_Loginaccessdataseeder Seed Module|Loginaccessdataseeder Seed Module]]
-- [[_COMMUNITY_Sales CRM & Leads|Sales CRM & Leads]]
-- [[_COMMUNITY_Bulk Data Import Engine|Bulk Data Import Engine]]
-- [[_COMMUNITY_Crmactivitylogrepository Findbyleadidorderbycreatedatdesc Module|Crmactivitylogrepository Findbyleadidorderbycreatedatdesc Module]]
-- [[_COMMUNITY_Crmdemodto Scheduledemorequest Module|Crmdemodto Scheduledemorequest Module]]
-- [[_COMMUNITY_Crmdemorepository Findbyleadidorderbydemodatedesc Module|Crmdemorepository Findbyleadidorderbydemodatedesc Module]]
-- [[_COMMUNITY_Crmfollowupdto Logfollowuprequest Module|Crmfollowupdto Logfollowuprequest Module]]
-- [[_COMMUNITY_Crmfollowuprepository Findbyleadidorderbyscheduleddatedesc Module|Crmfollowuprepository Findbyleadidorderbyscheduleddatedesc Module]]
-- [[_COMMUNITY_Crmquotationrepository Findbyleadidorderbycreatedatdesc Module|Crmquotationrepository Findbyleadidorderbycreatedatdesc Module]]
-- [[_COMMUNITY_Studentsibling Oncreate Module|Studentsibling Oncreate Module]]
-- [[_COMMUNITY_Userrequest Oncreate Module|Userrequest Oncreate Module]]
-- [[_COMMUNITY_Fee Payment Processing|Fee Payment Processing]]
-- [[_COMMUNITY_Feestructureitemrepository Feestructureitem Module|Feestructureitemrepository Feestructureitem Module]]
-- [[_COMMUNITY_Passwordresettokenrepository Passwordresettoken Module|Passwordresettokenrepository Passwordresettoken Module]]
-- [[_COMMUNITY_Collectionplanrepository Findbyschoolid Module|Collectionplanrepository Findbyschoolid Module]]
-- [[_COMMUNITY_Feecategoryrepository Findbyschoolid Module|Feecategoryrepository Findbyschoolid Module]]
-- [[_COMMUNITY_Schoolaccountrepository Findbyschoolid Module|Schoolaccountrepository Findbyschoolid Module]]
-- [[_COMMUNITY_Schoolconfigoverriderepository Findbyschoolid Module|Schoolconfigoverriderepository Findbyschoolid Module]]
-- [[_COMMUNITY_Ticketcategoryrepository Findbystatus Module|Ticketcategoryrepository Findbystatus Module]]
-- [[_COMMUNITY_Tickethistoryrepository Findbyticketidorderbycreatedatdesc Module|Tickethistoryrepository Findbyticketidorderbycreatedatdesc Module]]
-- [[_COMMUNITY_Userrequestrepository Findbystatus Module|Userrequestrepository Findbystatus Module]]
-- [[_COMMUNITY_Authcontextholder Security Module|Authcontextholder Security Module]]
-- [[_COMMUNITY_Authcontextservice Security Module|Authcontextservice Security Module]]
-- [[_COMMUNITY_Authfilterconfig Security Module|Authfilterconfig Security Module]]
-- [[_COMMUNITY_Employee Asset Tracking|Employee Asset Tracking]]
-- [[_COMMUNITY_Employeeauditlogrepository Superadmin Module|Employeeauditlogrepository Superadmin Module]]
-- [[_COMMUNITY_Employeedocumentrepository Superadmin Module|Employeedocumentrepository Superadmin Module]]
-- [[_COMMUNITY_Employeelifecyclerepository Superadmin Module|Employeelifecyclerepository Superadmin Module]]
-- [[_COMMUNITY_Employeenoterepository Superadmin Module|Employeenoterepository Superadmin Module]]
-- [[_COMMUNITY_Employeeperformancerepository Superadmin Module|Employeeperformancerepository Superadmin Module]]
-- [[_COMMUNITY_Employeeauditlogcontrollertest Superadmin Module|Employeeauditlogcontrollertest Superadmin Module]]
-- [[_COMMUNITY_SuperAdmin Analytics Dashboard|SuperAdmin Analytics Dashboard]]
-- [[_COMMUNITY_Jacksonconfig Config Module|Jacksonconfig Config Module]]
-- [[_COMMUNITY_Bulk Data Import Engine|Bulk Data Import Engine]]
-- [[_COMMUNITY_School Onboarding & Setup|School Onboarding & Setup]]
-- [[_COMMUNITY_Schoolmoduleaccess Platformmodule Module|Schoolmoduleaccess Platformmodule Module]]
-- [[_COMMUNITY_Schoolsubscription Addinstallment Module|Schoolsubscription Addinstallment Module]]
-- [[_COMMUNITY_Module & Plan Catalog|Module & Plan Catalog]]
-- [[_COMMUNITY_Schooldto Superadmin Module|Schooldto Superadmin Module]]
-- [[_COMMUNITY_Authuserresponse Auth Module|Authuserresponse Auth Module]]
-- [[_COMMUNITY_Module & Plan Catalog|Module & Plan Catalog]]
-- [[_COMMUNITY_Crmdemo Onupdate Module|Crmdemo Onupdate Module]]
-- [[_COMMUNITY_Crmfollowup Onupdate Module|Crmfollowup Onupdate Module]]
-- [[_COMMUNITY_Crmlead Onupdate Module|Crmlead Onupdate Module]]
-- [[_COMMUNITY_Crmquotation Onupdate Module|Crmquotation Onupdate Module]]
-- [[_COMMUNITY_Applicationcontexttest Test Module|Applicationcontexttest Test Module]]
-- [[_COMMUNITY_Schoolerpbackendapplication Module|Schoolerpbackendapplication Module]]
-- [[_COMMUNITY_Schoolerpbackendapplicationtests Test Module|Schoolerpbackendapplicationtests Test Module]]
-- [[_COMMUNITY_Authenticateduser Security Module|Authenticateduser Security Module]]
-- [[_COMMUNITY_Moduledto Superadmin Module|Moduledto Superadmin Module]]
-- [[_COMMUNITY_Department Management|Department Management]]
-- [[_COMMUNITY_Attendance Management|Attendance Management]]
-- [[_COMMUNITY_Employee Leave & Lifecycle|Employee Leave & Lifecycle]]
-- [[_COMMUNITY_Employee Payroll|Employee Payroll]]
-- [[_COMMUNITY_Employee Asset Tracking|Employee Asset Tracking]]
-- [[_COMMUNITY_Employeelifecyclecontrollertest Superadmin Module|Employeelifecyclecontrollertest Superadmin Module]]
-- [[_COMMUNITY_Employeetimelinecontrollertest Superadmin Module|Employeetimelinecontrollertest Superadmin Module]]
-- [[_COMMUNITY_Updaterolepermissionsrequest Auth Module|Updaterolepermissionsrequest Auth Module]]
-- [[_COMMUNITY_Crmquotationdto Crmquotationstatus Module|Crmquotationdto Crmquotationstatus Module]]
-- [[_COMMUNITY_Auditactions Module|Auditactions Module]]
-- [[_COMMUNITY_Familyresponse Student Module|Familyresponse Student Module]]
-- [[_COMMUNITY_User Management & Impersonation|User Management & Impersonation]]
-- [[_COMMUNITY_Accountrequestsubmitrequest Auth Module|Accountrequestsubmitrequest Auth Module]]
-- [[_COMMUNITY_Createrolerequest Auth Module|Createrolerequest Auth Module]]
-- [[_COMMUNITY_Passwordresetrequest Auth Module|Passwordresetrequest Auth Module]]
-- [[_COMMUNITY_Passwordresetsubmitrequest Auth Module|Passwordresetsubmitrequest Auth Module]]
-- [[_COMMUNITY_Permissiondefinition Auth Module|Permissiondefinition Auth Module]]
-- [[_COMMUNITY_Permissiondefinitiondto Auth Module|Permissiondefinitiondto Auth Module]]
-- [[_COMMUNITY_Permissiongroupdto Auth Module|Permissiongroupdto Auth Module]]
-- [[_COMMUNITY_Personadto Auth Module|Personadto Auth Module]]
-- [[_COMMUNITY_Role Auth Module|Role Auth Module]]
-- [[_COMMUNITY_Roledto Auth Module|Roledto Auth Module]]
-- [[_COMMUNITY_Rolepermission Auth Module|Rolepermission Auth Module]]
-- [[_COMMUNITY_Switchpersonarequest Auth Module|Switchpersonarequest Auth Module]]
-- [[_COMMUNITY_Userassignment Auth Module|Userassignment Auth Module]]
-- [[_COMMUNITY_Userrolemapping Auth Module|Userrolemapping Auth Module]]
-- [[_COMMUNITY_Module & Plan Catalog|Module & Plan Catalog]]
-- [[_COMMUNITY_Module & Plan Catalog|Module & Plan Catalog]]
-- [[_COMMUNITY_Module & Plan Catalog|Module & Plan Catalog]]
-- [[_COMMUNITY_Announcements & Communication|Announcements & Communication]]
-- [[_COMMUNITY_Announcements & Communication|Announcements & Communication]]
-- [[_COMMUNITY_Announcements & Communication|Announcements & Communication]]
-- [[_COMMUNITY_Announcements & Communication|Announcements & Communication]]
-- [[_COMMUNITY_Announcements & Communication|Announcements & Communication]]
-- [[_COMMUNITY_Createcrmleadrequest Module|Createcrmleadrequest Module]]
-- [[_COMMUNITY_Crmactivitylog Module|Crmactivitylog Module]]
-- [[_COMMUNITY_Crmactivitylogdto Module|Crmactivitylogdto Module]]
-- [[_COMMUNITY_Crmdashboardstatsdto Module|Crmdashboardstatsdto Module]]
-- [[_COMMUNITY_Crmleadrepository Module|Crmleadrepository Module]]
-- [[_COMMUNITY_Addperformancereviewrequest Module|Addperformancereviewrequest Module]]
-- [[_COMMUNITY_Applyleaverequest Module|Applyleaverequest Module]]
-- [[_COMMUNITY_Assignticketrequest Module|Assignticketrequest Module]]
-- [[_COMMUNITY_Department Management|Department Management]]
-- [[_COMMUNITY_Createsuperadminemployeerequest Module|Createsuperadminemployeerequest Module]]
-- [[_COMMUNITY_Support Ticket System|Support Ticket System]]
-- [[_COMMUNITY_Department Management|Department Management]]
-- [[_COMMUNITY_Employee Asset Tracking|Employee Asset Tracking]]
-- [[_COMMUNITY_Attendance Management|Attendance Management]]
-- [[_COMMUNITY_Employeeauditlogdto Module|Employeeauditlogdto Module]]
-- [[_COMMUNITY_Employeedocumentdto Module|Employeedocumentdto Module]]
-- [[_COMMUNITY_Employee Leave & Lifecycle|Employee Leave & Lifecycle]]
-- [[_COMMUNITY_Employeelifecycledto Module|Employeelifecycledto Module]]
-- [[_COMMUNITY_Employeenotedto Module|Employeenotedto Module]]
-- [[_COMMUNITY_Employee Payroll|Employee Payroll]]
-- [[_COMMUNITY_Employeeperformancedto Module|Employeeperformancedto Module]]
-- [[_COMMUNITY_Employeetimelinedto Module|Employeetimelinedto Module]]
-- [[_COMMUNITY_Attendance Management|Attendance Management]]
-- [[_COMMUNITY_Runpayrollrequest Module|Runpayrollrequest Module]]
-- [[_COMMUNITY_Superadminemployeedto Module|Superadminemployeedto Module]]
-- [[_COMMUNITY_Support Ticket System|Support Ticket System]]
-- [[_COMMUNITY_Ticketcategorydto Module|Ticketcategorydto Module]]
-- [[_COMMUNITY_Ticketdashboardstatsdto Module|Ticketdashboardstatsdto Module]]
-- [[_COMMUNITY_Tickethistorydto Module|Tickethistorydto Module]]
-- [[_COMMUNITY_Updatesuperadminemployeerequest Module|Updatesuperadminemployeerequest Module]]
-- [[_COMMUNITY_Updateticketstatusrequest Module|Updateticketstatusrequest Module]]
-- [[_COMMUNITY_Uploaddocumentrequest Module|Uploaddocumentrequest Module]]
-- [[_COMMUNITY_Academicyear Module|Academicyear Module]]
-- [[_COMMUNITY_Accountrequest Module|Accountrequest Module]]
-- [[_COMMUNITY_Attendance Management|Attendance Management]]
-- [[_COMMUNITY_Auditlog Module|Auditlog Module]]
-- [[_COMMUNITY_Authsession Module|Authsession Module]]
-- [[_COMMUNITY_Classsubjectassignment Module|Classsubjectassignment Module]]
-- [[_COMMUNITY_Classteacherassignment Module|Classteacherassignment Module]]
-- [[_COMMUNITY_Collectionplan Module|Collectionplan Module]]
-- [[_COMMUNITY_Collectionplanitem Module|Collectionplanitem Module]]
-- [[_COMMUNITY_Bulk Data Import Engine|Bulk Data Import Engine]]
-- [[_COMMUNITY_Feecategory Module|Feecategory Module]]
-- [[_COMMUNITY_Fee Dues & Discounts|Fee Dues & Discounts]]
-- [[_COMMUNITY_Feegenerationbatch Module|Feegenerationbatch Module]]
-- [[_COMMUNITY_Fee Invoice & Billing|Fee Invoice & Billing]]
-- [[_COMMUNITY_Fee Payment Processing|Fee Payment Processing]]
-- [[_COMMUNITY_Feestructure Module|Feestructure Module]]
-- [[_COMMUNITY_Feestructureitem Module|Feestructureitem Module]]
-- [[_COMMUNITY_Idcardgeneration Module|Idcardgeneration Module]]
-- [[_COMMUNITY_Impersonationsession Module|Impersonationsession Module]]
-- [[_COMMUNITY_Passwordresettoken Module|Passwordresettoken Module]]
-- [[_COMMUNITY_Payment Module|Payment Module]]
-- [[_COMMUNITY_Subsystem 326|Subsystem 326]]
-- [[_COMMUNITY_Schoolaccount Module|Schoolaccount Module]]
-- [[_COMMUNITY_Schoolclass Module|Schoolclass Module]]
-- [[_COMMUNITY_Schoolconfigoverride Module|Schoolconfigoverride Module]]
-- [[_COMMUNITY_Schoolsubscriptioninstallment Module|Schoolsubscriptioninstallment Module]]
-- [[_COMMUNITY_Section Module|Section Module]]
-- [[_COMMUNITY_Staff Module|Staff Module]]
-- [[_COMMUNITY_Student Module|Student Module]]
-- [[_COMMUNITY_Studentcategory Module|Studentcategory Module]]
-- [[_COMMUNITY_Studentcertificate Module|Studentcertificate Module]]
-- [[_COMMUNITY_Studentdocument Module|Studentdocument Module]]
-- [[_COMMUNITY_Studentfeestructure Module|Studentfeestructure Module]]
-- [[_COMMUNITY_Studenthouse Module|Studenthouse Module]]
-- [[_COMMUNITY_Studentleave Module|Studentleave Module]]
-- [[_COMMUNITY_Studentparent Module|Studentparent Module]]
-- [[_COMMUNITY_Studentreferral Module|Studentreferral Module]]
-- [[_COMMUNITY_Studentsubjectenrollment Module|Studentsubjectenrollment Module]]
-- [[_COMMUNITY_Subject Module|Subject Module]]
-- [[_COMMUNITY_Superadminemployee Module|Superadminemployee Module]]
-- [[_COMMUNITY_Support Ticket System|Support Ticket System]]
-- [[_COMMUNITY_School Feature Entitlements|School Feature Entitlements]]
-- [[_COMMUNITY_Ticketcategory Module|Ticketcategory Module]]
-- [[_COMMUNITY_Tickethistory Module|Tickethistory Module]]
-- [[_COMMUNITY_Timetableentry Module|Timetableentry Module]]
-- [[_COMMUNITY_Timetableperiod Module|Timetableperiod Module]]
-- [[_COMMUNITY_User Module|User Module]]
-- [[_COMMUNITY_Useractivitylog Module|Useractivitylog Module]]
-- [[_COMMUNITY_Userloginhistory Module|Userloginhistory Module]]
-- [[_COMMUNITY_Userschoolrole Module|Userschoolrole Module]]
-- [[_COMMUNITY_Feecategoryrequest Feecategory Module|Feecategoryrequest Feecategory Module]]
-- [[_COMMUNITY_Feecategoryresponse Feecategory Module|Feecategoryresponse Feecategory Module]]
-- [[_COMMUNITY_Fee Invoice & Billing|Fee Invoice & Billing]]
-- [[_COMMUNITY_Feestructureitemrequest Feestructure Module|Feestructureitemrequest Feestructure Module]]
-- [[_COMMUNITY_Feestructureitemresponse Feestructure Module|Feestructureitemresponse Feestructure Module]]
-- [[_COMMUNITY_Feestructurerequest Feestructure Module|Feestructurerequest Feestructure Module]]
-- [[_COMMUNITY_Feestructureresponse Feestructure Module|Feestructureresponse Feestructure Module]]
-- [[_COMMUNITY_Collectionplanitemrequest Finance Module|Collectionplanitemrequest Finance Module]]
-- [[_COMMUNITY_Collectionplanitemresponse Finance Module|Collectionplanitemresponse Finance Module]]
-- [[_COMMUNITY_Collectionplanrequest Finance Module|Collectionplanrequest Finance Module]]
-- [[_COMMUNITY_Collectionplanresponse Finance Module|Collectionplanresponse Finance Module]]
-- [[_COMMUNITY_Schoolaccountrequest Finance Module|Schoolaccountrequest Finance Module]]
-- [[_COMMUNITY_Schoolaccountresponse Finance Module|Schoolaccountresponse Finance Module]]
-- [[_COMMUNITY_Fee Payment Processing|Fee Payment Processing]]
-- [[_COMMUNITY_Feestatsdto Payment Module|Feestatsdto Payment Module]]
-- [[_COMMUNITY_Studentfeerecorddto Payment Module|Studentfeerecorddto Payment Module]]
-- [[_COMMUNITY_Collectionplanitemrepository Module|Collectionplanitemrepository Module]]
-- [[_COMMUNITY_Feegenerationbatchrepository Module|Feegenerationbatchrepository Module]]
-- [[_COMMUNITY_Configoverridedto Superadmin Module|Configoverridedto Superadmin Module]]
-- [[_COMMUNITY_Impersonationresponsedto Superadmin Module|Impersonationresponsedto Superadmin Module]]
-- [[_COMMUNITY_Moduleadoptiondto Superadmin Module|Moduleadoptiondto Superadmin Module]]
-- [[_COMMUNITY_School Onboarding & Setup|School Onboarding & Setup]]
-- [[_COMMUNITY_Operationalalertdto Superadmin Module|Operationalalertdto Superadmin Module]]
-- [[_COMMUNITY_Passwordresetdto Superadmin Module|Passwordresetdto Superadmin Module]]
-- [[_COMMUNITY_Pipelineschooldto Superadmin Module|Pipelineschooldto Superadmin Module]]
-- [[_COMMUNITY_Platformhealthdto Superadmin Module|Platformhealthdto Superadmin Module]]
-- [[_COMMUNITY_Retentionpointdto Superadmin Module|Retentionpointdto Superadmin Module]]
-- [[_COMMUNITY_Revenuegrowthpointdto Superadmin Module|Revenuegrowthpointdto Superadmin Module]]
-- [[_COMMUNITY_Salesfunnelstepdto Superadmin Module|Salesfunnelstepdto Superadmin Module]]
-- [[_COMMUNITY_Schoolsubscriptiondto Superadmin Module|Schoolsubscriptiondto Superadmin Module]]
-- [[_COMMUNITY_Schoolsubscriptioninstallmentdto Superadmin Module|Schoolsubscriptioninstallmentdto Superadmin Module]]
-- [[_COMMUNITY_SuperAdmin Analytics Dashboard|SuperAdmin Analytics Dashboard]]
-- [[_COMMUNITY_Superadminlogentrydto Superadmin Module|Superadminlogentrydto Superadmin Module]]
-- [[_COMMUNITY_Superadminlogstatsdto Superadmin Module|Superadminlogstatsdto Superadmin Module]]
-- [[_COMMUNITY_Supportmetricsdto Superadmin Module|Supportmetricsdto Superadmin Module]]
-- [[_COMMUNITY_Systemconfigdto Superadmin Module|Systemconfigdto Superadmin Module]]
-- [[_COMMUNITY_Upcomingrenewaldto Superadmin Module|Upcomingrenewaldto Superadmin Module]]
-- [[_COMMUNITY_Userdto Superadmin Module|Userdto Superadmin Module]]
-- [[_COMMUNITY_Userrequestdto Superadmin Module|Userrequestdto Superadmin Module]]
-- [[_COMMUNITY_Grantaccessdto User Module|Grantaccessdto User Module]]
-- [[_COMMUNITY_Grantaccessresponsedto User Module|Grantaccessresponsedto User Module]]
-- [[_COMMUNITY_User Management & Impersonation|User Management & Impersonation]]
-- [[_COMMUNITY_User Management & Impersonation|User Management & Impersonation]]
-- [[_COMMUNITY_User Management & Impersonation|User Management & Impersonation]]
-- [[_COMMUNITY_User Management & Impersonation|User Management & Impersonation]]
-- [[_COMMUNITY_User Management & Impersonation|User Management & Impersonation]]
-- [[_COMMUNITY_User Management & Impersonation|User Management & Impersonation]]
-- [[_COMMUNITY_Community 504|Community 504]]
-- [[_COMMUNITY_Community 505|Community 505]]
-- [[_COMMUNITY_Community 506|Community 506]]
-- [[_COMMUNITY_Community 507|Community 507]]
-- [[_COMMUNITY_Community 508|Community 508]]
-- [[_COMMUNITY_Community 509|Community 509]]
-- [[_COMMUNITY_Community 510|Community 510]]
-- [[_COMMUNITY_Community 511|Community 511]]
-- [[_COMMUNITY_Community 512|Community 512]]
-- [[_COMMUNITY_Community 513|Community 513]]
-- [[_COMMUNITY_Community 514|Community 514]]
-- [[_COMMUNITY_Community 515|Community 515]]
-- [[_COMMUNITY_Community 516|Community 516]]
-- [[_COMMUNITY_Community 517|Community 517]]
-- [[_COMMUNITY_Community 518|Community 518]]
-- [[_COMMUNITY_Community 519|Community 519]]
-- [[_COMMUNITY_Community 520|Community 520]]
-- [[_COMMUNITY_Community 521|Community 521]]
-- [[_COMMUNITY_Community 522|Community 522]]
-- [[_COMMUNITY_Community 523|Community 523]]
-- [[_COMMUNITY_Community 524|Community 524]]
-- [[_COMMUNITY_Community 525|Community 525]]
-- [[_COMMUNITY_Community 526|Community 526]]
-- [[_COMMUNITY_Community 527|Community 527]]
-- [[_COMMUNITY_Community 528|Community 528]]
-- [[_COMMUNITY_Community 529|Community 529]]
-- [[_COMMUNITY_Community 530|Community 530]]
-- [[_COMMUNITY_Community 531|Community 531]]
-- [[_COMMUNITY_Community 532|Community 532]]
-- [[_COMMUNITY_Community 533|Community 533]]
-- [[_COMMUNITY_Community 534|Community 534]]
-- [[_COMMUNITY_Community 535|Community 535]]
-- [[_COMMUNITY_Community 536|Community 536]]
-- [[_COMMUNITY_Community 537|Community 537]]
-- [[_COMMUNITY_Community 538|Community 538]]
-- [[_COMMUNITY_Community 539|Community 539]]
-- [[_COMMUNITY_Community 540|Community 540]]
-- [[_COMMUNITY_Community 541|Community 541]]
-- [[_COMMUNITY_Community 542|Community 542]]
-- [[_COMMUNITY_Community 543|Community 543]]
-- [[_COMMUNITY_Community 544|Community 544]]
-- [[_COMMUNITY_Community 545|Community 545]]
-- [[_COMMUNITY_Community 546|Community 546]]
-- [[_COMMUNITY_Community 547|Community 547]]
-- [[_COMMUNITY_Community 548|Community 548]]
-- [[_COMMUNITY_Community 549|Community 549]]
-- [[_COMMUNITY_Community 550|Community 550]]
-- [[_COMMUNITY_Community 551|Community 551]]
-- [[_COMMUNITY_Community 552|Community 552]]
-- [[_COMMUNITY_Community 553|Community 553]]
-- [[_COMMUNITY_Community 554|Community 554]]
-- [[_COMMUNITY_Community 555|Community 555]]
-- [[_COMMUNITY_Community 556|Community 556]]
-- [[_COMMUNITY_Community 557|Community 557]]
-- [[_COMMUNITY_Community 558|Community 558]]
-- [[_COMMUNITY_Community 559|Community 559]]
-- [[_COMMUNITY_Community 560|Community 560]]
-- [[_COMMUNITY_Community 561|Community 561]]
-- [[_COMMUNITY_Community 562|Community 562]]
-- [[_COMMUNITY_Community 563|Community 563]]
-- [[_COMMUNITY_Community 564|Community 564]]
-- [[_COMMUNITY_Community 565|Community 565]]
-- [[_COMMUNITY_Community 566|Community 566]]
-- [[_COMMUNITY_Community 567|Community 567]]
-- [[_COMMUNITY_Community 568|Community 568]]
-- [[_COMMUNITY_Community 569|Community 569]]
-- [[_COMMUNITY_Community 570|Community 570]]
-- [[_COMMUNITY_Community 571|Community 571]]
-- [[_COMMUNITY_Community 572|Community 572]]
-- [[_COMMUNITY_Community 573|Community 573]]
-- [[_COMMUNITY_Community 574|Community 574]]
-- [[_COMMUNITY_Community 575|Community 575]]
-- [[_COMMUNITY_Community 576|Community 576]]
-- [[_COMMUNITY_Community 577|Community 577]]
-- [[_COMMUNITY_Community 578|Community 578]]
-- [[_COMMUNITY_Community 579|Community 579]]
-- [[_COMMUNITY_Community 580|Community 580]]
-- [[_COMMUNITY_Community 581|Community 581]]
-- [[_COMMUNITY_Community 582|Community 582]]
-- [[_COMMUNITY_Community 583|Community 583]]
-- [[_COMMUNITY_Community 584|Community 584]]
-- [[_COMMUNITY_Community 585|Community 585]]
-- [[_COMMUNITY_Community 586|Community 586]]
-- [[_COMMUNITY_Community 587|Community 587]]
-- [[_COMMUNITY_Community 588|Community 588]]
-- [[_COMMUNITY_Community 589|Community 589]]
-- [[_COMMUNITY_Community 590|Community 590]]
-- [[_COMMUNITY_Community 591|Community 591]]
-- [[_COMMUNITY_Community 592|Community 592]]
-- [[_COMMUNITY_Community 593|Community 593]]
-- [[_COMMUNITY_Community 594|Community 594]]
-- [[_COMMUNITY_Community 595|Community 595]]
-- [[_COMMUNITY_Community 596|Community 596]]
-- [[_COMMUNITY_Community 597|Community 597]]
-- [[_COMMUNITY_Community 598|Community 598]]
-- [[_COMMUNITY_Community 599|Community 599]]
-- [[_COMMUNITY_Community 600|Community 600]]
-- [[_COMMUNITY_Community 601|Community 601]]
-- [[_COMMUNITY_Community 602|Community 602]]
-- [[_COMMUNITY_Community 603|Community 603]]
-- [[_COMMUNITY_Community 604|Community 604]]
-- [[_COMMUNITY_Community 605|Community 605]]
-- [[_COMMUNITY_Community 606|Community 606]]
-- [[_COMMUNITY_Community 607|Community 607]]
-- [[_COMMUNITY_Community 608|Community 608]]
-- [[_COMMUNITY_Community 609|Community 609]]
-- [[_COMMUNITY_Community 610|Community 610]]
-- [[_COMMUNITY_Community 611|Community 611]]
-- [[_COMMUNITY_Community 612|Community 612]]
-- [[_COMMUNITY_Community 613|Community 613]]
-- [[_COMMUNITY_Community 614|Community 614]]
-- [[_COMMUNITY_Community 615|Community 615]]
-- [[_COMMUNITY_Community 616|Community 616]]
-- [[_COMMUNITY_Community 617|Community 617]]
-- [[_COMMUNITY_Community 618|Community 618]]
-- [[_COMMUNITY_Community 619|Community 619]]
-- [[_COMMUNITY_Community 620|Community 620]]
-- [[_COMMUNITY_Community 621|Community 621]]
-- [[_COMMUNITY_Community 622|Community 622]]
-- [[_COMMUNITY_Community 623|Community 623]]
-- [[_COMMUNITY_Community 624|Community 624]]
-- [[_COMMUNITY_Community 625|Community 625]]
-- [[_COMMUNITY_Community 626|Community 626]]
-- [[_COMMUNITY_Community 627|Community 627]]
-- [[_COMMUNITY_Community 628|Community 628]]
-- [[_COMMUNITY_Community 629|Community 629]]
-- [[_COMMUNITY_Community 630|Community 630]]
-- [[_COMMUNITY_Community 631|Community 631]]
-- [[_COMMUNITY_Community 632|Community 632]]
-- [[_COMMUNITY_Community 633|Community 633]]
-- [[_COMMUNITY_Community 634|Community 634]]
-- [[_COMMUNITY_Community 635|Community 635]]
-- [[_COMMUNITY_Community 636|Community 636]]
-- [[_COMMUNITY_Community 637|Community 637]]
-- [[_COMMUNITY_Community 638|Community 638]]
-- [[_COMMUNITY_Community 639|Community 639]]
-- [[_COMMUNITY_Community 640|Community 640]]
-- [[_COMMUNITY_Community 641|Community 641]]
-- [[_COMMUNITY_Community 642|Community 642]]
-- [[_COMMUNITY_Community 643|Community 643]]
-- [[_COMMUNITY_Community 644|Community 644]]
-- [[_COMMUNITY_Community 645|Community 645]]
-- [[_COMMUNITY_Community 646|Community 646]]
-- [[_COMMUNITY_Community 647|Community 647]]
-- [[_COMMUNITY_Community 648|Community 648]]
-- [[_COMMUNITY_Community 649|Community 649]]
-- [[_COMMUNITY_Community 650|Community 650]]
-- [[_COMMUNITY_Community 651|Community 651]]
-- [[_COMMUNITY_Community 652|Community 652]]
-- [[_COMMUNITY_Community 653|Community 653]]
-- [[_COMMUNITY_Community 654|Community 654]]
-- [[_COMMUNITY_Community 655|Community 655]]
-- [[_COMMUNITY_Community 656|Community 656]]
-- [[_COMMUNITY_Community 657|Community 657]]
-- [[_COMMUNITY_Community 658|Community 658]]
-- [[_COMMUNITY_Community 659|Community 659]]
-- [[_COMMUNITY_Community 660|Community 660]]
-- [[_COMMUNITY_Community 661|Community 661]]
-- [[_COMMUNITY_Community 662|Community 662]]
-- [[_COMMUNITY_Community 663|Community 663]]
-- [[_COMMUNITY_Community 664|Community 664]]
-- [[_COMMUNITY_Community 665|Community 665]]
-- [[_COMMUNITY_Community 666|Community 666]]
-- [[_COMMUNITY_Community 667|Community 667]]
-- [[_COMMUNITY_Community 668|Community 668]]
-- [[_COMMUNITY_Community 669|Community 669]]
-- [[_COMMUNITY_Community 670|Community 670]]
-- [[_COMMUNITY_Community 671|Community 671]]
-- [[_COMMUNITY_Community 672|Community 672]]
-- [[_COMMUNITY_Community 673|Community 673]]
-- [[_COMMUNITY_Community 674|Community 674]]
-- [[_COMMUNITY_Community 675|Community 675]]
-- [[_COMMUNITY_Community 676|Community 676]]
-- [[_COMMUNITY_Community 677|Community 677]]
-- [[_COMMUNITY_Community 678|Community 678]]
-- [[_COMMUNITY_Community 679|Community 679]]
-- [[_COMMUNITY_Community 680|Community 680]]
-- [[_COMMUNITY_Community 681|Community 681]]
-- [[_COMMUNITY_Community 682|Community 682]]
-- [[_COMMUNITY_Community 683|Community 683]]
-- [[_COMMUNITY_Community 684|Community 684]]
-- [[_COMMUNITY_Community 685|Community 685]]
-- [[_COMMUNITY_Community 686|Community 686]]
-- [[_COMMUNITY_Community 687|Community 687]]
-- [[_COMMUNITY_Community 688|Community 688]]
-- [[_COMMUNITY_Community 689|Community 689]]
-- [[_COMMUNITY_Community 690|Community 690]]
-- [[_COMMUNITY_Community 691|Community 691]]
-- [[_COMMUNITY_Community 692|Community 692]]
-- [[_COMMUNITY_Community 693|Community 693]]
-- [[_COMMUNITY_Community 694|Community 694]]
-- [[_COMMUNITY_Community 695|Community 695]]
-- [[_COMMUNITY_Community 696|Community 696]]
-- [[_COMMUNITY_Community 697|Community 697]]
-- [[_COMMUNITY_Community 698|Community 698]]
-- [[_COMMUNITY_Community 699|Community 699]]
-- [[_COMMUNITY_Community 700|Community 700]]
-- [[_COMMUNITY_Community 701|Community 701]]
+- [[_COMMUNITY_Exam Exammarkrepository Adminexammarkscontroller|Exam Exammarkrepository Adminexammarkscontroller]]
+- [[_COMMUNITY_Academicservice Academic Activateacademicyear|Academicservice Academic Activateacademicyear]]
+- [[_COMMUNITY_Exam Examadmitcardrepository Examadmitcardservice|Exam Examadmitcardrepository Examadmitcardservice]]
+- [[_COMMUNITY_Authservice Auth Attendancecontrollertest|Authservice Auth Attendancecontrollertest]]
+- [[_COMMUNITY_Finance Parentfeecontroller Studentfeecontroller|Finance Parentfeecontroller Studentfeecontroller]]
+- [[_COMMUNITY_Academiccontroller Academic Activateacademicyear|Academiccontroller Academic Activateacademicyear]]
+- [[_COMMUNITY_Feemasterserviceimpl Collectionplanservice Finance|Feemasterserviceimpl Collectionplanservice Finance]]
+- [[_COMMUNITY_Frontoffice Visitorlogservice Adminvisitorbookcontroller|Frontoffice Visitorlogservice Adminvisitorbookcontroller]]
+- [[_COMMUNITY_Onboardingcontroller Onboarding Onboardingcontrollertest|Onboardingcontroller Onboarding Onboardingcontrollertest]]
+- [[_COMMUNITY_Frontoffice Parcelreceiveservice Adminparcelreceivecontroller|Frontoffice Parcelreceiveservice Adminparcelreceivecontroller]]
+- [[_COMMUNITY_Frontoffice Parceldispatchservice Adminparceldispatchcontroller|Frontoffice Parceldispatchservice Adminparceldispatchcontroller]]
+- [[_COMMUNITY_Frontoffice Admingatepasscontroller Gatepassservice|Frontoffice Admingatepasscontroller Gatepassservice]]
+- [[_COMMUNITY_Student Src Main|Student Src Main]]
+- [[_COMMUNITY_Common Dashboardcontroller Dashboardservice|Common Dashboardcontroller Dashboardservice]]
+- [[_COMMUNITY_Frontoffice Admissionenquiryservice Admissionenquiryrepository|Frontoffice Admissionenquiryservice Admissionenquiryrepository]]
+- [[_COMMUNITY_Authcontroller Auth Getcurrentuser|Authcontroller Auth Getcurrentuser]]
+- [[_COMMUNITY_Src Main Superadmin|Src Main Superadmin]]
+- [[_COMMUNITY_Exam Examattendancerepository Examattendanceservice|Exam Examattendancerepository Examattendanceservice]]
+- [[_COMMUNITY_Onlineadmission Student Src|Onlineadmission Student Src]]
+- [[_COMMUNITY_Auth Rolemanagementservice Rolerepository|Auth Rolemanagementservice Rolerepository]]
+- [[_COMMUNITY_Src Main Rolesyncservice|Src Main Rolesyncservice]]
+- [[_COMMUNITY_Usermanagementcontroller Superadmin Src|Usermanagementcontroller Superadmin Src]]
+- [[_COMMUNITY_Superadmin Usersupportcontroller Src|Superadmin Usersupportcontroller Src]]
+- [[_COMMUNITY_Studentcontroller Student Src|Studentcontroller Student Src]]
+- [[_COMMUNITY_Exam Examsetuprepository Examsetupservice|Exam Examsetuprepository Examsetupservice]]
+- [[_COMMUNITY_Studentservice Student Src|Studentservice Student Src]]
+- [[_COMMUNITY_Usermanagementservice Superadmin Src|Usermanagementservice Superadmin Src]]
+- [[_COMMUNITY_Exam Examtermrepository Examtermservice|Exam Examtermrepository Examtermservice]]
+- [[_COMMUNITY_Schoolclassservice Academic Src|Schoolclassservice Academic Src]]
+- [[_COMMUNITY_Superadmindashboardcontroller Superadmin Src|Superadmindashboardcontroller Superadmin Src]]
+- [[_COMMUNITY_Supportticketcontroller Common Src|Supportticketcontroller Common Src]]
+- [[_COMMUNITY_Familyservice Student Src|Familyservice Student Src]]
+- [[_COMMUNITY_Auth Authorizationservicetest Authorizationservice|Auth Authorizationservicetest Authorizationservice]]
+- [[_COMMUNITY_Exam Examgradescaleservice Examgradescalerepository|Exam Examgradescaleservice Examgradescalerepository]]
+- [[_COMMUNITY_Finance Teacherfeecontroller Src|Finance Teacherfeecontroller Src]]
+- [[_COMMUNITY_Auth Authservicetest Userrolemappingrepository|Auth Authservicetest Userrolemappingrepository]]
+- [[_COMMUNITY_Staffleaveservice Src Main|Staffleaveservice Src Main]]
+- [[_COMMUNITY_Salescrmcontroller Superadmin Src|Salescrmcontroller Superadmin Src]]
+- [[_COMMUNITY_Superadmin Preupdate Department|Superadmin Preupdate Department]]
+- [[_COMMUNITY_Academicservice Academic Src|Academicservice Academic Src]]
+- [[_COMMUNITY_Schooldepartmentcontroller Admin Src|Schooldepartmentcontroller Admin Src]]
+- [[_COMMUNITY_Schooldesignationcontroller Admin Src|Schooldesignationcontroller Admin Src]]
+- [[_COMMUNITY_Attendanceservice Attendance Src|Attendanceservice Attendance Src]]
+- [[_COMMUNITY_Globalexceptionhandler Exception Src|Globalexceptionhandler Exception Src]]
+- [[_COMMUNITY_Common Auditlogservice Auditlogrepository|Common Auditlogservice Auditlogrepository]]
+- [[_COMMUNITY_Dataimportcontroller Onboarding Src|Dataimportcontroller Onboarding Src]]
+- [[_COMMUNITY_Feemastercontroller Finance Src|Feemastercontroller Finance Src]]
+- [[_COMMUNITY_Finance Schoolaccountcontroller Schoolaccountservice|Finance Schoolaccountcontroller Schoolaccountservice]]
+- [[_COMMUNITY_Adminadmissionenquirycontroller Frontoffice Src|Adminadmissionenquirycontroller Frontoffice Src]]
+- [[_COMMUNITY_Superadminmodulecontroller Superadmin Src|Superadminmodulecontroller Superadmin Src]]
+- [[_COMMUNITY_Superadminschoolcontroller Superadmin Src|Superadminschoolcontroller Superadmin Src]]
+- [[_COMMUNITY_Supportticketservice Common Src|Supportticketservice Common Src]]
+- [[_COMMUNITY_Dataimportservice Onboarding Src|Dataimportservice Onboarding Src]]
+- [[_COMMUNITY_Familycontroller Student Src|Familycontroller Student Src]]
+- [[_COMMUNITY_Student Studentsiblingservice Src|Student Studentsiblingservice Src]]
+- [[_COMMUNITY_Salescrmservice Superadmin Src|Salescrmservice Superadmin Src]]
+- [[_COMMUNITY_Examteacherremarkservice Exam Src|Examteacherremarkservice Exam Src]]
+- [[_COMMUNITY_Rolecontroller Auth Src|Rolecontroller Auth Src]]
+- [[_COMMUNITY_Attendancecontroller Attendance Src|Attendancecontroller Attendance Src]]
+- [[_COMMUNITY_Adminexamschedulecontroller Exam Src|Adminexamschedulecontroller Exam Src]]
+- [[_COMMUNITY_Staffattendancerepository Staffattendanceservice Src|Staffattendancerepository Staffattendanceservice Src]]
+- [[_COMMUNITY_Superadminschoolservice Superadmin Src|Superadminschoolservice Superadmin Src]]
+- [[_COMMUNITY_Adminhrstaffcontroller Admin Src|Adminhrstaffcontroller Admin Src]]
+- [[_COMMUNITY_Staffpayrollrepository Staffpayrollservice Src|Staffpayrollrepository Staffpayrollservice Src]]
+- [[_COMMUNITY_Adminexamgradescalecontroller Exam Src|Adminexamgradescalecontroller Exam Src]]
+- [[_COMMUNITY_Feerecordserviceimpl Finance Studentfeeaggregation|Feerecordserviceimpl Finance Studentfeeaggregation]]
+- [[_COMMUNITY_Staffcontroller Src Main|Staffcontroller Src Main]]
+- [[_COMMUNITY_Authmanagementservice Auth Src|Authmanagementservice Auth Src]]
+- [[_COMMUNITY_Superadminplancontroller Superadmin Src|Superadminplancontroller Superadmin Src]]
+- [[_COMMUNITY_Adminexamreportcardcontroller Exam Src|Adminexamreportcardcontroller Exam Src]]
+- [[_COMMUNITY_Adminexamsetupcontroller Exam Src|Adminexamsetupcontroller Exam Src]]
+- [[_COMMUNITY_Adminexamtermcontroller Exam Src|Adminexamtermcontroller Exam Src]]
+- [[_COMMUNITY_Examscheduleservice Exam Src|Examscheduleservice Exam Src]]
+- [[_COMMUNITY_Studenthousecontroller Student Src|Studenthousecontroller Student Src]]
+- [[_COMMUNITY_Schoolservice Superadmin Src|Schoolservice Superadmin Src]]
+- [[_COMMUNITY_Schoolclasscontroller Academic Src|Schoolclasscontroller Academic Src]]
+- [[_COMMUNITY_Superadminmoduleservice Superadmin Src|Superadminmoduleservice Superadmin Src]]
+- [[_COMMUNITY_Communicationcenterservice Superadmin Src|Communicationcenterservice Superadmin Src]]
+- [[_COMMUNITY_Staffservice Src Main|Staffservice Src Main]]
+- [[_COMMUNITY_Schoolcontroller Superadmin Src|Schoolcontroller Superadmin Src]]
+- [[_COMMUNITY_Family Student Src|Family Student Src]]
+- [[_COMMUNITY_Catalogservice Superadmin Src|Catalogservice Superadmin Src]]
+- [[_COMMUNITY_Feeduecontroller Finance Src|Feeduecontroller Finance Src]]
+- [[_COMMUNITY_Subjectattendancecontroller Attendance Src|Subjectattendancecontroller Attendance Src]]
+- [[_COMMUNITY_Subjectattendanceservice Attendance Src|Subjectattendanceservice Attendance Src]]
+- [[_COMMUNITY_Communicationcentercontroller Superadmin Src|Communicationcentercontroller Superadmin Src]]
+- [[_COMMUNITY_Collectionplancontroller Finance Src|Collectionplancontroller Finance Src]]
+- [[_COMMUNITY_Adminexamdivisioncontroller Exam Src|Adminexamdivisioncontroller Exam Src]]
+- [[_COMMUNITY_Adminexamreportcontroller Exam Src|Adminexamreportcontroller Exam Src]]
+- [[_COMMUNITY_Feedueservice Finance Src|Feedueservice Finance Src]]
+- [[_COMMUNITY_Hrstaffservice Src Main|Hrstaffservice Src Main]]
+- [[_COMMUNITY_Studentcategorycontroller Student Src|Studentcategorycontroller Student Src]]
+- [[_COMMUNITY_Studentcertificatecontroller Student Src|Studentcertificatecontroller Student Src]]
+- [[_COMMUNITY_Studentleavecontroller Student Src|Studentleavecontroller Student Src]]
+- [[_COMMUNITY_Studentreferralcontroller Student Src|Studentreferralcontroller Student Src]]
+- [[_COMMUNITY_Superadminplanservice Superadmin Src|Superadminplanservice Superadmin Src]]
+- [[_COMMUNITY_Superadminrolecontroller Superadmin Src|Superadminrolecontroller Superadmin Src]]
+- [[_COMMUNITY_Adminexamattendancecontroller Exam Src|Adminexamattendancecontroller Exam Src]]
+- [[_COMMUNITY_Adminexamcocurricularcontroller Exam Src|Adminexamcocurricularcontroller Exam Src]]
+- [[_COMMUNITY_Feedueserviceimpl Src Main|Feedueserviceimpl Src Main]]
+- [[_COMMUNITY_Security Permissionauthorizationinterceptor Roleauthorizationinterceptor|Security Permissionauthorizationinterceptor Roleauthorizationinterceptor]]
+- [[_COMMUNITY_Teacherfeeserviceimpl Src Main|Teacherfeeserviceimpl Src Main]]
+- [[_COMMUNITY_Onlineadmissioncontroller Student Src|Onlineadmissioncontroller Student Src]]
+- [[_COMMUNITY_Studentleaveservice Student Src|Studentleaveservice Student Src]]
+- [[_COMMUNITY_Timetableentryrepository Academic Src|Timetableentryrepository Academic Src]]
+- [[_COMMUNITY_Attendancerepository Attendance Src|Attendancerepository Attendance Src]]
+- [[_COMMUNITY_Exception Src Main|Exception Src Main]]
+- [[_COMMUNITY_Catalogcontroller Superadmin Src|Catalogcontroller Superadmin Src]]
+- [[_COMMUNITY_Examcocurricularservice Exam Src|Examcocurricularservice Exam Src]]
+- [[_COMMUNITY_Examreportcardservice Exam Src|Examreportcardservice Exam Src]]
+- [[_COMMUNITY_Examreportservice Exam Src|Examreportservice Exam Src]]
+- [[_COMMUNITY_Feemasterservice Finance Src|Feemasterservice Finance Src]]
+- [[_COMMUNITY_Feepaymentcontroller Finance Src|Feepaymentcontroller Finance Src]]
+- [[_COMMUNITY_Onboardingdraftservice Onboarding Src|Onboardingdraftservice Onboarding Src]]
+- [[_COMMUNITY_Onlineadmissionservice Student Src|Onlineadmissionservice Student Src]]
+- [[_COMMUNITY_Studentsiblingcontroller Student Src|Studentsiblingcontroller Student Src]]
+- [[_COMMUNITY_Studentcategoryservice Student Src|Studentcategoryservice Student Src]]
+- [[_COMMUNITY_Studentreferralservice Student Src|Studentreferralservice Student Src]]
+- [[_COMMUNITY_Classteacherassignmentrepository Academic Src|Classteacherassignmentrepository Academic Src]]
+- [[_COMMUNITY_Superadminsampledatainitializer Config Src|Superadminsampledatainitializer Config Src]]
+- [[_COMMUNITY_Salescrmdatainitializer Config Src|Salescrmdatainitializer Config Src]]
+- [[_COMMUNITY_Examcocurriculargraderepository Exam Src|Examcocurriculargraderepository Exam Src]]
+- [[_COMMUNITY_Examteacherremarkrepository Exam Src|Examteacherremarkrepository Exam Src]]
+- [[_COMMUNITY_Idcardgenerationservice Student Src|Idcardgenerationservice Student Src]]
+- [[_COMMUNITY_Feedueserviceimpl Src Main|Feedueserviceimpl Src Main]]
+- [[_COMMUNITY_Onboardingdraftservice Onboarding Src|Onboardingdraftservice Onboarding Src]]
+- [[_COMMUNITY_Studentservice Student Src|Studentservice Student Src]]
+- [[_COMMUNITY_Subjectattendancerepository Attendance Src|Subjectattendancerepository Attendance Src]]
+- [[_COMMUNITY_Userschoolrolerepository Auth Src|Userschoolrolerepository Auth Src]]
+- [[_COMMUNITY_Superadmin Employeetimelineservice Src|Superadmin Employeetimelineservice Src]]
+- [[_COMMUNITY_Parentcontroller Student Src|Parentcontroller Student Src]]
+- [[_COMMUNITY_Examreportcardrepository Exam Src|Examreportcardrepository Exam Src]]
+- [[_COMMUNITY_Entitlementservicetest Entitlementservice Src|Entitlementservicetest Entitlementservice Src]]
+- [[_COMMUNITY_Employeeleavecontroller Superadmin Src|Employeeleavecontroller Superadmin Src]]
+- [[_COMMUNITY_Entitlementcontroller Superadmin Src|Entitlementcontroller Superadmin Src]]
+- [[_COMMUNITY_Superadminemployeecontroller Superadmin Src|Superadminemployeecontroller Superadmin Src]]
+- [[_COMMUNITY_Communicationcenterservice Superadmin Src|Communicationcenterservice Superadmin Src]]
+- [[_COMMUNITY_Adminhrleavecontroller Admin Src|Adminhrleavecontroller Admin Src]]
+- [[_COMMUNITY_Userassignmentrepository Auth Src|Userassignmentrepository Auth Src]]
+- [[_COMMUNITY_Communicationdeliveryrepository Communication Src|Communicationdeliveryrepository Communication Src]]
+- [[_COMMUNITY_Examdivisionservice Exam Src|Examdivisionservice Exam Src]]
+- [[_COMMUNITY_Feepaymentserviceimpl Src Main|Feepaymentserviceimpl Src Main]]
+- [[_COMMUNITY_Jwtauthenticationfilter Security Src|Jwtauthenticationfilter Security Src]]
+- [[_COMMUNITY_Feegenerationcontroller Finance Src|Feegenerationcontroller Finance Src]]
+- [[_COMMUNITY_Feerecordcontroller Finance Src|Feerecordcontroller Finance Src]]
+- [[_COMMUNITY_Idcardgenerationcontroller Student Src|Idcardgenerationcontroller Student Src]]
+- [[_COMMUNITY_Employeepayrollcontroller Superadmin Src|Employeepayrollcontroller Superadmin Src]]
+- [[_COMMUNITY_Studentsubjectenrollmentrepository Student Src|Studentsubjectenrollmentrepository Student Src]]
+- [[_COMMUNITY_Employeeleaveservice Superadmin Src|Employeeleaveservice Superadmin Src]]
+- [[_COMMUNITY_Superadminlogservice Superadmin Src|Superadminlogservice Superadmin Src]]
+- [[_COMMUNITY_Superadminlogcontroller Superadmin Src|Superadminlogcontroller Superadmin Src]]
+- [[_COMMUNITY_Salescrmservice Superadmin Src|Salescrmservice Superadmin Src]]
+- [[_COMMUNITY_Examreportcardbatchrepository Exam Src|Examreportcardbatchrepository Exam Src]]
+- [[_COMMUNITY_Feeduerepository Finance Src|Feeduerepository Finance Src]]
+- [[_COMMUNITY_Employeeattendancecontroller Superadmin Src|Employeeattendancecontroller Superadmin Src]]
+- [[_COMMUNITY_Employeeattendanceservice Superadmin Src|Employeeattendanceservice Superadmin Src]]
+- [[_COMMUNITY_Employeepayrollservice Superadmin Src|Employeepayrollservice Superadmin Src]]
+- [[_COMMUNITY_Adminhrattendancecontroller Admin Src|Adminhrattendancecontroller Admin Src]]
+- [[_COMMUNITY_Adminhrpayrollcontroller Admin Src|Adminhrpayrollcontroller Admin Src]]
+- [[_COMMUNITY_Authservice Auth Src|Authservice Auth Src]]
+- [[_COMMUNITY_Departmentservice Superadmin Src|Departmentservice Superadmin Src]]
+- [[_COMMUNITY_Common Passwordreset Passwordresetrepository|Common Passwordreset Passwordresetrepository]]
+- [[_COMMUNITY_Supportticketrepository Common Src|Supportticketrepository Common Src]]
+- [[_COMMUNITY_Schoolmoduleaccessrepository Superadmin Src|Schoolmoduleaccessrepository Superadmin Src]]
+- [[_COMMUNITY_Classsubjectassignmentrepository Academic Src|Classsubjectassignmentrepository Academic Src]]
+- [[_COMMUNITY_Subjectrepository Academic Src|Subjectrepository Academic Src]]
+- [[_COMMUNITY_Subjectattendanceservice Attendance Src|Subjectattendanceservice Attendance Src]]
+- [[_COMMUNITY_Superadminconfigcontroller Superadmin Src|Superadminconfigcontroller Superadmin Src]]
+- [[_COMMUNITY_Communicationannouncementrepository Communication Src|Communicationannouncementrepository Communication Src]]
+- [[_COMMUNITY_Salescrmservicetest Superadmin Src|Salescrmservicetest Superadmin Src]]
+- [[_COMMUNITY_Feepaymentservice Finance Src|Feepaymentservice Finance Src]]
+- [[_COMMUNITY_Staffservice Src Main|Staffservice Src Main]]
+- [[_COMMUNITY_Schoolsubscriptionservice Superadmin Src|Schoolsubscriptionservice Superadmin Src]]
+- [[_COMMUNITY_Superadminmoduleservicetest Superadmin Onlineadmission|Superadminmoduleservicetest Superadmin Onlineadmission]]
+- [[_COMMUNITY_Securityconfig Config Src|Securityconfig Config Src]]
+- [[_COMMUNITY_Familyrequest Student Src|Familyrequest Student Src]]
+- [[_COMMUNITY_Employeeattendancerepository Superadmin Src|Employeeattendancerepository Superadmin Src]]
+- [[_COMMUNITY_Feerecordservice Finance Src|Feerecordservice Finance Src]]
+- [[_COMMUNITY_Staffrepository Src Main|Staffrepository Src Main]]
+- [[_COMMUNITY_Onboardingdraftservicetest Onboardingdraftrepository Test|Onboardingdraftservicetest Onboardingdraftrepository Test]]
+- [[_COMMUNITY_Studenteligibilitycontroller Student Src|Studenteligibilitycontroller Student Src]]
+- [[_COMMUNITY_Departmentcontroller Superadmin Src|Departmentcontroller Superadmin Src]]
+- [[_COMMUNITY_Employeedocumentcontroller Superadmin Src|Employeedocumentcontroller Superadmin Src]]
+- [[_COMMUNITY_Employeeperformancecontroller Superadmin Src|Employeeperformancecontroller Superadmin Src]]
+- [[_COMMUNITY_Familyrepository Student Src|Familyrepository Student Src]]
+- [[_COMMUNITY_Studentleaverepository Student Src|Studentleaverepository Student Src]]
+- [[_COMMUNITY_Superadminemployeerepository Superadmin Src|Superadminemployeerepository Superadmin Src]]
+- [[_COMMUNITY_Employeedocumentservice Superadmin Src|Employeedocumentservice Superadmin Src]]
+- [[_COMMUNITY_Employeeperformanceservice Superadmin Src|Employeeperformanceservice Superadmin Src]]
+- [[_COMMUNITY_Sectionrepository Academic Src|Sectionrepository Academic Src]]
+- [[_COMMUNITY_Attendanceservice Attendance Src|Attendanceservice Attendance Src]]
+- [[_COMMUNITY_Aws Ecs Taskdef|Aws Ecs Taskdef]]
+- [[_COMMUNITY_Corsconfig Config Src|Corsconfig Config Src]]
+- [[_COMMUNITY_Webmvcconfig Config Src|Webmvcconfig Config Src]]
+- [[_COMMUNITY_Employeepayrollrepository Superadmin Src|Employeepayrollrepository Superadmin Src]]
+- [[_COMMUNITY_Examdivisionrepository Exam Src|Examdivisionrepository Exam Src]]
+- [[_COMMUNITY_Feeinvoicerepository Finance Src|Feeinvoicerepository Finance Src]]
+- [[_COMMUNITY_Dataimportservice Onboarding Src|Dataimportservice Onboarding Src]]
+- [[_COMMUNITY_Studentparentid Student Src|Studentparentid Student Src]]
+- [[_COMMUNITY_Platformmodule Superadmin Src|Platformmodule Superadmin Src]]
+- [[_COMMUNITY_Platformmodulerepository Superadmin Src|Platformmodulerepository Superadmin Src]]
+- [[_COMMUNITY_Schoolsubscriptionrepository Superadmin Src|Schoolsubscriptionrepository Superadmin Src]]
+- [[_COMMUNITY_Employeeassetservice Superadmin Src|Employeeassetservice Superadmin Src]]
+- [[_COMMUNITY_Employeelifecycleservice Superadmin Src|Employeelifecycleservice Superadmin Src]]
+- [[_COMMUNITY_Employeenoteservice Superadmin Src|Employeenoteservice Superadmin Src]]
+- [[_COMMUNITY_Academicyearrepository Academic Src|Academicyearrepository Academic Src]]
+- [[_COMMUNITY_Schoolclassrepository Academic Src|Schoolclassrepository Academic Src]]
+- [[_COMMUNITY_Timetableperiodrepository Academic Src|Timetableperiodrepository Academic Src]]
+- [[_COMMUNITY_Accountrequestrepository Common Src|Accountrequestrepository Common Src]]
+- [[_COMMUNITY_Authsessionrepository Auth Src|Authsessionrepository Auth Src]]
+- [[_COMMUNITY_Skills Lock Neon|Skills Lock Neon]]
+- [[_COMMUNITY_Useraccesscontroller Superadmin Src|Useraccesscontroller Superadmin Src]]
+- [[_COMMUNITY_Employeeleaverepository Superadmin Src|Employeeleaverepository Superadmin Src]]
+- [[_COMMUNITY_Useractivitylogrepository Common Src|Useractivitylogrepository Common Src]]
+- [[_COMMUNITY_Authcontrollertest Test Getuserschools|Authcontrollertest Test Getuserschools]]
+- [[_COMMUNITY_Feereminderrepository Finance Src|Feereminderrepository Finance Src]]
+- [[_COMMUNITY_Studentfeestructurerepository Finance Src|Studentfeestructurerepository Finance Src]]
+- [[_COMMUNITY_Dataimportjobrepository Onboarding Src|Dataimportjobrepository Onboarding Src]]
+- [[_COMMUNITY_Employeeassetcontroller Superadmin Src|Employeeassetcontroller Superadmin Src]]
+- [[_COMMUNITY_Employeelifecyclecontroller Superadmin Src|Employeelifecyclecontroller Superadmin Src]]
+- [[_COMMUNITY_Employeenotecontroller Superadmin Src|Employeenotecontroller Superadmin Src]]
+- [[_COMMUNITY_Employeetimelinecontroller Superadmin Src|Employeetimelinecontroller Superadmin Src]]
+- [[_COMMUNITY_Idcardgenerationrepository Student Src|Idcardgenerationrepository Student Src]]
+- [[_COMMUNITY_Onlineadmissionrepository Student Src|Onlineadmissionrepository Student Src]]
+- [[_COMMUNITY_Studentcategoryrepository Student Src|Studentcategoryrepository Student Src]]
+- [[_COMMUNITY_Studentcertificaterepository Student Src|Studentcertificaterepository Student Src]]
+- [[_COMMUNITY_Studentdocumentrepository Student Src|Studentdocumentrepository Student Src]]
+- [[_COMMUNITY_Studenthouserepository Student Src|Studenthouserepository Student Src]]
+- [[_COMMUNITY_Studentreferralrepository Student Src|Studentreferralrepository Student Src]]
+- [[_COMMUNITY_Subscriptionplanrepository Superadmin Src|Subscriptionplanrepository Superadmin Src]]
+- [[_COMMUNITY_Tenantentitlementoverriderepository Superadmin Src|Tenantentitlementoverriderepository Superadmin Src]]
+- [[_COMMUNITY_Employeeauditlogservice Superadmin Src|Employeeauditlogservice Superadmin Src]]
+- [[_COMMUNITY_Staffadvancerepository Src Main|Staffadvancerepository Src Main]]
+- [[_COMMUNITY_Staffleaverepository Src Main|Staffleaverepository Src Main]]
+- [[_COMMUNITY_Stafftaskrepository Src Main|Stafftaskrepository Src Main]]
+- [[_COMMUNITY_Subjectattendancecontrollertest Getsubjectattendance Shouldreturnlist|Subjectattendancecontrollertest Getsubjectattendance Shouldreturnlist]]
+- [[_COMMUNITY_Feepaymentallocationrepository Finance Src|Feepaymentallocationrepository Finance Src]]
+- [[_COMMUNITY_Feestructurerepository Finance Src|Feestructurerepository Finance Src]]
+- [[_COMMUNITY_Studenteligibilityservice Finance Src|Studenteligibilityservice Finance Src]]
+- [[_COMMUNITY_Dataimporterrorrepository Onboarding Src|Dataimporterrorrepository Onboarding Src]]
+- [[_COMMUNITY_Employeeauditlogcontroller Superadmin Src|Employeeauditlogcontroller Superadmin Src]]
+- [[_COMMUNITY_Departmentcontrollertest Superadmin Test|Departmentcontrollertest Superadmin Test]]
+- [[_COMMUNITY_Employeeattendancecontrollertest Superadmin Test|Employeeattendancecontrollertest Superadmin Test]]
+- [[_COMMUNITY_Employeedocumentcontrollertest Superadmin Test|Employeedocumentcontrollertest Superadmin Test]]
+- [[_COMMUNITY_Employeeleavecontrollertest Superadmin Test|Employeeleavecontrollertest Superadmin Test]]
+- [[_COMMUNITY_Employeepayrollcontrollertest Superadmin Test|Employeepayrollcontrollertest Superadmin Test]]
+- [[_COMMUNITY_Employeeperformancecontrollertest Superadmin Test|Employeeperformancecontrollertest Superadmin Test]]
+- [[_COMMUNITY_Superadminplanservicetest Superadmin Test|Superadminplanservicetest Superadmin Test]]
+- [[_COMMUNITY_Crm Crmdemodto Scheduledemorequest|Crm Crmdemodto Scheduledemorequest]]
+- [[_COMMUNITY_Crm Crmfollowupdto Logfollowuprequest|Crm Crmfollowupdto Logfollowuprequest]]
+- [[_COMMUNITY_Communicationtemplaterepository Communication Src|Communicationtemplaterepository Communication Src]]
+- [[_COMMUNITY_Crmactivitylogrepository Crm Src|Crmactivitylogrepository Crm Src]]
+- [[_COMMUNITY_Crmdemorepository Crm Src|Crmdemorepository Crm Src]]
+- [[_COMMUNITY_Crmfollowuprepository Crm Src|Crmfollowuprepository Crm Src]]
+- [[_COMMUNITY_Crmquotationrepository Crm Src|Crmquotationrepository Crm Src]]
+- [[_COMMUNITY_Recruitmentcandidaterepository Src Main|Recruitmentcandidaterepository Src Main]]
+- [[_COMMUNITY_Schooldepartmentrepository Src Main|Schooldepartmentrepository Src Main]]
+- [[_COMMUNITY_Schooldesignationrepository Src Main|Schooldesignationrepository Src Main]]
+- [[_COMMUNITY_Staffdocumentrepository Src Main|Staffdocumentrepository Src Main]]
+- [[_COMMUNITY_Employeeassetrepository Superadmin Src|Employeeassetrepository Superadmin Src]]
+- [[_COMMUNITY_Employeeauditlogrepository Superadmin Src|Employeeauditlogrepository Superadmin Src]]
+- [[_COMMUNITY_Employeedocumentrepository Superadmin Src|Employeedocumentrepository Superadmin Src]]
+- [[_COMMUNITY_Employeelifecyclerepository Superadmin Src|Employeelifecyclerepository Superadmin Src]]
+- [[_COMMUNITY_Employeenoterepository Superadmin Src|Employeenoterepository Superadmin Src]]
+- [[_COMMUNITY_Employeeperformancerepository Superadmin Src|Employeeperformancerepository Superadmin Src]]
+- [[_COMMUNITY_Authfilterconfig Security Src|Authfilterconfig Security Src]]
+- [[_COMMUNITY_Loginaccessdataseeder Seed Src|Loginaccessdataseeder Seed Src]]
+- [[_COMMUNITY_Superadmindashboardservicetest Superadmin Test|Superadmindashboardservicetest Superadmin Test]]
+- [[_COMMUNITY_Passwordresettokenrepository Common Src|Passwordresettokenrepository Common Src]]
+- [[_COMMUNITY_Ticketcategoryrepository Common Src|Ticketcategoryrepository Common Src]]
+- [[_COMMUNITY_Tickethistoryrepository Common Src|Tickethistoryrepository Common Src]]
+- [[_COMMUNITY_Userrequest Common Src|Userrequest Common Src]]
+- [[_COMMUNITY_Userrequestrepository Common Src|Userrequestrepository Common Src]]
+- [[_COMMUNITY_Salescrmdatainitializer Config Crmactivitylogrepository|Salescrmdatainitializer Config Crmactivitylogrepository]]
+- [[_COMMUNITY_Academiccontrollertimetabletest Test Deletetimetableentry|Academiccontrollertimetabletest Test Deletetimetableentry]]
+- [[_COMMUNITY_Feepaymentserviceimpl Src Main|Feepaymentserviceimpl Src Main]]
+- [[_COMMUNITY_Collectionplanrepository Finance Src|Collectionplanrepository Finance Src]]
+- [[_COMMUNITY_Feecategoryrepository Finance Src|Feecategoryrepository Finance Src]]
+- [[_COMMUNITY_Schoolaccountrepository Finance Src|Schoolaccountrepository Finance Src]]
+- [[_COMMUNITY_Admissionenquiryfollowuprepository Frontoffice Src|Admissionenquiryfollowuprepository Frontoffice Src]]
+- [[_COMMUNITY_Schoolconfigoverriderepository Superadmin Src|Schoolconfigoverriderepository Superadmin Src]]
+- [[_COMMUNITY_Studentsibling Student Src|Studentsibling Student Src]]
+- [[_COMMUNITY_Schoolsubscriptioninstallmentrepository Superadmin Src|Schoolsubscriptioninstallmentrepository Superadmin Src]]
+- [[_COMMUNITY_Employeeauditlogcontrollertest Superadmin Test|Employeeauditlogcontrollertest Superadmin Test]]
+- [[_COMMUNITY_Superadminemployeecontrollertest Superadmin Test|Superadminemployeecontrollertest Superadmin Test]]
+- [[_COMMUNITY_Jacksonconfig Config Src|Jacksonconfig Config Src]]
+- [[_COMMUNITY_Schooldto Superadmin Src|Schooldto Superadmin Src]]
+- [[_COMMUNITY_Staffbankaccountrepository Src Main|Staffbankaccountrepository Src Main]]
+- [[_COMMUNITY_Staffpayrolldetailsrepository Src Main|Staffpayrolldetailsrepository Src Main]]
+- [[_COMMUNITY_Superadminconfigservice Superadmin Src|Superadminconfigservice Superadmin Src]]
+- [[_COMMUNITY_Resources Auth Catalog|Resources Auth Catalog]]
+- [[_COMMUNITY_Usermanagementcontrollertest Superadmin Test|Usermanagementcontrollertest Superadmin Test]]
+- [[_COMMUNITY_Catalogcontrollertest Test Shouldreturnactivemodules|Catalogcontrollertest Test Shouldreturnactivemodules]]
+- [[_COMMUNITY_Dataimportjob Onboarding Src|Dataimportjob Onboarding Src]]
+- [[_COMMUNITY_Onboardingdraft Onboarding Src|Onboardingdraft Onboarding Src]]
+- [[_COMMUNITY_Feedueservicetest Test Src|Feedueservicetest Test Src]]
+- [[_COMMUNITY_Schoolmoduleaccess Superadmin Src|Schoolmoduleaccess Superadmin Src]]
+- [[_COMMUNITY_Schoolsubscription Superadmin Src|Schoolsubscription Superadmin Src]]
+- [[_COMMUNITY_Authuserresponse Auth Src|Authuserresponse Auth Src]]
+- [[_COMMUNITY_Catalogmoduledto Catalog Src|Catalogmoduledto Catalog Src]]
+- [[_COMMUNITY_Moduledto Superadmin Src|Moduledto Superadmin Src]]
+- [[_COMMUNITY_Crmquotation Crm Src|Crmquotation Crm Src]]
+- [[_COMMUNITY_Applicationcontexttest Test Src|Applicationcontexttest Test Src]]
+- [[_COMMUNITY_Bcryptgentest Test Src|Bcryptgentest Test Src]]
+- [[_COMMUNITY_Schoolerpbackendapplicationtests Test Src|Schoolerpbackendapplicationtests Test Src]]
+- [[_COMMUNITY_Entitlementcontrollertest Test Shouldevaluateentitlementssuccessfully|Entitlementcontrollertest Test Shouldevaluateentitlementssuccessfully]]
+- [[_COMMUNITY_Crmdemo Crm Onupdate|Crmdemo Crm Onupdate]]
+- [[_COMMUNITY_Crmfollowup Crm Onupdate|Crmfollowup Crm Onupdate]]
+- [[_COMMUNITY_Crmlead Crm Onupdate|Crmlead Crm Onupdate]]
+- [[_COMMUNITY_Schoolerpbackendapplication Main Src|Schoolerpbackendapplication Main Src]]
+- [[_COMMUNITY_Testpermissions Test Scripts|Testpermissions Test Scripts]]
+- [[_COMMUNITY_Authenticateduser Security Src|Authenticateduser Security Src]]
+- [[_COMMUNITY_Employeedocument Superadmin Preupdate|Employeedocument Superadmin Preupdate]]
+- [[_COMMUNITY_Employeeleave Superadmin Preupdate|Employeeleave Superadmin Preupdate]]
+- [[_COMMUNITY_Employeeassetcontrollertest Superadmin Test|Employeeassetcontrollertest Superadmin Test]]
+- [[_COMMUNITY_Employeelifecyclecontrollertest Superadmin Test|Employeelifecyclecontrollertest Superadmin Test]]
+- [[_COMMUNITY_Employeenotecontrollertest Superadmin Test|Employeenotecontrollertest Superadmin Test]]
+- [[_COMMUNITY_Employeetimelinecontrollertest Superadmin Test|Employeetimelinecontrollertest Superadmin Test]]
+- [[_COMMUNITY_Updaterolepermissionsrequest Auth Permissionupdatedto|Updaterolepermissionsrequest Auth Permissionupdatedto]]
+- [[_COMMUNITY_Crmquotationdto Crm Users|Crmquotationdto Crm Users]]
+- [[_COMMUNITY_Familyresponse Student Users|Familyresponse Student Users]]
+- [[_COMMUNITY_Plandto Superadmin Users|Plandto Superadmin Users]]
+- [[_COMMUNITY_Userdashboardstatsdto Usermanagement Users|Userdashboardstatsdto Usermanagement Users]]
+- [[_COMMUNITY_Auditactions Common|Auditactions Common]]
+- [[_COMMUNITY_Admitcardpreviewresponse Exam Admitcardscheduleitem|Admitcardpreviewresponse Exam Admitcardscheduleitem]]
+- [[_COMMUNITY_Onlineadmission Student Src|Onlineadmission Student Src]]
+- [[_COMMUNITY_Academicyear Academic|Academicyear Academic]]
+- [[_COMMUNITY_Classsubjectassignment Academic|Classsubjectassignment Academic]]
+- [[_COMMUNITY_Classteacherassignment Academic|Classteacherassignment Academic]]
+- [[_COMMUNITY_Schoolclass Academic|Schoolclass Academic]]
+- [[_COMMUNITY_Section Academic|Section Academic]]
+- [[_COMMUNITY_Subject Academic|Subject Academic]]
+- [[_COMMUNITY_Timetableentry Academic|Timetableentry Academic]]
+- [[_COMMUNITY_Timetableperiod Academic|Timetableperiod Academic]]
+- [[_COMMUNITY_Attendance|Attendance]]
+- [[_COMMUNITY_Markattendancerequest Attendance|Markattendancerequest Attendance]]
+- [[_COMMUNITY_Subjectattendance Attendance|Subjectattendance Attendance]]
+- [[_COMMUNITY_Accountrequestsubmitrequest Auth Users|Accountrequestsubmitrequest Auth Users]]
+- [[_COMMUNITY_Authsession Auth|Authsession Auth]]
+- [[_COMMUNITY_Createrolerequest Auth Users|Createrolerequest Auth Users]]
+- [[_COMMUNITY_Passwordresetrequest Auth Users|Passwordresetrequest Auth Users]]
+- [[_COMMUNITY_Passwordresetsubmitrequest Auth Users|Passwordresetsubmitrequest Auth Users]]
+- [[_COMMUNITY_Permissiondefinition Auth Users|Permissiondefinition Auth Users]]
+- [[_COMMUNITY_Permissiondefinitiondto Auth Users|Permissiondefinitiondto Auth Users]]
+- [[_COMMUNITY_Permissiongroupdto Auth Users|Permissiongroupdto Auth Users]]
+- [[_COMMUNITY_Personadto Auth Users|Personadto Auth Users]]
+- [[_COMMUNITY_Role Auth Users|Role Auth Users]]
+- [[_COMMUNITY_Roledto Auth Users|Roledto Auth Users]]
+- [[_COMMUNITY_Rolepermission Auth Users|Rolepermission Auth Users]]
+- [[_COMMUNITY_Switchpersonarequest Auth Users|Switchpersonarequest Auth Users]]
+- [[_COMMUNITY_User Auth|User Auth]]
+- [[_COMMUNITY_Userassignment Auth|Userassignment Auth]]
+- [[_COMMUNITY_Userrolemapping Auth|Userrolemapping Auth]]
+- [[_COMMUNITY_Userschoolrole Auth|Userschoolrole Auth]]
+- [[_COMMUNITY_Test Run Onboarding|Test Run Onboarding]]
+- [[_COMMUNITY_Test Auth Users|Test Auth Users]]
+- [[_COMMUNITY_Test Dues Users|Test Dues Users]]
+- [[_COMMUNITY_Test Fees Users|Test Fees Users]]
+- [[_COMMUNITY_Test Fees Users|Test Fees Users]]
+- [[_COMMUNITY_Test Impersonate Users|Test Impersonate Users]]
+- [[_COMMUNITY_Test Impersonation Users|Test Impersonation Users]]
+- [[_COMMUNITY_Test Investigation Users|Test Investigation Users]]
+- [[_COMMUNITY_Test Perms Users|Test Perms Users]]
+- [[_COMMUNITY_Test Roles Users|Test Roles Users]]
+- [[_COMMUNITY_Test Students Api|Test Students Api]]
+- [[_COMMUNITY_Catalogoptiondto Catalog Users|Catalogoptiondto Catalog Users]]
+- [[_COMMUNITY_Catalogplandto Catalog Users|Catalogplandto Catalog Users]]
+- [[_COMMUNITY_Catalogroledto Catalog Users|Catalogroledto Catalog Users]]
+- [[_COMMUNITY_Communicationdashboardstatsdto Communication Users|Communicationdashboardstatsdto Communication Users]]
+- [[_COMMUNITY_Communicationtemplatedto Communication Users|Communicationtemplatedto Communication Users]]
+- [[_COMMUNITY_Createtemplaterequest Communication Users|Createtemplaterequest Communication Users]]
+- [[_COMMUNITY_Createcrmleadrequest Crm Users|Createcrmleadrequest Crm Users]]
+- [[_COMMUNITY_Crmactivitylogdto Crm Users|Crmactivitylogdto Crm Users]]
+- [[_COMMUNITY_Crmdashboardstatsdto Crm Users|Crmdashboardstatsdto Crm Users]]
+- [[_COMMUNITY_Feecategoryrequest Feecategory Users|Feecategoryrequest Feecategory Users]]
+- [[_COMMUNITY_Feecategoryresponse Feecategory Users|Feecategoryresponse Feecategory Users]]
+- [[_COMMUNITY_Bulkinvoicerequest Feeinvoice Users|Bulkinvoicerequest Feeinvoice Users]]
+- [[_COMMUNITY_Feestructureitemrequest Feestructure Users|Feestructureitemrequest Feestructure Users]]
+- [[_COMMUNITY_Feestructureitemresponse Feestructure Users|Feestructureitemresponse Feestructure Users]]
+- [[_COMMUNITY_Feestructurerequest Feestructure Users|Feestructurerequest Feestructure Users]]
+- [[_COMMUNITY_Feestructureresponse Feestructure Users|Feestructureresponse Feestructure Users]]
+- [[_COMMUNITY_Collectionplanitemrequest Finance Users|Collectionplanitemrequest Finance Users]]
+- [[_COMMUNITY_Collectionplanitemresponse Finance Users|Collectionplanitemresponse Finance Users]]
+- [[_COMMUNITY_Collectionplanrequest Finance Users|Collectionplanrequest Finance Users]]
+- [[_COMMUNITY_Collectionplanresponse Finance Users|Collectionplanresponse Finance Users]]
+- [[_COMMUNITY_Schoolaccountrequest Finance Users|Schoolaccountrequest Finance Users]]
+- [[_COMMUNITY_Schoolaccountresponse Finance Users|Schoolaccountresponse Finance Users]]
+- [[_COMMUNITY_Staffattendancedto Users Admin|Staffattendancedto Users Admin]]
+- [[_COMMUNITY_Staffattendancerequest Users Admin|Staffattendancerequest Users Admin]]
+- [[_COMMUNITY_Staffleavedto Users Admin|Staffleavedto Users Admin]]
+- [[_COMMUNITY_Staffleaverequest Users Admin|Staffleaverequest Users Admin]]
+- [[_COMMUNITY_Staffpayrolldto Users Admin|Staffpayrolldto Users Admin]]
+- [[_COMMUNITY_Staffpayrollrequest Users Admin|Staffpayrollrequest Users Admin]]
+- [[_COMMUNITY_Feepaymentrequest Payment Users|Feepaymentrequest Payment Users]]
+- [[_COMMUNITY_Feereminderresponse Payment Users|Feereminderresponse Payment Users]]
+- [[_COMMUNITY_Feestatsdto Payment Users|Feestatsdto Payment Users]]
+- [[_COMMUNITY_Sendfeereminderrequest Payment Users|Sendfeereminderrequest Payment Users]]
+- [[_COMMUNITY_Studentfeerecorddto Payment Users|Studentfeerecorddto Payment Users]]
+- [[_COMMUNITY_Teacherclassresponse Payment Users|Teacherclassresponse Payment Users]]
+- [[_COMMUNITY_Configoverridedto Superadmin Users|Configoverridedto Superadmin Users]]
+- [[_COMMUNITY_Impersonationresponsedto Superadmin Users|Impersonationresponsedto Superadmin Users]]
+- [[_COMMUNITY_Moduleadoptiondto Superadmin Users|Moduleadoptiondto Superadmin Users]]
+- [[_COMMUNITY_Onboardingmatrixdto Superadmin Users|Onboardingmatrixdto Superadmin Users]]
+- [[_COMMUNITY_Operationalalertdto Superadmin Users|Operationalalertdto Superadmin Users]]
+- [[_COMMUNITY_Passwordresetdto Superadmin Users|Passwordresetdto Superadmin Users]]
+- [[_COMMUNITY_Pipelineschooldto Superadmin Users|Pipelineschooldto Superadmin Users]]
+- [[_COMMUNITY_Platformhealthdto Superadmin Users|Platformhealthdto Superadmin Users]]
+- [[_COMMUNITY_Retentionpointdto Superadmin Users|Retentionpointdto Superadmin Users]]
+- [[_COMMUNITY_Revenuegrowthpointdto Superadmin Users|Revenuegrowthpointdto Superadmin Users]]
+- [[_COMMUNITY_Salesfunnelstepdto Superadmin Users|Salesfunnelstepdto Superadmin Users]]
+- [[_COMMUNITY_Schoolsubscriptiondto Superadmin Users|Schoolsubscriptiondto Superadmin Users]]
+- [[_COMMUNITY_Schoolsubscriptioninstallmentdto Superadmin Users|Schoolsubscriptioninstallmentdto Superadmin Users]]
+- [[_COMMUNITY_Superadmindashboardmetricsdto Superadmin Users|Superadmindashboardmetricsdto Superadmin Users]]
+- [[_COMMUNITY_Superadminlogentrydto Superadmin Users|Superadminlogentrydto Superadmin Users]]
+- [[_COMMUNITY_Superadminlogstatsdto Superadmin Users|Superadminlogstatsdto Superadmin Users]]
+- [[_COMMUNITY_Supportmetricsdto Superadmin Users|Supportmetricsdto Superadmin Users]]
+- [[_COMMUNITY_Systemconfigdto Superadmin Users|Systemconfigdto Superadmin Users]]
+- [[_COMMUNITY_Upcomingrenewaldto Superadmin Users|Upcomingrenewaldto Superadmin Users]]
+- [[_COMMUNITY_Userdto Superadmin Users|Userdto Superadmin Users]]
+- [[_COMMUNITY_Userrequestdto Superadmin Users|Userrequestdto Superadmin Users]]
+- [[_COMMUNITY_Grantaccessdto User Users|Grantaccessdto User Users]]
+- [[_COMMUNITY_Grantaccessresponsedto User Users|Grantaccessresponsedto User Users]]
+- [[_COMMUNITY_Accountrequestdto Usermanagement Users|Accountrequestdto Usermanagement Users]]
+- [[_COMMUNITY_Impersonationresponsedto Usermanagement Users|Impersonationresponsedto Usermanagement Users]]
+- [[_COMMUNITY_Useractivitylogdto Usermanagement Users|Useractivitylogdto Usermanagement Users]]
+- [[_COMMUNITY_Userdto Usermanagement Users|Userdto Usermanagement Users]]
+- [[_COMMUNITY_Userloginhistorydto Usermanagement Users|Userloginhistorydto Usermanagement Users]]
+- [[_COMMUNITY_Userrequestdto Usermanagement Users|Userrequestdto Usermanagement Users]]
+- [[_COMMUNITY_Communicationtemplate Communication Users|Communicationtemplate Communication Users]]
+- [[_COMMUNITY_Crmleadrepository Crm Users|Crmleadrepository Crm Users]]
+- [[_COMMUNITY_Accountrequest Common|Accountrequest Common]]
+- [[_COMMUNITY_Assignticketrequest Common|Assignticketrequest Common]]
+- [[_COMMUNITY_Auditlog Common|Auditlog Common]]
+- [[_COMMUNITY_Createsupportticketrequest Common|Createsupportticketrequest Common]]
+- [[_COMMUNITY_Impersonationsession Common|Impersonationsession Common]]
+- [[_COMMUNITY_Passwordresettoken Common|Passwordresettoken Common]]
+- [[_COMMUNITY_Supportticket Common|Supportticket Common]]
+- [[_COMMUNITY_Supportticketdto Common|Supportticketdto Common]]
+- [[_COMMUNITY_Ticketcategory Common|Ticketcategory Common]]
+- [[_COMMUNITY_Ticketcategorydto Common|Ticketcategorydto Common]]
+- [[_COMMUNITY_Ticketdashboardstatsdto Common|Ticketdashboardstatsdto Common]]
+- [[_COMMUNITY_Tickethistory Common|Tickethistory Common]]
+- [[_COMMUNITY_Tickethistorydto Common|Tickethistorydto Common]]
+- [[_COMMUNITY_Updateticketstatusrequest Common|Updateticketstatusrequest Common]]
+- [[_COMMUNITY_Useractivitylog Common|Useractivitylog Common]]
+- [[_COMMUNITY_Userloginhistory Common|Userloginhistory Common]]
+- [[_COMMUNITY_Communicationdelivery Communication|Communicationdelivery Communication]]
+- [[_COMMUNITY_Crmactivitylog Crm|Crmactivitylog Crm]]
+- [[_COMMUNITY_Admitcardrosteritemresponse Exam|Admitcardrosteritemresponse Exam]]
+- [[_COMMUNITY_Admitcardstatsresponse Exam|Admitcardstatsresponse Exam]]
+- [[_COMMUNITY_Bulkexamattendancerequest Exam|Bulkexamattendancerequest Exam]]
+- [[_COMMUNITY_Bulkexammarksrequest Exam|Bulkexammarksrequest Exam]]
+- [[_COMMUNITY_Bulkexamschedulerequest Exam|Bulkexamschedulerequest Exam]]
+- [[_COMMUNITY_Classmarksstatsresponse Exam|Classmarksstatsresponse Exam]]
+- [[_COMMUNITY_Cocurriculargraderequest Exam|Cocurriculargraderequest Exam]]
+- [[_COMMUNITY_Cocurricularitemresponse Exam|Cocurricularitemresponse Exam]]
+- [[_COMMUNITY_Cocurricularstatsresponse Exam|Cocurricularstatsresponse Exam]]
+- [[_COMMUNITY_Divisionrequest Exam|Divisionrequest Exam]]
+- [[_COMMUNITY_Divisionresponse Exam|Divisionresponse Exam]]
+- [[_COMMUNITY_Examadmitcard Exam|Examadmitcard Exam]]
+- [[_COMMUNITY_Examattendance Exam|Examattendance Exam]]
+- [[_COMMUNITY_Examattendanceitemresponse Exam|Examattendanceitemresponse Exam]]
+- [[_COMMUNITY_Examattendancerecordrequest Exam|Examattendancerecordrequest Exam]]
+- [[_COMMUNITY_Examcocurriculargrade Exam|Examcocurriculargrade Exam]]
+- [[_COMMUNITY_Examdivision Exam|Examdivision Exam]]
+- [[_COMMUNITY_Examgradescale Exam|Examgradescale Exam]]
+- [[_COMMUNITY_Exammark Exam|Exammark Exam]]
+- [[_COMMUNITY_Exammarkentryrequest Exam|Exammarkentryrequest Exam]]
+- [[_COMMUNITY_Exammarkitemresponse Exam|Exammarkitemresponse Exam]]
+- [[_COMMUNITY_Examreportanalyticsresponse Exam|Examreportanalyticsresponse Exam]]
+- [[_COMMUNITY_Examreportcard Exam|Examreportcard Exam]]
+- [[_COMMUNITY_Examreportcardbatch Exam|Examreportcardbatch Exam]]
+- [[_COMMUNITY_Examreportmetricsresponse Exam|Examreportmetricsresponse Exam]]
+- [[_COMMUNITY_Examreportpreviewitemresponse Exam|Examreportpreviewitemresponse Exam]]
+- [[_COMMUNITY_Examschedule Exam|Examschedule Exam]]
+- [[_COMMUNITY_Examschedulerequest Exam|Examschedulerequest Exam]]
+- [[_COMMUNITY_Examscheduleresponse Exam|Examscheduleresponse Exam]]
+- [[_COMMUNITY_Examschedulestatsresponse Exam|Examschedulestatsresponse Exam]]
+- [[_COMMUNITY_Examsessionsummaryresponse Exam|Examsessionsummaryresponse Exam]]
+- [[_COMMUNITY_Examsetup Exam|Examsetup Exam]]
+- [[_COMMUNITY_Examsetuprequest Exam|Examsetuprequest Exam]]
+- [[_COMMUNITY_Examsetupresponse Exam|Examsetupresponse Exam]]
+- [[_COMMUNITY_Examsetupstatsresponse Exam|Examsetupstatsresponse Exam]]
+- [[_COMMUNITY_Examteacherremark Exam|Examteacherremark Exam]]
+- [[_COMMUNITY_Examterm Exam|Examterm Exam]]
+- [[_COMMUNITY_Examtermrequest Exam|Examtermrequest Exam]]
+- [[_COMMUNITY_Examtermresponse Exam|Examtermresponse Exam]]
+- [[_COMMUNITY_Examtermstatsresponse Exam|Examtermstatsresponse Exam]]
+- [[_COMMUNITY_Generateadmitcardrequest Exam|Generateadmitcardrequest Exam]]
+- [[_COMMUNITY_Generatepdfreportrequest Exam|Generatepdfreportrequest Exam]]
+- [[_COMMUNITY_Generatereportcardrequest Exam|Generatereportcardrequest Exam]]
+- [[_COMMUNITY_Gradescalerequest Exam|Gradescalerequest Exam]]
+- [[_COMMUNITY_Gradescaleresponse Exam|Gradescaleresponse Exam]]
+- [[_COMMUNITY_Gradescalestatsresponse Exam|Gradescalestatsresponse Exam]]
+- [[_COMMUNITY_Pdfreportresponse Exam|Pdfreportresponse Exam]]
+- [[_COMMUNITY_Recentlygeneratedbatchresponse Exam|Recentlygeneratedbatchresponse Exam]]
+- [[_COMMUNITY_Reportcardcriteriacountresponse Exam|Reportcardcriteriacountresponse Exam]]
+- [[_COMMUNITY_Reportcardqueuestatusresponse Exam|Reportcardqueuestatusresponse Exam]]
+- [[_COMMUNITY_Reportcardtemplateresponse Exam|Reportcardtemplateresponse Exam]]
+- [[_COMMUNITY_Studentreportcardresponse Exam|Studentreportcardresponse Exam]]
+- [[_COMMUNITY_Subjectquadrantitem Exam|Subjectquadrantitem Exam]]
+- [[_COMMUNITY_Teacherremarkitemresponse Exam|Teacherremarkitemresponse Exam]]
+- [[_COMMUNITY_Teacherremarkrequest Exam|Teacherremarkrequest Exam]]
+- [[_COMMUNITY_Teacherremarkstatsresponse Exam|Teacherremarkstatsresponse Exam]]
+- [[_COMMUNITY_Termperformanceitem Exam|Termperformanceitem Exam]]
+- [[_COMMUNITY_Collectionplan Finance|Collectionplan Finance]]
+- [[_COMMUNITY_Collectionplanitem Finance|Collectionplanitem Finance]]
+- [[_COMMUNITY_Collectionplanitemrepository Finance|Collectionplanitemrepository Finance]]
+- [[_COMMUNITY_Feecategory Finance|Feecategory Finance]]
+- [[_COMMUNITY_Feedue Finance|Feedue Finance]]
+- [[_COMMUNITY_Feegenerationbatch Finance|Feegenerationbatch Finance]]
+- [[_COMMUNITY_Feegenerationbatchrepository Finance|Feegenerationbatchrepository Finance]]
+- [[_COMMUNITY_Feeinvoice Finance|Feeinvoice Finance]]
+- [[_COMMUNITY_Feepaymentallocation Finance|Feepaymentallocation Finance]]
+- [[_COMMUNITY_Feereminder Finance|Feereminder Finance]]
+- [[_COMMUNITY_Feestructure Finance|Feestructure Finance]]
+- [[_COMMUNITY_Feestructureitem Finance|Feestructureitem Finance]]
+- [[_COMMUNITY_Payment Finance|Payment Finance]]
+- [[_COMMUNITY_Schoolaccount Finance|Schoolaccount Finance]]
+- [[_COMMUNITY_Studentfeestructure Finance|Studentfeestructure Finance]]
+- [[_COMMUNITY_Admissionenquiry Frontoffice|Admissionenquiry Frontoffice]]
+- [[_COMMUNITY_Admissionenquiryfollowup Frontoffice|Admissionenquiryfollowup Frontoffice]]
+- [[_COMMUNITY_Admissionenquiryrequest Frontoffice|Admissionenquiryrequest Frontoffice]]
+- [[_COMMUNITY_Admissionenquiryresponse Frontoffice|Admissionenquiryresponse Frontoffice]]
+- [[_COMMUNITY_Admissionenquirystatsresponse Frontoffice|Admissionenquirystatsresponse Frontoffice]]
+- [[_COMMUNITY_Enquiryfollowuprequest Frontoffice|Enquiryfollowuprequest Frontoffice]]
+- [[_COMMUNITY_Enquiryfollowupresponse Frontoffice|Enquiryfollowupresponse Frontoffice]]
+- [[_COMMUNITY_Gatepass Frontoffice|Gatepass Frontoffice]]
+- [[_COMMUNITY_Gatepassrequest Frontoffice|Gatepassrequest Frontoffice]]
+- [[_COMMUNITY_Gatepassresponse Frontoffice|Gatepassresponse Frontoffice]]
+- [[_COMMUNITY_Gatepassstatsresponse Frontoffice|Gatepassstatsresponse Frontoffice]]
+- [[_COMMUNITY_Parceldispatch Frontoffice|Parceldispatch Frontoffice]]
+- [[_COMMUNITY_Parceldispatchrequest Frontoffice|Parceldispatchrequest Frontoffice]]
+- [[_COMMUNITY_Parceldispatchresponse Frontoffice|Parceldispatchresponse Frontoffice]]
+- [[_COMMUNITY_Parceldispatchstatsresponse Frontoffice|Parceldispatchstatsresponse Frontoffice]]
+- [[_COMMUNITY_Parcelreceive Frontoffice|Parcelreceive Frontoffice]]
+- [[_COMMUNITY_Parcelreceiverequest Frontoffice|Parcelreceiverequest Frontoffice]]
+- [[_COMMUNITY_Parcelreceiveresponse Frontoffice|Parcelreceiveresponse Frontoffice]]
+- [[_COMMUNITY_Parcelreceivestatsresponse Frontoffice|Parcelreceivestatsresponse Frontoffice]]
+- [[_COMMUNITY_Visitorlog Frontoffice|Visitorlog Frontoffice]]
+- [[_COMMUNITY_Visitorlogrequest Frontoffice|Visitorlogrequest Frontoffice]]
+- [[_COMMUNITY_Visitorlogresponse Frontoffice|Visitorlogresponse Frontoffice]]
+- [[_COMMUNITY_Visitorstatsresponse Frontoffice|Visitorstatsresponse Frontoffice]]
+- [[_COMMUNITY_Addperformancereviewrequest|Addperformancereviewrequest]]
+- [[_COMMUNITY_Applyleaverequest|Applyleaverequest]]
+- [[_COMMUNITY_Createdepartmentrequest|Createdepartmentrequest]]
+- [[_COMMUNITY_Departmentdto|Departmentdto]]
+- [[_COMMUNITY_Employeeassetdto|Employeeassetdto]]
+- [[_COMMUNITY_Employeeattendancedto|Employeeattendancedto]]
+- [[_COMMUNITY_Employeeauditlogdto|Employeeauditlogdto]]
+- [[_COMMUNITY_Employeedocumentdto|Employeedocumentdto]]
+- [[_COMMUNITY_Employeeleavedto|Employeeleavedto]]
+- [[_COMMUNITY_Employeelifecycledto|Employeelifecycledto]]
+- [[_COMMUNITY_Employeenotedto|Employeenotedto]]
+- [[_COMMUNITY_Employeepayrolldto|Employeepayrolldto]]
+- [[_COMMUNITY_Employeeperformancedto|Employeeperformancedto]]
+- [[_COMMUNITY_Employeetimelinedto|Employeetimelinedto]]
+- [[_COMMUNITY_Recruitmentcandidate|Recruitmentcandidate]]
+- [[_COMMUNITY_Runpayrollrequest|Runpayrollrequest]]
+- [[_COMMUNITY_Schooldepartment|Schooldepartment]]
+- [[_COMMUNITY_Schooldesignation|Schooldesignation]]
+- [[_COMMUNITY_Schoolleavetype|Schoolleavetype]]
+- [[_COMMUNITY_Staff|Staff]]
+- [[_COMMUNITY_Staffadvance|Staffadvance]]
+- [[_COMMUNITY_Staffattendance|Staffattendance]]
+- [[_COMMUNITY_Staffbankaccount|Staffbankaccount]]
+- [[_COMMUNITY_Staffdocument|Staffdocument]]
+- [[_COMMUNITY_Staffleave|Staffleave]]
+- [[_COMMUNITY_Staffleavebalance|Staffleavebalance]]
+- [[_COMMUNITY_Staffpayroll|Staffpayroll]]
+- [[_COMMUNITY_Staffpayrolldetails|Staffpayrolldetails]]
+- [[_COMMUNITY_Stafftask|Stafftask]]
+- [[_COMMUNITY_Uploaddocumentrequest|Uploaddocumentrequest]]
+- [[_COMMUNITY_Dataimporterror Onboarding|Dataimporterror Onboarding]]
+- [[_COMMUNITY_Onlineadmission Student Src|Onlineadmission Student Src]]
+- [[_COMMUNITY_Idcardgeneration Student|Idcardgeneration Student]]
+- [[_COMMUNITY_Student|Student]]
+- [[_COMMUNITY_Studentcategory Student|Studentcategory Student]]
+- [[_COMMUNITY_Studentcertificate Student|Studentcertificate Student]]
+- [[_COMMUNITY_Studentdocument Student|Studentdocument Student]]
+- [[_COMMUNITY_Studenthouse Student|Studenthouse Student]]
+- [[_COMMUNITY_Studentleave Student|Studentleave Student]]
+- [[_COMMUNITY_Studentparent Student|Studentparent Student]]
+- [[_COMMUNITY_Studentreferral Student|Studentreferral Student]]
+- [[_COMMUNITY_Studentsubjectenrollment Student|Studentsubjectenrollment Student]]
+- [[_COMMUNITY_Createsuperadminemployeerequest Superadmin|Createsuperadminemployeerequest Superadmin]]
+- [[_COMMUNITY_Superadmin|Superadmin]]
+- [[_COMMUNITY_Schoolconfigoverride Superadmin|Schoolconfigoverride Superadmin]]
+- [[_COMMUNITY_Schoolsubscriptioninstallment Superadmin|Schoolsubscriptioninstallment Superadmin]]
+- [[_COMMUNITY_Superadminemployee Superadmin|Superadminemployee Superadmin]]
+- [[_COMMUNITY_Superadminemployeedto Superadmin|Superadminemployeedto Superadmin]]
+- [[_COMMUNITY_Tenantentitlementoverride Superadmin|Tenantentitlementoverride Superadmin]]
+- [[_COMMUNITY_Updatesuperadminemployeerequest Superadmin|Updatesuperadminemployeerequest Superadmin]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `success()` - 215 edges
-2. `ResourceNotFoundException` - 49 edges
-3. `AcademicService` - 42 edges
-4. `School ERP Access Control And Module System` - 42 edges
-5. `OnlineAdmission` - 37 edges
-6. `AcademicController` - 31 edges
-7. `ResponseEntity` - 30 edges
-8. `ApiResponse` - 30 edges
-9. `ResponseEntity` - 25 edges
-10. `Long` - 24 edges
+1. `success()` - 335 edges
+2. `ResourceNotFoundException` - 43 edges
+3. `AcademicService` - 43 edges
+4. `OnlineAdmission` - 37 edges
+5. `AcademicController` - 32 edges
+6. `ResponseEntity` - 31 edges
+7. `ApiResponse` - 31 edges
+8. `Long` - 25 edges
+9. `Long` - 22 edges
+10. `Transactional` - 22 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `TeacherFeeServiceImpl` --implements--> `TeacherFeeService`  [EXTRACTED]
-  src/main/java/com/school/erp/service/impl/TeacherFeeServiceImpl.java → src/main/java/com/school/erp/service/TeacherFeeService.java
+  src/main/java/com/school/erp/service/finance/impl/TeacherFeeServiceImpl.java → src/main/java/com/school/erp/service/finance/TeacherFeeService.java
 
 ## Import Cycles
 - None detected.
 
-## Communities (783 total, 264 thin omitted)
+## Communities (711 total, 301 thin omitted)
 
-### Community 0 - "Online Admission Workflow"
-Cohesion: 0.07
-Nodes (21): OnlineAdmission, OnlineAdmissionRepository, OnlineAdmissionService, LocalDate, LocalDateTime, Long, PrePersist, PreUpdate (+13 more)
+### Community 0 - "Exam Exammarkrepository Adminexammarkscontroller"
+Cohesion: 0.05
+Nodes (55): AdminExamMarksController, AdminExamTeacherRemarkController, ExamMarkRepository, ExamMarkService, PaginationMeta, ApiResponse, BulkExamMarksRequest, ClassMarksStatsResponse (+47 more)
 
-### Community 1 - "RBAC & Authorization Engine"
+### Community 1 - "Academicservice Academic Activateacademicyear"
 Cohesion: 0.08
-Nodes (43): error(), RoleController, ConstraintViolationException, Exception, GlobalExceptionHandler, ExceptionHandler, FieldError, MethodArgumentNotValidException (+35 more)
+Nodes (34): AcademicService, AcademicYear, AcademicYearRequest, AcademicYearResponse, BulkTimetableRequest, ClassSubjectAssignment, ClassSubjectAssignmentRequest, ClassSubjectAssignmentResponse (+26 more)
 
-### Community 2 - "School Onboarding & Setup"
-Cohesion: 0.23
-Nodes (10): OnboardingDraftService, Long, Map, Object, OnboardingActivationResponse, OnboardingDraftDTO, OnboardingInitRequest, OnboardingStepRequest (+2 more)
-
-### Community 3 - "Academic Curriculum & Cycles"
-Cohesion: 0.14
-Nodes (28): success(), AcademicController, AcademicYearRequest, AcademicYearResponse, ApiResponse, BulkTimetableRequest, ClassSubjectAssignmentRequest, ClassSubjectAssignmentResponse (+20 more)
-
-### Community 4 - "School Onboarding & Setup"
+### Community 2 - "Exam Examadmitcardrepository Examadmitcardservice"
 Cohesion: 0.06
-Nodes (37): OnboardingController, OnboardingControllerTest, OnboardingDraftService, OnboardingService, SchoolRepository, OnboardingService, OnboardingServiceTest, ApiResponse (+29 more)
+Nodes (47): AdminExamAdmitCardController, ExamAdmitCardRepository, ExamAdmitCardService, ExamScheduleRepository, Modifying, AdmitCardPreviewResponse, AdmitCardRosterItemResponse, AdmitCardStatsResponse (+39 more)
 
-### Community 5 - "Announcements & Communication"
-Cohesion: 0.17
-Nodes (13): CommunicationAnnouncement, CommunicationAnnouncementDTO, CommunicationDashboardStatsDTO, CommunicationTemplate, CommunicationTemplateDTO, CreateAnnouncementRequest, CreateTemplateRequest, Long (+5 more)
-
-### Community 6 - "Attendance Management"
-Cohesion: 0.06
-Nodes (41): PasswordReset, Payment, PasswordResetRepository, PaymentRepository, ActivityFeedResponse, AttendanceRepository, AuthContextService, CollectionExpensePointResponse (+33 more)
-
-### Community 7 - "Academic Curriculum & Cycles"
-Cohesion: 0.10
-Nodes (30): AcademicService, AcademicYear, AcademicYearRequest, AcademicYearResponse, BulkTimetableRequest, ClassSubjectAssignment, ClassSubjectAssignmentRequest, ClassSubjectAssignmentResponse (+22 more)
-
-### Community 8 - "Studentrepository Studenthouseservice Module"
-Cohesion: 0.11
-Nodes (24): StudentRepository, StudentHouseService, EntityGraph, List, Long, Optional, Page, Pageable (+16 more)
-
-### Community 9 - "Authentication & Session Flow"
-Cohesion: 0.07
-Nodes (38): AuthLoginRequest, AuthManagementService, AuthService, AuthController, AuthControllerTest, Operation, RefreshTokenRequest, AuthControllerTest (+30 more)
-
-### Community 10 - "Module & Plan Catalog"
-Cohesion: 0.07
-Nodes (34): CatalogService, CatalogController, CatalogControllerTest, CatalogService, ApiResponse, CatalogModuleDto, CatalogOptionDto, CatalogPlanDto (+26 more)
-
-### Community 11 - "SuperAdmin Analytics Dashboard"
+### Community 3 - "Authservice Auth Attendancecontrollertest"
 Cohesion: 0.08
-Nodes (26): HealthController, HealthController, GetMapping, Map, ResponseEntity, String, List, ModuleAdoptionDto (+18 more)
+Nodes (27): AuthService, AttendanceControllerTest, JwtUtil, AuthenticatedUser, Long, Map, Object, ObjectMapper (+19 more)
 
-### Community 12 - "User Management & Impersonation"
-Cohesion: 0.60
-Nodes (3): FeeDueServiceTest, Test, Transactional
-
-### Community 13 - "User Management & Impersonation"
-Cohesion: 0.14
-Nodes (19): AccountRequestDTO, DeleteMapping, GetMapping, ImpersonationResponseDTO, List, Long, Map, Page (+11 more)
-
-### Community 14 - "Student Management API"
-Cohesion: 0.16
-Nodes (22): StudentController, ApiResponse, StudentController, DeleteMapping, GetMapping, List, Long, Map (+14 more)
-
-### Community 15 - "User Management & Impersonation"
-Cohesion: 0.13
-Nodes (18): RoleSyncService, String, Transactional, UserSchoolRole, AccountRequestDTO, ImpersonationResponseDTO, List, Long (+10 more)
-
-### Community 16 - "Student Information System"
-Cohesion: 0.15
-Nodes (16): StudentService, List, Long, School, SchoolClass, StudentService, String, Student (+8 more)
-
-### Community 17 - "Authentication Core Services"
-Cohesion: 0.12
-Nodes (18): AuthService, AuthTokenResponse, AuthUserResponse, List, LoginVerifyResponse, Long, OtpVerifyRequest, RegisterStudentRequest (+10 more)
-
-### Community 18 - "Schoolclassservice Auth Module"
-Cohesion: 0.15
-Nodes (19): getAdmissionNumber(), getGrade(), getStudentId(), getStudentName(), SchoolClassService, JsonProperty, Long, String (+11 more)
-
-### Community 19 - "Support Ticket System"
-Cohesion: 0.14
-Nodes (18): SupportTicketController, TicketCategoryService, AssignTicketRequest, CreateSupportTicketRequest, GetMapping, List, Long, PostMapping (+10 more)
-
-### Community 20 - "SuperAdmin Analytics Dashboard"
-Cohesion: 0.16
-Nodes (17): ApiResponse, GetMapping, List, ModuleAdoptionDto, OnboardingMatrixDto, OperationalAlertDto, PipelineSchoolDto, PlatformHealthDto (+9 more)
-
-### Community 21 - "RBAC & Authorization Engine"
-Cohesion: 0.11
-Nodes (21): AuthorizationService, AuthorizationServiceTest, RolePermissionRepository, UserAssignmentRepository, RolePermissionRepository, List, Long, Query (+13 more)
-
-### Community 22 - "Parent & Family Portal"
-Cohesion: 0.13
-Nodes (16): CatalogModuleDto, FamilyService, JsonProperty, JsonProperty, AuthContextService, Family, FamilyRepository, FamilyRequest (+8 more)
-
-### Community 23 - "Sales CRM & Leads"
-Cohesion: 0.18
-Nodes (16): CreateCrmLeadRequest, CrmDashboardStatsDto, CrmDemoDto, CrmFollowUpDto, CrmLeadDto, CrmQuotationDto, GetMapping, List (+8 more)
-
-### Community 24 - "Fee Master & Fee Structure"
-Cohesion: 0.21
-Nodes (15): FeeMasterController, ApiResponse, DeleteMapping, FeeCategoryRequest, FeeCategoryResponse, FeeMasterService, FeeStructureRequest, FeeStructureResponse (+7 more)
-
-### Community 25 - "Schoolaccountcontroller Schoolaccountservice Module"
-Cohesion: 0.16
-Nodes (17): SchoolAccountController, SchoolAccountService, ApiResponse, GetMapping, List, Long, PatchMapping, PostMapping (+9 more)
-
-### Community 26 - "Online Admission Workflow"
+### Community 4 - "Finance Parentfeecontroller Studentfeecontroller"
 Cohesion: 0.07
-Nodes (43): AdminAdmissionEnquiryController, AdmissionEnquiryRepository, AdmissionEnquiryService, AdmissionEnquiryRequest, AdmissionEnquiryResponse, AdmissionEnquiryStatsResponse, ApiResponse, DeleteMapping (+35 more)
+Nodes (39): FeeDueService, ParentFeeController, StudentFeeController, ParentServiceTest, ApiResponse, AuthenticatedUser, FeeDueResponse, GetMapping (+31 more)
 
-### Community 27 - "Auditlogservice Auditlogrepository Module"
-Cohesion: 0.19
-Nodes (16): AuditLogRepository, AuditLogService, AuditLog, LocalDateTime, Long, Page, Pageable, Query (+8 more)
-
-### Community 28 - "Parent & Family Portal"
-Cohesion: 0.22
-Nodes (14): FamilyController, FamilyService, ApiResponse, DeleteMapping, FamilyRequest, FamilyResponse, GetMapping, List (+6 more)
-
-### Community 29 - "Bulk Data Import Engine"
-Cohesion: 0.19
-Nodes (13): DataImportMappingDTO, DataImportService, DataImportError, DataImportErrorDTO, DataImportJob, DataImportJobDTO, List, Long (+5 more)
-
-### Community 30 - "Studentsiblingservice Studentsiblingrepository Module"
-Cohesion: 0.15
-Nodes (16): StudentSiblingRepository, StudentSiblingService, List, Long, Optional, StudentSibling, AuthContextService, List (+8 more)
-
-### Community 31 - "Superadminschoolcontroller Superadmin Module"
-Cohesion: 0.17
-Nodes (16): SchoolSubscriptionService, ApiResponse, DeleteMapping, GetMapping, List, Long, PatchMapping, PostMapping (+8 more)
-
-### Community 32 - "Support Ticket System"
-Cohesion: 0.17
-Nodes (14): SupportTicketService, AssignTicketRequest, CreateSupportTicketRequest, List, Long, String, SupportTicket, SupportTicketDTO (+6 more)
-
-### Community 33 - "Superadminmodulecontroller Superadmin Module"
-Cohesion: 0.23
-Nodes (12): ApiResponse, GetMapping, List, Long, ModuleDto, PostMapping, PutMapping, ResponseEntity (+4 more)
-
-### Community 34 - "Sales CRM & Leads"
+### Community 5 - "Academiccontroller Academic Activateacademicyear"
 Cohesion: 0.13
-Nodes (18): CreateCrmLeadRequest, CrmDashboardStatsDto, CrmDemo, CrmDemoDto, CrmFollowUp, CrmFollowUpDto, CrmLead, CrmLeadDto (+10 more)
+Nodes (29): AcademicController, AcademicService, success(), AcademicYearRequest, AcademicYearResponse, ApiResponse, BulkTimetableRequest, ClassSubjectAssignmentRequest (+21 more)
 
-### Community 35 - "Parentservice Studentparentrepository Module"
-Cohesion: 0.27
-Nodes (7): ParentService, List, Long, ParentChildResponse, ParentService, StudentParent, StudentParentRepository
+### Community 6 - "Feemasterserviceimpl Collectionplanservice Finance"
+Cohesion: 0.07
+Nodes (34): CollectionPlanItemRepository, FeeMasterService, FeeStructureItem, FeeStructureItemRepository, CollectionPlanService, FeeStructureItemRepository, FeeMasterServiceImpl, AuthContextHolder (+26 more)
 
-### Community 36 - "School Onboarding & Setup"
-Cohesion: 0.43
-Nodes (5): TenantEntitlementOverrideRepository, List, Long, String, TenantEntitlementOverride
-
-### Community 37 - "Attendance Management"
-Cohesion: 0.32
-Nodes (8): EmployeeAttendance, EmployeeAttendanceDTO, List, LocalDate, Long, MarkAttendanceRequest, Transactional, EmployeeAttendanceService
-
-### Community 38 - "Staffcontroller Createstaff Module"
-Cohesion: 0.19
-Nodes (16): StaffController, ApiResponse, StaffController, DeleteMapping, GetMapping, List, Long, PostMapping (+8 more)
-
-### Community 39 - "Fee Dues & Discounts"
-Cohesion: 0.15
-Nodes (14): FeeRecordService, FeeRecordServiceImpl, StudentFeeAggregation, BigDecimal, Long, FeeDueRepository, FeeStatsDTO, Long (+6 more)
-
-### Community 40 - "Superadminplanservice Superadmin Module"
+### Community 7 - "Frontoffice Visitorlogservice Adminvisitorbookcontroller"
 Cohesion: 0.08
 Nodes (39): AdminVisitorBookController, VisitorLogRepository, VisitorLogService, ApiResponse, DeleteMapping, GetMapping, List, LocalDate (+31 more)
 
-### Community 41 - "Authmanagementservice Auth Module"
-Cohesion: 0.11
-Nodes (18): AccountRequest, AuthManagementService, ImpersonationSession, AccountRequestRepository, ImpersonationSessionRepository, Page, Pageable, String (+10 more)
+### Community 8 - "Onboardingcontroller Onboarding Onboardingcontrollertest"
+Cohesion: 0.06
+Nodes (36): OnboardingControllerTest, OnboardingController, OnboardingService, OnboardingDraftService, OnboardingService, OnboardingServiceTest, ApiResponse, GetMapping (+28 more)
 
-### Community 42 - "Online Admission Workflow"
-Cohesion: 0.21
-Nodes (12): StaffService, SchoolClass, List, Long, School, StaffService, Staff, StaffRequest (+4 more)
-
-### Community 43 - "Fee Master & Fee Structure"
-Cohesion: 0.17
-Nodes (18): FeeMasterService, FeeStructureItemRepository, FeeMasterServiceImpl, CollectionPlanRepository, FeeCategory, FeeCategoryRepository, FeeCategoryRequest, FeeCategoryResponse (+10 more)
-
-### Community 44 - "Schoolservice Createschool Module"
-Cohesion: 0.09
-Nodes (26): StaffAttendanceRepository, StaffAttendanceService, SchoolService, List, LocalDate, Long, Optional, StaffAttendance (+18 more)
-
-### Community 45 - "Studenthousecontroller Student Module"
-Cohesion: 0.20
-Nodes (14): ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity (+6 more)
-
-### Community 46 - "Superadminplancontroller Superadmin Module"
-Cohesion: 0.20
-Nodes (13): ApiResponse, DeleteMapping, GetMapping, List, Long, PatchMapping, PlanDto, PostMapping (+5 more)
-
-### Community 47 - "Superadminmoduleservice Superadmin Module"
-Cohesion: 0.19
-Nodes (12): Boolean, StudentCategory, List, Long, ModuleDto, PlatformModule, PlatformModuleRepository, SchoolModuleAccessRepository (+4 more)
-
-### Community 48 - "Bulk Data Import Engine"
-Cohesion: 0.17
-Nodes (15): DataImportController, DataImportControllerTest, DataImportService, ResolveErrorRequest, ApiResponse, DataImportErrorDTO, DataImportJobDTO, GetMapping (+7 more)
-
-### Community 49 - "Schoolclasscontroller Createclass Module"
-Cohesion: 0.20
-Nodes (15): SchoolClassController, SchoolClassService, ApiResponse, SchoolClassController, DeleteMapping, GetMapping, List, Long (+7 more)
-
-### Community 50 - "Schoolcontroller Createschool Module"
-Cohesion: 0.20
-Nodes (15): SchoolController, SchoolService, ApiResponse, SchoolController, DeleteMapping, GetMapping, List, Long (+7 more)
-
-### Community 51 - "Family Getfamilycode Module"
-Cohesion: 0.11
-Nodes (9): CrmActivityLogDto, Family, LocalDateTime, Long, PrePersist, PreUpdate, School, String (+1 more)
-
-### Community 52 - "Jwtutil Security Module"
-Cohesion: 0.12
-Nodes (13): JwtUtil, AuthenticatedUser, Long, Map, Object, ObjectMapper, JwtUtil, String (+5 more)
-
-### Community 53 - "Attendance Management"
-Cohesion: 0.07
-Nodes (37): AttendanceRepository, StudentLeaveRepository, AttendanceService, Attendance, List, LocalDate, Long, Object (+29 more)
-
-### Community 54 - "Fee Dues & Discounts"
-Cohesion: 0.22
-Nodes (13): AdHocFeeRequest, FeeDueController, ApiResponse, ApplyDiscountRequest, FeeDueResponse, FeeDueService, GetMapping, List (+5 more)
-
-### Community 55 - "Collectionplancontroller Collectionplanservice Module"
-Cohesion: 0.21
-Nodes (13): CollectionPlanService, CollectionPlanController, ApiResponse, CollectionPlanRequest, CollectionPlanResponse, DeleteMapping, GetMapping, List (+5 more)
-
-### Community 56 - "Fee Dues & Discounts"
-Cohesion: 0.19
-Nodes (11): FeeDueService, ApplyDiscountRequest, BigDecimal, FeeDueResponse, FeeGenerationConfirmRequest, FeeGenerationPreviewRequest, FeeGenerationPreviewResponse, List (+3 more)
-
-### Community 57 - "Studentcategorycontroller Student Module"
-Cohesion: 0.20
-Nodes (13): ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity (+5 more)
-
-### Community 58 - "Studentcertificatecontroller Student Module"
-Cohesion: 0.20
-Nodes (13): ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity (+5 more)
-
-### Community 59 - "Studentleavecontroller Student Module"
-Cohesion: 0.20
-Nodes (13): ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity (+5 more)
-
-### Community 60 - "Studentreferralcontroller Student Module"
-Cohesion: 0.20
-Nodes (13): ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity (+5 more)
-
-### Community 61 - "Announcements & Communication"
-Cohesion: 0.25
-Nodes (12): ApiResponse, CommunicationAnnouncementDTO, CommunicationDashboardStatsDTO, CommunicationTemplateDTO, CreateAnnouncementRequest, CreateTemplateRequest, GetMapping, Page (+4 more)
-
-### Community 62 - "Employee Asset Tracking"
-Cohesion: 0.07
-Nodes (14): PreUpdate, PreUpdate, PreUpdate, PreUpdate, Department, EmployeeAsset, EmployeeAttendance, EmployeeAuditLog (+6 more)
-
-### Community 63 - "Rolemanagementservice Auth Module"
-Cohesion: 0.18
-Nodes (13): PermissionDefinitionRepository, RoleManagementService, PermissionDefinition, Optional, String, CreateRoleRequest, List, Long (+5 more)
-
-### Community 64 - "Fee Dues & Discounts"
-Cohesion: 0.17
-Nodes (15): FeeDueService, FeeGenerationBatchRepository, BigDecimal, CollectionPlan, FeeCategoryRepository, FeeDue, FeeDueRepository, FeeGenerationConfirmRequest (+7 more)
-
-### Community 65 - "Fee Dues & Discounts"
-Cohesion: 0.27
-Nodes (10): FeeDueServiceImpl, ApplyDiscountRequest, FeeDueResponse, FeeGenerationPreviewRequest, FeeGenerationPreviewResponse, List, Long, Override (+2 more)
-
-### Community 66 - "Online Admission Workflow"
-Cohesion: 0.20
-Nodes (13): OnlineAdmissionService, ApiResponse, GetMapping, List, Long, Map, OnlineAdmissionRequest, OnlineAdmissionResponse (+5 more)
-
-### Community 67 - "Studentcategoryservice Resourcenotfoundexception Module"
-Cohesion: 0.25
-Nodes (10): StudentCategoryService, AuthContextService, List, Long, SchoolRepository, StudentCategory, StudentCategoryRepository, StudentCategoryRequest (+2 more)
-
-### Community 68 - "Studentcertificateservice Createcertificate Module"
-Cohesion: 0.24
-Nodes (11): StudentCertificateService, AuthContextService, List, Long, SchoolRepository, StudentCertificate, StudentCertificateRequest, StudentCertificateResponse (+3 more)
-
-### Community 69 - "Studentleaveservice Createleave Module"
-Cohesion: 0.08
-Nodes (37): IdCardGenerationRepository, ResourceNotFoundException, AuthContextService, FeeInvoice, FeeInvoiceRepository, FeeInvoiceRequest, FeeInvoiceResponse, List (+29 more)
-
-### Community 70 - "Role & Permission Management"
-Cohesion: 0.21
-Nodes (13): ApiResponse, CreateRoleRequest, GetMapping, List, PermissionGroupDto, PostMapping, PutMapping, ResponseEntity (+5 more)
-
-### Community 71 - "Sales CRM & Leads"
-Cohesion: 0.26
-Nodes (9): ApplicationRunner, SalesCrmDataInitializer, ApplicationArguments, BigDecimal, CrmLead, LocalDateTime, Override, String (+1 more)
-
-### Community 72 - "Collectionplanservice Finance Module"
-Cohesion: 0.24
-Nodes (10): CollectionPlanItemRepository, CollectionPlanService, CollectionPlan, CollectionPlanRepository, CollectionPlanRequest, CollectionPlanResponse, List, Long (+2 more)
-
-### Community 73 - "Exception Badrequestexception Module"
-Cohesion: 0.05
-Nodes (21): BadRequestException, ForbiddenException, ResourceNotFoundException, UnauthorizedException, RuntimeException, BadRequestException, String, ForbiddenException (+13 more)
-
-### Community 74 - "Authentication Core Services"
-Cohesion: 0.15
-Nodes (12): UserRoleMappingRepository, UserRepository, AuthServiceTest, List, Long, String, UserRoleMapping, Optional (+4 more)
-
-### Community 75 - "Fee Master & Fee Structure"
-Cohesion: 0.26
-Nodes (7): FeeMasterService, FeeCategoryRequest, FeeCategoryResponse, FeeStructureRequest, FeeStructureResponse, List, Long
-
-### Community 76 - "Studentreferralservice Createreferral Module"
-Cohesion: 0.25
-Nodes (10): StudentReferralService, AuthContextService, List, Long, SchoolRepository, StudentReferral, StudentReferralRequest, StudentReferralResponse (+2 more)
-
-### Community 77 - "Studentsiblingcontroller Student Module"
-Cohesion: 0.21
-Nodes (12): ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping, ResponseEntity, StudentSiblingRequest (+4 more)
-
-### Community 78 - "Usersupportcontroller Superadmin Module"
-Cohesion: 0.14
-Nodes (20): ApiResponse, GetMapping, List, Long, Map, PasswordResetDTO, PostMapping, ResponseEntity (+12 more)
-
-### Community 79 - "Usersupportservice Superadmin Module"
+### Community 9 - "Frontoffice Parcelreceiveservice Adminparcelreceivecontroller"
 Cohesion: 0.08
 Nodes (37): AdminParcelReceiveController, ParcelReceiveRepository, ParcelReceiveService, ApiResponse, DeleteMapping, GetMapping, List, LocalDate (+29 more)
 
-### Community 80 - "Academic Curriculum & Cycles"
-Cohesion: 0.05
-Nodes (52): ClassSubjectAssignmentRepository, TeacherFeeController, FeeReminder, TeacherFeeServiceImpl, FeeReminderRepository, SectionRepository, TeacherFeeService, ApiResponse (+44 more)
-
-### Community 81 - "Fee Payment Processing"
-Cohesion: 0.24
-Nodes (12): FeePaymentController, ApiResponse, FeePaymentRequest, FeePaymentService, GetMapping, Long, Page, Pageable (+4 more)
-
-### Community 82 - "Idcardgenerationservice Idcardgenerationrepository Module"
+### Community 10 - "Frontoffice Parceldispatchservice Adminparceldispatchcontroller"
 Cohesion: 0.08
 Nodes (36): AdminParcelDispatchController, ParcelDispatchRepository, ParcelDispatchService, ApiResponse, DeleteMapping, GetMapping, List, LocalDate (+28 more)
 
-### Community 83 - "Superadminsampledatainitializer Config Module"
-Cohesion: 0.22
-Nodes (10): SuperAdminSampleDataInitializer, ApplicationArguments, AuditLogRepository, Override, PlatformModuleRepository, School, SchoolModuleAccessRepository, SchoolRepository (+2 more)
-
-### Community 84 - "School Feature Entitlements"
-Cohesion: 0.20
-Nodes (11): EntitlementController, ApiResponse, EntitlementEvaluationDto, EntitlementService, GetMapping, Integer, Long, PostMapping (+3 more)
-
-### Community 85 - "Parentcontroller Parentcontrollertest Module"
-Cohesion: 0.06
-Nodes (36): ParentController, ParentControllerTest, ParentFeeController, ParentService, StudentParentRepository, ParentControllerTest, Test, ParentServiceTest (+28 more)
-
-### Community 86 - "Online Admission Workflow"
-Cohesion: 0.12
-Nodes (16): SupportTicketRepository, List, Long, Optional, Query, String, SupportTicket, CreateSuperAdminEmployeeRequest (+8 more)
-
-### Community 87 - "Online Admission Workflow"
-Cohesion: 0.43
-Nodes (5): DataImportJobRepository, DataImportJob, List, Long, String
-
-### Community 88 - "Timetableentryrepository Deletebyschoolidandschoolclassidandsectionidandacademicyearid Module"
-Cohesion: 0.21
-Nodes (9): TimetableEntryRepository, AcademicServiceTimetableTest, List, Long, Optional, String, TimetableEntry, BeforeEach (+1 more)
-
-### Community 89 - "Student Information System"
-Cohesion: 0.38
-Nodes (6): EntitlementService, EntitlementEvaluationDto, Integer, Long, String, Transactional
-
-### Community 90 - "Employee Leave & Lifecycle"
-Cohesion: 0.26
-Nodes (10): ApplyLeaveRequest, EmployeeLeaveDTO, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity (+2 more)
-
-### Community 91 - "Superadminemployeecontroller Superadmin Module"
-Cohesion: 0.26
-Nodes (10): CreateSuperAdminEmployeeRequest, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity, SuperAdminEmployeeDTO (+2 more)
-
-### Community 92 - "Superadmin Employeetimelineservice Module"
-Cohesion: 0.20
-Nodes (10): EmployeeTimeline, List, Long, EmployeeTimeline, EmployeeTimelineDTO, List, Long, Transactional (+2 more)
-
-### Community 93 - "Attendance Management"
-Cohesion: 0.18
-Nodes (17): AttendanceService, AttendanceController, ApiResponse, AttendanceRequest, AttendanceResponse, AttendanceService, AttendanceSummaryDTO, AttendanceTrendDTO (+9 more)
-
-### Community 94 - "Fee Dues & Discounts"
-Cohesion: 0.25
-Nodes (10): FeeGenerationController, ApiResponse, FeeDueService, FeeGenerationConfirmRequest, FeeGenerationPreviewRequest, FeeGenerationPreviewResponse, Long, PostMapping (+2 more)
-
-### Community 95 - "Feerecordcontroller Getfeerecords Module"
-Cohesion: 0.25
-Nodes (10): FeeRecordController, ApiResponse, FeeRecordService, FeeStatsDTO, GetMapping, Long, Page, ResponseEntity (+2 more)
-
-### Community 96 - "Sales CRM & Leads"
-Cohesion: 0.08
-Nodes (37): AdminGatePassController, GatePassRepository, GatePassService, PaginationMeta, ApiResponse, DeleteMapping, GatePassRequest, GatePassResponse (+29 more)
-
-### Community 97 - "Idcardgenerationcontroller Student Module"
-Cohesion: 0.24
-Nodes (10): IdCardGenerationService, ApiResponse, GetMapping, IdCardGenerationRequest, IdCardGenerationResponse, List, Long, PostMapping (+2 more)
-
-### Community 98 - "Studentsubjectenrollmentrepository Countbyschoolidandacademicyearidandenrollmenttype Module"
-Cohesion: 0.31
-Nodes (6): StudentSubjectEnrollmentRepository, List, Long, Optional, String, StudentSubjectEnrollment
-
-### Community 99 - "Userschoolrolerepository Existsbyuseridandschoolidandroleandstatusignorecase Module"
-Cohesion: 0.33
-Nodes (9): UserSchoolRoleRepository, EntityGraph, List, Long, Optional, UserSchoolRoleRepository, String, UserRole (+1 more)
-
-### Community 100 - "Employee Payroll"
-Cohesion: 0.23
-Nodes (10): EmployeePayrollDTO, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity, RunPayrollRequest (+2 more)
-
-### Community 101 - "Employee Leave & Lifecycle"
-Cohesion: 0.32
-Nodes (8): ApplyLeaveRequest, EmployeeLeave, EmployeeLeaveDTO, List, Long, String, Transactional, EmployeeLeaveService
-
-### Community 102 - "Superadminlogservice Superadmin Module"
-Cohesion: 0.11
-Nodes (27): StudentControllerTest, ApiResponse, StudentController, DeleteMapping, GetMapping, List, Long, Operation (+19 more)
-
-### Community 103 - "Staffservice Auth Module"
-Cohesion: 0.26
-Nodes (12): RoleRepository, AuthContextService, ClassTeacherAssignmentRepository, RoleSyncService, SchoolRepository, StaffRepository, UserRepository, UserRoleMappingRepository (+4 more)
-
-### Community 104 - "Rolesyncservice Useraccessservice Module"
-Cohesion: 0.53
-Nodes (4): GrantAccessDTO, GrantAccessResponseDTO, Transactional, UserAccessService
-
-### Community 105 - "Attendance Management"
-Cohesion: 0.29
-Nodes (9): EmployeeAttendanceDTO, GetMapping, List, LocalDate, Long, MarkAttendanceRequest, PostMapping, ResponseEntity (+1 more)
-
-### Community 106 - "Superadminlogcontroller Superadmin Module"
-Cohesion: 0.27
-Nodes (9): ApiResponse, GetMapping, List, ResponseEntity, String, SuperAdminLogEntryDto, SuperAdminLogStatsDto, SuperAdminLogController (+1 more)
-
-### Community 107 - "Employee Payroll"
-Cohesion: 0.31
-Nodes (8): EmployeePayroll, EmployeePayrollDTO, List, Long, RunPayrollRequest, String, Transactional, EmployeePayrollService
-
-### Community 108 - "Department Management"
-Cohesion: 0.30
-Nodes (7): Department, CreateDepartmentRequest, DepartmentDTO, List, Transactional, DepartmentRepository, DepartmentService
-
-### Community 109 - "Passwordreset Passwordresetrepository Module"
-Cohesion: 0.11
-Nodes (25): List, Long, Optional, Page, Pageable, StudentRepository, String, Student (+17 more)
-
-### Community 110 - "Fee Payment Processing"
-Cohesion: 0.30
-Nodes (9): FeePaymentService, FeePaymentServiceImpl, FeePaymentRequest, Long, Override, Page, Pageable, PaymentResponse (+1 more)
-
-### Community 111 - "Classteacherassignmentrepository Findbyidandschoolid Module"
-Cohesion: 0.41
-Nodes (6): ClassTeacherAssignmentRepository, ClassTeacherAssignment, List, Long, Optional, String
-
-### Community 112 - "Fee Dues & Discounts"
-Cohesion: 0.32
-Nodes (7): FeeDueRepository, FeeDue, List, Long, Query, String, StudentFeeAggregation
-
-### Community 113 - "Schoolmoduleaccessrepository Findbymoduleid Module"
-Cohesion: 0.35
-Nodes (7): SchoolModuleAccessRepository, SchoolModuleAccess, List, Long, Optional, PlatformModule, School
-
-### Community 114 - "Support Ticket System"
+### Community 11 - "Frontoffice Admingatepasscontroller Gatepassservice"
 Cohesion: 0.09
-Nodes (28): PaymentController, PaymentService, ApiResponse, GetMapping, List, Long, PaymentRequest, PaymentResponse (+20 more)
+Nodes (36): AdminGatePassController, GatePassRepository, GatePassService, ApiResponse, DeleteMapping, GatePassRequest, GatePassResponse, GatePassStatsResponse (+28 more)
 
-### Community 115 - "Fee Dues & Discounts"
-Cohesion: 0.19
-Nodes (15): AcademicYearRepository, AuthContextService, EntitlementService, FamilyRepository, FeeDueService, RoleSyncService, SchoolClassRepository, SchoolRepository (+7 more)
-
-### Community 116 - "RBAC & Authorization Engine"
-Cohesion: 0.23
-Nodes (12): AuthSessionRepository, AuthorizationService, AuthSessionRepository, JwtUtil, RoleSyncService, SchoolRepository, StudentParentRepository, StudentRepository (+4 more)
-
-### Community 117 - "Announcements & Communication"
-Cohesion: 0.35
-Nodes (7): CommunicationAnnouncementDTO, CommunicationAnnouncementRepository, CommunicationStatus, CommunicationAnnouncement, List, Page, Pageable
-
-### Community 118 - "Sales CRM & Leads"
-Cohesion: 0.22
-Nodes (6): CrmLeadDto, UpdateLeadStageRequest, CrmPipelineStage, BeforeEach, Test, SalesCrmServiceTest
-
-### Community 119 - "Fee Master & Fee Structure"
-Cohesion: 0.13
-Nodes (23): AdminHrStaffController, HrStaffService, DeleteMapping, GetMapping, List, Long, PermissionRequired, PostMapping (+15 more)
-
-### Community 120 - "Classsubjectassignmentrepository Deletebyschoolidandschoolclassidandacademicyearid Module"
-Cohesion: 0.40
-Nodes (5): ClassSubjectAssignmentRepository, ClassSubjectAssignment, List, Long, Optional
-
-### Community 121 - "Subjectrepository Findbyidandschoolid Module"
-Cohesion: 0.40
-Nodes (6): SubjectRepository, List, Long, Optional, String, Subject
-
-### Community 122 - "Superadminconfigcontroller Superadmin Module"
-Cohesion: 0.31
-Nodes (7): ApiResponse, GetMapping, PutMapping, ResponseEntity, SystemConfigDto, SuperAdminConfigController, SuperAdminConfigService
-
-### Community 123 - "Rolerepository Auth Module"
-Cohesion: 0.33
-Nodes (7): RoleRepository, Role, List, Long, Optional, Query, String
-
-### Community 124 - "Securityconfig Config Module"
-Cohesion: 0.33
-Nodes (6): SecurityConfig, HttpSecurity, SecurityFilterChain, Bean, FilterRegistrationBean, JwtAuthenticationFilter
-
-### Community 125 - "Studenteligibilitycontroller Geteligibility Module"
-Cohesion: 0.27
-Nodes (7): StudentEligibilityController, ApiResponse, EligibilityStatus, GetMapping, Long, ResponseEntity, StudentEligibilityService
-
-### Community 126 - "Module & Plan Catalog"
-Cohesion: 0.42
-Nodes (3): PlatformModule, List, String
-
-### Community 127 - "Familyrepository Findbyfamilycode Module"
-Cohesion: 0.38
-Nodes (6): FamilyRepository, Family, List, Long, Optional, String
-
-### Community 128 - "Superadminemployeerepository Existsbyemployeecode Module"
-Cohesion: 0.27
-Nodes (6): SuperAdminEmployeeRepository, List, Long, Optional, Query, String
-
-### Community 129 - "Fee Payment Processing"
-Cohesion: 0.35
-Nodes (7): FeePaymentService, FeePaymentRequest, Long, Page, Pageable, PaymentResponse, String
-
-### Community 130 - "Feerecordservice Getfeestats Module"
-Cohesion: 0.31
-Nodes (7): FeeRecordService, FeeStatsDTO, Long, Page, Pageable, String, StudentFeeRecordDTO
-
-### Community 131 - "Department Management"
-Cohesion: 0.33
-Nodes (7): CreateDepartmentRequest, DepartmentDTO, GetMapping, List, PostMapping, ResponseEntity, DepartmentController
-
-### Community 132 - "Employeedocumentcontroller Superadmin Module"
-Cohesion: 0.33
-Nodes (7): EmployeeDocumentDTO, GetMapping, List, PostMapping, ResponseEntity, UploadDocumentRequest, EmployeeDocumentController
-
-### Community 133 - "Employeeperformancecontroller Superadmin Module"
-Cohesion: 0.33
-Nodes (7): AddPerformanceReviewRequest, EmployeePerformanceDTO, GetMapping, List, PostMapping, ResponseEntity, EmployeePerformanceController
-
-### Community 134 - "Employeedocumentservice Superadmin Module"
-Cohesion: 0.40
-Nodes (6): EmployeeDocument, EmployeeDocumentDTO, List, Transactional, UploadDocumentRequest, EmployeeDocumentService
-
-### Community 135 - "Employeeperformanceservice Superadmin Module"
-Cohesion: 0.40
-Nodes (6): AddPerformanceReviewRequest, EmployeePerformance, EmployeePerformanceDTO, List, Transactional, EmployeePerformanceService
-
-### Community 136 - "Corsconfig Config Module"
-Cohesion: 0.44
-Nodes (5): CorsConfig, CorsConfigurationSource, CorsFilter, Bean, FilterRegistrationBean
-
-### Community 137 - "Webmvcconfig Config Module"
-Cohesion: 0.15
-Nodes (13): WebMvcConfig, InterceptorRegistry, PermissionAuthorizationInterceptor, RoleAuthorizationInterceptor, WebMvcConfig, InterceptorRegistry, Override, RoleAuthorizationInterceptor (+5 more)
-
-### Community 138 - "Online Admission Workflow"
-Cohesion: 0.43
-Nodes (3): BeforeEach, Test, SuperAdminModuleServiceTest
-
-### Community 139 - "Studentparentid Getparentuserid Module"
+### Community 12 - "Student Src Main"
 Cohesion: 0.11
-Nodes (10): StudentParentId, StudentParentId, Long, Object, Override, Serializable, StudentParentId, Long (+2 more)
+Nodes (23): EntityGraph, List, Long, Optional, Page, Pageable, Query, String (+15 more)
 
-### Community 140 - "Fee Invoice & Billing"
-Cohesion: 0.30
-Nodes (7): FeeInvoice, FeeInvoiceRepository, FeeInvoice, List, Long, Optional, FeeInvoiceRepository
+### Community 13 - "Common Dashboardcontroller Dashboardservice"
+Cohesion: 0.09
+Nodes (30): DashboardController, DashboardService, DashboardService, PaymentRepository, Payment, ActivityFeedResponse, ApiResponse, CollectionExpensePointResponse (+22 more)
 
-### Community 141 - "Platformmodulerepository Findallbycategory Module"
-Cohesion: 0.44
-Nodes (5): PlatformModuleRepository, List, Optional, PlatformModule, String
+### Community 14 - "Frontoffice Admissionenquiryservice Admissionenquiryrepository"
+Cohesion: 0.11
+Nodes (25): AdmissionEnquiryRepository, AdmissionEnquiryService, AdmissionEnquiry, List, LocalDate, Long, Optional, Page (+17 more)
 
-### Community 142 - "Sectionrepository Findbyidandschoolid Module"
-Cohesion: 0.42
-Nodes (6): SectionRepository, List, Long, Optional, SectionRepository, Section
-
-### Community 143 - "Staffrepository Countbyschoolid Module"
-Cohesion: 0.30
-Nodes (6): StaffRepository, List, Long, Optional, StaffRepository, Staff
-
-### Community 144 - "School Onboarding & Setup"
-Cohesion: 0.22
-Nodes (8): DataImportErrorRepository, DataImportJobRepository, EntityManager, OnboardingDraftRepository, SchoolClassRepository, SchoolRepository, StaffRepository, StudentRepository
-
-### Community 145 - "Familyrequest Student Module"
-Cohesion: 0.33
-Nodes (3): Long, String, FamilyRequest
-
-### Community 146 - "Employee Payroll"
-Cohesion: 0.33
-Nodes (6): EmployeePayroll, Integer, List, Long, String, EmployeePayrollRepository
-
-### Community 147 - "Employee Asset Tracking"
-Cohesion: 0.36
-Nodes (6): EmployeeAsset, EmployeeAssetDTO, List, Long, Transactional, EmployeeAssetService
-
-### Community 148 - "Employeelifecycleservice Superadmin Module"
-Cohesion: 0.36
-Nodes (6): EmployeeLifecycle, EmployeeLifecycleDTO, List, Long, Transactional, EmployeeLifecycleService
-
-### Community 149 - "Employeenoteservice Superadmin Module"
-Cohesion: 0.36
-Nodes (6): EmployeeNote, EmployeeNoteDTO, List, Long, Transactional, EmployeeNoteService
-
-### Community 150 - "Accountrequestrepository Accountrequest Module"
-Cohesion: 0.05
-Nodes (39): 10. staff Table, 11. teachers Table, 12. subjects Table, 13. teacher_subjects Table, 14. exams Table, 15. grade_scales Table, 16. exam_results Table, 17. timetable Table (+31 more)
-
-### Community 151 - "Userrolemappingrepository Auth Module"
-Cohesion: 0.05
-Nodes (36): Admin Assignment Rules, Annotation Option, API Response Rules, Audit Requirements, Backend Package Design, Current Backend Starting Point, Data Isolation Rules, Decision Summary (+28 more)
-
-### Community 152 - "Authsessionrepository Authsession Module"
-Cohesion: 0.29
-Nodes (6): AuthSession, AuthSessionRepository, AuthSession, Optional, AuthSessionRepository, String
-
-### Community 153 - "Academicyearrepository Findbyidandschoolid Module"
-Cohesion: 0.40
-Nodes (6): AcademicYearRepository, AcademicYear, List, Long, Optional, AcademicYearRepository
-
-### Community 154 - "Idcardgenerationrepository Findbyschoolid Module"
-Cohesion: 0.43
-Nodes (5): IdCardGenerationRepository, IdCardGeneration, List, Long, Optional
-
-### Community 155 - "Online Admission Workflow"
-Cohesion: 0.43
-Nodes (5): OnlineAdmissionRepository, List, Long, OnlineAdmission, Optional
-
-### Community 156 - "Schoolclassrepository Findbyidandschoolid Module"
-Cohesion: 0.36
-Nodes (6): SchoolClassRepository, List, Long, Optional, SchoolClassRepository, SchoolClass
-
-### Community 157 - "Studentcategoryrepository Findbyidandschoolid Module"
-Cohesion: 0.43
-Nodes (5): StudentCategoryRepository, List, Long, Optional, StudentCategory
-
-### Community 158 - "Studentcertificaterepository Findbyidandschoolid Module"
-Cohesion: 0.43
-Nodes (5): StudentCertificateRepository, List, Long, Optional, StudentCertificate
-
-### Community 159 - "Studentdocumentrepository Findbyidandschoolid Module"
-Cohesion: 0.43
-Nodes (5): StudentDocumentRepository, List, Long, Optional, StudentDocument
-
-### Community 160 - "Studentfeestructurerepository Findbystudentid Module"
-Cohesion: 0.39
-Nodes (5): StudentFeeStructureRepository, List, Long, Optional, StudentFeeStructure
-
-### Community 161 - "Studenthouserepository Findbyidandschoolid Module"
-Cohesion: 0.43
-Nodes (5): StudentHouseRepository, List, Long, Optional, StudentHouse
-
-### Community 162 - "Studentleaverepository Findbyidandschoolid Module"
-Cohesion: 0.13
-Nodes (20): List, Long, Optional, StudentLeaveRepository, String, StudentLeave, AuthContextService, List (+12 more)
-
-### Community 163 - "Studentreferralrepository Findbyidandschoolid Module"
-Cohesion: 0.43
-Nodes (5): StudentReferralRepository, List, Long, Optional, StudentReferral
-
-### Community 164 - "Subscriptionplanrepository Findallbystatus Module"
-Cohesion: 0.43
-Nodes (5): SubscriptionPlanRepository, List, Optional, String, SubscriptionPlan
-
-### Community 165 - "Timetableperiodrepository Findbyidandschoolid Module"
-Cohesion: 0.43
-Nodes (5): TimetablePeriodRepository, List, Long, Optional, TimetablePeriod
-
-### Community 166 - "Useractivitylogrepository Findallbyorderbytimestampdesc Module"
-Cohesion: 0.46
-Nodes (5): UserActivityLogRepository, Long, Page, Pageable, UserActivityLog
-
-### Community 167 - "Userloginhistoryrepository Countbylogintimeafter Module"
-Cohesion: 0.39
-Nodes (5): UserLoginHistoryRepository, LocalDateTime, Page, Pageable, UserLoginHistory
-
-### Community 168 - "Employee Asset Tracking"
-Cohesion: 0.36
-Nodes (6): EmployeeAssetDTO, GetMapping, List, Long, ResponseEntity, EmployeeAssetController
-
-### Community 169 - "Employeelifecyclecontroller Superadmin Module"
-Cohesion: 0.36
-Nodes (6): EmployeeLifecycleDTO, GetMapping, List, Long, ResponseEntity, EmployeeLifecycleController
-
-### Community 170 - "Employeenotecontroller Superadmin Module"
-Cohesion: 0.36
-Nodes (6): EmployeeNoteDTO, GetMapping, List, Long, ResponseEntity, EmployeeNoteController
-
-### Community 171 - "Employeetimelinecontroller Superadmin Module"
-Cohesion: 0.36
-Nodes (6): EmployeeTimelineDTO, GetMapping, List, Long, ResponseEntity, EmployeeTimelineController
-
-### Community 172 - "Useraccesscontroller Superadmin Module"
-Cohesion: 0.39
-Nodes (6): ApiResponse, GrantAccessDTO, GrantAccessResponseDTO, PostMapping, ResponseEntity, UserAccessController
-
-### Community 173 - "Employee Leave & Lifecycle"
-Cohesion: 0.39
-Nodes (5): EmployeeLeave, List, Long, String, EmployeeLeaveRepository
-
-### Community 174 - "Employeeauditlogservice Superadmin Module"
-Cohesion: 0.43
-Nodes (5): EmployeeAuditLog, EmployeeAuditLogDTO, List, Transactional, EmployeeAuditLogService
-
-### Community 175 - "Userassignmentrepository Auth Module"
+### Community 15 - "Authcontroller Auth Getcurrentuser"
 Cohesion: 0.12
-Nodes (19): AuthSessionRepository, AuthTokenResponse, AuthUserResponse, JwtUtil, List, Long, RegisterStudentRequest, RegisterUserRequest (+11 more)
+Nodes (27): AuthController, AuthLoginRequest, AuthManagementService, AuthService, Operation, RefreshTokenRequest, SelectSchoolRequest, AccountRequestSubmitRequest (+19 more)
 
-### Community 176 - "Fee Payment Processing"
-Cohesion: 0.52
-Nodes (4): FeePaymentAllocation, FeePaymentAllocationRepository, List, Long
+### Community 16 - "Src Main Superadmin"
+Cohesion: 0.08
+Nodes (25): HealthController, GetMapping, Map, ResponseEntity, String, List, ModuleAdoptionDto, OnboardingMatrixDto (+17 more)
 
-### Community 177 - "Fee Dues & Discounts"
-Cohesion: 0.33
-Nodes (4): StudentEligibilityService, EligibilityStatus, FeeDueRepository, Long
+### Community 17 - "Exam Examattendancerepository Examattendanceservice"
+Cohesion: 0.12
+Nodes (21): ExamAttendanceRepository, ExamAttendanceService, ExamAttendance, List, Long, Optional, Page, Pageable (+13 more)
 
-### Community 178 - "Bulk Data Import Engine"
-Cohesion: 0.52
-Nodes (4): DataImportErrorRepository, DataImportError, List, Long
+### Community 18 - "Onlineadmission Student Src"
+Cohesion: 0.12
+Nodes (6): LocalDate, LocalDateTime, Long, PrePersist, String, OnlineAdmission
 
-### Community 179 - "Feestructurerepository Findbyschoolid Module"
-Cohesion: 0.52
-Nodes (4): FeeStructureRepository, FeeStructure, List, Long
+### Community 19 - "Auth Rolemanagementservice Rolerepository"
+Cohesion: 0.12
+Nodes (20): PermissionDefinitionRepository, RoleManagementService, RoleRepository, PermissionDefinition, Role, Optional, String, List (+12 more)
 
-### Community 180 - "Employeeauditlogcontroller Superadmin Module"
-Cohesion: 0.48
-Nodes (5): EmployeeAuditLogDTO, GetMapping, List, ResponseEntity, EmployeeAuditLogController
+### Community 20 - "Src Main Rolesyncservice"
+Cohesion: 0.12
+Nodes (17): RoleSyncService, String, Transactional, UserSchoolRole, CreateSuperAdminEmployeeRequest, List, Long, SuperAdminEmployeeDTO (+9 more)
 
-### Community 181 - "Department Management"
-Cohesion: 0.43
-Nodes (3): BeforeEach, Test, DepartmentControllerTest
+### Community 21 - "Usermanagementcontroller Superadmin Src"
+Cohesion: 0.14
+Nodes (19): AccountRequestDTO, DeleteMapping, GetMapping, ImpersonationResponseDTO, List, Long, Map, Page (+11 more)
 
-### Community 182 - "Attendance Management"
-Cohesion: 0.43
-Nodes (3): BeforeEach, Test, EmployeeAttendanceControllerTest
+### Community 22 - "Superadmin Usersupportcontroller Src"
+Cohesion: 0.14
+Nodes (20): ApiResponse, GetMapping, List, Long, Map, PasswordResetDTO, PostMapping, ResponseEntity (+12 more)
 
-### Community 183 - "Employeedocumentcontrollertest Superadmin Module"
-Cohesion: 0.43
-Nodes (3): BeforeEach, Test, EmployeeDocumentControllerTest
-
-### Community 184 - "Employee Leave & Lifecycle"
-Cohesion: 0.43
-Nodes (3): BeforeEach, Test, EmployeeLeaveControllerTest
-
-### Community 185 - "Employee Payroll"
-Cohesion: 0.43
-Nodes (3): BeforeEach, Test, EmployeePayrollControllerTest
-
-### Community 186 - "Employeeperformancecontrollertest Superadmin Module"
-Cohesion: 0.43
-Nodes (3): BeforeEach, Test, EmployeePerformanceControllerTest
-
-### Community 187 - "Superadminplanservicetest Superadmin Module"
-Cohesion: 0.43
-Nodes (3): BeforeEach, Test, SuperAdminPlanServiceTest
-
-### Community 188 - "Permissiondefinitionrepository Auth Module"
-Cohesion: 0.11
-Nodes (20): FilterChain, OncePerRequestFilter, FilterChain, HttpServletRequest, HttpServletResponse, JwtUtil, ObjectMapper, Override (+12 more)
-
-### Community 189 - "Loginaccessdataseeder Seed Module"
-Cohesion: 0.47
-Nodes (4): CommandLineRunner, LoginAccessDataSeeder, Override, Transactional
-
-### Community 190 - "Sales CRM & Leads"
-Cohesion: 0.33
-Nodes (5): CrmActivityLogRepository, CrmDemoRepository, CrmFollowUpRepository, CrmLeadRepository, CrmQuotationRepository
-
-### Community 191 - "Bulk Data Import Engine"
-Cohesion: 0.07
-Nodes (29): Autoscaling, Branching, Check Status Quo, Connection Methods & Drivers, Connection Pooling, Developer Tools, Fetching Docs as Markdown, Finding the Right Page (+21 more)
-
-### Community 192 - "Crmactivitylogrepository Findbyleadidorderbycreatedatdesc Module"
-Cohesion: 0.47
-Nodes (4): CrmActivityLogRepository, CrmActivityLog, List, Long
-
-### Community 193 - "Crmdemodto Scheduledemorequest Module"
-Cohesion: 0.33
-Nodes (4): CrmDemoDto, ScheduleDemoRequest, CrmDemoMode, CrmDemoStatus
-
-### Community 194 - "Crmdemorepository Findbyleadidorderbydemodatedesc Module"
-Cohesion: 0.47
-Nodes (4): CrmDemoRepository, CrmDemo, List, Long
-
-### Community 195 - "Crmfollowupdto Logfollowuprequest Module"
-Cohesion: 0.33
-Nodes (4): CrmFollowUpDto, LogFollowUpRequest, CrmFollowUpAction, CrmFollowUpStatus
-
-### Community 196 - "Crmfollowuprepository Findbyleadidorderbyscheduleddatedesc Module"
-Cohesion: 0.47
-Nodes (4): CrmFollowUpRepository, CrmFollowUp, List, Long
-
-### Community 197 - "Crmquotationrepository Findbyleadidorderbycreatedatdesc Module"
-Cohesion: 0.47
-Nodes (4): CrmQuotationRepository, CrmQuotation, List, Long
-
-### Community 198 - "Studentsibling Oncreate Module"
-Cohesion: 0.33
-Nodes (3): StudentSibling, PrePersist, PreUpdate
-
-### Community 199 - "Userrequest Oncreate Module"
-Cohesion: 0.33
-Nodes (3): UserRequest, PrePersist, PreUpdate
-
-### Community 200 - "Fee Payment Processing"
-Cohesion: 0.33
-Nodes (5): FeePaymentAllocationRepository, FeeDueRepository, PaymentRepository, SchoolRepository, StudentRepository
-
-### Community 201 - "Feestructureitemrepository Feestructureitem Module"
-Cohesion: 0.47
-Nodes (4): FeeStructureItem, FeeStructureItemRepository, List, Long
-
-### Community 202 - "Passwordresettokenrepository Passwordresettoken Module"
-Cohesion: 0.47
-Nodes (4): PasswordResetToken, PasswordResetTokenRepository, Optional, String
-
-### Community 203 - "Collectionplanrepository Findbyschoolid Module"
-Cohesion: 0.47
-Nodes (4): CollectionPlanRepository, CollectionPlan, List, Long
-
-### Community 204 - "Feecategoryrepository Findbyschoolid Module"
-Cohesion: 0.47
-Nodes (4): FeeCategoryRepository, FeeCategory, List, Long
-
-### Community 205 - "Schoolaccountrepository Findbyschoolid Module"
-Cohesion: 0.47
-Nodes (4): SchoolAccountRepository, List, Long, SchoolAccount
-
-### Community 206 - "Schoolconfigoverriderepository Findbyschoolid Module"
-Cohesion: 0.47
-Nodes (4): SchoolConfigOverrideRepository, SchoolConfigOverride, Long, Optional
-
-### Community 207 - "Ticketcategoryrepository Findbystatus Module"
-Cohesion: 0.47
-Nodes (4): TicketCategoryRepository, List, String, TicketCategory
-
-### Community 208 - "Tickethistoryrepository Findbyticketidorderbycreatedatdesc Module"
-Cohesion: 0.47
-Nodes (4): TicketHistoryRepository, List, Long, TicketHistory
-
-### Community 209 - "Userrequestrepository Findbystatus Module"
-Cohesion: 0.47
-Nodes (4): UserRequestRepository, List, String, UserRequest
-
-### Community 210 - "Authcontextholder Security Module"
-Cohesion: 0.18
-Nodes (3): AuthContextHolder, AuthenticatedUser, AuthContextHolder
-
-### Community 211 - "Authcontextservice Security Module"
-Cohesion: 0.24
-Nodes (4): AuthContextService, AuthenticatedUser, Long, AuthContextService
-
-### Community 212 - "Authfilterconfig Security Module"
-Cohesion: 0.39
-Nodes (5): AuthFilterConfig, Bean, FilterRegistrationBean, JwtAuthenticationFilter, AuthFilterConfig
-
-### Community 213 - "Employee Asset Tracking"
-Cohesion: 0.47
-Nodes (4): EmployeeAsset, List, Long, EmployeeAssetRepository
-
-### Community 214 - "Employeeauditlogrepository Superadmin Module"
-Cohesion: 0.47
-Nodes (4): EmployeeAuditLog, List, Long, EmployeeAuditLogRepository
-
-### Community 215 - "Employeedocumentrepository Superadmin Module"
-Cohesion: 0.47
-Nodes (4): EmployeeDocument, List, Long, EmployeeDocumentRepository
-
-### Community 216 - "Employeelifecyclerepository Superadmin Module"
-Cohesion: 0.47
-Nodes (4): EmployeeLifecycle, List, Long, EmployeeLifecycleRepository
-
-### Community 217 - "Employeenoterepository Superadmin Module"
-Cohesion: 0.47
-Nodes (4): EmployeeNote, List, Long, EmployeeNoteRepository
-
-### Community 218 - "Employeeperformancerepository Superadmin Module"
-Cohesion: 0.47
-Nodes (4): EmployeePerformance, List, Long, EmployeePerformanceRepository
-
-### Community 219 - "Employeeauditlogcontrollertest Superadmin Module"
-Cohesion: 0.47
-Nodes (3): BeforeEach, Test, EmployeeAuditLogControllerTest
-
-### Community 220 - "SuperAdmin Analytics Dashboard"
-Cohesion: 0.47
-Nodes (3): BeforeEach, Test, SuperAdminDashboardServiceTest
-
-### Community 221 - "Jacksonconfig Config Module"
-Cohesion: 0.43
-Nodes (4): JacksonConfig, Bean, JacksonConfig, ObjectMapper
-
-### Community 222 - "Bulk Data Import Engine"
-Cohesion: 0.40
-Nodes (3): DataImportJob, PrePersist, PreUpdate
-
-### Community 223 - "School Onboarding & Setup"
-Cohesion: 0.40
-Nodes (3): OnboardingDraft, PrePersist, PreUpdate
-
-### Community 224 - "Schoolmoduleaccess Platformmodule Module"
-Cohesion: 0.40
-Nodes (3): SchoolModuleAccess, PlatformModule, School
-
-### Community 226 - "Module & Plan Catalog"
-Cohesion: 0.40
-Nodes (4): assignment_types, modules, permissions, scopes
-
-### Community 227 - "Schooldto Superadmin Module"
-Cohesion: 0.40
-Nodes (3): Long, String, SchoolDto
-
-### Community 228 - "Authuserresponse Auth Module"
-Cohesion: 0.40
-Nodes (3): AuthUserResponse(), Long, String
-
-### Community 229 - "Module & Plan Catalog"
-Cohesion: 0.07
-Nodes (28): data, currentStep, schoolId, status, step1, step10, step11, step2 (+20 more)
-
-### Community 235 - "Schoolerpbackendapplication Module"
-Cohesion: 0.40
-Nodes (3): SchoolErpBackendApplication, SchoolErpBackendApplication, String
-
-### Community 236 - "Schoolerpbackendapplicationtests Test Module"
-Cohesion: 0.38
-Nodes (3): SchoolErpBackendApplicationTests, SchoolErpBackendApplicationTests, Test
-
-### Community 237 - "Authenticateduser Security Module"
-Cohesion: 0.60
-Nodes (3): AuthenticatedUser(), Long, UserRole
-
-### Community 238 - "Moduledto Superadmin Module"
+### Community 23 - "Studentcontroller Student Src"
 Cohesion: 0.16
-Nodes (19): ApiResponse, AuthLoginRequest, AuthService, AuthTokenResponse, AuthUserResponse, AuthController, GetMapping, HttpServletRequest (+11 more)
+Nodes (20): ApiResponse, DeleteMapping, GetMapping, List, Long, Map, Object, PostMapping (+12 more)
 
-### Community 239 - "Department Management"
-Cohesion: 0.07
-Nodes (28): data, currentStep, schoolId, status, step1, step10, step11, step2 (+20 more)
+### Community 24 - "Exam Examsetuprepository Examsetupservice"
+Cohesion: 0.14
+Nodes (16): ExamSetupRepository, ExamSetupService, BigDecimal, ExamSetup, List, Long, Optional, Query (+8 more)
 
-### Community 240 - "Attendance Management"
+### Community 25 - "Studentservice Student Src"
+Cohesion: 0.19
+Nodes (14): List, Long, School, SchoolClass, String, Student, StudentDocument, StudentDocumentRequest (+6 more)
+
+### Community 26 - "Usermanagementservice Superadmin Src"
+Cohesion: 0.14
+Nodes (16): UserLoginHistoryRepository, LocalDateTime, Page, Pageable, AccountRequestDTO, List, Long, Page (+8 more)
+
+### Community 27 - "Exam Examtermrepository Examtermservice"
+Cohesion: 0.15
+Nodes (15): ExamTermRepository, ExamTermService, ExamTerm, List, Long, Optional, Query, String (+7 more)
+
+### Community 28 - "Schoolclassservice Academic Src"
+Cohesion: 0.16
+Nodes (18): SchoolClassService, getAdmissionNumber(), getGrade(), getStudentId(), getStudentName(), JsonProperty, Long, String (+10 more)
+
+### Community 29 - "Superadmindashboardcontroller Superadmin Src"
+Cohesion: 0.16
+Nodes (17): ApiResponse, GetMapping, List, ModuleAdoptionDto, OnboardingMatrixDto, OperationalAlertDto, PipelineSchoolDto, PlatformHealthDto (+9 more)
+
+### Community 30 - "Supportticketcontroller Common Src"
+Cohesion: 0.14
+Nodes (18): SupportTicketController, TicketCategoryService, AssignTicketRequest, CreateSupportTicketRequest, GetMapping, List, Long, PostMapping (+10 more)
+
+### Community 31 - "Familyservice Student Src"
+Cohesion: 0.18
+Nodes (14): Object, Long, AuthContextService, Family, FamilyRepository, FamilyRequest, FamilyResponse, List (+6 more)
+
+### Community 32 - "Auth Authorizationservicetest Authorizationservice"
+Cohesion: 0.14
+Nodes (15): AuthorizationService, AuthorizationServiceTest, RolePermissionRepository, List, Long, Query, RolePermission, String (+7 more)
+
+### Community 33 - "Exam Examgradescaleservice Examgradescalerepository"
+Cohesion: 0.16
+Nodes (15): ExamGradeScaleRepository, ExamGradeScaleService, ExamGradeScale, List, Long, Optional, String, ExamGradeScale (+7 more)
+
+### Community 34 - "Finance Teacherfeecontroller Src"
+Cohesion: 0.13
+Nodes (21): TeacherFeeController, TeacherFeeService, ApiResponse, FeeReminderResponse, GetMapping, List, Long, Page (+13 more)
+
+### Community 35 - "Auth Authservicetest Userrolemappingrepository"
+Cohesion: 0.15
+Nodes (12): UserRepository, UserRoleMappingRepository, AuthServiceTest, Optional, String, User, List, Long (+4 more)
+
+### Community 36 - "Staffleaveservice Src Main"
 Cohesion: 0.13
 Nodes (17): SchoolLeaveTypeRepository, StaffLeaveBalanceRepository, StaffLeaveService, SchoolLeaveType, List, Long, List, Long (+9 more)
 
-### Community 242 - "Employee Payroll"
-Cohesion: 0.07
-Nodes (26): API Works Locally But Not On Render, App Starts But Health Fails, Common API Endpoints, Current Neon Database Values, Database Connection Fails, Deploy From GitHub To Render, Deploy Manually On Render, Final Deployment Checklist (+18 more)
+### Community 37 - "Salescrmcontroller Superadmin Src"
+Cohesion: 0.18
+Nodes (16): CreateCrmLeadRequest, CrmDashboardStatsDto, CrmDemoDto, CrmFollowUpDto, CrmLeadDto, CrmQuotationDto, GetMapping, List (+8 more)
 
-### Community 504 - "Community 504"
+### Community 38 - "Superadmin Preupdate Department"
+Cohesion: 0.07
+Nodes (14): PreUpdate, PreUpdate, PreUpdate, PreUpdate, Department, EmployeeAsset, EmployeeAttendance, EmployeeAuditLog (+6 more)
+
+### Community 39 - "Academicservice Academic Src"
+Cohesion: 0.09
+Nodes (20): ClassSubjectAssignmentRepository, ResourceNotFoundException, AcademicServiceTimetableTest, AcademicYearRepository, AuthContextService, ClassTeacherAssignmentRepository, EntitlementService, SchoolClassRepository (+12 more)
+
+### Community 40 - "Schooldepartmentcontroller Admin Src"
 Cohesion: 0.15
 Nodes (16): SchoolDepartmentController, SchoolDepartmentService, ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping (+8 more)
 
-### Community 505 - "Community 505"
+### Community 41 - "Schooldesignationcontroller Admin Src"
 Cohesion: 0.16
 Nodes (16): SchoolDesignationController, SchoolDesignationService, ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping (+8 more)
 
-### Community 506 - "Community 506"
-Cohesion: 0.08
-Nodes (24): data, currentStep, schoolId, status, step1, step10, step11, step2 (+16 more)
+### Community 42 - "Attendanceservice Attendance Src"
+Cohesion: 0.18
+Nodes (14): AttendanceService, Attendance, AttendanceRequest, AttendanceResponse, AttendanceSummaryDTO, AttendanceTrendDTO, BulkAttendanceRequest, GradeAttendanceDTO (+6 more)
 
-### Community 507 - "Community 507"
+### Community 43 - "Globalexceptionhandler Exception Src"
+Cohesion: 0.21
+Nodes (15): BadRequestException, ConstraintViolationException, Exception, GlobalExceptionHandler, ExceptionHandler, FieldError, ForbiddenException, MethodArgumentNotValidException (+7 more)
+
+### Community 44 - "Common Auditlogservice Auditlogrepository"
+Cohesion: 0.19
+Nodes (16): AuditLogRepository, AuditLogService, AuditLog, LocalDateTime, Long, Page, Pageable, Query (+8 more)
+
+### Community 45 - "Dataimportcontroller Onboarding Src"
+Cohesion: 0.17
+Nodes (15): DataImportControllerTest, DataImportService, DataImportController, ResolveErrorRequest, ApiResponse, DataImportErrorDTO, DataImportJobDTO, GetMapping (+7 more)
+
+### Community 46 - "Feemastercontroller Finance Src"
+Cohesion: 0.21
+Nodes (15): FeeMasterController, ApiResponse, DeleteMapping, FeeCategoryRequest, FeeCategoryResponse, FeeMasterService, FeeStructureRequest, FeeStructureResponse (+7 more)
+
+### Community 47 - "Finance Schoolaccountcontroller Schoolaccountservice"
+Cohesion: 0.16
+Nodes (17): SchoolAccountController, SchoolAccountService, ApiResponse, GetMapping, List, Long, PatchMapping, PostMapping (+9 more)
+
+### Community 48 - "Adminadmissionenquirycontroller Frontoffice Src"
+Cohesion: 0.19
+Nodes (18): AdminAdmissionEnquiryController, AdmissionEnquiryRequest, AdmissionEnquiryResponse, AdmissionEnquiryStatsResponse, ApiResponse, DeleteMapping, EnquiryFollowUpRequest, EnquiryFollowUpResponse (+10 more)
+
+### Community 49 - "Superadminmodulecontroller Superadmin Src"
+Cohesion: 0.16
+Nodes (14): ApiResponse, GetMapping, List, Long, ModuleDto, PostMapping, PutMapping, ResponseEntity (+6 more)
+
+### Community 50 - "Superadminschoolcontroller Superadmin Src"
+Cohesion: 0.17
+Nodes (16): SchoolSubscriptionService, ApiResponse, DeleteMapping, GetMapping, List, Long, PatchMapping, PostMapping (+8 more)
+
+### Community 51 - "Supportticketservice Common Src"
+Cohesion: 0.17
+Nodes (14): SupportTicketService, AssignTicketRequest, CreateSupportTicketRequest, List, Long, String, SupportTicket, SupportTicketDTO (+6 more)
+
+### Community 52 - "Dataimportservice Onboarding Src"
+Cohesion: 0.19
+Nodes (13): DataImportMappingDTO, DataImportService, DataImportError, DataImportErrorDTO, DataImportJob, DataImportJobDTO, List, Long (+5 more)
+
+### Community 53 - "Familycontroller Student Src"
 Cohesion: 0.22
-Nodes (15): ApiResponse, BadRequestException, ConstraintViolationException, Exception, GlobalExceptionHandler, ExceptionHandler, FieldError, ForbiddenException (+7 more)
+Nodes (14): FamilyService, ApiResponse, DeleteMapping, FamilyRequest, FamilyResponse, GetMapping, List, Long (+6 more)
 
-### Community 508 - "Community 508"
-Cohesion: 0.26
-Nodes (12): DashboardController, DashboardService, ActivityFeedResponse, ApiResponse, CollectionExpensePointResponse, DashboardController, DashboardKpiResponse, DashboardService (+4 more)
+### Community 54 - "Student Studentsiblingservice Src"
+Cohesion: 0.15
+Nodes (16): List, Long, Optional, StudentSibling, AuthContextService, List, Long, SchoolRepository (+8 more)
 
-### Community 509 - "Community 509"
+### Community 55 - "Salescrmservice Superadmin Src"
+Cohesion: 0.20
+Nodes (12): CreateCrmLeadRequest, CrmDashboardStatsDto, CrmLead, CrmLeadDto, List, LogFollowUpRequest, Long, ScheduleDemoRequest (+4 more)
+
+### Community 56 - "Examteacherremarkservice Exam Src"
+Cohesion: 0.17
+Nodes (13): ExamTeacherRemarkService, SchoolClass, Section, SectionRequest, SectionResponse, ExamTeacherRemark, Long, Page (+5 more)
+
+### Community 57 - "Rolecontroller Auth Src"
+Cohesion: 0.15
+Nodes (18): error(), RoleController, ApiResponse, String, ApiResponse, CreateRoleRequest, GetMapping, List (+10 more)
+
+### Community 58 - "Attendancecontroller Attendance Src"
+Cohesion: 0.21
+Nodes (15): AttendanceController, AttendanceService, ApiResponse, AttendanceRequest, AttendanceResponse, AttendanceSummaryDTO, AttendanceTrendDTO, BulkAttendanceRequest (+7 more)
+
+### Community 59 - "Adminexamschedulecontroller Exam Src"
+Cohesion: 0.23
+Nodes (16): AdminExamScheduleController, ApiResponse, BulkExamScheduleRequest, DeleteMapping, ExamScheduleRequest, ExamScheduleResponse, ExamScheduleStatsResponse, GetMapping (+8 more)
+
+### Community 60 - "Staffattendancerepository Staffattendanceservice Src"
+Cohesion: 0.17
+Nodes (14): StaffAttendanceRepository, StaffAttendanceService, List, LocalDate, Long, Optional, StaffAttendance, List (+6 more)
+
+### Community 61 - "Superadminschoolservice Superadmin Src"
+Cohesion: 0.21
+Nodes (13): List, Long, RoleManagementService, School, SchoolDto, SchoolModuleAccessRepository, SchoolRepository, StaffRepository (+5 more)
+
+### Community 62 - "Adminhrstaffcontroller Admin Src"
+Cohesion: 0.24
+Nodes (14): AdminHrStaffController, DeleteMapping, GetMapping, List, Long, PermissionRequired, PostMapping, PutMapping (+6 more)
+
+### Community 63 - "Staffpayrollrepository Staffpayrollservice Src"
 Cohesion: 0.16
 Nodes (14): StaffPayrollRepository, StaffPayrollService, Integer, List, Long, Optional, StaffPayroll, String (+6 more)
 
-### Community 510 - "Community 510"
-Cohesion: 0.10
-Nodes (20): 1. School Management, 2. Module & Permission Management, 3. Subscription & Billing (Future), 4. Platform User Management, 5. Audit & Monitoring, 6. Support & School Context (Impersonation), 7. Global Configuration, 8. Isolated School Overrides (+12 more)
+### Community 64 - "Adminexamgradescalecontroller Exam Src"
+Cohesion: 0.23
+Nodes (15): AdminExamGradeScaleController, ApiResponse, DeleteMapping, GetMapping, GradeScaleRequest, GradeScaleResponse, GradeScaleStatsResponse, List (+7 more)
 
-### Community 511 - "Community 511"
+### Community 65 - "Feerecordserviceimpl Finance Studentfeeaggregation"
+Cohesion: 0.15
+Nodes (14): FeeRecordService, StudentFeeAggregation, FeeRecordServiceImpl, BigDecimal, Long, FeeDueRepository, FeeStatsDTO, Long (+6 more)
+
+### Community 66 - "Staffcontroller Src Main"
+Cohesion: 0.20
+Nodes (14): StaffController, ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping, PutMapping (+6 more)
+
+### Community 67 - "Authmanagementservice Auth Src"
+Cohesion: 0.16
+Nodes (13): AuthManagementService, ImpersonationSessionRepository, ImpersonationSession, Long, Optional, String, AccountRequestSubmitRequest, AuthTokenResponse (+5 more)
+
+### Community 68 - "Superadminplancontroller Superadmin Src"
+Cohesion: 0.20
+Nodes (13): ApiResponse, DeleteMapping, GetMapping, List, Long, PatchMapping, PlanDto, PostMapping (+5 more)
+
+### Community 69 - "Adminexamreportcardcontroller Exam Src"
+Cohesion: 0.24
+Nodes (14): AdminExamReportCardController, ApiResponse, GenerateReportCardRequest, GetMapping, List, Long, PermissionRequired, PostMapping (+6 more)
+
+### Community 70 - "Adminexamsetupcontroller Exam Src"
 Cohesion: 0.25
-Nodes (10): AcademicYear, AcademicYearRepository, AcademicYearRequest, AcademicYearResponse, AuthContextService, List, Long, School (+2 more)
+Nodes (14): AdminExamSetupController, ApiResponse, DeleteMapping, ExamSetupRequest, ExamSetupResponse, ExamSetupStatsResponse, GetMapping, List (+6 more)
 
-### Community 512 - "Community 512"
+### Community 71 - "Adminexamtermcontroller Exam Src"
 Cohesion: 0.25
-Nodes (10): AuthContextService, List, Long, School, SchoolClass, SchoolClassRepository, SchoolClassRequest, SchoolClassResponse (+2 more)
+Nodes (14): AdminExamTermController, ApiResponse, DeleteMapping, ExamTermRequest, ExamTermResponse, ExamTermStatsResponse, GetMapping, List (+6 more)
 
-### Community 513 - "Community 513"
-Cohesion: 0.25
-Nodes (10): AuthContextService, List, Long, School, SchoolRepository, Section, SectionRepository, SectionRequest (+2 more)
+### Community 72 - "Examscheduleservice Exam Src"
+Cohesion: 0.24
+Nodes (12): ExamScheduleService, BulkExamScheduleRequest, ExamSchedule, ExamScheduleRequest, ExamScheduleResponse, ExamScheduleStatsResponse, List, Long (+4 more)
 
-### Community 514 - "Community 514"
-Cohesion: 0.25
-Nodes (10): AuthContextService, List, Long, School, SchoolRepository, StaffService, Staff, StaffRepository (+2 more)
+### Community 73 - "Studenthousecontroller Student Src"
+Cohesion: 0.20
+Nodes (14): ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity (+6 more)
 
-### Community 515 - "Community 515"
+### Community 74 - "Schoolservice Superadmin Src"
 Cohesion: 0.22
-Nodes (13): FeeInvoiceController, FeeInvoiceService, ApiResponse, DeleteMapping, FeeInvoiceRequest, FeeInvoiceResponse, GetMapping, List (+5 more)
+Nodes (11): List, Long, PlatformModuleRepository, RoleManagementService, School, SchoolModuleAccessRepository, SchoolRepository, SchoolRequest (+3 more)
 
-### Community 516 - "Community 516"
+### Community 75 - "Schoolclasscontroller Academic Src"
 Cohesion: 0.22
-Nodes (13): ApiResponse, SchoolClassController, DeleteMapping, GetMapping, List, Long, PostMapping, PutMapping (+5 more)
+Nodes (13): SchoolClassController, SchoolClassService, ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping (+5 more)
 
-### Community 517 - "Community 517"
+### Community 76 - "Superadminmoduleservice Superadmin Src"
+Cohesion: 0.22
+Nodes (11): Boolean, List, Long, ModuleDto, PlatformModule, PlatformModuleRepository, SchoolModuleAccessRepository, SchoolRepository (+3 more)
+
+### Community 77 - "Communicationcenterservice Superadmin Src"
+Cohesion: 0.14
+Nodes (11): EntitlementEvaluationDto, CommunicationAnnouncement, CreateAnnouncementRequest, CommunicationChannel, Set, CommunicationAnnouncement, CommunicationAnnouncementDTO, CreateAnnouncementRequest (+3 more)
+
+### Community 78 - "Staffservice Src Main"
+Cohesion: 0.26
+Nodes (10): StaffService, List, Long, School, Staff, StaffRequest, StaffResponse, StaffStatsResponse (+2 more)
+
+### Community 79 - "Schoolcontroller Superadmin Src"
 Cohesion: 0.21
-Nodes (13): ApiResponse, SchoolController, DeleteMapping, GetMapping, List, Long, PostMapping, PutMapping (+5 more)
+Nodes (13): SchoolService, ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping, PutMapping (+5 more)
 
-### Community 518 - "Community 518"
+### Community 80 - "Family Student Src"
+Cohesion: 0.14
+Nodes (7): LocalDateTime, Long, PrePersist, PreUpdate, School, String, Family
+
+### Community 81 - "Catalogservice Superadmin Src"
+Cohesion: 0.17
+Nodes (11): CatalogModuleDto, CatalogOptionDto, CatalogPlanDto, CatalogRoleDto, List, PlatformModule, PlatformModuleRepository, SubscriptionPlan (+3 more)
+
+### Community 82 - "Feeduecontroller Finance Src"
 Cohesion: 0.22
-Nodes (13): ApiResponse, StaffController, DeleteMapping, GetMapping, List, Long, PostMapping, PutMapping (+5 more)
+Nodes (13): AdHocFeeRequest, FeeDueController, ApiResponse, ApplyDiscountRequest, FeeDueResponse, FeeDueService, GetMapping, List (+5 more)
 
-### Community 519 - "Community 519"
-Cohesion: 0.22
-Nodes (12): Attendance, AttendanceRepository, AttendanceRequest, AttendanceResponse, AuthContextService, List, Long, School (+4 more)
+### Community 83 - "Subjectattendancecontroller Attendance Src"
+Cohesion: 0.23
+Nodes (13): SubjectAttendanceController, ApiResponse, BulkSubjectAttendanceRequest, GetMapping, List, LocalDate, Long, PostMapping (+5 more)
 
-### Community 520 - "Community 520"
-Cohesion: 0.27
-Nodes (12): StudentFeeController, ApiResponse, AuthenticatedUser, FeeDueResponse, GetMapping, List, Long, Page (+4 more)
+### Community 84 - "Subjectattendanceservice Attendance Src"
+Cohesion: 0.23
+Nodes (11): SubjectAttendanceService, AuthContextService, BulkSubjectAttendanceRequest, List, LocalDate, Long, StudentSubjectAttendanceSummaryDTO, SubjectAttendance (+3 more)
 
-### Community 521 - "Community 521"
-Cohesion: 0.11
-Nodes (17): API Base Structure, Attendance APIs, Authentication APIs, Conclusion, Dashboard APIs, Executive Summary, Fee Invoice APIs, Health Check API (+9 more)
-
-### Community 522 - "Community 522"
+### Community 85 - "Communicationcentercontroller Superadmin Src"
 Cohesion: 0.25
-Nodes (8): AuthenticatedUser, Long, Map, Object, ObjectMapper, JwtUtil, String, UserRole
+Nodes (12): ApiResponse, CommunicationAnnouncementDTO, CommunicationDashboardStatsDTO, CommunicationTemplateDTO, CreateAnnouncementRequest, CreateTemplateRequest, GetMapping, Page (+4 more)
 
-### Community 523 - "Community 523"
-Cohesion: 0.12
-Nodes (17): 1. Authentication Module, 2. Student Management Module, 3. Staff Management Module, 4. School Management Module, 5. Attendance Module, 6. Finance & Payment Module, 7. Dashboard Module, 8. Parent Module (+9 more)
+### Community 86 - "Collectionplancontroller Finance Src"
+Cohesion: 0.21
+Nodes (13): CollectionPlanService, CollectionPlanController, ApiResponse, CollectionPlanRequest, CollectionPlanResponse, DeleteMapping, GetMapping, List (+5 more)
 
-### Community 524 - "Community 524"
+### Community 87 - "Adminexamdivisioncontroller Exam Src"
+Cohesion: 0.26
+Nodes (13): AdminExamDivisionController, ApiResponse, DeleteMapping, DivisionRequest, DivisionResponse, GetMapping, List, Long (+5 more)
+
+### Community 88 - "Adminexamreportcontroller Exam Src"
+Cohesion: 0.22
+Nodes (14): AdminExamReportController, ApiResponse, ExamReportAnalyticsResponse, ExamReportMetricsResponse, ExamReportPreviewItemResponse, GeneratePdfReportRequest, GetMapping, List (+6 more)
+
+### Community 89 - "Feedueservice Finance Src"
+Cohesion: 0.19
+Nodes (11): FeeDueService, ApplyDiscountRequest, BigDecimal, FeeDueResponse, FeeGenerationConfirmRequest, FeeGenerationPreviewRequest, FeeGenerationPreviewResponse, List (+3 more)
+
+### Community 90 - "Hrstaffservice Src Main"
 Cohesion: 0.29
-Nodes (7): List, Long, School, SchoolRepository, SchoolRequest, SchoolResponse, SchoolService
+Nodes (9): HrStaffService, List, Long, Staff, StaffRequest, Transactional, UserAssignment, UserAssignmentRequest (+1 more)
 
-### Community 525 - "Community 525"
+### Community 91 - "Studentcategorycontroller Student Src"
+Cohesion: 0.20
+Nodes (13): ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity (+5 more)
+
+### Community 92 - "Studentcertificatecontroller Student Src"
+Cohesion: 0.20
+Nodes (13): ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity (+5 more)
+
+### Community 93 - "Studentleavecontroller Student Src"
+Cohesion: 0.20
+Nodes (13): ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity (+5 more)
+
+### Community 94 - "Studentreferralcontroller Student Src"
+Cohesion: 0.20
+Nodes (13): ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity (+5 more)
+
+### Community 95 - "Superadminplanservice Superadmin Src"
+Cohesion: 0.26
+Nodes (9): List, Long, PlanDto, PlatformModuleRepository, String, SubscriptionPlan, SubscriptionPlanRepository, Transactional (+1 more)
+
+### Community 96 - "Superadminrolecontroller Superadmin Src"
+Cohesion: 0.21
+Nodes (13): ApiResponse, CreateRoleRequest, GetMapping, List, PermissionGroupDto, PostMapping, PutMapping, ResponseEntity (+5 more)
+
+### Community 97 - "Adminexamattendancecontroller Exam Src"
+Cohesion: 0.27
+Nodes (13): AdminExamAttendanceController, ApiResponse, BulkExamAttendanceRequest, ExamAttendanceItemResponse, ExamAttendanceRecordRequest, ExamSessionSummaryResponse, GetMapping, List (+5 more)
+
+### Community 98 - "Adminexamcocurricularcontroller Exam Src"
+Cohesion: 0.25
+Nodes (13): AdminExamCoCurricularController, ApiResponse, CoCurricularGradeRequest, CoCurricularItemResponse, CoCurricularStatsResponse, GetMapping, Integer, List (+5 more)
+
+### Community 99 - "Feedueserviceimpl Src Main"
+Cohesion: 0.18
+Nodes (15): FeeGenerationBatchRepository, BigDecimal, CollectionPlan, FeeCategoryRepository, FeeDue, FeeDueRepository, FeeGenerationConfirmRequest, FeeStructure (+7 more)
+
+### Community 100 - "Security Permissionauthorizationinterceptor Roleauthorizationinterceptor"
+Cohesion: 0.16
+Nodes (13): HandlerInterceptor, ObjectProvider, PermissionAuthorizationInterceptor, RoleAuthorizationInterceptor, AuthorizationService, HttpServletRequest, HttpServletResponse, Object (+5 more)
+
+### Community 101 - "Teacherfeeserviceimpl Src Main"
+Cohesion: 0.22
+Nodes (12): TeacherFeeServiceImpl, AuthContextService, AuthenticatedUser, FeeReminderResponse, List, Long, Override, Page (+4 more)
+
+### Community 102 - "Onlineadmissioncontroller Student Src"
+Cohesion: 0.20
+Nodes (13): OnlineAdmissionService, ApiResponse, GetMapping, List, Long, Map, OnlineAdmissionRequest, OnlineAdmissionResponse (+5 more)
+
+### Community 103 - "Studentleaveservice Student Src"
+Cohesion: 0.24
+Nodes (11): AuthContextService, List, Long, SchoolRepository, StudentLeave, StudentLeaveRepository, StudentLeaveRequest, StudentLeaveResponse (+3 more)
+
+### Community 104 - "Timetableentryrepository Academic Src"
+Cohesion: 0.31
+Nodes (6): TimetableEntryRepository, List, Long, Optional, String, TimetableEntry
+
+### Community 105 - "Attendancerepository Attendance Src"
+Cohesion: 0.26
+Nodes (9): AttendanceRepository, Attendance, List, LocalDate, Long, Object, Optional, Query (+1 more)
+
+### Community 106 - "Exception Src Main"
+Cohesion: 0.12
+Nodes (9): BadRequestException, ForbiddenException, ResourceNotFoundException, UnauthorizedException, RuntimeException, String, String, String (+1 more)
+
+### Community 107 - "Catalogcontroller Superadmin Src"
+Cohesion: 0.28
+Nodes (10): CatalogService, ApiResponse, CatalogModuleDto, CatalogOptionDto, CatalogPlanDto, CatalogRoleDto, GetMapping, List (+2 more)
+
+### Community 108 - "Examcocurricularservice Exam Src"
+Cohesion: 0.25
+Nodes (10): ExamCoCurricularService, CoCurricularGradeRequest, CoCurricularItemResponse, CoCurricularStatsResponse, ExamCoCurricularGrade, Long, Page, Pageable (+2 more)
+
+### Community 109 - "Examreportcardservice Exam Src"
+Cohesion: 0.21
+Nodes (10): ExamReportCardService, GenerateReportCardRequest, List, Long, RecentlyGeneratedBatchResponse, ReportCardCriteriaCountResponse, ReportCardQueueStatusResponse, ReportCardTemplateResponse (+2 more)
+
+### Community 110 - "Examreportservice Exam Src"
+Cohesion: 0.21
+Nodes (11): ExamReportService, ExamReportAnalyticsResponse, ExamReportMetricsResponse, ExamReportPreviewItemResponse, GeneratePdfReportRequest, Long, Page, Pageable (+3 more)
+
+### Community 111 - "Feemasterservice Finance Src"
+Cohesion: 0.26
+Nodes (7): FeeMasterService, FeeCategoryRequest, FeeCategoryResponse, FeeStructureRequest, FeeStructureResponse, List, Long
+
+### Community 112 - "Feepaymentcontroller Finance Src"
+Cohesion: 0.24
+Nodes (12): FeePaymentController, ApiResponse, FeePaymentRequest, FeePaymentService, GetMapping, Long, Page, Pageable (+4 more)
+
+### Community 113 - "Onboardingdraftservice Onboarding Src"
+Cohesion: 0.23
+Nodes (10): OnboardingDraftService, Long, Map, Object, OnboardingActivationResponse, OnboardingDraftDTO, OnboardingInitRequest, OnboardingStepRequest (+2 more)
+
+### Community 114 - "Onlineadmissionservice Student Src"
+Cohesion: 0.19
+Nodes (13): OnlineAdmissionRepository, AuthContextService, List, Long, OnlineAdmission, OnlineAdmissionRequest, OnlineAdmissionResponse, SchoolClassRepository (+5 more)
+
+### Community 115 - "Studentsiblingcontroller Student Src"
+Cohesion: 0.21
+Nodes (12): ApiResponse, DeleteMapping, GetMapping, List, Long, PostMapping, ResponseEntity, StudentSiblingRequest (+4 more)
+
+### Community 116 - "Studentcategoryservice Student Src"
+Cohesion: 0.25
+Nodes (10): AuthContextService, List, Long, SchoolRepository, StudentCategory, StudentCategoryRepository, StudentCategoryRequest, StudentCategoryResponse (+2 more)
+
+### Community 117 - "Studentreferralservice Student Src"
+Cohesion: 0.25
+Nodes (10): AuthContextService, List, Long, SchoolRepository, StudentReferral, StudentReferralRequest, StudentReferralResponse, Transactional (+2 more)
+
+### Community 118 - "Classteacherassignmentrepository Academic Src"
+Cohesion: 0.36
+Nodes (6): ClassTeacherAssignmentRepository, ClassTeacherAssignment, List, Long, Optional, String
+
+### Community 119 - "Superadminsampledatainitializer Config Src"
+Cohesion: 0.21
+Nodes (11): ApplicationRunner, SuperAdminSampleDataInitializer, ApplicationArguments, AuditLogRepository, Override, PlatformModuleRepository, School, SchoolModuleAccessRepository (+3 more)
+
+### Community 120 - "Salescrmdatainitializer Config Src"
+Cohesion: 0.28
+Nodes (8): SalesCrmDataInitializer, ApplicationArguments, BigDecimal, CrmLead, LocalDateTime, Override, String, Transactional
+
+### Community 121 - "Examcocurriculargraderepository Exam Src"
+Cohesion: 0.26
+Nodes (9): ExamCoCurricularGradeRepository, ExamCoCurricularGrade, List, Long, Optional, Page, Pageable, Query (+1 more)
+
+### Community 122 - "Examteacherremarkrepository Exam Src"
+Cohesion: 0.25
+Nodes (9): ExamTeacherRemarkRepository, ExamTeacherRemark, List, Long, Optional, Page, Pageable, Query (+1 more)
+
+### Community 123 - "Idcardgenerationservice Student Src"
+Cohesion: 0.23
+Nodes (11): IdCardGenerationRepository, AuthContextService, IdCardGeneration, IdCardGenerationRequest, IdCardGenerationResponse, List, Long, SchoolRepository (+3 more)
+
+### Community 124 - "Feedueserviceimpl Src Main"
+Cohesion: 0.31
+Nodes (9): FeeDueServiceImpl, ApplyDiscountRequest, FeeDueResponse, FeeGenerationPreviewRequest, FeeGenerationPreviewResponse, Long, Override, String (+1 more)
+
+### Community 125 - "Onboardingdraftservice Onboarding Src"
 Cohesion: 0.22
 Nodes (14): SchoolSubscriptionInstallmentRepository, SchoolSubscriptionRepository, DataImportErrorRepository, DataImportJobRepository, EntityManager, ObjectMapper, OnboardingDraftRepository, PlatformModuleRepository (+6 more)
 
-### Community 526 - "Community 526"
-Cohesion: 0.29
-Nodes (10): ActivityFeedResponse, ApiResponse, CollectionExpensePointResponse, DashboardController, DashboardKpiResponse, DashboardService, GetMapping, List (+2 more)
+### Community 126 - "Studentservice Student Src"
+Cohesion: 0.12
+Nodes (15): AcademicYearRepository, AuthContextService, EntitlementService, FamilyRepository, FeeDueService, RoleSyncService, SchoolClassRepository, SchoolRepository (+7 more)
 
-### Community 527 - "Community 527"
+### Community 127 - "Subjectattendancerepository Attendance Src"
+Cohesion: 0.32
+Nodes (9): SubjectAttendanceRepository, EntityGraph, List, LocalDate, Long, Object, Optional, Query (+1 more)
+
+### Community 128 - "Userschoolrolerepository Auth Src"
+Cohesion: 0.38
+Nodes (8): UserSchoolRoleRepository, EntityGraph, List, Long, Optional, String, UserRole, UserSchoolRole
+
+### Community 129 - "Superadmin Employeetimelineservice Src"
+Cohesion: 0.20
+Nodes (10): EmployeeTimeline, List, Long, EmployeeTimeline, EmployeeTimelineDTO, List, Long, Transactional (+2 more)
+
+### Community 130 - "Parentcontroller Student Src"
+Cohesion: 0.21
+Nodes (10): ParentControllerTest, ParentService, ApiResponse, AuthContextService, GetMapping, List, ParentChildResponse, ResponseEntity (+2 more)
+
+### Community 131 - "Examreportcardrepository Exam Src"
+Cohesion: 0.29
+Nodes (9): ExamReportCardRepository, ExamReportCard, List, Long, Optional, Page, Pageable, Query (+1 more)
+
+### Community 132 - "Entitlementservicetest Entitlementservice Src"
+Cohesion: 0.17
+Nodes (9): EntitlementServiceTest, OnboardingDraftRepository, SchoolModuleAccessRepository, SchoolRepository, StudentRepository, SubscriptionPlanRepository, BeforeEach, Test (+1 more)
+
+### Community 133 - "Employeeleavecontroller Superadmin Src"
+Cohesion: 0.26
+Nodes (10): ApplyLeaveRequest, EmployeeLeaveDTO, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity (+2 more)
+
+### Community 134 - "Entitlementcontroller Superadmin Src"
+Cohesion: 0.20
+Nodes (11): ApiResponse, EntitlementEvaluationDto, EntitlementService, GetMapping, Integer, Long, PostMapping, ResponseEntity (+3 more)
+
+### Community 135 - "Superadminemployeecontroller Superadmin Src"
+Cohesion: 0.26
+Nodes (10): CreateSuperAdminEmployeeRequest, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity, SuperAdminEmployeeDTO (+2 more)
+
+### Community 136 - "Communicationcenterservice Superadmin Src"
+Cohesion: 0.27
+Nodes (8): CommunicationDashboardStatsDTO, CommunicationTemplate, CommunicationTemplateDTO, CreateTemplateRequest, Page, Pageable, Transactional, CommunicationCenterService
+
+### Community 137 - "Adminhrleavecontroller Admin Src"
 Cohesion: 0.25
 Nodes (10): AdminHrLeaveController, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity, StaffLeaveDTO (+2 more)
 
-### Community 528 - "Community 528"
-Cohesion: 0.24
-Nodes (10): ApiResponse, AttendanceRequest, AttendanceResponse, AttendanceService, AttendanceController, GetMapping, List, Long (+2 more)
+### Community 138 - "Userassignmentrepository Auth Src"
+Cohesion: 0.35
+Nodes (5): UserAssignmentRepository, List, Long, String, UserAssignment
 
-### Community 529 - "Community 529"
+### Community 139 - "Communicationdeliveryrepository Communication Src"
+Cohesion: 0.23
+Nodes (9): CommunicationDeliveryDTO, CommunicationDeliveryRepository, CommunicationDelivery, CommunicationDeliveryStatus, LocalDateTime, Long, Page, Pageable (+1 more)
+
+### Community 140 - "Examdivisionservice Exam Src"
 Cohesion: 0.37
-Nodes (6): Long, School, SchoolDto, String, Transactional, SuperAdminSchoolService
+Nodes (7): ExamDivisionService, DivisionRequest, DivisionResponse, ExamDivision, List, Long, Transactional
 
-### Community 530 - "Community 530"
-Cohesion: 0.40
-Nodes (7): List, Long, Optional, UserSchoolRoleRepository, String, UserRole, UserSchoolRole
+### Community 141 - "Feepaymentserviceimpl Src Main"
+Cohesion: 0.30
+Nodes (9): FeePaymentService, FeePaymentServiceImpl, FeePaymentRequest, Long, Override, Page, Pageable, PaymentResponse (+1 more)
 
-### Community 531 - "Community 531"
+### Community 142 - "Jwtauthenticationfilter Security Src"
+Cohesion: 0.21
+Nodes (10): FilterChain, OncePerRequestFilter, JwtAuthenticationFilter, HttpServletRequest, HttpServletResponse, JwtUtil, ObjectMapper, Override (+2 more)
+
+### Community 143 - "Feegenerationcontroller Finance Src"
+Cohesion: 0.25
+Nodes (10): FeeGenerationController, ApiResponse, FeeDueService, FeeGenerationConfirmRequest, FeeGenerationPreviewRequest, FeeGenerationPreviewResponse, Long, PostMapping (+2 more)
+
+### Community 144 - "Feerecordcontroller Finance Src"
+Cohesion: 0.25
+Nodes (10): FeeRecordController, ApiResponse, FeeRecordService, FeeStatsDTO, GetMapping, Long, Page, ResponseEntity (+2 more)
+
+### Community 145 - "Idcardgenerationcontroller Student Src"
+Cohesion: 0.24
+Nodes (10): IdCardGenerationService, ApiResponse, GetMapping, IdCardGenerationRequest, IdCardGenerationResponse, List, Long, PostMapping (+2 more)
+
+### Community 146 - "Employeepayrollcontroller Superadmin Src"
+Cohesion: 0.23
+Nodes (10): EmployeePayrollDTO, GetMapping, List, Long, PostMapping, PutMapping, ResponseEntity, RunPayrollRequest (+2 more)
+
+### Community 147 - "Studentsubjectenrollmentrepository Student Src"
+Cohesion: 0.31
+Nodes (6): List, Long, Optional, String, StudentSubjectEnrollment, StudentSubjectEnrollmentRepository
+
+### Community 148 - "Employeeleaveservice Superadmin Src"
+Cohesion: 0.32
+Nodes (8): ApplyLeaveRequest, EmployeeLeave, EmployeeLeaveDTO, List, Long, String, Transactional, EmployeeLeaveService
+
+### Community 149 - "Superadminlogservice Superadmin Src"
+Cohesion: 0.27
+Nodes (8): AuditLog, AuditLogRepository, List, String, SuperAdminLogEntryDto, SuperAdminLogStatsDto, Transactional, SuperAdminLogService
+
+### Community 150 - "Superadminlogcontroller Superadmin Src"
+Cohesion: 0.27
+Nodes (9): ApiResponse, GetMapping, List, ResponseEntity, String, SuperAdminLogEntryDto, SuperAdminLogStatsDto, SuperAdminLogController (+1 more)
+
+### Community 151 - "Salescrmservice Superadmin Src"
+Cohesion: 0.15
+Nodes (8): CrmActivityLogDto, CrmActivityLog, CrmDemo, CrmDemoDto, CrmFollowUp, CrmFollowUpDto, CrmQuotation, CrmQuotationDto
+
+### Community 152 - "Examreportcardbatchrepository Exam Src"
+Cohesion: 0.31
+Nodes (8): ExamReportCardBatchRepository, ExamReportCardBatch, List, Long, Optional, Page, Pageable, String
+
+### Community 153 - "Feeduerepository Finance Src"
+Cohesion: 0.29
+Nodes (7): FeeDueRepository, FeeDue, List, Long, Query, String, StudentFeeAggregation
+
+### Community 154 - "Employeeattendancecontroller Superadmin Src"
+Cohesion: 0.29
+Nodes (9): EmployeeAttendanceDTO, GetMapping, List, LocalDate, Long, MarkAttendanceRequest, PostMapping, ResponseEntity (+1 more)
+
+### Community 155 - "Employeeattendanceservice Superadmin Src"
+Cohesion: 0.32
+Nodes (8): EmployeeAttendance, EmployeeAttendanceDTO, List, LocalDate, Long, MarkAttendanceRequest, Transactional, EmployeeAttendanceService
+
+### Community 156 - "Employeepayrollservice Superadmin Src"
+Cohesion: 0.31
+Nodes (8): EmployeePayroll, EmployeePayrollDTO, List, Long, RunPayrollRequest, String, Transactional, EmployeePayrollService
+
+### Community 157 - "Adminhrattendancecontroller Admin Src"
 Cohesion: 0.29
 Nodes (9): AdminHrAttendanceController, GetMapping, List, LocalDate, Long, PostMapping, ResponseEntity, StaffAttendanceDTO (+1 more)
 
-### Community 532 - "Community 532"
+### Community 158 - "Adminhrpayrollcontroller Admin Src"
 Cohesion: 0.30
 Nodes (9): AdminHrPayrollController, GetMapping, List, Long, PermissionRequired, PostMapping, ResponseEntity, StaffPayrollDTO (+1 more)
 
-### Community 533 - "Community 533"
-Cohesion: 0.23
-Nodes (6): BadRequestException, OnboardingDraft, OnboardingDraftRepository, OnboardingDraftServiceTest, BeforeEach, Test
+### Community 159 - "Authservice Auth Src"
+Cohesion: 0.21
+Nodes (10): AuthSessionRepository, RolePermissionRepository, AuthorizationService, JwtUtil, RoleSyncService, SchoolRepository, StudentParentRepository, StudentRepository (+2 more)
 
-### Community 534 - "Community 534"
-Cohesion: 0.17
-Nodes (7): EntitlementEvaluationDto, CommunicationAnnouncement, CommunicationDeliveryDTO, CreateAnnouncementRequest, CommunicationChannel, SubscriptionPlan, Set
+### Community 160 - "Departmentservice Superadmin Src"
+Cohesion: 0.30
+Nodes (7): Department, CreateDepartmentRequest, DepartmentDTO, List, Transactional, DepartmentRepository, DepartmentService
 
-### Community 535 - "Community 535"
-Cohesion: 0.29
-Nodes (8): CommunicationDeliveryRepository, CommunicationDelivery, CommunicationDeliveryStatus, LocalDateTime, Long, Page, Pageable, Query
+### Community 161 - "Common Passwordreset Passwordresetrepository"
+Cohesion: 0.21
+Nodes (7): PasswordReset, PasswordResetRepository, PrePersist, PreUpdate, Optional, PasswordReset, UUID
 
-### Community 536 - "Community 536"
-Cohesion: 0.17
-Nodes (11): Connection Pool, Database Overview, Dependencies, Deployment Notes, Entity Mapping, Flyway Migrations, JPA and Hibernate Settings, Main Relationships (+3 more)
+### Community 162 - "Supportticketrepository Common Src"
+Cohesion: 0.30
+Nodes (7): SupportTicketRepository, List, Long, Optional, Query, String, SupportTicket
 
-### Community 537 - "Community 537"
+### Community 163 - "Schoolmoduleaccessrepository Superadmin Src"
+Cohesion: 0.35
+Nodes (7): SchoolModuleAccess, List, Long, Optional, PlatformModule, School, SchoolModuleAccessRepository
+
+### Community 164 - "Classsubjectassignmentrepository Academic Src"
+Cohesion: 0.40
+Nodes (5): ClassSubjectAssignmentRepository, ClassSubjectAssignment, List, Long, Optional
+
+### Community 165 - "Subjectrepository Academic Src"
+Cohesion: 0.40
+Nodes (6): SubjectRepository, List, Long, Optional, String, Subject
+
+### Community 166 - "Subjectattendanceservice Attendance Src"
+Cohesion: 0.18
+Nodes (10): ClassTeacherAssignmentRepository, SchoolClassRepository, SchoolRepository, SectionRepository, StaffRepository, StudentRepository, SubjectRepository, TimetableEntryRepository (+2 more)
+
+### Community 167 - "Superadminconfigcontroller Superadmin Src"
+Cohesion: 0.31
+Nodes (7): ApiResponse, GetMapping, PutMapping, ResponseEntity, SystemConfigDto, SuperAdminConfigController, SuperAdminConfigService
+
+### Community 168 - "Communicationannouncementrepository Communication Src"
+Cohesion: 0.35
+Nodes (7): CommunicationAnnouncementDTO, CommunicationAnnouncementRepository, CommunicationStatus, CommunicationAnnouncement, List, Page, Pageable
+
+### Community 169 - "Salescrmservicetest Superadmin Src"
+Cohesion: 0.22
+Nodes (6): CrmLeadDto, UpdateLeadStageRequest, CrmPipelineStage, BeforeEach, Test, SalesCrmServiceTest
+
+### Community 170 - "Feepaymentservice Finance Src"
+Cohesion: 0.35
+Nodes (7): FeePaymentService, FeePaymentRequest, Long, Page, Pageable, PaymentResponse, String
+
+### Community 171 - "Staffservice Src Main"
 Cohesion: 0.33
-Nodes (8): ForbiddenException, HandlerInterceptor, RoleAuthorizationInterceptor, HttpServletRequest, HttpServletResponse, Object, Override, RoleAuthorizationInterceptor
+Nodes (9): RoleRepository, AuthContextService, ClassTeacherAssignmentRepository, RoleSyncService, SchoolRepository, StaffRepository, UserRepository, UserRoleMappingRepository (+1 more)
 
-### Community 538 - "Community 538"
-Cohesion: 0.18
-Nodes (10): Common Issues, Connection Details, Connection timeout, Database does not appear, Password authentication failed, pgAdmin Connection Guide, Security Notes, SSL error (+2 more)
-
-### Community 539 - "Community 539"
-Cohesion: 0.18
-Nodes (10): auth, bearer, type, event, info, description, name, _postman_id (+2 more)
-
-### Community 540 - "Community 540"
+### Community 172 - "Schoolsubscriptionservice Superadmin Src"
 Cohesion: 0.31
 Nodes (7): SchoolSubscriptionInstallmentDTO, Long, SchoolSubscription, SchoolSubscriptionDTO, SchoolSubscriptionInstallment, Transactional, SchoolSubscriptionService
 
-### Community 541 - "Community 541"
+### Community 173 - "Superadminmoduleservicetest Superadmin Onlineadmission"
 Cohesion: 0.31
-Nodes (8): ApiResponse, AuthContextService, ParentController, GetMapping, List, ParentChildResponse, ParentService, ResponseEntity
+Nodes (4): StudentCategory, BeforeEach, Test, SuperAdminModuleServiceTest
 
-### Community 542 - "Community 542"
-Cohesion: 0.20
-Nodes (10): 1. `PlatformModule.java`, 2. `SchoolModuleAccess.java`, 3. `SubscriptionPlan.java`, 4. `AuditLog.java` (Enhanced), 5. `SchoolConfigOverride.java`, DTOs to Create, Entities, DTOs & Models, Entities to Create (+2 more)
-
-### Community 543 - "Community 543"
-Cohesion: 0.29
-Nodes (7): ObjectProvider, PermissionAuthorizationInterceptor, AuthorizationService, HttpServletRequest, HttpServletResponse, Object, Override
-
-### Community 544 - "Community 544"
+### Community 174 - "Securityconfig Config Src"
 Cohesion: 0.33
-Nodes (6): Attendance, List, LocalDate, Long, AttendanceRepository, String
+Nodes (6): SecurityConfig, HttpSecurity, SecurityFilterChain, Bean, FilterRegistrationBean, JwtAuthenticationFilter
 
-### Community 545 - "Community 545"
+### Community 175 - "Familyrequest Student Src"
 Cohesion: 0.31
-Nodes (6): List, Long, ParentChildResponse, ParentService, StudentParent, StudentParentRepository
+Nodes (3): Long, String, FamilyRequest
 
-### Community 546 - "Community 546"
+### Community 176 - "Employeeattendancerepository Superadmin Src"
 Cohesion: 0.40
 Nodes (6): EmployeeAttendance, List, LocalDate, Long, Optional, EmployeeAttendanceRepository
 
-### Community 547 - "Community 547"
-Cohesion: 0.22
-Nodes (8): containerDefinitions, cpu, executionRoleArn, family, memory, networkMode, requiresCompatibilities, taskRoleArn
+### Community 177 - "Feerecordservice Finance Src"
+Cohesion: 0.31
+Nodes (7): FeeRecordService, FeeStatsDTO, Long, Page, Pageable, String, StudentFeeRecordDTO
 
-### Community 548 - "Community 548"
-Cohesion: 0.36
-Nodes (6): SchoolSubscriptionRepository, List, Long, Optional, SchoolSubscription, String
+### Community 178 - "Staffrepository Src Main"
+Cohesion: 0.40
+Nodes (5): StaffRepository, List, Long, Optional, Staff
 
-### Community 549 - "Community 549"
-Cohesion: 0.22
-Nodes (8): containerDefinitions, cpu, executionRoleArn, family, memory, networkMode, requiresCompatibilities, taskRoleArn
+### Community 179 - "Onboardingdraftservicetest Onboardingdraftrepository Test"
+Cohesion: 0.27
+Nodes (5): OnboardingDraftRepository, OnboardingDraft, OnboardingDraftServiceTest, BeforeEach, Test
 
-### Community 550 - "Community 550"
-Cohesion: 0.44
-Nodes (5): FeeInvoice, List, Long, Optional, FeeInvoiceRepository
+### Community 180 - "Studenteligibilitycontroller Student Src"
+Cohesion: 0.27
+Nodes (7): ApiResponse, EligibilityStatus, GetMapping, Long, ResponseEntity, StudentEligibilityController, StudentEligibilityService
 
-### Community 551 - "Community 551"
-Cohesion: 0.39
-Nodes (5): List, Long, Optional, StaffRepository, Staff
-
-### Community 552 - "Community 552"
+### Community 181 - "Departmentcontroller Superadmin Src"
 Cohesion: 0.33
-Nodes (7): List, RoleManagementService, SchoolModuleAccessRepository, SchoolRepository, StaffRepository, StudentRepository, SubscriptionPlanRepository
+Nodes (7): CreateDepartmentRequest, DepartmentDTO, GetMapping, List, PostMapping, ResponseEntity, DepartmentController
 
-### Community 553 - "Community 553"
+### Community 182 - "Employeedocumentcontroller Superadmin Src"
+Cohesion: 0.33
+Nodes (7): EmployeeDocumentDTO, GetMapping, List, PostMapping, ResponseEntity, UploadDocumentRequest, EmployeeDocumentController
+
+### Community 183 - "Employeeperformancecontroller Superadmin Src"
+Cohesion: 0.33
+Nodes (7): AddPerformanceReviewRequest, EmployeePerformanceDTO, GetMapping, List, PostMapping, ResponseEntity, EmployeePerformanceController
+
+### Community 184 - "Familyrepository Student Src"
+Cohesion: 0.38
+Nodes (6): Family, List, Long, Optional, String, FamilyRepository
+
+### Community 185 - "Studentleaverepository Student Src"
+Cohesion: 0.33
+Nodes (6): List, Long, Optional, String, StudentLeave, StudentLeaveRepository
+
+### Community 186 - "Superadminemployeerepository Superadmin Src"
+Cohesion: 0.27
+Nodes (6): List, Long, Optional, Query, String, SuperAdminEmployeeRepository
+
+### Community 187 - "Employeedocumentservice Superadmin Src"
+Cohesion: 0.40
+Nodes (6): EmployeeDocument, EmployeeDocumentDTO, List, Transactional, UploadDocumentRequest, EmployeeDocumentService
+
+### Community 188 - "Employeeperformanceservice Superadmin Src"
+Cohesion: 0.40
+Nodes (6): AddPerformanceReviewRequest, EmployeePerformance, EmployeePerformanceDTO, List, Transactional, EmployeePerformanceService
+
+### Community 189 - "Sectionrepository Academic Src"
+Cohesion: 0.44
+Nodes (5): SectionRepository, List, Long, Optional, Section
+
+### Community 190 - "Attendanceservice Attendance Src"
+Cohesion: 0.22
+Nodes (8): AttendanceRepository, AuthContextService, ClassTeacherAssignmentRepository, SchoolRepository, StaffRepository, StudentLeaveRepository, StudentRepository, UserAssignmentRepository
+
+### Community 191 - "Aws Ecs Taskdef"
+Cohesion: 0.22
+Nodes (8): containerDefinitions, cpu, executionRoleArn, family, memory, networkMode, requiresCompatibilities, taskRoleArn
+
+### Community 192 - "Corsconfig Config Src"
+Cohesion: 0.44
+Nodes (5): CorsConfig, CorsConfigurationSource, CorsFilter, Bean, FilterRegistrationBean
+
+### Community 193 - "Webmvcconfig Config Src"
+Cohesion: 0.33
+Nodes (6): WebMvcConfig, InterceptorRegistry, PermissionAuthorizationInterceptor, RoleAuthorizationInterceptor, Override, WebMvcConfigurer
+
+### Community 194 - "Employeepayrollrepository Superadmin Src"
+Cohesion: 0.33
+Nodes (6): EmployeePayroll, Integer, List, Long, String, EmployeePayrollRepository
+
+### Community 195 - "Examdivisionrepository Exam Src"
+Cohesion: 0.39
+Nodes (5): ExamDivisionRepository, ExamDivision, List, Long, Optional
+
+### Community 196 - "Feeinvoicerepository Finance Src"
+Cohesion: 0.44
+Nodes (5): FeeInvoice, FeeInvoiceRepository, List, Long, Optional
+
+### Community 197 - "Dataimportservice Onboarding Src"
+Cohesion: 0.22
+Nodes (8): DataImportErrorRepository, DataImportJobRepository, EntityManager, OnboardingDraftRepository, SchoolClassRepository, SchoolRepository, StaffRepository, StudentRepository
+
+### Community 198 - "Studentparentid Student Src"
+Cohesion: 0.31
+Nodes (4): Serializable, Long, Override, StudentParentId
+
+### Community 199 - "Platformmodule Superadmin Src"
+Cohesion: 0.42
+Nodes (3): List, String, PlatformModule
+
+### Community 200 - "Platformmodulerepository Superadmin Src"
+Cohesion: 0.44
+Nodes (5): List, Optional, PlatformModule, String, PlatformModuleRepository
+
+### Community 201 - "Schoolsubscriptionrepository Superadmin Src"
 Cohesion: 0.36
-Nodes (3): AcademicService, AcademicControllerTimetableTest, Test
+Nodes (6): List, Long, Optional, SchoolSubscription, String, SchoolSubscriptionRepository
 
-### Community 554 - "Community 554"
-Cohesion: 0.25
-Nodes (7): 1) What is already prepared in code, 2) What you must do first (one-time AWS setup), 3) Deploy database (RDS), 4) Deploy backend (ECS Fargate), 5) Post-deploy checklist, 6) Recommended hardening for production, AWS Deployment (Database + Backend)
+### Community 202 - "Employeeassetservice Superadmin Src"
+Cohesion: 0.36
+Nodes (6): EmployeeAsset, EmployeeAssetDTO, List, Long, Transactional, EmployeeAssetService
 
-### Community 555 - "Community 555"
-Cohesion: 0.25
-Nodes (7): API Endpoint Summary, Flyway Migration: V4__super_admin_tables.sql, Migration Scripts, Next Steps, Notes & Considerations, Super Admin API - Implementation Plan, Table of Contents
+### Community 203 - "Employeelifecycleservice Superadmin Src"
+Cohesion: 0.36
+Nodes (6): EmployeeLifecycle, EmployeeLifecycleDTO, List, Long, Transactional, EmployeeLifecycleService
 
-### Community 556 - "Community 556"
-Cohesion: 0.25
-Nodes (8): 1. New Tables Required, `audit_logs` (Enhanced), `plan_modules`, `platform_modules`, `platform_users`, `school_config_overrides`, `school_module_access`, `subscription_plans`
+### Community 204 - "Employeenoteservice Superadmin Src"
+Cohesion: 0.36
+Nodes (6): EmployeeNote, EmployeeNoteDTO, List, Long, Transactional, EmployeeNoteService
 
-### Community 557 - "Community 557"
-Cohesion: 0.25
-Nodes (8): Implementation Phases, Phase 1: Foundation & Core Infrastructure (Week 1), Phase 2: School Management (Week 1-2), Phase 3: Module & Permission Management (Week 2), Phase 4: Subscription & Billing (Week 3), Phase 5: Support & Impersonation (Week 3), Phase 6: Audit & Monitoring (Week 4), Phase 7: Global Configuration & Overrides (Week 4)
-
-### Community 558 - "Community 558"
+### Community 205 - "Academicyearrepository Academic Src"
 Cohesion: 0.43
-Nodes (5): AcademicYear, List, Long, Optional, AcademicYearRepository
+Nodes (5): AcademicYearRepository, AcademicYear, List, Long, Optional
 
-### Community 559 - "Community 559"
+### Community 206 - "Schoolclassrepository Academic Src"
 Cohesion: 0.43
-Nodes (5): List, Long, Optional, SectionRepository, Section
+Nodes (5): SchoolClassRepository, List, Long, Optional, SchoolClass
 
-### Community 560 - "Community 560"
-Cohesion: 0.25
-Nodes (7): 1) What is already prepared in code, 2) What you must do first (one-time AWS setup), 3) Deploy database (RDS), 4) Deploy backend (ECS Fargate), 5) Post-deploy checklist, 6) Recommended hardening for production, AWS Deployment (Database + Backend)
+### Community 207 - "Timetableperiodrepository Academic Src"
+Cohesion: 0.43
+Nodes (5): TimetablePeriodRepository, List, Long, Optional, TimetablePeriod
 
-### Community 561 - "Community 561"
+### Community 208 - "Accountrequestrepository Common Src"
+Cohesion: 0.36
+Nodes (5): AccountRequest, AccountRequestRepository, Page, Pageable, String
+
+### Community 209 - "Authsessionrepository Auth Src"
 Cohesion: 0.46
-Nodes (4): AuthSession, Optional, AuthSessionRepository, String
+Nodes (4): AuthSessionRepository, AuthSession, Optional, String
 
-### Community 562 - "Community 562"
-Cohesion: 0.43
-Nodes (5): List, Long, Optional, SchoolClassRepository, SchoolClass
-
-### Community 563 - "Community 563"
-Cohesion: 0.39
-Nodes (3): AuthenticatedUser, Long, AuthContextService
-
-### Community 564 - "Community 564"
-Cohesion: 0.39
-Nodes (3): EntitlementServiceTest, BeforeEach, Test
-
-### Community 565 - "Community 565"
+### Community 210 - "Skills Lock Neon"
 Cohesion: 0.25
 Nodes (7): computedHash, skillPath, source, sourceType, skills, neon-postgres, version
 
-### Community 566 - "Community 566"
-Cohesion: 0.29
-Nodes (7): audit_logs, modules, permissions, Recommended Database Tables, role_permissions, school_modules, user_permissions
+### Community 211 - "Useraccesscontroller Superadmin Src"
+Cohesion: 0.39
+Nodes (6): ApiResponse, GrantAccessDTO, GrantAccessResponseDTO, PostMapping, ResponseEntity, UserAccessController
 
-### Community 567 - "Community 567"
-Cohesion: 0.29
-Nodes (7): Phase 1: Stabilize Current Auth, Phase 2: Add Module Tables, Phase 3: Add Permission Tables, Phase 4: Add Admin Screens, Phase 5: Add Advanced Roles, Phase 6: Add Plans And Billing, Recommended Implementation Phases
+### Community 212 - "Employeeleaverepository Superadmin Src"
+Cohesion: 0.39
+Nodes (5): EmployeeLeave, List, Long, String, EmployeeLeaveRepository
 
-### Community 568 - "Community 568"
-Cohesion: 0.29
-Nodes (7): 1. GET /super-admin/schools, 2. POST /super-admin/schools, 3. GET /super-admin/schools/{id}, 4. PUT /super-admin/schools/{id}, 5. PATCH /super-admin/schools/{id}/status, Detailed Endpoint Breakdown, School Management Endpoints
+### Community 213 - "Useractivitylogrepository Common Src"
+Cohesion: 0.46
+Nodes (5): UserActivityLogRepository, Long, Page, Pageable, UserActivityLog
 
-### Community 569 - "Community 569"
+### Community 215 - "Feereminderrepository Finance Src"
+Cohesion: 0.50
+Nodes (5): FeeReminder, FeeReminderRepository, Long, Page, Pageable
+
+### Community 216 - "Studentfeestructurerepository Finance Src"
+Cohesion: 0.39
+Nodes (5): StudentFeeStructureRepository, List, Long, Optional, StudentFeeStructure
+
+### Community 217 - "Dataimportjobrepository Onboarding Src"
+Cohesion: 0.43
+Nodes (5): DataImportJobRepository, DataImportJob, List, Long, String
+
+### Community 218 - "Employeeassetcontroller Superadmin Src"
+Cohesion: 0.36
+Nodes (6): EmployeeAssetDTO, GetMapping, List, Long, ResponseEntity, EmployeeAssetController
+
+### Community 219 - "Employeelifecyclecontroller Superadmin Src"
+Cohesion: 0.36
+Nodes (6): EmployeeLifecycleDTO, GetMapping, List, Long, ResponseEntity, EmployeeLifecycleController
+
+### Community 220 - "Employeenotecontroller Superadmin Src"
+Cohesion: 0.36
+Nodes (6): EmployeeNoteDTO, GetMapping, List, Long, ResponseEntity, EmployeeNoteController
+
+### Community 221 - "Employeetimelinecontroller Superadmin Src"
+Cohesion: 0.36
+Nodes (6): EmployeeTimelineDTO, GetMapping, List, Long, ResponseEntity, EmployeeTimelineController
+
+### Community 222 - "Idcardgenerationrepository Student Src"
+Cohesion: 0.43
+Nodes (5): IdCardGeneration, List, Long, Optional, IdCardGenerationRepository
+
+### Community 223 - "Onlineadmissionrepository Student Src"
+Cohesion: 0.43
+Nodes (5): List, Long, OnlineAdmission, Optional, OnlineAdmissionRepository
+
+### Community 224 - "Studentcategoryrepository Student Src"
+Cohesion: 0.43
+Nodes (5): List, Long, Optional, StudentCategory, StudentCategoryRepository
+
+### Community 225 - "Studentcertificaterepository Student Src"
+Cohesion: 0.43
+Nodes (5): List, Long, Optional, StudentCertificate, StudentCertificateRepository
+
+### Community 226 - "Studentdocumentrepository Student Src"
+Cohesion: 0.43
+Nodes (5): List, Long, Optional, StudentDocument, StudentDocumentRepository
+
+### Community 227 - "Studenthouserepository Student Src"
+Cohesion: 0.43
+Nodes (5): List, Long, Optional, StudentHouse, StudentHouseRepository
+
+### Community 228 - "Studentreferralrepository Student Src"
+Cohesion: 0.43
+Nodes (5): List, Long, Optional, StudentReferral, StudentReferralRepository
+
+### Community 229 - "Subscriptionplanrepository Superadmin Src"
+Cohesion: 0.43
+Nodes (5): List, Optional, String, SubscriptionPlan, SubscriptionPlanRepository
+
+### Community 230 - "Tenantentitlementoverriderepository Superadmin Src"
+Cohesion: 0.43
+Nodes (5): List, Long, String, TenantEntitlementOverrideRepository, TenantEntitlementOverride
+
+### Community 231 - "Employeeauditlogservice Superadmin Src"
+Cohesion: 0.43
+Nodes (5): EmployeeAuditLog, EmployeeAuditLogDTO, List, Transactional, EmployeeAuditLogService
+
+### Community 232 - "Staffadvancerepository Src Main"
 Cohesion: 0.52
 Nodes (4): StaffAdvanceRepository, List, Long, StaffAdvance
 
-### Community 570 - "Community 570"
+### Community 233 - "Staffleaverepository Src Main"
 Cohesion: 0.52
 Nodes (4): StaffLeaveRepository, List, Long, StaffLeave
 
-### Community 571 - "Community 571"
+### Community 234 - "Stafftaskrepository Src Main"
 Cohesion: 0.52
 Nodes (4): StaffTaskRepository, List, Long, StaffTask
 
-### Community 572 - "Community 572"
-Cohesion: 0.29
-Nodes (6): id, name, _postman_exported_at, _postman_exported_using, _postman_variable_scope, values
-
-### Community 573 - "Community 573"
-Cohesion: 0.29
-Nodes (6): id, name, _postman_exported_at, _postman_exported_using, _postman_variable_scope, values
-
-### Community 574 - "Community 574"
-Cohesion: 0.43
-Nodes (6): error(), success(), ApiResponse, PaginationMeta, String, T
-
-### Community 575 - "Community 575"
-Cohesion: 0.43
-Nodes (5): HealthController, GetMapping, Map, ResponseEntity, String
-
-### Community 576 - "Community 576"
+### Community 236 - "Feepaymentallocationrepository Finance Src"
 Cohesion: 0.52
-Nodes (4): Optional, UserRepository, String, User
+Nodes (4): FeePaymentAllocation, FeePaymentAllocationRepository, List, Long
 
-### Community 578 - "Community 578"
-Cohesion: 0.38
-Nodes (5): HttpServletRequest, HttpServletResponse, Object, Override, RoleAuthorizationInterceptor
+### Community 237 - "Feestructurerepository Finance Src"
+Cohesion: 0.52
+Nodes (4): FeeStructureRepository, FeeStructure, List, Long
 
-### Community 579 - "Community 579"
-Cohesion: 0.29
-Nodes (6): OnboardingDraftRepository, SchoolModuleAccessRepository, SchoolRepository, StudentRepository, SubscriptionPlanRepository, TenantEntitlementOverrideRepository
+### Community 238 - "Studenteligibilityservice Finance Src"
+Cohesion: 0.33
+Nodes (4): StudentEligibilityService, EligibilityStatus, FeeDueRepository, Long
 
-### Community 580 - "Community 580"
+### Community 239 - "Dataimporterrorrepository Onboarding Src"
+Cohesion: 0.52
+Nodes (4): DataImportErrorRepository, DataImportError, List, Long
+
+### Community 240 - "Employeeauditlogcontroller Superadmin Src"
+Cohesion: 0.48
+Nodes (5): EmployeeAuditLogDTO, GetMapping, List, ResponseEntity, EmployeeAuditLogController
+
+### Community 241 - "Departmentcontrollertest Superadmin Test"
+Cohesion: 0.43
+Nodes (3): BeforeEach, Test, DepartmentControllerTest
+
+### Community 242 - "Employeeattendancecontrollertest Superadmin Test"
+Cohesion: 0.43
+Nodes (3): BeforeEach, Test, EmployeeAttendanceControllerTest
+
+### Community 243 - "Employeedocumentcontrollertest Superadmin Test"
+Cohesion: 0.43
+Nodes (3): BeforeEach, Test, EmployeeDocumentControllerTest
+
+### Community 244 - "Employeeleavecontrollertest Superadmin Test"
+Cohesion: 0.43
+Nodes (3): BeforeEach, Test, EmployeeLeaveControllerTest
+
+### Community 245 - "Employeepayrollcontrollertest Superadmin Test"
+Cohesion: 0.43
+Nodes (3): BeforeEach, Test, EmployeePayrollControllerTest
+
+### Community 246 - "Employeeperformancecontrollertest Superadmin Test"
+Cohesion: 0.43
+Nodes (3): BeforeEach, Test, EmployeePerformanceControllerTest
+
+### Community 247 - "Superadminplanservicetest Superadmin Test"
+Cohesion: 0.43
+Nodes (3): BeforeEach, Test, SuperAdminPlanServiceTest
+
+### Community 248 - "Crm Crmdemodto Scheduledemorequest"
+Cohesion: 0.33
+Nodes (4): CrmDemoDto, ScheduleDemoRequest, CrmDemoMode, CrmDemoStatus
+
+### Community 249 - "Crm Crmfollowupdto Logfollowuprequest"
+Cohesion: 0.33
+Nodes (4): CrmFollowUpDto, LogFollowUpRequest, CrmFollowUpAction, CrmFollowUpStatus
+
+### Community 250 - "Communicationtemplaterepository Communication Src"
 Cohesion: 0.53
 Nodes (4): CommunicationTemplateRepository, CommunicationTemplate, Page, Pageable
 
-### Community 581 - "Community 581"
-Cohesion: 0.33
-Nodes (6): Important Terms, Module, Permission, Role, School, User
-
-### Community 582 - "Community 582"
-Cohesion: 0.33
-Nodes (6): 1. Authentication & Authorization, 2. Request Validation, 3. Response Security, 4. Audit Trail, 5. Impersonation Token Security, Security & Authorization
-
-### Community 583 - "Community 583"
-Cohesion: 0.33
-Nodes (3): Student, PrePersist, PreUpdate
-
-### Community 584 - "Community 584"
+### Community 251 - "Crmactivitylogrepository Crm Src"
 Cohesion: 0.47
-Nodes (4): AdmissionEnquiryFollowUpRepository, AdmissionEnquiryFollowUp, List, Long
+Nodes (4): CrmActivityLogRepository, CrmActivityLog, List, Long
 
-### Community 585 - "Community 585"
+### Community 252 - "Crmdemorepository Crm Src"
+Cohesion: 0.47
+Nodes (4): CrmDemoRepository, CrmDemo, List, Long
+
+### Community 253 - "Crmfollowuprepository Crm Src"
+Cohesion: 0.47
+Nodes (4): CrmFollowUpRepository, CrmFollowUp, List, Long
+
+### Community 254 - "Crmquotationrepository Crm Src"
+Cohesion: 0.47
+Nodes (4): CrmQuotationRepository, CrmQuotation, List, Long
+
+### Community 255 - "Recruitmentcandidaterepository Src Main"
 Cohesion: 0.47
 Nodes (4): RecruitmentCandidateRepository, RecruitmentCandidate, List, Long
 
-### Community 586 - "Community 586"
+### Community 256 - "Schooldepartmentrepository Src Main"
 Cohesion: 0.47
 Nodes (4): SchoolDepartmentRepository, List, Long, SchoolDepartment
 
-### Community 587 - "Community 587"
+### Community 257 - "Schooldesignationrepository Src Main"
 Cohesion: 0.47
 Nodes (4): SchoolDesignationRepository, List, Long, SchoolDesignation
 
-### Community 588 - "Community 588"
+### Community 258 - "Staffdocumentrepository Src Main"
 Cohesion: 0.47
 Nodes (4): StaffDocumentRepository, List, Long, StaffDocument
 
-### Community 589 - "Community 589"
+### Community 259 - "Employeeassetrepository Superadmin Src"
 Cohesion: 0.47
-Nodes (4): SchoolSubscriptionInstallmentRepository, List, Long, SchoolSubscriptionInstallment
+Nodes (4): EmployeeAsset, List, Long, EmployeeAssetRepository
 
-### Community 590 - "Community 590"
+### Community 260 - "Employeeauditlogrepository Superadmin Src"
 Cohesion: 0.47
-Nodes (4): List, Long, StudentParentRepository, StudentParent
+Nodes (4): EmployeeAuditLog, List, Long, EmployeeAuditLogRepository
 
-### Community 591 - "Community 591"
+### Community 261 - "Employeedocumentrepository Superadmin Src"
 Cohesion: 0.47
-Nodes (4): Bean, FilterRegistrationBean, JwtAuthenticationFilter, AuthFilterConfig
+Nodes (4): EmployeeDocument, List, Long, EmployeeDocumentRepository
 
-### Community 593 - "Community 593"
+### Community 262 - "Employeelifecyclerepository Superadmin Src"
+Cohesion: 0.47
+Nodes (4): EmployeeLifecycle, List, Long, EmployeeLifecycleRepository
+
+### Community 263 - "Employeenoterepository Superadmin Src"
+Cohesion: 0.47
+Nodes (4): EmployeeNote, List, Long, EmployeeNoteRepository
+
+### Community 264 - "Employeeperformancerepository Superadmin Src"
+Cohesion: 0.47
+Nodes (4): EmployeePerformance, List, Long, EmployeePerformanceRepository
+
+### Community 265 - "Authfilterconfig Security Src"
+Cohesion: 0.47
+Nodes (4): AuthFilterConfig, Bean, FilterRegistrationBean, JwtAuthenticationFilter
+
+### Community 266 - "Loginaccessdataseeder Seed Src"
+Cohesion: 0.47
+Nodes (4): CommandLineRunner, LoginAccessDataSeeder, Override, Transactional
+
+### Community 267 - "Superadmindashboardservicetest Superadmin Test"
+Cohesion: 0.47
+Nodes (3): BeforeEach, Test, SuperAdminDashboardServiceTest
+
+### Community 268 - "Passwordresettokenrepository Common Src"
+Cohesion: 0.47
+Nodes (4): PasswordResetTokenRepository, PasswordResetToken, Optional, String
+
+### Community 269 - "Ticketcategoryrepository Common Src"
+Cohesion: 0.47
+Nodes (4): TicketCategoryRepository, List, String, TicketCategory
+
+### Community 270 - "Tickethistoryrepository Common Src"
+Cohesion: 0.47
+Nodes (4): TicketHistoryRepository, List, Long, TicketHistory
+
+### Community 271 - "Userrequest Common Src"
+Cohesion: 0.33
+Nodes (3): UserRequest, PrePersist, PreUpdate
+
+### Community 272 - "Userrequestrepository Common Src"
+Cohesion: 0.47
+Nodes (4): UserRequestRepository, List, String, UserRequest
+
+### Community 273 - "Salescrmdatainitializer Config Crmactivitylogrepository"
+Cohesion: 0.33
+Nodes (5): CrmActivityLogRepository, CrmDemoRepository, CrmFollowUpRepository, CrmLeadRepository, CrmQuotationRepository
+
+### Community 275 - "Feepaymentserviceimpl Src Main"
+Cohesion: 0.33
+Nodes (5): FeePaymentAllocationRepository, FeeDueRepository, PaymentRepository, SchoolRepository, StudentRepository
+
+### Community 276 - "Collectionplanrepository Finance Src"
+Cohesion: 0.47
+Nodes (4): CollectionPlanRepository, CollectionPlan, List, Long
+
+### Community 277 - "Feecategoryrepository Finance Src"
+Cohesion: 0.47
+Nodes (4): FeeCategoryRepository, FeeCategory, List, Long
+
+### Community 278 - "Schoolaccountrepository Finance Src"
+Cohesion: 0.47
+Nodes (4): SchoolAccountRepository, List, Long, SchoolAccount
+
+### Community 279 - "Admissionenquiryfollowuprepository Frontoffice Src"
+Cohesion: 0.47
+Nodes (4): AdmissionEnquiryFollowUpRepository, AdmissionEnquiryFollowUp, List, Long
+
+### Community 280 - "Schoolconfigoverriderepository Superadmin Src"
+Cohesion: 0.47
+Nodes (4): SchoolConfigOverride, Long, Optional, SchoolConfigOverrideRepository
+
+### Community 281 - "Studentsibling Student Src"
+Cohesion: 0.33
+Nodes (3): PrePersist, PreUpdate, StudentSibling
+
+### Community 282 - "Schoolsubscriptioninstallmentrepository Superadmin Src"
+Cohesion: 0.47
+Nodes (4): List, Long, SchoolSubscriptionInstallment, SchoolSubscriptionInstallmentRepository
+
+### Community 283 - "Employeeauditlogcontrollertest Superadmin Test"
+Cohesion: 0.47
+Nodes (3): BeforeEach, Test, EmployeeAuditLogControllerTest
+
+### Community 285 - "Jacksonconfig Config Src"
 Cohesion: 0.60
-Nodes (3): OpenApiConfig, OpenAPI, Bean
+Nodes (3): JacksonConfig, Bean, ObjectMapper
 
-### Community 594 - "Community 594"
+### Community 286 - "Schooldto Superadmin Src"
 Cohesion: 0.40
-Nodes (5): Admin Adds A Teacher, Example User Journeys, Parent Views Child Fee, Super Admin Enables Fees For A School, Teacher Marks Attendance
+Nodes (3): Long, String, SchoolDto
 
-### Community 595 - "Community 595"
-Cohesion: 0.40
-Nodes (5): Integration Tests, Sample Test Cases, Security Tests, Testing Strategy, Unit Tests
-
-### Community 596 - "Community 596"
+### Community 287 - "Staffbankaccountrepository Src Main"
 Cohesion: 0.50
 Nodes (3): StaffBankAccountRepository, Long, StaffBankAccount
 
-### Community 597 - "Community 597"
+### Community 288 - "Staffpayrolldetailsrepository Src Main"
 Cohesion: 0.50
 Nodes (3): StaffPayrollDetailsRepository, Long, StaffPayrollDetails
 
-### Community 598 - "Community 598"
+### Community 290 - "Resources Auth Catalog"
+Cohesion: 0.40
+Nodes (4): assignment_types, modules, permissions, scopes
+
+### Community 293 - "Dataimportjob Onboarding Src"
+Cohesion: 0.40
+Nodes (3): DataImportJob, PrePersist, PreUpdate
+
+### Community 294 - "Onboardingdraft Onboarding Src"
+Cohesion: 0.40
+Nodes (3): OnboardingDraft, PrePersist, PreUpdate
+
+### Community 295 - "Feedueservicetest Test Src"
 Cohesion: 0.60
-Nodes (3): Bean, JacksonConfig, ObjectMapper
+Nodes (3): FeeDueServiceTest, Test, Transactional
 
-### Community 600 - "Community 600"
+### Community 296 - "Schoolmoduleaccess Superadmin Src"
+Cohesion: 0.40
+Nodes (3): PlatformModule, School, SchoolModuleAccess
+
+### Community 298 - "Authuserresponse Auth Src"
 Cohesion: 0.50
-Nodes (4): 2. Existing Tables Modifications, `auth_users` table - Add columns, Database Schema Changes, `schools` table - Add columns
+Nodes (3): AuthUserResponse(), Long, String
 
-### Community 601 - "Community 601"
-Cohesion: 0.50
-Nodes (4): API Prefix, Key Principles, Overview & Architecture, Technology Stack
-
-### Community 604 - "Community 604"
-Cohesion: 0.50
-Nodes (4): Backend Architecture Overview, Core Components, Project Overview, System Architecture
-
-### Community 609 - "Community 609"
+### Community 311 - "Authenticateduser Security Src"
 Cohesion: 0.67
-Nodes (3): Attendance Module Enabled, Fees Module Disabled, Module Access Examples
-
-### Community 610 - "Community 610"
-Cohesion: 0.67
-Nodes (3): Disable User Globally, Disable User In One School, User Enable/Disable
-
-### Community 612 - "Community 612"
-Cohesion: 0.67
-Nodes (3): API Design Standards, HTTP Methods Usage, REST Standards Followed
-
-### Community 613 - "Community 613"
-Cohesion: 0.67
-Nodes (3): Authentication Features, Authentication Flow, Security & Authentication
+Nodes (3): AuthenticatedUser(), Long, UserRole
 
 ## Knowledge Gaps
-- **1218 isolated node(s):** `String`, `status`, `schoolId`, `status`, `currentStep` (+1213 more)
+- **935 isolated node(s):** `family`, `networkMode`, `requiresCompatibilities`, `cpu`, `memory` (+930 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **264 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **301 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `success()` connect `Academic Curriculum & Cycles` to `RBAC & Authorization Engine`, `School Onboarding & Setup`, `Authentication & Session Flow`, `Module & Plan Catalog`, `Student Management API`, `SuperAdmin Analytics Dashboard`, `Fee Master & Fee Structure`, `Schoolaccountcontroller Schoolaccountservice Module`, `Parent & Family Portal`, `Superadminschoolcontroller Superadmin Module`, `Superadminmodulecontroller Superadmin Module`, `Staffcontroller Createstaff Module`, `Useraccesscontroller Superadmin Module`, `Studenthousecontroller Student Module`, `Superadminplancontroller Superadmin Module`, `Bulk Data Import Engine`, `Schoolclasscontroller Createclass Module`, `Schoolcontroller Createschool Module`, `Fee Dues & Discounts`, `Collectionplancontroller Collectionplanservice Module`, `Studentcategorycontroller Student Module`, `Studentcertificatecontroller Student Module`, `Studentleavecontroller Student Module`, `Studentreferralcontroller Student Module`, `Announcements & Communication`, `Online Admission Workflow`, `Role & Permission Management`, `Studentsiblingcontroller Student Module`, `Usersupportcontroller Superadmin Module`, `Fee Payment Processing`, `School Feature Entitlements`, `Parentcontroller Parentcontrollertest Module`, `Attendance Management`, `Fee Dues & Discounts`, `Feerecordcontroller Getfeerecords Module`, `Sales CRM & Leads`, `Idcardgenerationcontroller Student Module`, `Rolesyncservice Useraccessservice Module`, `Superadminlogcontroller Superadmin Module`, `Superadminconfigcontroller Superadmin Module`, `Community 508`, `Studenteligibilitycontroller Geteligibility Module`?**
-  _High betweenness centrality (0.171) - this node is a cross-community bridge._
-- **Why does `ResourceNotFoundException` connect `Studentleaveservice Createleave Module` to `Community 512`, `RBAC & Authorization Engine`, `Community 514`, `Online Admission Workflow`, `Community 513`, `Community 519`, `Academic Curriculum & Cycles`, `Studentrepository Studenthouseservice Module`, `Module & Plan Catalog`, `Community 524`, `Community 525`, `User Management & Impersonation`, `Student Information System`, `Schoolclassservice Auth Module`, `Parent & Family Portal`, `Schoolaccountcontroller Schoolaccountservice Module`, `Online Admission Workflow`, `Bulk Data Import Engine`, `Studentsiblingservice Studentsiblingrepository Module`, `Studentleaverepository Findbyidandschoolid Module`, `Superadminplanservice Superadmin Module`, `Community 552`, `Schoolservice Createschool Module`, `Userassignmentrepository Auth Module`, `Attendance Management`, `Studentcategoryservice Resourcenotfoundexception Module`, `Studentcertificateservice Createcertificate Module`, `Studentreferralservice Createreferral Module`, `Usersupportservice Superadmin Module`, `Academic Curriculum & Cycles`, `Idcardgenerationservice Idcardgenerationrepository Module`, `Timetableentryrepository Deletebyschoolidandschoolclassidandsectionidandacademicyearid Module`, `Student Information System`, `Sales CRM & Leads`, `Staffservice Auth Module`, `Passwordreset Passwordresetrepository Module`, `Support Ticket System`, `RBAC & Authorization Engine`, `Community 511`?**
-  _High betweenness centrality (0.084) - this node is a cross-community bridge._
-- **Why does `PaginationMeta` connect `Sales CRM & Leads` to `Academic Curriculum & Cycles`, `Superadminlogservice Superadmin Module`, `Superadminplanservice Superadmin Module`, `Usersupportservice Superadmin Module`, `Idcardgenerationservice Idcardgenerationrepository Module`, `Online Admission Workflow`?**
-  _High betweenness centrality (0.027) - this node is a cross-community bridge._
-- **Are the 210 inferred relationships involving `success()` (e.g. with `.createRole()` and `.getRolePermissions()`) actually correct?**
-  _`success()` has 210 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `String`, `status`, `schoolId` to the rest of the system?**
-  _1218 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Online Admission Workflow` be split into smaller, more focused modules?**
-  _Cohesion score 0.0701344243132671 - nodes in this community are weakly interconnected._
-- **Should `RBAC & Authorization Engine` be split into smaller, more focused modules?**
-  _Cohesion score 0.07638279192273925 - nodes in this community are weakly interconnected._
+- **Why does `success()` connect `Academiccontroller Academic Activateacademicyear` to `Exam Exammarkrepository Adminexammarkscontroller`, `Exam Examadmitcardrepository Examadmitcardservice`, `Parentcontroller Student Src`, `Finance Parentfeecontroller Studentfeecontroller`, `Entitlementcontroller Superadmin Src`, `Frontoffice Visitorlogservice Adminvisitorbookcontroller`, `Onboardingcontroller Onboarding Onboardingcontrollertest`, `Frontoffice Parcelreceiveservice Adminparcelreceivecontroller`, `Frontoffice Parceldispatchservice Adminparceldispatchcontroller`, `Frontoffice Admingatepasscontroller Gatepassservice`, `Common Dashboardcontroller Dashboardservice`, `Authcontroller Auth Getcurrentuser`, `Feegenerationcontroller Finance Src`, `Feerecordcontroller Finance Src`, `Idcardgenerationcontroller Student Src`, `Src Main Rolesyncservice`, `Superadminlogcontroller Superadmin Src`, `Studentcontroller Student Src`, `Superadmin Usersupportcontroller Src`, `Superadmindashboardcontroller Superadmin Src`, `Finance Teacherfeecontroller Src`, `Superadminconfigcontroller Superadmin Src`, `Schooldepartmentcontroller Admin Src`, `Schooldesignationcontroller Admin Src`, `Dataimportcontroller Onboarding Src`, `Feemastercontroller Finance Src`, `Finance Schoolaccountcontroller Schoolaccountservice`, `Adminadmissionenquirycontroller Frontoffice Src`, `Superadminmodulecontroller Superadmin Src`, `Superadminschoolcontroller Superadmin Src`, `Studenteligibilitycontroller Student Src`, `Familycontroller Student Src`, `Rolecontroller Auth Src`, `Attendancecontroller Attendance Src`, `Adminexamschedulecontroller Exam Src`, `Adminexamgradescalecontroller Exam Src`, `Staffcontroller Src Main`, `Superadminplancontroller Superadmin Src`, `Adminexamreportcardcontroller Exam Src`, `Adminexamsetupcontroller Exam Src`, `Adminexamtermcontroller Exam Src`, `Studenthousecontroller Student Src`, `Schoolclasscontroller Academic Src`, `Schoolcontroller Superadmin Src`, `Feeduecontroller Finance Src`, `Subjectattendancecontroller Attendance Src`, `Useraccesscontroller Superadmin Src`, `Communicationcentercontroller Superadmin Src`, `Collectionplancontroller Finance Src`, `Adminexamdivisioncontroller Exam Src`, `Adminexamreportcontroller Exam Src`, `Studentcategorycontroller Student Src`, `Studentcertificatecontroller Student Src`, `Studentleavecontroller Student Src`, `Studentreferralcontroller Student Src`, `Superadminrolecontroller Superadmin Src`, `Adminexamattendancecontroller Exam Src`, `Adminexamcocurricularcontroller Exam Src`, `Onlineadmissioncontroller Student Src`, `Catalogcontroller Superadmin Src`, `Feepaymentcontroller Finance Src`, `Studentsiblingcontroller Student Src`?**
+  _High betweenness centrality (0.228) - this node is a cross-community bridge._
+- **Why does `SuperAdminEmployee` connect `Superadmin Preupdate Department` to `Departmentservice Superadmin Src`, `Employeedocumentservice Superadmin Src`, `Employeeperformanceservice Superadmin Src`, `Employeeleaveservice Superadmin Src`, `Employeedocument Superadmin Preupdate`, `Employeeleave Superadmin Preupdate`, `Superadminemployeerepository Superadmin Src`, `Employeeattendanceservice Superadmin Src`, `Employeepayrollservice Superadmin Src`?**
+  _High betweenness centrality (0.048) - this node is a cross-community bridge._
+- **Why does `ResourceNotFoundException` connect `Academicservice Academic Src` to `Exam Exammarkrepository Adminexammarkscontroller`, `Academicservice Academic Activateacademicyear`, `Exam Examadmitcardrepository Examadmitcardservice`, `Frontoffice Visitorlogservice Adminvisitorbookcontroller`, `Frontoffice Parcelreceiveservice Adminparcelreceivecontroller`, `Frontoffice Parceldispatchservice Adminparceldispatchcontroller`, `Frontoffice Admingatepasscontroller Gatepassservice`, `Examdivisionservice Exam Src`, `Student Src Main`, `Frontoffice Admissionenquiryservice Admissionenquiryrepository`, `Exam Examattendancerepository Examattendanceservice`, `Exam Examsetuprepository Examsetupservice`, `Studentservice Student Src`, `Usermanagementservice Superadmin Src`, `Exam Examtermrepository Examtermservice`, `Schoolclassservice Academic Src`, `Authservice Auth Src`, `Familyservice Student Src`, `Exam Examgradescaleservice Examgradescalerepository`, `Attendanceservice Attendance Src`, `Globalexceptionhandler Exception Src`, `Staffservice Src Main`, `Finance Schoolaccountcontroller Schoolaccountservice`, `Dataimportservice Onboarding Src`, `Student Studentsiblingservice Src`, `Examteacherremarkservice Exam Src`, `Superadminschoolservice Superadmin Src`, `Examscheduleservice Exam Src`, `Schoolservice Superadmin Src`, `Subjectattendanceservice Attendance Src`, `Superadminplanservice Superadmin Src`, `Teacherfeeserviceimpl Src Main`, `Studentleaveservice Student Src`, `Examcocurricularservice Exam Src`, `Examreportcardservice Exam Src`, `Onlineadmissionservice Student Src`, `Studentcategoryservice Student Src`, `Studentreferralservice Student Src`, `Idcardgenerationservice Student Src`, `Onboardingdraftservice Onboarding Src`?**
+  _High betweenness centrality (0.022) - this node is a cross-community bridge._
+- **Are the 330 inferred relationships involving `success()` (e.g. with `.activateAcademicYear()` and `.assignClassTeacher()`) actually correct?**
+  _`success()` has 330 INFERRED edges - model-reasoned connections that need verification._
+- **What connects `family`, `networkMode`, `requiresCompatibilities` to the rest of the system?**
+  _935 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Exam Exammarkrepository Adminexammarkscontroller` be split into smaller, more focused modules?**
+  _Cohesion score 0.053194333066025126 - nodes in this community are weakly interconnected._
+- **Should `Academicservice Academic Activateacademicyear` be split into smaller, more focused modules?**
+  _Cohesion score 0.07962962962962963 - nodes in this community are weakly interconnected._

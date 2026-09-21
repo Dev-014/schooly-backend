@@ -1,8 +1,8 @@
 package com.school.erp.controller.superadmin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.school.erp.dto.EmployeeDocumentDTO;
-import com.school.erp.dto.UploadDocumentRequest;
+import com.school.erp.dto.hr.EmployeeDocumentDTO;
+import com.school.erp.dto.hr.UploadDocumentRequest;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
 import com.school.erp.service.superadmin.EmployeeDocumentService;

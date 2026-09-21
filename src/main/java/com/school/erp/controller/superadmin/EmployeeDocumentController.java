@@ -1,7 +1,7 @@
 package com.school.erp.controller.superadmin;
 
-import com.school.erp.dto.EmployeeDocumentDTO;
-import com.school.erp.dto.UploadDocumentRequest;
+import com.school.erp.dto.hr.EmployeeDocumentDTO;
+import com.school.erp.dto.hr.UploadDocumentRequest;
 import com.school.erp.service.superadmin.EmployeeDocumentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

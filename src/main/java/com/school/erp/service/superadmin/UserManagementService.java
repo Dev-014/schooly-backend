@@ -1,8 +1,12 @@
 package com.school.erp.service.superadmin;
 
 import com.school.erp.dto.usermanagement.*;
-import com.school.erp.entity.*;
-import com.school.erp.repository.*;
+import com.school.erp.entity.auth.*;
+import com.school.erp.entity.common.*;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.repository.auth.*;
+import com.school.erp.repository.common.*;
+import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.security.AuthContextHolder;
 import com.school.erp.security.AuthenticatedUser;
 import com.school.erp.security.JwtUtil;

@@ -1,8 +1,8 @@
 package com.school.erp.entity.exam;
 
-import com.school.erp.entity.School;
-import com.school.erp.entity.SchoolClass;
-import com.school.erp.entity.Section;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.academic.SchoolClass;
+import com.school.erp.entity.academic.Section;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

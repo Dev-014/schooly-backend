@@ -7,7 +7,7 @@ services:
     healthCheckPath: /health
     envVars:
       - key: SPRING_DATASOURCE_URL
-        value: jdbc:postgresql://ep-snowy-king-aopqgrht-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channelBinding=require
+        value: jdbc:postgresql://ep-snowy-king-aopqgrht-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channelBinding=require&socketTimeout=30&tcpKeepAlive=true&prepareThreshold=5&preparedStatementCacheQueries=256&preparedStatementCacheSizeMiB=5
       - key: SPRING_DATASOURCE_USERNAME
         value: neondb_owner
       - key: SPRING_DATASOURCE_PASSWORD

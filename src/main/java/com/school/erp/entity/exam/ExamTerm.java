@@ -1,7 +1,7 @@
 package com.school.erp.entity.exam;
 
-import com.school.erp.entity.AcademicYear;
-import com.school.erp.entity.School;
+import com.school.erp.entity.academic.AcademicYear;
+import com.school.erp.entity.superadmin.School;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

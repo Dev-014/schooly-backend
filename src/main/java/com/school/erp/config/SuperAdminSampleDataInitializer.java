@@ -1,13 +1,13 @@
 package com.school.erp.config;
 
-import com.school.erp.entity.AuditLog;
-import com.school.erp.entity.PlatformModule;
-import com.school.erp.entity.School;
-import com.school.erp.entity.SchoolModuleAccess;
-import com.school.erp.repository.AuditLogRepository;
-import com.school.erp.repository.PlatformModuleRepository;
-import com.school.erp.repository.SchoolModuleAccessRepository;
-import com.school.erp.repository.SchoolRepository;
+import com.school.erp.entity.common.AuditLog;
+import com.school.erp.entity.superadmin.PlatformModule;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.superadmin.SchoolModuleAccess;
+import com.school.erp.repository.common.AuditLogRepository;
+import com.school.erp.repository.superadmin.PlatformModuleRepository;
+import com.school.erp.repository.superadmin.SchoolModuleAccessRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.Ordered;

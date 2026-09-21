@@ -1,12 +1,12 @@
 package com.school.erp.service.superadmin;
 
 import com.school.erp.dto.superadmin.ModuleDto;
-import com.school.erp.entity.PlatformModule;
-import com.school.erp.entity.School;
-import com.school.erp.entity.SchoolModuleAccess;
-import com.school.erp.repository.PlatformModuleRepository;
-import com.school.erp.repository.SchoolModuleAccessRepository;
-import com.school.erp.repository.SchoolRepository;
+import com.school.erp.entity.superadmin.PlatformModule;
+import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.superadmin.SchoolModuleAccess;
+import com.school.erp.repository.superadmin.PlatformModuleRepository;
+import com.school.erp.repository.superadmin.SchoolModuleAccessRepository;
+import com.school.erp.repository.superadmin.SchoolRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,6 +84,7 @@ public class SuperAdminModuleService {
     }
 
     @Transactional
+    @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_ENTITLEMENTS, key = "#schoolId")
     public void toggleModuleForSchool(Long schoolId, String moduleCode, boolean enabled) {
         School school = schoolRepo.findById(schoolId)
                 .orElseThrow(() -> new com.school.erp.exception.ResourceNotFoundException("School not found for id " + schoolId));

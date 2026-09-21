@@ -1,6 +1,6 @@
 package com.school.erp.entity.auth;
 
-import com.school.erp.entity.User;
+import com.school.erp.entity.auth.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

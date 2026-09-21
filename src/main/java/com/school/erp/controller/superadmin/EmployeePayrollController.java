@@ -1,7 +1,7 @@
 package com.school.erp.controller.superadmin;
 
-import com.school.erp.dto.EmployeePayrollDTO;
-import com.school.erp.dto.RunPayrollRequest;
+import com.school.erp.dto.hr.EmployeePayrollDTO;
+import com.school.erp.dto.hr.RunPayrollRequest;
 import com.school.erp.service.superadmin.EmployeePayrollService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

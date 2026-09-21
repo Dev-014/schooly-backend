@@ -3,7 +3,7 @@ package com.school.erp.controller.student;
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.student.StudentCertificateRequest;
 import com.school.erp.dto.student.StudentCertificateResponse;
-import com.school.erp.service.StudentCertificateService;
+import com.school.erp.service.student.StudentCertificateService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
