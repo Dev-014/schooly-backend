@@ -29,9 +29,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/schooly_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: password123
+      SPRING_DATASOURCE_URL: jdbc:postgresql://ep-snowy-king-aopqgrht-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channelBinding=require&socketTimeout=30&tcpKeepAlive=true&prepareThreshold=5&preparedStatementCacheQueries=256&preparedStatementCacheSizeMiB=5
+      SPRING_DATASOURCE_USERNAME: neondb_owner
+      SPRING_DATASOURCE_PASSWORD: npg_rowJC37Isvuj
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_FLYWAY_ENABLED: "true"
       SPRING_FLYWAY_VALIDATE_ON_MIGRATE: "false"
