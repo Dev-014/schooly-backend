@@ -40,6 +40,7 @@ public class AuthorizationService {
     /**
      * Gets all active permissions across all active roles for a user in a school.
      */
+    @org.springframework.cache.annotation.Cacheable(value = com.school.erp.config.CacheConfig.CACHE_USER_PERMISSIONS, key = "#schoolId + '_' + #userId")
     @Transactional(readOnly = true)
     public List<RolePermission> getEffectivePermissions(Long schoolId, Long userId) {
         if (schoolId == null || userId == null) {

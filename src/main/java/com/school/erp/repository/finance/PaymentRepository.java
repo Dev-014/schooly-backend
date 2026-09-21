@@ -36,4 +36,16 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             @Param("month") int month,
             @Param("year") int year
     );
+
+    @Query("""
+            select cast(extract(month from p.createdAt) as integer), coalesce(sum(p.amount), 0)
+            from Payment p
+            where p.school.id = :schoolId
+              and extract(year from p.createdAt) = :year
+            group by extract(month from p.createdAt)
+            """)
+    List<Object[]> sumMonthlyAmountBySchoolAndYear(
+            @Param("schoolId") Long schoolId,
+            @Param("year") int year
+    );
 }

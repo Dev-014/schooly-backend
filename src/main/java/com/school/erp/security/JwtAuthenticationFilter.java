@@ -24,12 +24,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
-    private final com.school.erp.repository.superadmin.SchoolRepository schoolRepository;
+    private final org.springframework.beans.factory.ObjectProvider<com.school.erp.service.superadmin.SchoolService> schoolServiceProvider;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, ObjectMapper objectMapper, com.school.erp.repository.superadmin.SchoolRepository schoolRepository) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, ObjectMapper objectMapper, org.springframework.beans.factory.ObjectProvider<com.school.erp.service.superadmin.SchoolService> schoolServiceProvider) {
         this.jwtUtil = jwtUtil;
         this.objectMapper = objectMapper;
-        this.schoolRepository = schoolRepository;
+        this.schoolServiceProvider = schoolServiceProvider;
     }
 
     @Override
@@ -59,8 +59,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             AuthenticatedUser authenticatedUser = jwtUtil.parseAccessToken(token);
 
             if (authenticatedUser.schoolId() != null) {
-                com.school.erp.entity.superadmin.School school = schoolRepository.findById(authenticatedUser.schoolId()).orElse(null);
-                if (school != null && "SUSPENDED".equalsIgnoreCase(school.getStatus())) {
+                com.school.erp.service.superadmin.SchoolService schoolService = schoolServiceProvider.getIfAvailable();
+                if (schoolService != null && schoolService.isSchoolSuspended(authenticatedUser.schoolId())) {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     objectMapper.writeValue(response.getWriter(), ApiResponse.error("SCHOOL_SUSPENDED"));

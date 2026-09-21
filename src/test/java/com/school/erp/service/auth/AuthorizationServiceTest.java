@@ -41,7 +41,7 @@ class AuthorizationServiceTest {
     private UserAssignmentRepository userAssignmentRepository;
 
     @Mock
-    private SchoolModuleAccessRepository moduleAccessRepository;
+    private com.school.erp.service.superadmin.EntitlementService entitlementService;
 
     @InjectMocks
     private AuthorizationService authorizationService;
@@ -52,13 +52,12 @@ class AuthorizationServiceTest {
 
     @BeforeEach
     void setUp() {
-        org.mockito.Mockito.lenient().when(moduleAccessRepository.findBySchoolId(any())).thenAnswer(invocation -> {
-            PlatformModule module = new PlatformModule();
-            module.setCode("attendance");
-            SchoolModuleAccess access = new SchoolModuleAccess();
-            access.setModule(module);
-            return List.of(access);
-        });
+        com.school.erp.dto.catalog.EntitlementEvaluationDto eval = new com.school.erp.dto.catalog.EntitlementEvaluationDto(
+                SCHOOL_ID, "GROWTH", "Growth Plan",
+                java.util.Set.of("attendance", "fees", "exams"),
+                java.util.Map.of(), false, java.time.LocalDateTime.now()
+        );
+        org.mockito.Mockito.lenient().when(entitlementService.evaluateEntitlements(any())).thenReturn(eval);
     }
 
     @Test

@@ -133,6 +133,7 @@ public class RoleManagementService {
     }
 
     @Transactional
+    @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_USER_PERMISSIONS, allEntries = true)
     public void updateRolePermissions(Long schoolId, String roleId, UpdateRolePermissionsRequest request) {
         Role role = roleRepository.findById(roleId)
                 .filter(r -> r.isSystemRole() || r.getSchoolId().equals(schoolId))
@@ -183,6 +184,7 @@ public class RoleManagementService {
     }
     
     @Transactional
+    @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_USER_PERMISSIONS, allEntries = true)
     public void updateSystemRolePermissions(String roleId, UpdateRolePermissionsRequest request) {
         Role role = roleRepository.findById(roleId)
                 .filter(Role::isSystemRole)

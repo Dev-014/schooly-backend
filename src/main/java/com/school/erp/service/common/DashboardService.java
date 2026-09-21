@@ -70,12 +70,24 @@ public class DashboardService {
 
     public List<CollectionExpensePointResponse> getCollectionVsExpense(Long schoolId, int year) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
+        List<Object[]> monthlyData = paymentRepository.sumMonthlyAmountBySchoolAndYear(effectiveSchoolId, year);
+        java.util.Map<Integer, BigDecimal> monthMap = new java.util.HashMap<>();
+        if (monthlyData != null) {
+            for (Object[] row : monthlyData) {
+                if (row != null && row.length >= 2 && row[0] != null && row[1] != null) {
+                    Integer month = ((Number) row[0]).intValue();
+                    BigDecimal amount = (BigDecimal) row[1];
+                    monthMap.put(month, amount);
+                }
+            }
+        }
+
         List<CollectionExpensePointResponse> result = new ArrayList<>();
         for (int month = 1; month <= 12; month++) {
-            BigDecimal monthlyCollection = paymentRepository.sumAmountBySchoolAndMonthAndYear(effectiveSchoolId, month, year);
+            BigDecimal monthlyCollection = monthMap.getOrDefault(month, BigDecimal.ZERO);
             result.add(new CollectionExpensePointResponse(
                     Month.of(month).name().substring(0, 3),
-                    monthlyCollection == null ? BigDecimal.ZERO : monthlyCollection,
+                    monthlyCollection,
                     BigDecimal.ZERO
             ));
         }

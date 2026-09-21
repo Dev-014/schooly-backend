@@ -73,14 +73,23 @@ public class AttendanceService {
         java.time.LocalDate today = java.time.LocalDate.now();
         
         long totalStudents = studentRepository.countBySchoolId(effectiveSchoolId);
-        long present = attendanceRepository.countBySchoolIdAndAttendanceDateAndStatus(effectiveSchoolId, today, "PRESENT");
-        long absent = attendanceRepository.countBySchoolIdAndAttendanceDateAndStatus(effectiveSchoolId, today, "ABSENT");
-        long late = attendanceRepository.countBySchoolIdAndAttendanceDateAndStatus(effectiveSchoolId, today, "LATE");
-        long excused = attendanceRepository.countBySchoolIdAndAttendanceDateAndStatus(effectiveSchoolId, today, "EXCUSED");
+        List<Object[]> statusCounts = attendanceRepository.countStatusBySchoolIdAndDate(effectiveSchoolId, today);
+        java.util.Map<String, Long> countMap = new java.util.HashMap<>();
+        if (statusCounts != null) {
+            for (Object[] row : statusCounts) {
+                if (row != null && row.length >= 2 && row[0] != null && row[1] != null) {
+                    countMap.put(row[0].toString().toUpperCase(), ((Number) row[1]).longValue());
+                }
+            }
+        }
+
+        long present = countMap.getOrDefault("PRESENT", 0L);
+        long absent = countMap.getOrDefault("ABSENT", 0L);
+        long late = countMap.getOrDefault("LATE", 0L);
         
         long pendingLeaves = studentLeaveRepository.countBySchoolIdAndStatus(effectiveSchoolId, "PENDING");
 
-        present += late; // late is often considered present, or we can keep it separate. The frontend adds present + late. Let's keep it separate as returned by count.
+        present += late; // late is considered present in overall count
         int presentPercent = totalStudents == 0 ? 0 : (int) (((double) (present) / totalStudents) * 100);
         
         return new com.school.erp.dto.attendance.AttendanceSummaryDTO((int)totalStudents, (int)present, (int)absent, (int)late, presentPercent, (int)pendingLeaves);

@@ -38,6 +38,7 @@ public class EntitlementService {
         this.moduleAccessRepository = moduleAccessRepository;
     }
 
+    @org.springframework.cache.annotation.Cacheable(value = com.school.erp.config.CacheConfig.CACHE_ENTITLEMENTS, key = "#schoolId")
     @Transactional(readOnly = true)
     public EntitlementEvaluationDto evaluateEntitlements(Long schoolId) {
         School school = schoolRepo.findById(schoolId)
@@ -113,6 +114,7 @@ public class EntitlementService {
     }
 
     @Transactional
+    @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_ENTITLEMENTS, key = "#schoolId")
     public void grantOverride(Long schoolId, String moduleCode, String overrideType, Integer durationDays) {
         School school = schoolRepo.findById(schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("School not found with ID: " + schoolId));

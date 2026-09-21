@@ -29,6 +29,14 @@ public class SchoolService {
         this.schoolModuleAccessRepository = schoolModuleAccessRepository;
     }
 
+    @org.springframework.cache.annotation.Cacheable(value = com.school.erp.config.CacheConfig.CACHE_SCHOOL_STATUS, key = "#schoolId")
+    public boolean isSchoolSuspended(Long schoolId) {
+        if (schoolId == null) return false;
+        return schoolRepository.findById(schoolId)
+                .map(s -> "SUSPENDED".equalsIgnoreCase(s.getStatus()))
+                .orElse(false);
+    }
+
     public List<SchoolResponse> getAllSchools() {
         return schoolRepository.findAll().stream().map(this::toResponse).toList();
     }
@@ -59,6 +67,7 @@ public class SchoolService {
     }
 
     @Transactional
+    @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_SCHOOL_STATUS, key = "#id")
     public SchoolResponse updateSchool(Long id, SchoolRequest request) {
         School school = findSchool(id);
         mapRequestToEntity(school, request);
@@ -66,6 +75,7 @@ public class SchoolService {
     }
 
     @Transactional
+    @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_SCHOOL_STATUS, key = "#id")
     public void deleteSchool(Long id) {
         School school = findSchool(id);
         schoolRepository.delete(school);

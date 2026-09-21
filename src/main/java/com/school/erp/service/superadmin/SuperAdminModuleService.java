@@ -84,6 +84,7 @@ public class SuperAdminModuleService {
     }
 
     @Transactional
+    @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_ENTITLEMENTS, key = "#schoolId")
     public void toggleModuleForSchool(Long schoolId, String moduleCode, boolean enabled) {
         School school = schoolRepo.findById(schoolId)
                 .orElseThrow(() -> new com.school.erp.exception.ResourceNotFoundException("School not found for id " + schoolId));

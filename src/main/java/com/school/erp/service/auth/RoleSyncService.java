@@ -21,6 +21,7 @@ public class RoleSyncService {
     private final UserRoleMappingRepository userRoleMappingRepository;
 
     @Transactional
+    @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_USER_PERMISSIONS, allEntries = true)
     public void syncUserSchoolRole(UserSchoolRole userSchoolRole) {
         if (userSchoolRole == null || userSchoolRole.getUser() == null) {
             return;

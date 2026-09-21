@@ -8,7 +8,10 @@ import java.util.List;
 
 @Repository
 public interface FeeDueRepository extends JpaRepository<FeeDue, Long> {
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"feeCategory"})
     List<FeeDue> findByStudentIdAndSchoolIdOrderByDueDateAsc(Long studentId, Long schoolId);
+
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"feeCategory"})
     List<FeeDue> findByStudentIdAndSchoolIdAndStatusInOrderByDueDateAsc(Long studentId, Long schoolId, List<String> statuses);
     boolean existsByStudentIdAndFeeStructureIdAndIsAdHocFalse(Long studentId, Long feeStructureId);
 
