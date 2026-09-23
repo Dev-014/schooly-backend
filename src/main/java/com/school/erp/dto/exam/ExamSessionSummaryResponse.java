@@ -18,4 +18,6 @@ public class ExamSessionSummaryResponse {
     private long totalExaminees;
     private long hallCapacity;
     private String upcomingExam;
+    private String examDate;
+    private String examStartTime;
 }

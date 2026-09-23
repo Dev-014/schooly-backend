@@ -28,10 +28,11 @@ public class AdminExamReportController {
             @RequestParam(required = false) String academicYear,
             @RequestParam(required = false) Long termId,
             @RequestParam(required = false) Long classId,
-            @RequestParam(required = false) Long sectionId) {
+            @RequestParam(required = false) Long sectionId,
+            @RequestParam(required = false) Long examSetupId) {
 
         return ResponseEntity.ok(ApiResponse.success(
-                examReportService.getAnalytics(schoolId, academicYear, termId, classId, sectionId),
+                examReportService.getAnalytics(schoolId, academicYear, termId, classId, sectionId, examSetupId),
                 "Examination analytics retrieved successfully"));
     }
 
@@ -42,10 +43,11 @@ public class AdminExamReportController {
             @RequestParam(required = false) Long termId,
             @RequestParam(required = false) Long classId,
             @RequestParam(required = false) Long sectionId,
-            @RequestParam(required = false) Long subjectId) {
+            @RequestParam(required = false) Long subjectId,
+            @RequestParam(required = false) Long examSetupId) {
 
         return ResponseEntity.ok(ApiResponse.success(
-                examReportService.getMetrics(schoolId, termId, classId, sectionId, subjectId),
+                examReportService.getMetrics(schoolId, termId, classId, sectionId, subjectId, examSetupId),
                 "Examination metrics retrieved successfully"));
     }
 
@@ -57,12 +59,13 @@ public class AdminExamReportController {
             @RequestParam(required = false) Long classId,
             @RequestParam(required = false) Long sectionId,
             @RequestParam(required = false) Long subjectId,
+            @RequestParam(required = false) Long examSetupId,
             @RequestParam(defaultValue = "TERM_WISE") String reportType,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Page<ExamReportPreviewItemResponse> result = examReportService.getDetailedPreview(
-                schoolId, termId, classId, sectionId, subjectId, reportType, PageRequest.of(page, size));
+                schoolId, termId, classId, sectionId, subjectId, examSetupId, reportType, PageRequest.of(page, size));
 
         return ResponseEntity.ok(ApiResponse.success(
                 result.getContent(),

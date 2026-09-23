@@ -14,5 +14,6 @@ public class GeneratePdfReportRequest {
     private Long classId;
     private Long sectionId;
     private Long subjectId;
-    private String reportType; // TERM_WISE, SUBJECT_WISE, FAIL_STUDENT
+    private Long examSetupId;
+    private String reportType; // TERM_WISE, EXAM_WISE, FAIL_STUDENT
 }

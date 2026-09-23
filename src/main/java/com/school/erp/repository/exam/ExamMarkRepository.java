@@ -20,6 +20,10 @@ public interface ExamMarkRepository extends JpaRepository<ExamMark, Long> {
     Optional<ExamMark> findBySchoolIdAndExamSetupIdAndSubjectIdAndStudentId(
             Long schoolId, Long examSetupId, Long subjectId, Long studentId);
 
+    List<ExamMark> findBySchoolIdAndExamSetupIdAndStudentId(Long schoolId, Long examSetupId, Long studentId);
+
+    List<ExamMark> findBySchoolIdAndExamSetupTermIdAndStudentId(Long schoolId, Long termId, Long studentId);
+
     @Query("SELECT m FROM ExamMark m WHERE m.school.id = :schoolId " +
            "AND (:examSetupId IS NULL OR m.examSetup.id = :examSetupId) " +
            "AND (:classId IS NULL OR m.schoolClass.id = :classId) " +

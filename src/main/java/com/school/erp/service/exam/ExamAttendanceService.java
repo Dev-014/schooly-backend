@@ -9,6 +9,7 @@ import com.school.erp.entity.academic.SchoolClass;
 import com.school.erp.entity.academic.Section;
 import com.school.erp.entity.student.Student;
 import com.school.erp.entity.exam.ExamAttendance;
+import com.school.erp.entity.exam.ExamSchedule;
 import com.school.erp.entity.exam.ExamSetup;
 import com.school.erp.entity.exam.ExamTerm;
 import com.school.erp.exception.ResourceNotFoundException;
@@ -17,6 +18,7 @@ import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.academic.SectionRepository;
 import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.repository.exam.ExamAttendanceRepository;
+import com.school.erp.repository.exam.ExamScheduleRepository;
 import com.school.erp.repository.exam.ExamSetupRepository;
 import com.school.erp.repository.exam.ExamTermRepository;
 import com.school.erp.security.AuthContextService;
@@ -36,6 +38,7 @@ public class ExamAttendanceService {
 
     private final AuthContextService authContextService;
     private final ExamAttendanceRepository examAttendanceRepository;
+    private final ExamScheduleRepository examScheduleRepository;
     private final ExamTermRepository examTermRepository;
     private final ExamSetupRepository examSetupRepository;
     private final SchoolRepository schoolRepository;
@@ -50,30 +53,45 @@ public class ExamAttendanceService {
             Long classId,
             Long sectionId,
             Long examSetupId,
+            Long subjectId,
             String status,
             String search,
             Pageable pageable) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
         if (termId != null && classId != null) {
-            syncAttendanceRoster(schoolId, termId, classId, sectionId, examSetupId);
+            syncAttendanceRoster(schoolId, termId, classId, sectionId, examSetupId, subjectId);
         }
 
         Page<ExamAttendance> page = examAttendanceRepository.filterAttendance(
-                schoolId, termId, classId, sectionId, examSetupId, status, search, pageable);
+                schoolId, termId, classId, sectionId, examSetupId, subjectId, status, search, pageable);
 
         return page.map(this::mapToResponse);
     }
 
     @Transactional(readOnly = true)
     public ExamSessionSummaryResponse getSessionSummary(
-            Long rawSchoolId, Long termId, Long classId, Long sectionId) {
+            Long rawSchoolId, Long termId, Long examSetupId, Long classId, Long sectionId, Long subjectId) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
-        long present = examAttendanceRepository.countPresent(schoolId, termId, classId, sectionId);
-        long absent = examAttendanceRepository.countAbsent(schoolId, termId, classId, sectionId);
-        long leave = examAttendanceRepository.countLeave(schoolId, termId, classId, sectionId);
-        long total = examAttendanceRepository.countTotal(schoolId, termId, classId, sectionId);
+        long present = examAttendanceRepository.countPresent(schoolId, termId, examSetupId, classId, sectionId, subjectId);
+        long absent = examAttendanceRepository.countAbsent(schoolId, termId, examSetupId, classId, sectionId, subjectId);
+        long leave = examAttendanceRepository.countLeave(schoolId, termId, examSetupId, classId, sectionId, subjectId);
+        long total = examAttendanceRepository.countTotal(schoolId, termId, examSetupId, classId, sectionId, subjectId);
+
+        String room = "Not Scheduled";
+        String upcoming = "No Upcoming Exams";
+        String examDate = null;
+        String examStartTime = null;
+        
+        List<ExamSchedule> schedules = examScheduleRepository.findSchedulesForAttendanceSummary(schoolId, termId, examSetupId, classId, sectionId, subjectId);
+        if (!schedules.isEmpty()) {
+            ExamSchedule latest = schedules.get(0);
+            room = latest.getRoomNumber() != null ? latest.getRoomNumber() : "TBA";
+            upcoming = latest.getSubject().getName() + " (" + latest.getExamDate().toString() + " " + latest.getStartTime().toString() + ")";
+            examDate = latest.getExamDate().toString();
+            examStartTime = latest.getStartTime().toString();
+        }
 
         if (total == 0) {
             present = 3;
@@ -83,14 +101,16 @@ public class ExamAttendanceService {
         }
 
         return ExamSessionSummaryResponse.builder()
-                .roomNumber("Room 402B")
-                .sessionStatus("Active: Room 402B")
+                .roomNumber(room)
+                .sessionStatus(schedules.isEmpty() ? "No Schedule" : "Active: " + room)
                 .presentCount(present)
                 .absentCount(absent)
                 .leaveCount(leave)
                 .totalExaminees(total)
                 .hallCapacity(40)
-                .upcomingExam("Mid-Term 2024 - Mathematics")
+                .upcomingExam(upcoming)
+                .examDate(examDate)
+                .examStartTime(examStartTime)
                 .build();
     }
 
@@ -163,7 +183,7 @@ public class ExamAttendanceService {
     }
 
     private void syncAttendanceRoster(
-            Long schoolId, Long termId, Long classId, Long sectionId, Long examSetupId) {
+            Long schoolId, Long termId, Long classId, Long sectionId, Long examSetupId, Long subjectId) {
         ExamTerm term = examTermRepository.findByIdAndSchoolId(termId, schoolId).orElse(null);
         if (term == null) return;
 
@@ -175,22 +195,33 @@ public class ExamAttendanceService {
                 ? examSetupRepository.findByIdAndSchoolId(examSetupId, schoolId).orElse(null)
                 : null;
 
+        List<ExamSchedule> schedules = examScheduleRepository.findSchedulesForAttendanceSummary(
+                schoolId, termId, examSetupId, classId, sectionId, subjectId);
+        ExamSchedule targetSchedule = schedules.isEmpty() ? null : schedules.get(0);
+
         int row = 1;
         int seat = 1;
         for (Student student : students) {
-            Optional<ExamAttendance> existing = examAttendanceRepository
-                    .findBySchoolIdAndTermIdAndStudentId(schoolId, termId, student.getId());
-            if (existing.isEmpty()) {
+            Optional<ExamAttendance> existing;
+            if (targetSchedule != null) {
+                existing = examAttendanceRepository.findBySchoolIdAndTermIdAndStudentIdAndExamScheduleId(
+                        schoolId, termId, student.getId(), targetSchedule.getId());
+            } else {
+                existing = examAttendanceRepository.findBySchoolIdAndTermIdAndStudentId(schoolId, termId, student.getId());
+            }
+
+            if (existing.isEmpty() && targetSchedule != null) {
                 ExamAttendance a = new ExamAttendance();
                 a.setSchool(term.getSchool());
                 a.setTerm(term);
                 a.setExamSetup(setup);
+                a.setExamSchedule(targetSchedule);
                 a.setStudent(student);
                 a.setSchoolClass(student.getSchoolClass());
                 if (student.getSectionId() != null) {
                     a.setSection(sectionRepository.findById(student.getSectionId()).orElse(null));
                 }
-                a.setRoomNumber("Room 402B");
+                a.setRoomNumber(targetSchedule.getRoomNumber() != null ? targetSchedule.getRoomNumber() : "Room 402B");
                 a.setSeatAssignment("Row " + row + ", Seat " + seat);
                 a.setAttendanceStatus("PRESENT");
                 a.setSessionStatus("ACTIVE");

@@ -35,25 +35,15 @@ public class ExamReportService {
 
     @Transactional(readOnly = true)
     public ExamReportAnalyticsResponse getAnalytics(
-            Long rawSchoolId, String academicYear, Long termId, Long classId, Long sectionId) {
+            Long rawSchoolId, String academicYear, Long termId, Long classId, Long sectionId, Long examSetupId) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
-        List<TermPerformanceItem> termReports = List.of(
-                TermPerformanceItem.builder().termName("Term 1 (Sept - Nov)").avgPercent(new BigDecimal("72.0")).build(),
-                TermPerformanceItem.builder().termName("Term 2 (Dec - Feb)").avgPercent(new BigDecimal("86.0")).build(),
-                TermPerformanceItem.builder().termName("Final Term (Mar - May)").avgPercent(new BigDecimal("91.0")).build()
-        );
-
-        List<SubjectQuadrantItem> subjectBreakdown = List.of(
-                SubjectQuadrantItem.builder().subjectName("MATHEMATICS").grade("A+").trend("High").build(),
-                SubjectQuadrantItem.builder().subjectName("PHYSICS").grade("B+").trend("Med").build(),
-                SubjectQuadrantItem.builder().subjectName("BIOLOGY").grade("A-").trend("Stable").build(),
-                SubjectQuadrantItem.builder().subjectName("ENGLISH").grade("A+").trend("Peak").build()
-        );
+        List<TermPerformanceItem> termReports = new ArrayList<>();
+        List<SubjectQuadrantItem> subjectBreakdown = new ArrayList<>();
 
         return ExamReportAnalyticsResponse.builder()
-                .avgClassPerformance(new BigDecimal("84.2"))
-                .avgClassPerformanceTrend("up")
+                .avgClassPerformance(BigDecimal.ZERO)
+                .avgClassPerformanceTrend("N/A")
                 .termReports(termReports)
                 .subjectBreakdown(subjectBreakdown)
                 .build();
@@ -61,19 +51,19 @@ public class ExamReportService {
 
     @Transactional(readOnly = true)
     public ExamReportMetricsResponse getMetrics(
-            Long rawSchoolId, Long termId, Long classId, Long sectionId, Long subjectId) {
+            Long rawSchoolId, Long termId, Long classId, Long sectionId, Long subjectId, Long examSetupId) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
         return ExamReportMetricsResponse.builder()
-                .totalStudents(124)
-                .totalStudentsTrend("+12% from Mid-Term")
-                .passPercentage(new BigDecimal("94.2"))
-                .passPercentageTrend("2.1% improvement")
-                .classAverage(new BigDecimal("78.5"))
-                .classAverageTrend("Stable Performance")
-                .highestScore(new BigDecimal("98.4"))
-                .highestScorerName("Liam R. Anderson")
-                .distinctionBadge("Distinction Achieved")
+                .totalStudents(0)
+                .totalStudentsTrend("N/A")
+                .passPercentage(BigDecimal.ZERO)
+                .passPercentageTrend("N/A")
+                .classAverage(BigDecimal.ZERO)
+                .classAverageTrend("N/A")
+                .highestScore(BigDecimal.ZERO)
+                .highestScorerName("N/A")
+                .distinctionBadge("N/A")
                 .build();
     }
 
@@ -84,74 +74,72 @@ public class ExamReportService {
             Long classId,
             Long sectionId,
             Long subjectId,
+            Long examSetupId,
             String reportType,
             Pageable pageable) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
-        List<ExamReportCard> cards = examReportCardRepository.filterReportCards(
-                schoolId, termId, classId, sectionId, null, null, pageable).getContent();
-
+        Page<Student> studentPage = studentRepository.filterStudents(schoolId, classId, sectionId, pageable);
         List<ExamReportPreviewItemResponse> items = new ArrayList<>();
 
-        if (!cards.isEmpty()) {
-            for (ExamReportCard card : cards) {
-                Student s = card.getStudent();
-                BigDecimal total = card.getTotalMarks() != null ? card.getTotalMarks() : new BigDecimal("93.00");
-                BigDecimal practical = total.multiply(new BigDecimal("0.20")).setScale(0, RoundingMode.HALF_UP);
-                BigDecimal theory = total.subtract(practical);
+        for (Student s : studentPage.getContent()) {
+            List<SubjectMarkInfo> subjectMarks = new ArrayList<>();
+            List<ExamMark> marks;
+            if ("EXAM_WISE".equalsIgnoreCase(reportType) && examSetupId != null) {
+                marks = examMarkRepository.findBySchoolIdAndExamSetupIdAndStudentId(schoolId, examSetupId, s.getId());
+            } else {
+                marks = examMarkRepository.findBySchoolIdAndExamSetupTermIdAndStudentId(schoolId, termId, s.getId());
+            }
 
-                String status = (total.compareTo(new BigDecimal("40.00")) >= 0) ? "PASS" : "FAIL";
+            BigDecimal obtainedTotal = BigDecimal.ZERO;
+            BigDecimal maxTotal = BigDecimal.ZERO;
 
-                if ("FAIL_STUDENT".equalsIgnoreCase(reportType) && !"FAIL".equals(status)) {
-                    continue;
-                }
+            for(ExamMark m : marks) {
+                BigDecimal obtained = m.getMarksObtained() != null ? m.getMarksObtained() : BigDecimal.ZERO;
+                BigDecimal max = m.getExamSubjectConfig() != null && m.getExamSubjectConfig().getMaxMarks() != null 
+                        ? m.getExamSubjectConfig().getMaxMarks() : new BigDecimal("100.00");
+                
+                obtainedTotal = obtainedTotal.add(obtained);
+                maxTotal = maxTotal.add(max);
 
-                items.add(ExamReportPreviewItemResponse.builder()
-                        .studentId(s.getId())
-                        .rollNo(s.getRollNumber() != null ? s.getRollNumber() : "101")
-                        .studentName(s.getName())
-                        .initials(getInitials(s.getName()))
-                        .theoryMarks(theory)
-                        .practicalMarks(practical)
-                        .totalMarks(total)
-                        .grade(card.getGrade() != null ? card.getGrade() : "A+")
-                        .status(status)
+                subjectMarks.add(SubjectMarkInfo.builder()
+                        .subjectName(m.getSubject().getName())
+                        .obtainedMarks(obtained)
+                        .maxMarks(max)
+                        .grade(getGradeFromPercentage(obtained, max))
                         .build());
             }
+
+            BigDecimal percentage = BigDecimal.ZERO;
+            if (maxTotal.compareTo(BigDecimal.ZERO) > 0) {
+                percentage = obtainedTotal.multiply(new BigDecimal("100")).divide(maxTotal, 2, RoundingMode.HALF_UP);
+            }
+
+            String status = (percentage.compareTo(new BigDecimal("40.00")) >= 0) ? "PASS" : "FAIL";
+            if ("FAIL_STUDENT".equalsIgnoreCase(reportType) && !"FAIL".equals(status)) {
+                continue;
+            }
+
+            // Fallback total for preview if no marks exist
+            BigDecimal displayTotal = maxTotal.compareTo(BigDecimal.ZERO) > 0 ? obtainedTotal : new BigDecimal("0.00");
+
+            items.add(ExamReportPreviewItemResponse.builder()
+                    .studentId(s.getId())
+                    .rollNo(s.getRollNumber() != null ? s.getRollNumber() : "-")
+                    .studentName(s.getName())
+                    .initials(getInitials(s.getName()))
+                    .theoryMarks(displayTotal)
+                    .practicalMarks(BigDecimal.ZERO)
+                    .totalMarks(displayTotal)
+                    .grade(getGradeFromPercentage(obtainedTotal, maxTotal))
+                    .percentage(percentage)
+                    .division(getDivisionFromPercentage(percentage))
+                    .subjects(subjectMarks)
+                    .status(status)
+                    .build());
         }
 
-        if (items.isEmpty()) {
-            items = List.of(
-                    ExamReportPreviewItemResponse.builder()
-                            .studentId(101L)
-                            .rollNo("101")
-                            .studentName("Alice Abbott")
-                            .initials("AA")
-                            .theoryMarks(new BigDecimal("74.00"))
-                            .practicalMarks(new BigDecimal("19.00"))
-                            .totalMarks(new BigDecimal("93.00"))
-                            .grade("A+")
-                            .status("PASS")
-                            .build(),
-                    ExamReportPreviewItemResponse.builder()
-                            .studentId(102L)
-                            .rollNo("102")
-                            .studentName("Benjamin Brooks")
-                            .initials("BB")
-                            .theoryMarks(new BigDecimal("68.00"))
-                            .practicalMarks(new BigDecimal("18.00"))
-                            .totalMarks(new BigDecimal("86.00"))
-                            .grade("A")
-                            .status("PASS")
-                            .build()
-            );
-        }
-
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), items.size());
-        List<ExamReportPreviewItemResponse> pagedList = (start <= end) ? items.subList(start, end) : List.of();
-
-        return new PageImpl<>(pagedList, pageable, items.size());
+        return new PageImpl<>(items, pageable, studentPage.getTotalElements());
     }
 
     @Transactional
@@ -178,5 +166,25 @@ public class ExamReportService {
             return parts[0].substring(0, Math.min(2, parts[0].length())).toUpperCase();
         }
         return ("" + parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+    }
+
+    private String getGradeFromPercentage(BigDecimal obtained, BigDecimal max) {
+        if (obtained == null || max == null || max.compareTo(BigDecimal.ZERO) == 0) return "N/A";
+        BigDecimal percent = obtained.multiply(new BigDecimal("100")).divide(max, 2, RoundingMode.HALF_UP);
+        if (percent.compareTo(new BigDecimal("90")) >= 0) return "A+";
+        if (percent.compareTo(new BigDecimal("80")) >= 0) return "A";
+        if (percent.compareTo(new BigDecimal("70")) >= 0) return "B+";
+        if (percent.compareTo(new BigDecimal("60")) >= 0) return "B";
+        if (percent.compareTo(new BigDecimal("50")) >= 0) return "C";
+        if (percent.compareTo(new BigDecimal("40")) >= 0) return "D";
+        return "E";
+    }
+
+    private String getDivisionFromPercentage(BigDecimal percent) {
+        if (percent == null || percent.compareTo(BigDecimal.ZERO) == 0) return "N/A";
+        if (percent.compareTo(new BigDecimal("60")) >= 0) return "First Division";
+        if (percent.compareTo(new BigDecimal("45")) >= 0) return "Second Division";
+        if (percent.compareTo(new BigDecimal("33")) >= 0) return "Third Division";
+        return "Fail";
     }
 }
