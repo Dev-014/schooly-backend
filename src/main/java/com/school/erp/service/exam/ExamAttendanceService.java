@@ -31,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -191,6 +193,8 @@ public class ExamAttendanceService {
                 ? studentRepository.findBySchoolIdAndSchoolClassIdAndSectionId(schoolId, classId, sectionId)
                 : studentRepository.findBySchoolIdAndSchoolClassId(schoolId, classId);
 
+        if (students.isEmpty()) return;
+
         ExamSetup setup = (examSetupId != null)
                 ? examSetupRepository.findByIdAndSchoolId(examSetupId, schoolId).orElse(null)
                 : null;
@@ -198,19 +202,20 @@ public class ExamAttendanceService {
         List<ExamSchedule> schedules = examScheduleRepository.findSchedulesForAttendanceSummary(
                 schoolId, termId, examSetupId, classId, sectionId, subjectId);
         ExamSchedule targetSchedule = schedules.isEmpty() ? null : schedules.get(0);
+        if (targetSchedule == null) return;
 
+        List<Long> studentIds = students.stream().map(Student::getId).toList();
+        List<ExamAttendance> existingList = examAttendanceRepository.findBySchoolIdAndTermIdAndExamScheduleIdAndStudentIdIn(
+                schoolId, termId, targetSchedule.getId(), studentIds);
+        Set<Long> existingStudentIds = existingList.stream()
+                .map(a -> a.getStudent().getId())
+                .collect(Collectors.toSet());
+
+        List<ExamAttendance> toCreate = new ArrayList<>();
         int row = 1;
         int seat = 1;
         for (Student student : students) {
-            Optional<ExamAttendance> existing;
-            if (targetSchedule != null) {
-                existing = examAttendanceRepository.findBySchoolIdAndTermIdAndStudentIdAndExamScheduleId(
-                        schoolId, termId, student.getId(), targetSchedule.getId());
-            } else {
-                existing = examAttendanceRepository.findBySchoolIdAndTermIdAndStudentId(schoolId, termId, student.getId());
-            }
-
-            if (existing.isEmpty() && targetSchedule != null) {
+            if (!existingStudentIds.contains(student.getId())) {
                 ExamAttendance a = new ExamAttendance();
                 a.setSchool(term.getSchool());
                 a.setTerm(term);
@@ -225,7 +230,7 @@ public class ExamAttendanceService {
                 a.setSeatAssignment("Row " + row + ", Seat " + seat);
                 a.setAttendanceStatus("PRESENT");
                 a.setSessionStatus("ACTIVE");
-                examAttendanceRepository.save(a);
+                toCreate.add(a);
 
                 seat++;
                 if (seat > 5) {
@@ -233,6 +238,10 @@ public class ExamAttendanceService {
                     row++;
                 }
             }
+        }
+
+        if (!toCreate.isEmpty()) {
+            examAttendanceRepository.saveAll(toCreate);
         }
     }
 

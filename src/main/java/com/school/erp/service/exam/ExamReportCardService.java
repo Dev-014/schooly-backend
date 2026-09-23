@@ -107,9 +107,9 @@ public class ExamReportCardService {
         long count = 0;
         if (classId != null) {
             if (sectionId != null) {
-                count = studentRepository.findBySchoolIdAndSchoolClassIdAndSectionId(schoolId, classId, sectionId).size();
+                count = studentRepository.countBySchoolIdAndSchoolClassIdAndSectionId(schoolId, classId, sectionId);
             } else {
-                count = studentRepository.findBySchoolIdAndSchoolClassId(schoolId, classId).size();
+                count = studentRepository.countBySchoolIdAndSchoolClassId(schoolId, classId);
             }
         }
 

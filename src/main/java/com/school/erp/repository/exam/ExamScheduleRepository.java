@@ -17,12 +17,22 @@ public interface ExamScheduleRepository extends JpaRepository<ExamSchedule, Long
 
     Optional<ExamSchedule> findByIdAndSchoolId(Long id, Long schoolId);
 
-    @Query("SELECT s FROM ExamSchedule s WHERE s.school.id = :schoolId " +
+    @Query(value = "SELECT s FROM ExamSchedule s " +
+           "JOIN FETCH s.schoolClass c " +
+           "LEFT JOIN FETCH s.section sec " +
+           "JOIN FETCH s.subject sub " +
+           "JOIN FETCH s.examSetup setup " +
+           "WHERE s.school.id = :schoolId " +
            "AND (:examSetupId IS NULL OR s.examSetup.id = :examSetupId) " +
            "AND (:classId IS NULL OR s.schoolClass.id = :classId) " +
            "AND (:sectionId IS NULL OR s.section.id = :sectionId) " +
-           "AND (:search IS NULL OR LOWER(s.subject.name) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR LOWER(s.subject.code) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) " +
-           "ORDER BY s.examDate ASC, s.startTime ASC")
+           "AND (:search IS NULL OR LOWER(sub.name) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR LOWER(sub.code) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) " +
+           "ORDER BY s.examDate ASC, s.startTime ASC",
+           countQuery = "SELECT COUNT(s) FROM ExamSchedule s WHERE s.school.id = :schoolId " +
+           "AND (:examSetupId IS NULL OR s.examSetup.id = :examSetupId) " +
+           "AND (:classId IS NULL OR s.schoolClass.id = :classId) " +
+           "AND (:sectionId IS NULL OR s.section.id = :sectionId) " +
+           "AND (:search IS NULL OR LOWER(s.subject.name) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR LOWER(s.subject.code) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')))")
     Page<ExamSchedule> filterSchedules(
             @Param("schoolId") Long schoolId,
             @Param("examSetupId") Long examSetupId,

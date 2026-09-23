@@ -22,6 +22,8 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -82,14 +84,27 @@ public class ExamReportService {
         Page<Student> studentPage = studentRepository.filterStudents(schoolId, classId, sectionId, pageable);
         List<ExamReportPreviewItemResponse> items = new ArrayList<>();
 
-        for (Student s : studentPage.getContent()) {
+        List<Student> students = studentPage.getContent();
+        if (students.isEmpty()) {
+            return new PageImpl<>(items, pageable, studentPage.getTotalElements());
+        }
+
+        List<Long> studentIds = students.stream().map(Student::getId).toList();
+        List<ExamMark> allMarks;
+        if ("EXAM_WISE".equalsIgnoreCase(reportType) && examSetupId != null) {
+            allMarks = examMarkRepository.findBySchoolIdAndExamSetupIdAndStudentIdIn(schoolId, examSetupId, studentIds);
+        } else if (termId != null) {
+            allMarks = examMarkRepository.findBySchoolIdAndExamSetupTermIdAndStudentIdIn(schoolId, termId, studentIds);
+        } else {
+            allMarks = List.of();
+        }
+
+        Map<Long, List<ExamMark>> marksByStudent = allMarks.stream()
+                .collect(Collectors.groupingBy(m -> m.getStudent().getId()));
+
+        for (Student s : students) {
             List<SubjectMarkInfo> subjectMarks = new ArrayList<>();
-            List<ExamMark> marks;
-            if ("EXAM_WISE".equalsIgnoreCase(reportType) && examSetupId != null) {
-                marks = examMarkRepository.findBySchoolIdAndExamSetupIdAndStudentId(schoolId, examSetupId, s.getId());
-            } else {
-                marks = examMarkRepository.findBySchoolIdAndExamSetupTermIdAndStudentId(schoolId, termId, s.getId());
-            }
+            List<ExamMark> marks = marksByStudent.getOrDefault(s.getId(), List.of());
 
             BigDecimal obtainedTotal = BigDecimal.ZERO;
             BigDecimal maxTotal = BigDecimal.ZERO;

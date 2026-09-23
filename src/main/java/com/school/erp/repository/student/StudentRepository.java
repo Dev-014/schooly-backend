@@ -55,6 +55,10 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     long countBySchoolId(Long schoolId);
 
+    long countBySchoolIdAndSchoolClassId(Long schoolId, Long classId);
+
+    long countBySchoolIdAndSchoolClassIdAndSectionId(Long schoolId, Long classId, Long sectionId);
+
     long countByHouseId(Long houseId);
 
     List<Student> findBySchoolIdAndHouseId(Long schoolId, Long houseId);

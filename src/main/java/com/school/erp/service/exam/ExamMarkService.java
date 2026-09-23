@@ -33,6 +33,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -134,7 +135,7 @@ public class ExamMarkService {
         long belowForty = examMarkRepository.countBelowForty(schoolId, examSetupId, subjectId);
         long entered = examMarkRepository.countEnteredMarks(schoolId, examSetupId, subjectId);
 
-        long total = (classId != null) ? studentRepository.findBySchoolIdAndSchoolClassId(schoolId, classId).size() : 42L;
+        long total = (classId != null) ? studentRepository.countBySchoolIdAndSchoolClassId(schoolId, classId) : 42L;
         if (total == 0) total = 42L;
 
         int percent = (int) Math.round(((double) entered / total) * 100);
@@ -163,14 +164,21 @@ public class ExamMarkService {
                 ? studentRepository.findBySchoolIdAndSchoolClassIdAndSectionId(schoolId, classId, sectionId)
                 : studentRepository.findBySchoolIdAndSchoolClassId(schoolId, classId);
 
+        if (students.isEmpty()) return;
+
         ExamSubjectConfig config = examSubjectConfigRepository.findBySchoolIdAndExamSetupIdAndSubjectId(schoolId, examSetupId, subjectId).orElse(null);
         if (config == null) return;
 
+        List<ExamMark> existingMarks = examMarkRepository.findBySchoolIdAndExamSetupIdAndSubjectIdAndClassId(
+                schoolId, examSetupId, subjectId, classId);
+        Set<Long> existingStudentIds = existingMarks.stream()
+                .map(m -> m.getStudent().getId())
+                .collect(Collectors.toSet());
+
+        List<ExamMark> toCreate = new ArrayList<>();
         School school = setup.getSchool();
         for (Student student : students) {
-            Optional<ExamMark> existing = examMarkRepository
-                    .findBySchoolIdAndExamSetupIdAndSubjectIdAndStudentId(schoolId, examSetupId, subjectId, student.getId());
-            if (existing.isEmpty()) {
+            if (!existingStudentIds.contains(student.getId())) {
                 ExamMark mark = new ExamMark();
                 mark.setSchool(school);
                 mark.setExamSetup(setup);
@@ -182,8 +190,12 @@ public class ExamMarkService {
                     mark.setSection(sectionRepository.findById(student.getSectionId()).orElse(null));
                 }
                 mark.setAttendanceStatus("PRESENT");
-                examMarkRepository.save(mark);
+                toCreate.add(mark);
             }
+        }
+
+        if (!toCreate.isEmpty()) {
+            examMarkRepository.saveAll(toCreate);
         }
     }
 
@@ -191,10 +203,6 @@ public class ExamMarkService {
         String sectionName = "";
         if (m.getSection() != null) {
             sectionName = m.getSection().getName();
-        } else if (m.getStudent().getSectionId() != null) {
-            sectionName = sectionRepository.findById(m.getStudent().getSectionId())
-                    .map(Section::getName)
-                    .orElse("");
         }
 
         return ExamMarkItemResponse.builder()
