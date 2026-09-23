@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Builder
@@ -20,5 +21,8 @@ public class ExamReportPreviewItemResponse {
     private BigDecimal practicalMarks; // e.g. 19.00
     private BigDecimal totalMarks; // e.g. 93.00
     private String grade; // e.g. "A+"
+    private BigDecimal percentage;
+    private String division;
+    private List<SubjectMarkInfo> subjects;
     private String status; // e.g. "PASS", "FAIL"
 }

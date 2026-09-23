@@ -41,4 +41,24 @@ public interface ExamScheduleRepository extends JpaRepository<ExamSchedule, Long
 
     Optional<ExamSchedule> findBySchoolIdAndExamSetupIdAndSchoolClassIdAndSectionIdAndSubjectId(
             Long schoolId, Long examSetupId, Long classId, Long sectionId, Long subjectId);
+            
+    @Query("SELECT s FROM ExamSchedule s WHERE s.school.id = :schoolId " +
+           "AND (:termId IS NULL OR s.examSetup.term.id = :termId) " +
+           "AND (:examSetupId IS NULL OR s.examSetup.id = :examSetupId) " +
+           "AND (:classId IS NULL OR s.schoolClass.id = :classId) " +
+           "AND (:sectionId IS NULL OR s.section.id = :sectionId) " +
+           "AND (:subjectId IS NULL OR s.subject.id = :subjectId) " +
+           "ORDER BY s.examDate DESC, s.startTime DESC")
+    List<ExamSchedule> findSchedulesForAttendanceSummary(
+            @Param("schoolId") Long schoolId,
+            @Param("termId") Long termId,
+            @Param("examSetupId") Long examSetupId,
+            @Param("classId") Long classId,
+            @Param("sectionId") Long sectionId,
+            @Param("subjectId") Long subjectId);
+            
+    List<ExamSchedule> findBySchoolIdAndExamSetupId(Long schoolId, Long examSetupId);
+
+    @Query("SELECT COUNT(e) FROM ExamSchedule e WHERE e.school.id = :schoolId AND e.examSetup.id = :examSetupId")
+    int countBySchoolIdAndExamSetupId(@Param("schoolId") Long schoolId, @Param("examSetupId") Long examSetupId);
 }

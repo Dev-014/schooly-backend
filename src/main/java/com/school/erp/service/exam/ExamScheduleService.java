@@ -18,6 +18,8 @@ import com.school.erp.repository.academic.SectionRepository;
 import com.school.erp.repository.academic.SubjectRepository;
 import com.school.erp.repository.exam.ExamScheduleRepository;
 import com.school.erp.repository.exam.ExamSetupRepository;
+import com.school.erp.repository.exam.ExamSubjectConfigRepository;
+import com.school.erp.entity.exam.ExamSubjectConfig;
 import com.school.erp.security.AuthContextService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -41,6 +43,7 @@ public class ExamScheduleService {
     private final SchoolClassRepository schoolClassRepository;
     private final SectionRepository sectionRepository;
     private final SubjectRepository subjectRepository;
+    private final ExamSubjectConfigRepository examSubjectConfigRepository;
 
     @Transactional(readOnly = true)
     public Page<ExamScheduleResponse> filterSchedules(
@@ -100,8 +103,11 @@ public class ExamScheduleService {
         schedule.setStartTime(request.getStartTime());
         schedule.setEndTime(request.getEndTime());
         schedule.setRoomNumber(request.getRoomNumber());
-        if (request.getFullMarks() != null) schedule.setFullMarks(request.getFullMarks());
-        if (request.getPassingMarks() != null) schedule.setPassingMarks(request.getPassingMarks());
+        
+        ExamSubjectConfig config = examSubjectConfigRepository.findBySchoolIdAndExamSetupIdAndSubjectId(schoolId, setup.getId(), subject.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Subject config not found for this exam"));
+        schedule.setExamSubjectConfig(config);
+
         schedule.setInstructions(request.getInstructions());
         schedule.setStatus(request.getStatus() != null ? request.getStatus().toUpperCase() : "SCHEDULED");
 
@@ -159,8 +165,13 @@ public class ExamScheduleService {
         schedule.setStartTime(request.getStartTime());
         schedule.setEndTime(request.getEndTime());
         schedule.setRoomNumber(request.getRoomNumber());
-        if (request.getFullMarks() != null) schedule.setFullMarks(request.getFullMarks());
-        if (request.getPassingMarks() != null) schedule.setPassingMarks(request.getPassingMarks());
+        
+        if (request.getSubjectId() != null || request.getExamSetupId() != null) {
+            ExamSubjectConfig config = examSubjectConfigRepository.findBySchoolIdAndExamSetupIdAndSubjectId(schoolId, schedule.getExamSetup().getId(), schedule.getSubject().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Subject config not found for this exam"));
+            schedule.setExamSubjectConfig(config);
+        }
+
         schedule.setInstructions(request.getInstructions());
         if (request.getStatus() != null) schedule.setStatus(request.getStatus().toUpperCase());
 
@@ -214,8 +225,8 @@ public class ExamScheduleService {
                 .startTime(s.getStartTime())
                 .endTime(s.getEndTime())
                 .roomNumber(s.getRoomNumber())
-                .fullMarks(s.getFullMarks())
-                .passingMarks(s.getPassingMarks())
+                .fullMarks(s.getExamSubjectConfig() != null ? s.getExamSubjectConfig().getMaxMarks() : null)
+                .passingMarks(s.getExamSubjectConfig() != null ? s.getExamSubjectConfig().getPassingMarks() : null)
                 .instructions(s.getInstructions())
                 .status(s.getStatus())
                 .createdAt(s.getCreatedAt())

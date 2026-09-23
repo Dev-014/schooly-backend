@@ -53,8 +53,18 @@ public class ExamMark {
     @Column(name = "marks_obtained", precision = 6, scale = 2)
     private BigDecimal marksObtained;
 
-    @Column(name = "max_marks", precision = 6, scale = 2, nullable = false)
-    private BigDecimal maxMarks = new BigDecimal("100.00");
+    @Column(name = "theory_marks_obtained", precision = 6, scale = 2)
+    private BigDecimal theoryMarksObtained;
+
+    @Column(name = "practical_marks_obtained", precision = 6, scale = 2)
+    private BigDecimal practicalMarksObtained;
+
+    @Column(name = "internal_marks_obtained", precision = 6, scale = 2)
+    private BigDecimal internalMarksObtained;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "exam_subject_config_id", nullable = false)
+    private ExamSubjectConfig examSubjectConfig;
 
     @Column(name = "attendance_status", nullable = false, length = 20)
     private String attendanceStatus = "PRESENT";

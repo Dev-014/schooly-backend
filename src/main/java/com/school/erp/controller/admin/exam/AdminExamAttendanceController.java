@@ -32,13 +32,14 @@ public class AdminExamAttendanceController {
             @RequestParam(required = false) Long classId,
             @RequestParam(required = false) Long sectionId,
             @RequestParam(required = false) Long examSetupId,
+            @RequestParam(required = false) Long subjectId,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Page<ExamAttendanceItemResponse> result = examAttendanceService.filterAttendance(
-                schoolId, termId, classId, sectionId, examSetupId, status, search, PageRequest.of(page, size));
+                schoolId, termId, classId, sectionId, examSetupId, subjectId, status, search, PageRequest.of(page, size));
 
         return ResponseEntity.ok(ApiResponse.success(
                 result.getContent(),
@@ -51,11 +52,13 @@ public class AdminExamAttendanceController {
     public ResponseEntity<ApiResponse<ExamSessionSummaryResponse>> getSessionSummary(
             @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) Long termId,
+            @RequestParam(required = false) Long examSetupId,
             @RequestParam(required = false) Long classId,
-            @RequestParam(required = false) Long sectionId) {
+            @RequestParam(required = false) Long sectionId,
+            @RequestParam(required = false) Long subjectId) {
 
         return ResponseEntity.ok(ApiResponse.success(
-                examAttendanceService.getSessionSummary(schoolId, termId, classId, sectionId),
+                examAttendanceService.getSessionSummary(schoolId, termId, examSetupId, classId, sectionId, subjectId),
                 "Session summary retrieved successfully"));
     }
 

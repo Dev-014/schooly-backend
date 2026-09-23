@@ -59,13 +59,13 @@ public class ExamReportCardService {
                         .description(batch.getProcessedCount() + " of " + batch.getTotalCount() + " reports generated successfully...")
                         .build())
                 .orElseGet(() -> ReportCardQueueStatusResponse.builder()
-                        .batchName("Batch Processing")
-                        .progressPercent(new BigDecimal("85.0"))
-                        .processedCount(357)
-                        .totalCount(420)
-                        .status("PROCESSING")
+                        .batchName("No Active Batch")
+                        .progressPercent(BigDecimal.ZERO)
+                        .processedCount(0)
+                        .totalCount(0)
+                        .status("NOT_STARTED")
                         .realTimeUpdate(true)
-                        .description("357 of 420 reports generated successfully...")
+                        .description("No batches currently processing.")
                         .build());
     }
 
@@ -96,22 +96,7 @@ public class ExamReportCardService {
             }).collect(Collectors.toList());
         }
 
-        return List.of(
-                RecentlyGeneratedBatchResponse.builder()
-                        .id(1L)
-                        .title("Grade 10 - Sec B")
-                        .relativeTime("Generated 5m ago")
-                        .iconColor("GREEN")
-                        .status("COMPLETED")
-                        .build(),
-                RecentlyGeneratedBatchResponse.builder()
-                        .id(2L)
-                        .title("Grade 12 - Finals")
-                        .relativeTime("Generated 3h ago")
-                        .iconColor("PURPLE")
-                        .status("COMPLETED")
-                        .build()
-        );
+        return List.of();
     }
 
     @Transactional(readOnly = true)
@@ -128,9 +113,7 @@ public class ExamReportCardService {
             }
         }
 
-        if (count == 0) {
-            count = 42; // default matching screenshot
-        }
+
 
         return ReportCardCriteriaCountResponse.builder()
                 .studentCount(count)

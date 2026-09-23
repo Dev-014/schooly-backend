@@ -19,6 +19,8 @@ import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.repository.academic.SubjectRepository;
 import com.school.erp.repository.exam.ExamMarkRepository;
 import com.school.erp.repository.exam.ExamSetupRepository;
+import com.school.erp.repository.exam.ExamSubjectConfigRepository;
+import com.school.erp.entity.exam.ExamSubjectConfig;
 import com.school.erp.security.AuthContextService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -45,6 +47,7 @@ public class ExamMarkService {
     private final SectionRepository sectionRepository;
     private final SubjectRepository subjectRepository;
     private final StudentRepository studentRepository;
+    private final ExamSubjectConfigRepository examSubjectConfigRepository;
 
     @Transactional
     public Page<ExamMarkItemResponse> filterMarks(
@@ -82,6 +85,9 @@ public class ExamMarkService {
         Student student = studentRepository.findById(request.getStudentId())
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + request.getStudentId()));
 
+        ExamSubjectConfig config = examSubjectConfigRepository.findBySchoolIdAndExamSetupIdAndSubjectId(schoolId, setup.getId(), subject.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Subject config not found for this exam"));
+
         ExamMark mark = examMarkRepository
                 .findBySchoolIdAndExamSetupIdAndSubjectIdAndStudentId(schoolId, setup.getId(), subject.getId(), student.getId())
                 .orElseGet(() -> {
@@ -90,6 +96,7 @@ public class ExamMarkService {
                     m.setExamSetup(setup);
                     m.setSubject(subject);
                     m.setStudent(student);
+                    m.setExamSubjectConfig(config);
                     m.setSchoolClass(student.getSchoolClass());
                     if (student.getSectionId() != null) {
                         m.setSection(sectionRepository.findById(student.getSectionId()).orElse(null));
@@ -98,9 +105,7 @@ public class ExamMarkService {
                 });
 
         mark.setMarksObtained(request.getMarksObtained());
-        if (request.getMaxMarks() != null) {
-            mark.setMaxMarks(request.getMaxMarks());
-        }
+        // maxMarks is now part of ExamSubjectConfig, not ExamMark directly.
         if (request.getAttendanceStatus() != null) {
             mark.setAttendanceStatus(request.getAttendanceStatus().toUpperCase());
         }
@@ -158,6 +163,9 @@ public class ExamMarkService {
                 ? studentRepository.findBySchoolIdAndSchoolClassIdAndSectionId(schoolId, classId, sectionId)
                 : studentRepository.findBySchoolIdAndSchoolClassId(schoolId, classId);
 
+        ExamSubjectConfig config = examSubjectConfigRepository.findBySchoolIdAndExamSetupIdAndSubjectId(schoolId, examSetupId, subjectId).orElse(null);
+        if (config == null) return;
+
         School school = setup.getSchool();
         for (Student student : students) {
             Optional<ExamMark> existing = examMarkRepository
@@ -168,12 +176,12 @@ public class ExamMarkService {
                 mark.setExamSetup(setup);
                 mark.setSubject(subject);
                 mark.setStudent(student);
+                mark.setExamSubjectConfig(config);
                 mark.setSchoolClass(student.getSchoolClass());
                 if (student.getSectionId() != null) {
                     mark.setSection(sectionRepository.findById(student.getSectionId()).orElse(null));
                 }
                 mark.setAttendanceStatus("PRESENT");
-                mark.setMaxMarks(new BigDecimal("100.00"));
                 examMarkRepository.save(mark);
             }
         }
@@ -204,7 +212,7 @@ public class ExamMarkService {
                 .examSetupId(m.getExamSetup().getId())
                 .examName(m.getExamSetup().getName())
                 .marksObtained(m.getMarksObtained())
-                .maxMarks(m.getMaxMarks())
+                .maxMarks(m.getExamSubjectConfig() != null ? m.getExamSubjectConfig().getMaxMarks() : null)
                 .attendanceStatus(m.getAttendanceStatus())
                 .remarks(m.getRemarks())
                 .updatedAt(m.getUpdatedAt())

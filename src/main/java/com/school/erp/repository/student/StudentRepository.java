@@ -27,6 +27,17 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
            "LOWER(s.lastName) LIKE LOWER(CONCAT('%', :search, '%')))")
     org.springframework.data.domain.Page<Student> findBySchoolIdAndSearchAndClassId(@org.springframework.data.repository.query.Param("schoolId") Long schoolId, @org.springframework.data.repository.query.Param("search") String search, @org.springframework.data.repository.query.Param("classId") Long classId, org.springframework.data.domain.Pageable pageable);
 
+    @EntityGraph(attributePaths = {"school", "schoolClass"})
+    @org.springframework.data.jpa.repository.Query("SELECT s FROM Student s WHERE s.school.id = :schoolId AND " +
+           "(:classId IS NULL OR s.schoolClass.id = :classId) AND " +
+           "(:sectionId IS NULL OR s.sectionId = :sectionId) " +
+           "ORDER BY s.rollNumber ASC, s.firstName ASC")
+    org.springframework.data.domain.Page<Student> filterStudents(
+            @org.springframework.data.repository.query.Param("schoolId") Long schoolId,
+            @org.springframework.data.repository.query.Param("classId") Long classId,
+            @org.springframework.data.repository.query.Param("sectionId") Long sectionId,
+            org.springframework.data.domain.Pageable pageable);
+
     @EntityGraph(attributePaths = {"school", "schoolClass", "category", "house", "family"})
     List<Student> findBySchoolIdAndSchoolClassId(Long schoolId, Long classId);
 
