@@ -23,6 +23,10 @@ public class AuthorizationService {
     private final UserAssignmentRepository userAssignmentRepository;
     private final com.school.erp.service.superadmin.EntitlementService entitlementService;
 
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.context.annotation.Lazy
+    private AuthorizationService self;
+
     /**
      * Checks if a user has a specific permission within a school context.
      * Currently evaluates if ANY active role grants the permission.
@@ -33,7 +37,7 @@ public class AuthorizationService {
             return false;
         }
 
-        List<RolePermission> effective = getEffectivePermissions(schoolId, userId);
+        List<RolePermission> effective = self.getEffectivePermissions(schoolId, userId);
         return effective.stream().anyMatch(rp -> rp.getPermission().getPermissionKey().equals(permissionKey));
     }
 
