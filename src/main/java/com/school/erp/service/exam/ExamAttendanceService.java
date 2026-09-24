@@ -28,10 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,10 +73,22 @@ public class ExamAttendanceService {
             Long rawSchoolId, Long termId, Long examSetupId, Long classId, Long sectionId, Long subjectId) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
-        long present = examAttendanceRepository.countPresent(schoolId, termId, examSetupId, classId, sectionId, subjectId);
-        long absent = examAttendanceRepository.countAbsent(schoolId, termId, examSetupId, classId, sectionId, subjectId);
-        long leave = examAttendanceRepository.countLeave(schoolId, termId, examSetupId, classId, sectionId, subjectId);
-        long total = examAttendanceRepository.countTotal(schoolId, termId, examSetupId, classId, sectionId, subjectId);
+        long present = 0;
+        long absent = 0;
+        long leave = 0;
+        long total = 0;
+
+        List<Object[]> countsList = examAttendanceRepository.getAttendanceCounts(
+                schoolId, termId, examSetupId, classId, sectionId, subjectId);
+        if (countsList != null && !countsList.isEmpty()) {
+            Object[] counts = countsList.get(0);
+            if (counts != null && counts.length >= 4) {
+                present = counts[0] != null ? ((Number) counts[0]).longValue() : 0L;
+                absent = counts[1] != null ? ((Number) counts[1]).longValue() : 0L;
+                leave = counts[2] != null ? ((Number) counts[2]).longValue() : 0L;
+                total = counts[3] != null ? ((Number) counts[3]).longValue() : 0L;
+            }
+        }
 
         String room = "Not Scheduled";
         String upcoming = "No Upcoming Exams";
@@ -211,32 +220,44 @@ public class ExamAttendanceService {
                 .map(a -> a.getStudent().getId())
                 .collect(Collectors.toSet());
 
+        List<Student> studentsToCreate = students.stream()
+                .filter(s -> !existingStudentIds.contains(s.getId()))
+                .toList();
+
+        if (studentsToCreate.isEmpty()) return;
+
+        Set<Long> neededSectionIds = studentsToCreate.stream()
+                .map(Student::getSectionId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        Map<Long, Section> sectionMap = neededSectionIds.isEmpty() ? Map.of() :
+                sectionRepository.findAllById(neededSectionIds).stream()
+                        .collect(Collectors.toMap(Section::getId, s -> s, (x, y) -> x));
+
         List<ExamAttendance> toCreate = new ArrayList<>();
         int row = 1;
         int seat = 1;
-        for (Student student : students) {
-            if (!existingStudentIds.contains(student.getId())) {
-                ExamAttendance a = new ExamAttendance();
-                a.setSchool(term.getSchool());
-                a.setTerm(term);
-                a.setExamSetup(setup);
-                a.setExamSchedule(targetSchedule);
-                a.setStudent(student);
-                a.setSchoolClass(student.getSchoolClass());
-                if (student.getSectionId() != null) {
-                    a.setSection(sectionRepository.findById(student.getSectionId()).orElse(null));
-                }
-                a.setRoomNumber(targetSchedule.getRoomNumber() != null ? targetSchedule.getRoomNumber() : "Room 402B");
-                a.setSeatAssignment("Row " + row + ", Seat " + seat);
-                a.setAttendanceStatus("PRESENT");
-                a.setSessionStatus("ACTIVE");
-                toCreate.add(a);
+        for (Student student : studentsToCreate) {
+            ExamAttendance a = new ExamAttendance();
+            a.setSchool(term.getSchool());
+            a.setTerm(term);
+            a.setExamSetup(setup);
+            a.setExamSchedule(targetSchedule);
+            a.setStudent(student);
+            a.setSchoolClass(student.getSchoolClass());
+            if (student.getSectionId() != null) {
+                a.setSection(sectionMap.get(student.getSectionId()));
+            }
+            a.setRoomNumber(targetSchedule.getRoomNumber() != null ? targetSchedule.getRoomNumber() : "Room 402B");
+            a.setSeatAssignment("Row " + row + ", Seat " + seat);
+            a.setAttendanceStatus("PRESENT");
+            a.setSessionStatus("ACTIVE");
+            toCreate.add(a);
 
-                seat++;
-                if (seat > 5) {
-                    seat = 1;
-                    row++;
-                }
+            seat++;
+            if (seat > 5) {
+                seat = 1;
+                row++;
             }
         }
 

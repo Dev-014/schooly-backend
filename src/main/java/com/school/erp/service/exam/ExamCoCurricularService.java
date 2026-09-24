@@ -5,6 +5,7 @@ import com.school.erp.dto.exam.CoCurricularItemResponse;
 import com.school.erp.dto.exam.CoCurricularStatsResponse;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.student.Student;
+import com.school.erp.entity.academic.Section;
 import com.school.erp.entity.exam.ExamCoCurricularGrade;
 import com.school.erp.entity.exam.ExamTerm;
 import com.school.erp.exception.ResourceNotFoundException;
@@ -20,8 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -149,26 +150,52 @@ public class ExamCoCurricularService {
                 ? studentRepository.findBySchoolIdAndSchoolClassIdAndSectionId(schoolId, classId, sectionId)
                 : studentRepository.findBySchoolIdAndSchoolClassId(schoolId, classId);
 
+        if (students == null || students.isEmpty()) return;
+
+        List<Long> studentIds = students.stream().map(Student::getId).filter(Objects::nonNull).toList();
+        if (studentIds.isEmpty()) return;
+
+        Set<Long> existingStudentIds = coCurricularRepository
+                .findBySchoolIdAndTermIdAndStudentIdIn(schoolId, termId, studentIds)
+                .stream()
+                .map(g -> g.getStudent().getId())
+                .collect(Collectors.toSet());
+
+        List<Student> studentsToCreate = students.stream()
+                .filter(s -> !existingStudentIds.contains(s.getId()))
+                .toList();
+
+        if (studentsToCreate.isEmpty()) return;
+
+        Set<Long> neededSectionIds = studentsToCreate.stream()
+                .map(Student::getSectionId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        Map<Long, Section> sectionMap = neededSectionIds.isEmpty() ? Map.of() :
+                sectionRepository.findAllById(neededSectionIds).stream()
+                        .collect(Collectors.toMap(Section::getId, s -> s, (a, b) -> a));
+
         School school = term.getSchool();
-        for (Student student : students) {
-            Optional<ExamCoCurricularGrade> existing = coCurricularRepository
-                    .findBySchoolIdAndTermIdAndStudentId(schoolId, termId, student.getId());
-            if (existing.isEmpty()) {
-                ExamCoCurricularGrade g = new ExamCoCurricularGrade();
-                g.setSchool(school);
-                g.setTerm(term);
-                g.setStudent(student);
-                g.setSchoolClass(student.getSchoolClass());
-                if (student.getSectionId() != null) {
-                    g.setSection(sectionRepository.findById(student.getSectionId()).orElse(null));
-                }
-                g.setPhysicalEducationGrade("PENDING");
-                g.setVisualArtsGrade("PENDING");
-                g.setPerformingArtsGrade("PENDING");
-                g.setHealthWellnessGrade("PENDING");
-                g.setStatus("PENDING");
-                coCurricularRepository.save(g);
+        List<ExamCoCurricularGrade> toSave = new ArrayList<>();
+        for (Student student : studentsToCreate) {
+            ExamCoCurricularGrade g = new ExamCoCurricularGrade();
+            g.setSchool(school);
+            g.setTerm(term);
+            g.setStudent(student);
+            g.setSchoolClass(student.getSchoolClass());
+            if (student.getSectionId() != null) {
+                g.setSection(sectionMap.get(student.getSectionId()));
             }
+            g.setPhysicalEducationGrade("PENDING");
+            g.setVisualArtsGrade("PENDING");
+            g.setPerformingArtsGrade("PENDING");
+            g.setHealthWellnessGrade("PENDING");
+            g.setStatus("PENDING");
+            toSave.add(g);
+        }
+
+        if (!toSave.isEmpty()) {
+            coCurricularRepository.saveAll(toSave);
         }
     }
 
@@ -176,10 +203,6 @@ public class ExamCoCurricularService {
         String sectionName = "";
         if (g.getSection() != null) {
             sectionName = g.getSection().getName();
-        } else if (g.getStudent().getSectionId() != null) {
-            sectionName = sectionRepository.findById(g.getStudent().getSectionId())
-                    .map(s -> s.getName())
-                    .orElse("");
         }
 
         return CoCurricularItemResponse.builder()

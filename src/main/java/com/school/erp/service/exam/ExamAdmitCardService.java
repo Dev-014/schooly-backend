@@ -28,8 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -258,31 +257,54 @@ public class ExamAdmitCardService {
     }
 
     private void syncStudentsToRoster(ExamSetup setup, List<Student> students) {
+        if (students == null || students.isEmpty()) return;
         Long schoolId = setup.getSchool().getId();
         School school = setup.getSchool();
-        for (Student student : students) {
-            if (student.getSchoolClass() == null) {
-                continue;
+
+        List<Long> studentIds = students.stream().map(Student::getId).filter(Objects::nonNull).toList();
+        if (studentIds.isEmpty()) return;
+
+        Set<Long> existingStudentIds = examAdmitCardRepository
+                .findBySchoolIdAndExamSetupIdAndStudentIdIn(schoolId, setup.getId(), studentIds)
+                .stream()
+                .map(c -> c.getStudent().getId())
+                .collect(Collectors.toSet());
+
+        List<Student> studentsToCreate = students.stream()
+                .filter(s -> s.getSchoolClass() != null && !existingStudentIds.contains(s.getId()))
+                .toList();
+
+        if (studentsToCreate.isEmpty()) return;
+
+        Set<Long> neededSectionIds = studentsToCreate.stream()
+                .map(Student::getSectionId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        Map<Long, Section> sectionMap = neededSectionIds.isEmpty() ? Map.of() :
+                sectionRepository.findAllById(neededSectionIds).stream()
+                        .collect(Collectors.toMap(Section::getId, s -> s, (a, b) -> a));
+
+        List<ExamAdmitCard> toSave = new ArrayList<>();
+        for (Student student : studentsToCreate) {
+            ExamAdmitCard card = new ExamAdmitCard();
+            card.setSchool(school);
+            card.setExamSetup(setup);
+            card.setStudent(student);
+            card.setSchoolClass(student.getSchoolClass());
+            if (student.getSectionId() != null) {
+                card.setSection(sectionMap.get(student.getSectionId()));
             }
-            Optional<ExamAdmitCard> existing = examAdmitCardRepository
-                    .findBySchoolIdAndExamSetupIdAndStudentId(schoolId, setup.getId(), student.getId());
-            if (existing.isEmpty()) {
-                ExamAdmitCard card = new ExamAdmitCard();
-                card.setSchool(school);
-                card.setExamSetup(setup);
-                card.setStudent(student);
-                card.setSchoolClass(student.getSchoolClass());
-                if (student.getSectionId() != null) {
-                    card.setSection(sectionRepository.findById(student.getSectionId()).orElse(null));
-                }
-                card.setRollNumber(student.getRollNumber());
-                String identifier = (student.getAdmissionNo() != null && !student.getAdmissionNo().isBlank())
-                        ? student.getAdmissionNo()
-                        : String.valueOf(student.getId());
-                card.setCardNumber("AC-" + schoolId + "-" + setup.getId() + "-" + identifier);
-                card.setStatus("PENDING");
-                examAdmitCardRepository.save(card);
-            }
+            card.setRollNumber(student.getRollNumber());
+            String identifier = (student.getAdmissionNo() != null && !student.getAdmissionNo().isBlank())
+                    ? student.getAdmissionNo()
+                    : String.valueOf(student.getId());
+            card.setCardNumber("AC-" + schoolId + "-" + setup.getId() + "-" + identifier);
+            card.setStatus("PENDING");
+            toSave.add(card);
+        }
+
+        if (!toSave.isEmpty()) {
+            examAdmitCardRepository.saveAll(toSave);
         }
     }
 
@@ -290,10 +312,6 @@ public class ExamAdmitCardService {
         String sectionName = "";
         if (card.getSection() != null) {
             sectionName = card.getSection().getName();
-        } else if (card.getStudent().getSectionId() != null) {
-            sectionName = sectionRepository.findById(card.getStudent().getSectionId())
-                    .map(Section::getName)
-                    .orElse("");
         }
 
         return AdmitCardRosterItemResponse.builder()

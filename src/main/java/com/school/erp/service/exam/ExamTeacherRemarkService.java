@@ -6,6 +6,7 @@ import com.school.erp.dto.exam.TeacherRemarkStatsResponse;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.student.Student;
 import com.school.erp.entity.auth.User;
+import com.school.erp.entity.academic.Section;
 import com.school.erp.entity.exam.ExamTeacherRemark;
 import com.school.erp.entity.exam.ExamTerm;
 import com.school.erp.exception.ResourceNotFoundException;
@@ -22,8 +23,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +54,18 @@ public class ExamTeacherRemarkService {
         Page<ExamTeacherRemark> page = teacherRemarkRepository.filterRemarks(
                 schoolId, termId, classId, sectionId, pageable);
 
-        return page.map(this::mapToResponse);
+        List<Long> userIds = page.getContent().stream()
+                .map(r -> r.getStudent() != null ? r.getStudent().getUserId() : null)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+        Map<Long, String> userEmailMap = userIds.isEmpty() ? Map.of() :
+                userRepository.findAllById(userIds).stream()
+                        .filter(u -> u.getEmail() != null)
+                        .collect(Collectors.toMap(User::getId, User::getEmail, (a, b) -> a));
+
+        return page.map(r -> mapToResponse(r, userEmailMap));
     }
 
     @Transactional
@@ -91,7 +103,7 @@ public class ExamTeacherRemarkService {
         remark.setStatus(hasText ? "COMPLETED" : "PENDING");
 
         ExamTeacherRemark saved = teacherRemarkRepository.save(remark);
-        return mapToResponse(saved);
+        return mapToResponse(saved, Map.of());
     }
 
     @Transactional(readOnly = true)
@@ -126,59 +138,84 @@ public class ExamTeacherRemarkService {
                 ? studentRepository.findBySchoolIdAndSchoolClassIdAndSectionId(schoolId, classId, sectionId)
                 : studentRepository.findBySchoolIdAndSchoolClassId(schoolId, classId);
 
+        if (students == null || students.isEmpty()) return;
+
+        List<Long> studentIds = students.stream().map(Student::getId).filter(Objects::nonNull).toList();
+        if (studentIds.isEmpty()) return;
+
+        Set<Long> existingStudentIds = teacherRemarkRepository
+                .findBySchoolIdAndTermIdAndStudentIdIn(schoolId, termId, studentIds)
+                .stream()
+                .map(r -> r.getStudent().getId())
+                .collect(Collectors.toSet());
+
+        List<Student> studentsToCreate = students.stream()
+                .filter(s -> !existingStudentIds.contains(s.getId()))
+                .toList();
+
+        if (studentsToCreate.isEmpty()) return;
+
+        Set<Long> neededSectionIds = studentsToCreate.stream()
+                .map(Student::getSectionId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        Map<Long, Section> sectionMap = neededSectionIds.isEmpty() ? Map.of() :
+                sectionRepository.findAllById(neededSectionIds).stream()
+                        .collect(Collectors.toMap(Section::getId, s -> s, (a, b) -> a));
+
         School school = term.getSchool();
-        for (Student student : students) {
-            Optional<ExamTeacherRemark> existing = teacherRemarkRepository
-                    .findBySchoolIdAndTermIdAndStudentId(schoolId, termId, student.getId());
-            if (existing.isEmpty()) {
-                ExamTeacherRemark r = new ExamTeacherRemark();
-                r.setSchool(school);
-                r.setTerm(term);
-                r.setStudent(student);
-                r.setSchoolClass(student.getSchoolClass());
-                if (student.getSectionId() != null) {
-                    r.setSection(sectionRepository.findById(student.getSectionId()).orElse(null));
-                }
-                r.setPreviousGrade("B");
-                r.setStatus("PENDING");
-                teacherRemarkRepository.save(r);
+        List<ExamTeacherRemark> toSave = new ArrayList<>();
+        for (Student student : studentsToCreate) {
+            ExamTeacherRemark r = new ExamTeacherRemark();
+            r.setSchool(school);
+            r.setTerm(term);
+            r.setStudent(student);
+            r.setSchoolClass(student.getSchoolClass());
+            if (student.getSectionId() != null) {
+                r.setSection(sectionMap.get(student.getSectionId()));
             }
+            r.setPreviousGrade("B");
+            r.setStatus("PENDING");
+            toSave.add(r);
+        }
+
+        if (!toSave.isEmpty()) {
+            teacherRemarkRepository.saveAll(toSave);
         }
     }
 
-    private TeacherRemarkItemResponse mapToResponse(ExamTeacherRemark r) {
+    private TeacherRemarkItemResponse mapToResponse(ExamTeacherRemark r, Map<Long, String> userEmailMap) {
         String sectionName = "";
         if (r.getSection() != null) {
             sectionName = r.getSection().getName();
-        } else if (r.getStudent().getSectionId() != null) {
-            sectionName = sectionRepository.findById(r.getStudent().getSectionId())
-                    .map(s -> s.getName())
-                    .orElse("");
         }
 
         String email = "";
-        if (r.getStudent().getUserId() != null) {
-            email = userRepository.findById(r.getStudent().getUserId())
-                    .map(User::getEmail)
-                    .orElse("");
+        if (r.getStudent() != null && r.getStudent().getUserId() != null) {
+            email = userEmailMap.getOrDefault(r.getStudent().getUserId(), "");
+            if (email.isBlank() && userEmailMap.isEmpty()) {
+                email = userRepository.findById(r.getStudent().getUserId())
+                        .map(User::getEmail)
+                        .orElse("");
+            }
         }
-        if (email.isBlank() && r.getStudent().getName() != null) {
+        if (email.isBlank() && r.getStudent() != null && r.getStudent().getName() != null) {
             email = r.getStudent().getName().toLowerCase().replace(" ", ".") + "@scholar.edu";
         }
 
         return TeacherRemarkItemResponse.builder()
                 .id(r.getId())
-                .studentId(r.getStudent().getId())
-                .studentName(r.getStudent().getName())
+                .studentId(r.getStudent() != null ? r.getStudent().getId() : null)
+                .studentName(r.getStudent() != null ? r.getStudent().getName() : "")
                 .studentEmail(email)
-                .admissionNo(r.getStudent().getAdmissionNo())
-                .rollNumber(r.getStudent().getRollNumber())
-                .classId(r.getSchoolClass().getId())
-                .className(r.getSchoolClass().getName())
-                .sectionId(r.getSection() != null ? r.getSection().getId() : r.getStudent().getSectionId())
+                .admissionNo(r.getStudent() != null ? r.getStudent().getAdmissionNo() : "")
+                .rollNumber(r.getStudent() != null ? r.getStudent().getRollNumber() : "")
+                .classId(r.getSchoolClass() != null ? r.getSchoolClass().getId() : null)
+                .className(r.getSchoolClass() != null ? r.getSchoolClass().getName() : "")
+                .sectionId(r.getSection() != null ? r.getSection().getId() : (r.getStudent() != null ? r.getStudent().getSectionId() : null))
                 .sectionName(sectionName)
-                .termId(r.getTerm().getId())
-                .termName(r.getTerm().getName())
+                .termId(r.getTerm() != null ? r.getTerm().getId() : null)
+                .termName(r.getTerm() != null ? r.getTerm().getName() : "")
                 .previousGrade(r.getPreviousGrade())
                 .teacherRemarks(r.getTeacherRemarks())
                 .status(r.getStatus())

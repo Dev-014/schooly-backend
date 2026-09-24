@@ -39,7 +39,13 @@ CREATE TABLE exam_student_eligibility (
 -- Backfill data to preserve existing configurations
 INSERT INTO exam_subject_configs (school_id, exam_setup_id, subject_id, max_marks, passing_marks, created_at, updated_at)
 SELECT DISTINCT school_id, exam_setup_id, subject_id, full_marks, passing_marks, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-FROM exam_schedules;
+FROM exam_schedules
+ON CONFLICT (school_id, exam_setup_id, subject_id) DO NOTHING;
+
+INSERT INTO exam_subject_configs (school_id, exam_setup_id, subject_id, max_marks, passing_marks, created_at, updated_at)
+SELECT DISTINCT em.school_id, em.exam_setup_id, em.subject_id, COALESCE(em.max_marks, 100.00), 35.00, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM exam_marks em
+ON CONFLICT (school_id, exam_setup_id, subject_id) DO NOTHING;
 
 INSERT INTO exam_applicabilities (school_id, exam_setup_id, class_id, section_id, created_at, updated_at)
 SELECT DISTINCT school_id, exam_setup_id, class_id, section_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP

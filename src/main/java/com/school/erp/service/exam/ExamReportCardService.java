@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -168,20 +169,26 @@ public class ExamReportCardService {
         batch.setCompletedAt(LocalDateTime.now());
         ExamReportCardBatch savedBatch = examReportCardBatchRepository.save(batch);
 
+        List<Long> studentIds = students.stream().map(Student::getId).toList();
+        List<ExamReportCard> existingCards = studentIds.isEmpty() ? List.of() :
+                examReportCardRepository.findBySchoolIdAndTermIdAndGenerationModeAndStudentIdIn(
+                        schoolId, term.getId(), batch.getGenerationMode(), studentIds);
+        Map<Long, ExamReportCard> existingMap = existingCards.stream()
+                .collect(Collectors.toMap(c -> c.getStudent().getId(), c -> c, (a, b) -> a));
+
+        List<ExamReportCard> toSave = new ArrayList<>();
         for (Student s : students) {
-            ExamReportCard card = examReportCardRepository
-                    .findBySchoolIdAndTermIdAndStudentIdAndGenerationMode(schoolId, term.getId(), s.getId(), batch.getGenerationMode())
-                    .orElseGet(() -> {
-                        ExamReportCard c = new ExamReportCard();
-                        c.setSchool(school);
-                        c.setTerm(term);
-                        c.setExamSetup(setup);
-                        c.setSchoolClass(sc);
-                        c.setSection(sec);
-                        c.setStudent(s);
-                        c.setGenerationMode(batch.getGenerationMode());
-                        return c;
-                    });
+            ExamReportCard card = existingMap.get(s.getId());
+            if (card == null) {
+                card = new ExamReportCard();
+                card.setSchool(school);
+                card.setTerm(term);
+                card.setExamSetup(setup);
+                card.setSchoolClass(sc);
+                card.setSection(sec);
+                card.setStudent(s);
+                card.setGenerationMode(batch.getGenerationMode());
+            }
 
             card.setTemplateName(batch.getTemplateName());
             card.setTotalMarks(new BigDecimal("88.00"));
@@ -192,7 +199,11 @@ public class ExamReportCardService {
             card.setStatus("GENERATED");
             card.setBatchId(savedBatch.getId());
             card.setFileUrl("/api/v1/downloads/report-cards/student_" + s.getId() + ".pdf");
-            examReportCardRepository.save(card);
+            toSave.add(card);
+        }
+
+        if (!toSave.isEmpty()) {
+            examReportCardRepository.saveAll(toSave);
         }
 
         return ReportCardQueueStatusResponse.builder()

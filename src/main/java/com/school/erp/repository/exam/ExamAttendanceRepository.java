@@ -81,6 +81,25 @@ public interface ExamAttendanceRepository extends JpaRepository<ExamAttendance, 
             @Param("examScheduleId") Long examScheduleId,
             @Param("studentIds") List<Long> studentIds);
 
+    @Query("SELECT " +
+           "COALESCE(SUM(CASE WHEN a.attendanceStatus = 'PRESENT' THEN 1L ELSE 0L END), 0L), " +
+           "COALESCE(SUM(CASE WHEN a.attendanceStatus = 'ABSENT' THEN 1L ELSE 0L END), 0L), " +
+           "COALESCE(SUM(CASE WHEN a.attendanceStatus = 'LEAVE' THEN 1L ELSE 0L END), 0L), " +
+           "COUNT(a) " +
+           "FROM ExamAttendance a WHERE a.school.id = :schoolId " +
+           "AND (:termId IS NULL OR a.term.id = :termId) " +
+           "AND (:examSetupId IS NULL OR a.examSetup.id = :examSetupId) " +
+           "AND (:classId IS NULL OR a.schoolClass.id = :classId) " +
+           "AND (:sectionId IS NULL OR a.section.id = :sectionId) " +
+           "AND (:subjectId IS NULL OR a.examSchedule.subject.id = :subjectId)")
+    List<Object[]> getAttendanceCounts(
+            @Param("schoolId") Long schoolId,
+            @Param("termId") Long termId,
+            @Param("examSetupId") Long examSetupId,
+            @Param("classId") Long classId,
+            @Param("sectionId") Long sectionId,
+            @Param("subjectId") Long subjectId);
+
     @Query("SELECT COUNT(a) FROM ExamAttendance a WHERE a.school.id = :schoolId " +
            "AND (:termId IS NULL OR a.term.id = :termId) " +
            "AND (:examSetupId IS NULL OR a.examSetup.id = :examSetupId) " +

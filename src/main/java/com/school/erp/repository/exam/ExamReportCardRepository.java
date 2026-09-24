@@ -19,15 +19,47 @@ public interface ExamReportCardRepository extends JpaRepository<ExamReportCard, 
     Optional<ExamReportCard> findBySchoolIdAndTermIdAndStudentIdAndGenerationMode(
             Long schoolId, Long termId, Long studentId, String generationMode);
 
-    List<ExamReportCard> findBySchoolIdAndStudentId(Long schoolId, Long studentId);
+    @Query("SELECT r FROM ExamReportCard r " +
+           "WHERE r.school.id = :schoolId " +
+           "AND r.term.id = :termId " +
+           "AND r.generationMode = :generationMode " +
+           "AND r.student.id IN :studentIds")
+    List<ExamReportCard> findBySchoolIdAndTermIdAndGenerationModeAndStudentIdIn(
+            @Param("schoolId") Long schoolId,
+            @Param("termId") Long termId,
+            @Param("generationMode") String generationMode,
+            @Param("studentIds") java.util.Collection<Long> studentIds);
 
-    @Query("SELECT r FROM ExamReportCard r WHERE r.school.id = :schoolId " +
+    @Query("SELECT r FROM ExamReportCard r " +
+           "JOIN FETCH r.student s " +
+           "JOIN FETCH r.schoolClass sc " +
+           "LEFT JOIN FETCH r.section sec " +
+           "JOIN FETCH r.term t " +
+           "LEFT JOIN FETCH r.examSetup es " +
+           "WHERE r.school.id = :schoolId AND r.student.id = :studentId")
+    List<ExamReportCard> findBySchoolIdAndStudentId(
+            @Param("schoolId") Long schoolId,
+            @Param("studentId") Long studentId);
+
+    @Query(value = "SELECT r FROM ExamReportCard r " +
+           "JOIN FETCH r.student s " +
+           "JOIN FETCH r.schoolClass sc " +
+           "LEFT JOIN FETCH r.section sec " +
+           "JOIN FETCH r.term t " +
+           "LEFT JOIN FETCH r.examSetup es " +
+           "WHERE r.school.id = :schoolId " +
            "AND (:termId IS NULL OR r.term.id = :termId) " +
            "AND (:classId IS NULL OR r.schoolClass.id = :classId) " +
            "AND (:sectionId IS NULL OR r.section.id = :sectionId) " +
            "AND (:examSetupId IS NULL OR r.examSetup.id = :examSetupId) " +
            "AND (:status IS NULL OR r.status = CAST(:status AS string)) " +
-           "ORDER BY r.student.rollNumber ASC, r.student.name ASC")
+           "ORDER BY s.rollNumber ASC, s.name ASC",
+           countQuery = "SELECT count(r) FROM ExamReportCard r WHERE r.school.id = :schoolId " +
+           "AND (:termId IS NULL OR r.term.id = :termId) " +
+           "AND (:classId IS NULL OR r.schoolClass.id = :classId) " +
+           "AND (:sectionId IS NULL OR r.section.id = :sectionId) " +
+           "AND (:examSetupId IS NULL OR r.examSetup.id = :examSetupId) " +
+           "AND (:status IS NULL OR r.status = CAST(:status AS string))")
     Page<ExamReportCard> filterReportCards(
             @Param("schoolId") Long schoolId,
             @Param("termId") Long termId,
