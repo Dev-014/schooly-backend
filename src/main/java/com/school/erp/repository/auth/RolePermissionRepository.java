@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface RolePermissionRepository extends JpaRepository<RolePermission, Long> {
-    @Query("SELECT rp FROM RolePermission rp WHERE rp.role.id = :roleId AND (rp.schoolId = :schoolId OR rp.schoolId IS NULL)")
+    @Query("SELECT rp FROM RolePermission rp JOIN FETCH rp.permission WHERE rp.role.id = :roleId AND (rp.schoolId = :schoolId OR rp.schoolId IS NULL)")
     List<RolePermission> findBySchoolIdAndRoleId(@Param("schoolId") Long schoolId, @Param("roleId") String roleId);
 }
