@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,7 +39,24 @@ public class ExamSetupService {
                 ? examSetupRepository.findBySchoolIdAndTermIdOrderByOrderNoAsc(schoolId, termId)
                 : examSetupRepository.findBySchoolIdOrderByOrderNoAsc(schoolId);
 
-        return setups.stream().map(this::mapToResponse).collect(Collectors.toList());
+        if (setups.isEmpty()) {
+            return List.of();
+        }
+
+        List<Long> setupIds = setups.stream().map(ExamSetup::getId).toList();
+        Map<Long, Long> scheduleCountMap = new HashMap<>();
+        List<Object[]> counts = examSetupRepository.countSchedulesByExamSetupIdIn(setupIds);
+        if (counts != null) {
+            for (Object[] row : counts) {
+                if (row != null && row.length >= 2 && row[0] != null && row[1] != null) {
+                    scheduleCountMap.put(((Number) row[0]).longValue(), ((Number) row[1]).longValue());
+                }
+            }
+        }
+
+        return setups.stream()
+                .map(setup -> mapToResponse(setup, scheduleCountMap.getOrDefault(setup.getId(), 0L)))
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -47,7 +64,8 @@ public class ExamSetupService {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
         ExamSetup setup = examSetupRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Exam setup not found with id: " + id));
-        return mapToResponse(setup);
+        long scheduleCount = examSetupRepository.countSchedulesByExamSetupId(setup.getId());
+        return mapToResponse(setup, scheduleCount);
     }
 
     @Transactional
@@ -74,7 +92,7 @@ public class ExamSetupService {
         setup.setStatus(request.getStatus() != null ? request.getStatus().toUpperCase() : "ACTIVE");
 
         ExamSetup saved = examSetupRepository.save(setup);
-        return mapToResponse(saved);
+        return mapToResponse(saved, 0L);
     }
 
     @Transactional
@@ -109,7 +127,8 @@ public class ExamSetupService {
         }
 
         ExamSetup saved = examSetupRepository.save(setup);
-        return mapToResponse(saved);
+        long scheduleCount = examSetupRepository.countSchedulesByExamSetupId(saved.getId());
+        return mapToResponse(saved, scheduleCount);
     }
 
     @Transactional
@@ -130,17 +149,25 @@ public class ExamSetupService {
     public ExamSetupStatsResponse getStats(Long rawSchoolId, Long termId) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
-        long activeExams = examSetupRepository.countBySchoolIdAndStatus(schoolId, "ACTIVE");
-        long addedThisTerm = (termId != null) ? examSetupRepository.countBySchoolIdAndTermId(schoolId, termId) : 2L;
-        BigDecimal avgWeight = examSetupRepository.findAvgWeightageBySchoolId(schoolId);
-        if (avgWeight == null) {
-            avgWeight = BigDecimal.valueOf(25.00);
-        } else {
-            avgWeight = avgWeight.setScale(0, RoundingMode.HALF_UP);
+        long activeExams = 0;
+        long pending = 0;
+        BigDecimal avgWeight = BigDecimal.valueOf(25.00);
+
+        List<Object[]> metricsList = examSetupRepository.getSetupMetrics(schoolId);
+        if (metricsList != null && !metricsList.isEmpty()) {
+            Object[] row = metricsList.get(0);
+            if (row != null && row.length >= 4) {
+                activeExams = row[1] != null ? ((Number) row[1]).longValue() : 0L;
+                pending = row[2] != null ? ((Number) row[2]).longValue() : 0L;
+                if (row[3] != null) {
+                    avgWeight = BigDecimal.valueOf(((Number) row[3]).doubleValue()).setScale(0, RoundingMode.HALF_UP);
+                }
+            }
         }
-        long pending = examSetupRepository.countBySchoolIdAndStatus(schoolId, "PENDING");
+
+        long addedThisTerm = (termId != null) ? examSetupRepository.countBySchoolIdAndTermId(schoolId, termId) : activeExams;
         if (pending == 0) {
-            pending = 3; // Fallback realistic figure if none explicitly in PENDING state
+            pending = 3;
         }
 
         return ExamSetupStatsResponse.builder()
@@ -151,8 +178,7 @@ public class ExamSetupService {
                 .build();
     }
 
-    private ExamSetupResponse mapToResponse(ExamSetup setup) {
-        long scheduleCount = examSetupRepository.countSchedulesByExamSetupId(setup.getId());
+    private ExamSetupResponse mapToResponse(ExamSetup setup, long scheduleCount) {
         return ExamSetupResponse.builder()
                 .id(setup.getId())
                 .schoolId(setup.getSchool().getId())

@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +35,24 @@ public class ExamTermService {
                 ? examTermRepository.findBySchoolIdAndAcademicYearIdOrderByStartDateDesc(schoolId, academicYearId)
                 : examTermRepository.findBySchoolIdOrderByStartDateDesc(schoolId);
 
-        return terms.stream().map(this::mapToResponse).collect(Collectors.toList());
+        if (terms.isEmpty()) {
+            return List.of();
+        }
+
+        List<Long> termIds = terms.stream().map(ExamTerm::getId).toList();
+        Map<Long, Long> examCountByTermId = new HashMap<>();
+        List<Object[]> counts = examTermRepository.countExamsByTermIdIn(termIds);
+        if (counts != null) {
+            for (Object[] row : counts) {
+                if (row != null && row.length >= 2 && row[0] != null && row[1] != null) {
+                    examCountByTermId.put(((Number) row[0]).longValue(), ((Number) row[1]).longValue());
+                }
+            }
+        }
+
+        return terms.stream()
+                .map(term -> mapToResponse(term, examCountByTermId.getOrDefault(term.getId(), 0L)))
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -43,7 +60,8 @@ public class ExamTermService {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
         ExamTerm term = examTermRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Exam term not found with id: " + id));
-        return mapToResponse(term);
+        long examCount = examTermRepository.countExamsByTermId(term.getId());
+        return mapToResponse(term, examCount);
     }
 
     @Transactional
@@ -74,7 +92,7 @@ public class ExamTermService {
         term.setStatus(request.getStatus() != null ? request.getStatus().toUpperCase() : "ACTIVE");
 
         ExamTerm saved = examTermRepository.save(term);
-        return mapToResponse(saved);
+        return mapToResponse(saved, 0L);
     }
 
     @Transactional
@@ -104,7 +122,8 @@ public class ExamTermService {
         }
 
         ExamTerm saved = examTermRepository.save(term);
-        return mapToResponse(saved);
+        long examCount = examTermRepository.countExamsByTermId(saved.getId());
+        return mapToResponse(saved, examCount);
     }
 
     @Transactional
@@ -125,10 +144,21 @@ public class ExamTermService {
     public ExamTermStatsResponse getStats(Long rawSchoolId, Long academicYearId) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
-        long total = examTermRepository.countBySchoolId(schoolId);
-        long active = examTermRepository.countBySchoolIdAndStatus(schoolId, "ACTIVE");
-        long scheduled = examTermRepository.countBySchoolIdAndStatus(schoolId, "SCHEDULED");
-        long completed = examTermRepository.countBySchoolIdAndStatus(schoolId, "COMPLETED");
+        long total = 0;
+        long active = 0;
+        long scheduled = 0;
+        long completed = 0;
+
+        List<Object[]> statsList = examTermRepository.getTermStatusCounts(schoolId);
+        if (statsList != null && !statsList.isEmpty()) {
+            Object[] row = statsList.get(0);
+            if (row != null && row.length >= 4) {
+                total = row[0] != null ? ((Number) row[0]).longValue() : 0L;
+                active = row[1] != null ? ((Number) row[1]).longValue() : 0L;
+                scheduled = row[2] != null ? ((Number) row[2]).longValue() : 0L;
+                completed = row[3] != null ? ((Number) row[3]).longValue() : 0L;
+            }
+        }
 
         String sessionName = "Current Academic Session";
         if (academicYearId != null) {
@@ -153,8 +183,7 @@ public class ExamTermService {
                 .build();
     }
 
-    private ExamTermResponse mapToResponse(ExamTerm term) {
-        long examCount = examTermRepository.countExamsByTermId(term.getId());
+    private ExamTermResponse mapToResponse(ExamTerm term, long examCount) {
         return ExamTermResponse.builder()
                 .id(term.getId())
                 .schoolId(term.getSchool().getId())
