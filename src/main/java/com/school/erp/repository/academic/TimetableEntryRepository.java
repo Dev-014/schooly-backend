@@ -9,6 +9,9 @@ import java.util.Optional;
 
 @Repository
 public interface TimetableEntryRepository extends JpaRepository<TimetableEntry, Long> {
+    List<TimetableEntry> findBySchoolId(Long schoolId);
+    List<TimetableEntry> findBySchoolIdAndAcademicYearId(Long schoolId, Long academicYearId);
+    List<TimetableEntry> findBySchoolIdAndTeacherId(Long schoolId, Long teacherId);
     List<TimetableEntry> findBySchoolIdAndSchoolClassIdAndAcademicYearId(Long schoolId, Long classId, Long academicYearId);
     List<TimetableEntry> findBySchoolIdAndSchoolClassIdAndSectionIdAndAcademicYearId(Long schoolId, Long classId, Long sectionId, Long academicYearId);
     List<TimetableEntry> findBySchoolIdAndSchoolClassIdAndSectionIdAndDayOfWeekAndAcademicYearId(Long schoolId, Long classId, Long sectionId, String dayOfWeek, Long academicYearId);

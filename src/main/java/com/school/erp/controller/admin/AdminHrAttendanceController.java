@@ -73,4 +73,28 @@ public class AdminHrAttendanceController {
         Long effectiveSchoolId = pathSchoolId != null ? pathSchoolId : paramSchoolId;
         return ResponseEntity.ok(attendanceService.getAttendanceByDate(effectiveSchoolId, date));
     }
+
+    @GetMapping("/staff/{staffId}")
+    @PermissionRequired("staff_hr.staff_attendance.view")
+    public ResponseEntity<com.school.erp.dto.hr.StaffMonthlyAttendanceBreakdownDTO> getStaffMonthlyAttendance(
+            @PathVariable(value = "schoolId", required = false) Long pathSchoolId,
+            @RequestParam(value = "schoolId", required = false) Long paramSchoolId,
+            @PathVariable Long staffId,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month) {
+        Long effectiveSchoolId = pathSchoolId != null ? pathSchoolId : paramSchoolId;
+        return ResponseEntity.ok(attendanceService.getStaffMonthlyAttendance(effectiveSchoolId, staffId, year, month));
+    }
+
+    @GetMapping("/report")
+    @PermissionRequired("staff_hr.staff_attendance.view")
+    public ResponseEntity<com.school.erp.dto.hr.StaffAttendanceReportDTO> getAttendanceMonthlyReport(
+            @PathVariable(value = "schoolId", required = false) Long pathSchoolId,
+            @RequestParam(value = "schoolId", required = false) Long paramSchoolId,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) Long departmentId) {
+        Long effectiveSchoolId = pathSchoolId != null ? pathSchoolId : paramSchoolId;
+        return ResponseEntity.ok(attendanceService.getAttendanceMonthlyReport(effectiveSchoolId, year, month, departmentId));
+    }
 }

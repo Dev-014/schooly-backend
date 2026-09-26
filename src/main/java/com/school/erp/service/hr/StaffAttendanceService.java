@@ -2,8 +2,10 @@ package com.school.erp.service.hr;
 
 import com.school.erp.dto.hr.BulkStaffAttendanceRequest;
 import com.school.erp.dto.hr.StaffAttendanceDTO;
+import com.school.erp.dto.hr.StaffAttendanceReportDTO;
 import com.school.erp.dto.hr.StaffAttendanceRequest;
 import com.school.erp.dto.hr.StaffAttendanceStatsDTO;
+import com.school.erp.dto.hr.StaffMonthlyAttendanceBreakdownDTO;
 import com.school.erp.entity.hr.Staff;
 import com.school.erp.entity.hr.StaffAttendance;
 import com.school.erp.repository.hr.StaffRepository;
@@ -204,6 +206,150 @@ public class StaffAttendanceService {
                 .checkOutTime(attendance.getCheckOutTime())
                 .workingHours(attendance.getWorkingHours())
                 .notes(attendance.getNotes())
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public StaffMonthlyAttendanceBreakdownDTO getStaffMonthlyAttendance(Long schoolId, Long staffId, Integer year, Integer month) {
+        Staff staff = staffRepository.findByIdAndSchoolId(staffId, schoolId)
+                .orElseThrow(() -> new RuntimeException("Staff not found in this school"));
+
+        int y = year != null ? year : LocalDate.now().getYear();
+        int m = month != null ? month : LocalDate.now().getMonthValue();
+        LocalDate startDate = LocalDate.of(y, m, 1);
+        LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+        int totalDays = endDate.getDayOfMonth();
+
+        List<StaffAttendance> records = staffAttendanceRepository
+                .findByStaffIdAndAttendanceDateBetween(staffId, startDate, endDate);
+
+        long presentCount = 0;
+        long absentCount = 0;
+        long lateCount = 0;
+        long halfDayCount = 0;
+        long onLeaveCount = 0;
+
+        for (StaffAttendance rec : records) {
+            String status = rec.getStatus() != null ? rec.getStatus().toUpperCase() : "";
+            switch (status) {
+                case "PRESENT" -> presentCount++;
+                case "ABSENT" -> absentCount++;
+                case "LATE" -> lateCount++;
+                case "HALF_DAY" -> halfDayCount++;
+                case "ON_LEAVE", "LEAVE" -> onLeaveCount++;
+            }
+        }
+
+        long markedDays = presentCount + absentCount + lateCount + halfDayCount + onLeaveCount;
+        long unmarkedCount = Math.max(0, totalDays - markedDays);
+
+        double attendancePercentage = totalDays > 0
+                ? BigDecimal.valueOf((presentCount + lateCount + (halfDayCount * 0.5)) * 100.0 / totalDays)
+                .setScale(1, RoundingMode.HALF_UP).doubleValue()
+                : 0.0;
+
+        List<StaffAttendanceDTO> dtoList = records.stream()
+                .map(r -> mapToDTO(r, staff))
+                .collect(Collectors.toList());
+
+        String fullName = ((staff.getFirstName() != null ? staff.getFirstName() : "") + " " +
+                (staff.getLastName() != null ? staff.getLastName() : "")).trim();
+
+        return StaffMonthlyAttendanceBreakdownDTO.builder()
+                .staffId(staff.getId())
+                .staffName(!fullName.isEmpty() ? fullName : "Staff #" + staff.getId())
+                .staffCode(staff.getBiometricId() != null ? staff.getBiometricId() : "STF-" + String.format("%04d", staff.getId()))
+                .department(staff.getDepartment() != null ? staff.getDepartment() : "General")
+                .designation(staff.getDesignation() != null ? staff.getDesignation() : "Staff Member")
+                .month(m)
+                .year(y)
+                .totalDays(totalDays)
+                .presentCount(presentCount)
+                .absentCount(absentCount)
+                .lateCount(lateCount)
+                .halfDayCount(halfDayCount)
+                .onLeaveCount(onLeaveCount)
+                .unmarkedCount(unmarkedCount)
+                .attendancePercentage(attendancePercentage)
+                .records(dtoList)
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public StaffAttendanceReportDTO getAttendanceMonthlyReport(Long schoolId, Integer year, Integer month, Long departmentId) {
+        int y = year != null ? year : LocalDate.now().getYear();
+        int m = month != null ? month : LocalDate.now().getMonthValue();
+        LocalDate startDate = LocalDate.of(y, m, 1);
+        LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+        int totalDaysInMonth = endDate.getDayOfMonth();
+
+        List<Staff> staffList = staffRepository.findBySchoolId(schoolId);
+        if (departmentId != null) {
+            staffList = staffList.stream()
+                    .filter(s -> departmentId.equals(s.getDepartmentId()))
+                    .collect(Collectors.toList());
+        }
+
+        List<StaffAttendance> allMonthAttendances = staffAttendanceRepository
+                .findBySchoolIdAndAttendanceDateBetween(schoolId, startDate, endDate);
+
+        Map<Long, List<StaffAttendance>> attendanceByStaff = allMonthAttendances.stream()
+                .collect(Collectors.groupingBy(a -> a.getStaff().getId()));
+
+        List<StaffAttendanceReportDTO.StaffAttendanceReportItem> items = staffList.stream().map(staff -> {
+            List<StaffAttendance> staffRecords = attendanceByStaff.getOrDefault(staff.getId(), List.of());
+
+            long present = 0;
+            long absent = 0;
+            long late = 0;
+            long halfDay = 0;
+            long onLeave = 0;
+            BigDecimal totalHours = BigDecimal.ZERO;
+
+            for (StaffAttendance r : staffRecords) {
+                String status = r.getStatus() != null ? r.getStatus().toUpperCase() : "";
+                switch (status) {
+                    case "PRESENT" -> present++;
+                    case "ABSENT" -> absent++;
+                    case "LATE" -> late++;
+                    case "HALF_DAY" -> halfDay++;
+                    case "ON_LEAVE", "LEAVE" -> onLeave++;
+                }
+                if (r.getWorkingHours() != null) {
+                    totalHours = totalHours.add(r.getWorkingHours());
+                }
+            }
+
+            double percentage = totalDaysInMonth > 0
+                    ? BigDecimal.valueOf((present + late + (halfDay * 0.5)) * 100.0 / totalDaysInMonth)
+                    .setScale(1, RoundingMode.HALF_UP).doubleValue()
+                    : 0.0;
+
+            String fullName = ((staff.getFirstName() != null ? staff.getFirstName() : "") + " " +
+                    (staff.getLastName() != null ? staff.getLastName() : "")).trim();
+
+            return StaffAttendanceReportDTO.StaffAttendanceReportItem.builder()
+                    .staffId(staff.getId())
+                    .staffCode(staff.getBiometricId() != null ? staff.getBiometricId() : "STF-" + String.format("%04d", staff.getId()))
+                    .staffName(!fullName.isEmpty() ? fullName : "Staff #" + staff.getId())
+                    .department(staff.getDepartment() != null ? staff.getDepartment() : "General")
+                    .designation(staff.getDesignation() != null ? staff.getDesignation() : "Staff Member")
+                    .daysPresent(present)
+                    .daysAbsent(absent)
+                    .daysLate(late)
+                    .daysHalfDay(halfDay)
+                    .daysOnLeave(onLeave)
+                    .totalWorkingHours(totalHours)
+                    .attendancePercentage(percentage)
+                    .build();
+        }).collect(Collectors.toList());
+
+        return StaffAttendanceReportDTO.builder()
+                .schoolId(schoolId)
+                .month(m)
+                .year(y)
+                .totalStaff((long) staffList.size())
+                .items(items)
                 .build();
     }
 }

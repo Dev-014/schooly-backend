@@ -1,5 +1,6 @@
 package com.school.erp.entity.hr;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.school.erp.entity.superadmin.School;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public class SchoolDesignation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "school_id", nullable = false)
     private School school;
