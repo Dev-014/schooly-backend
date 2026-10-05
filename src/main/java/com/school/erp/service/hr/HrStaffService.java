@@ -21,6 +21,14 @@ import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.dto.auth.UserAssignmentRequest;
 import com.school.erp.dto.auth.UserAssignmentResponse;
 import com.school.erp.dto.staff.StaffRequest;
+import com.school.erp.entity.hr.StaffBankAccount;
+import com.school.erp.entity.hr.StaffDocument;
+import com.school.erp.repository.hr.StaffBankAccountRepository;
+import com.school.erp.repository.hr.StaffDocumentRepository;
+import com.school.erp.dto.hr.StaffBankAccountDTO;
+import com.school.erp.dto.hr.StaffBankAccountRequest;
+import com.school.erp.dto.hr.StaffDocumentDTO;
+import com.school.erp.dto.hr.StaffDocumentRequest;
 import lombok.RequiredArgsConstructor;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
@@ -42,6 +50,8 @@ public class HrStaffService {
     private final SubjectRepository subjectRepository;
     private final AcademicYearRepository academicYearRepository;
     private final SchoolDepartmentRepository schoolDepartmentRepository;
+    private final StaffDocumentRepository staffDocumentRepository;
+    private final StaffBankAccountRepository staffBankAccountRepository;
 
     public List<Staff> getStaffBySchool(Long schoolId) {
         return staffRepository.findBySchoolId(schoolId);
@@ -203,6 +213,91 @@ public class HrStaffService {
                 .effectiveFrom(ua.getEffectiveFrom())
                 .effectiveTo(ua.getEffectiveTo())
                 .isActive(ua.isActive())
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<StaffDocumentDTO> getStaffDocuments(Long schoolId, Long staffId) {
+        Staff staff = getStaffById(schoolId, staffId);
+        return staffDocumentRepository.findByStaffId(staff.getId()).stream()
+                .map(doc -> StaffDocumentDTO.builder()
+                        .id(doc.getId())
+                        .staffId(staff.getId())
+                        .documentType(doc.getDocumentType())
+                        .fileName(doc.getFileName())
+                        .fileUrl(doc.getFileUrl())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public StaffDocumentDTO addStaffDocument(Long schoolId, Long staffId, StaffDocumentRequest request) {
+        Staff staff = getStaffById(schoolId, staffId);
+        StaffDocument doc = new StaffDocument();
+        doc.setStaff(staff);
+        doc.setDocumentType(request.getDocumentType());
+        doc.setFileName(request.getFileName());
+        doc.setFileUrl(request.getFileUrl());
+        StaffDocument saved = staffDocumentRepository.save(doc);
+
+        return StaffDocumentDTO.builder()
+                .id(saved.getId())
+                .staffId(staff.getId())
+                .documentType(saved.getDocumentType())
+                .fileName(saved.getFileName())
+                .fileUrl(saved.getFileUrl())
+                .build();
+    }
+
+    @Transactional
+    public void deleteStaffDocument(Long schoolId, Long staffId, Long docId) {
+        Staff staff = getStaffById(schoolId, staffId);
+        StaffDocument doc = staffDocumentRepository.findByIdAndStaffId(docId, staff.getId())
+                .orElseThrow(() -> new RuntimeException("Document not found for staff"));
+        staffDocumentRepository.delete(doc);
+    }
+
+    @Transactional(readOnly = true)
+    public StaffBankAccountDTO getStaffBankAccount(Long schoolId, Long staffId) {
+        Staff staff = getStaffById(schoolId, staffId);
+        return staffBankAccountRepository.findByStaffId(staff.getId())
+                .map(acc -> StaffBankAccountDTO.builder()
+                        .id(acc.getId())
+                        .staffId(staff.getId())
+                        .accountHolderName(acc.getAccountHolderName())
+                        .accountNumber(acc.getAccountNumber())
+                        .bankName(acc.getBankName())
+                        .ifscCode(acc.getIfscCode())
+                        .branchName(acc.getBranchName())
+                        .build())
+                .orElse(null);
+    }
+
+    @Transactional
+    public StaffBankAccountDTO updateStaffBankAccount(Long schoolId, Long staffId, StaffBankAccountRequest request) {
+        Staff staff = getStaffById(schoolId, staffId);
+        StaffBankAccount acc = staffBankAccountRepository.findByStaffId(staff.getId())
+                .orElseGet(() -> {
+                    StaffBankAccount newAcc = new StaffBankAccount();
+                    newAcc.setStaff(staff);
+                    return newAcc;
+                });
+
+        acc.setAccountHolderName(request.getAccountHolderName());
+        acc.setAccountNumber(request.getAccountNumber());
+        acc.setBankName(request.getBankName());
+        acc.setIfscCode(request.getIfscCode());
+        acc.setBranchName(request.getBranchName());
+
+        StaffBankAccount saved = staffBankAccountRepository.save(acc);
+        return StaffBankAccountDTO.builder()
+                .id(saved.getId())
+                .staffId(staff.getId())
+                .accountHolderName(saved.getAccountHolderName())
+                .accountNumber(saved.getAccountNumber())
+                .bankName(saved.getBankName())
+                .ifscCode(saved.getIfscCode())
+                .branchName(saved.getBranchName())
                 .build();
     }
 }

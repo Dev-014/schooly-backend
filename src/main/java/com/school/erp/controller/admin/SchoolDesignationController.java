@@ -23,7 +23,7 @@ public class SchoolDesignationController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<SchoolDesignation>> create(@RequestBody SchoolDesignation designation, @RequestParam Long schoolId) {
-        return ResponseEntity.ok(ApiResponse.success(service.createDesignation(designation), "Created"));
+        return ResponseEntity.ok(ApiResponse.success(service.createDesignation(schoolId, designation), "Created"));
     }
 
     @PutMapping("/{id}")

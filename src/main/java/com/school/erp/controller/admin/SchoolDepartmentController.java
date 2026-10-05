@@ -23,10 +23,7 @@ public class SchoolDepartmentController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<SchoolDepartment>> create(@RequestBody SchoolDepartment department, @RequestParam Long schoolId) {
-        // Find School entity and set it... wait, we need SchoolRepository
-        // Actually for simplicity, we'll assume DTO mapping handles it, but since we are taking SchoolDepartment directly,
-        // we might need to set the school manually. I will update the service.
-        return ResponseEntity.ok(ApiResponse.success(service.createDepartment(department), "Created"));
+        return ResponseEntity.ok(ApiResponse.success(service.createDepartment(schoolId, department), "Created"));
     }
 
     @PutMapping("/{id}")
