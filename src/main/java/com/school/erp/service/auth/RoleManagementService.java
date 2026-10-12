@@ -107,6 +107,7 @@ public class RoleManagementService {
             dto.setDescription(def.getDescription());
             dto.setSensitive(def.isSensitive());
             dto.setAvailableScopes(def.getSupportedScopeTypes());
+            dto.setAudience(def.getAudience());
             
             RolePermission granted = grantedMap.get(def.getPermissionKey());
             if (granted != null) {

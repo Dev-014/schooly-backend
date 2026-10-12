@@ -37,7 +37,7 @@ public class AuthorizationService {
             return false;
         }
 
-        List<RolePermission> effective = self.getEffectivePermissions(schoolId, userId);
+        List<RolePermission> effective = self != null ? self.getEffectivePermissions(schoolId, userId) : getEffectivePermissions(schoolId, userId);
         return effective.stream().anyMatch(rp -> rp.getPermission().getPermissionKey().equals(permissionKey));
     }
 
@@ -79,7 +79,7 @@ public class AuthorizationService {
      */
     @Transactional(readOnly = true)
     public boolean hasSectionAccess(Long schoolId, Long userId, String permissionKey, Long sectionId, Long currentAcademicSessionId) {
-        List<RolePermission> effective = getEffectivePermissions(schoolId, userId);
+        List<RolePermission> effective = self != null ? self.getEffectivePermissions(schoolId, userId) : getEffectivePermissions(schoolId, userId);
         
         boolean hasPermission = false;
         boolean requiresAssignment = true;

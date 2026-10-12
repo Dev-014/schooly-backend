@@ -13,4 +13,5 @@ public class PermissionDefinitionDto {
     private boolean granted;
     private String scope;
     private List<String> availableScopes;
+    private List<String> audience;
 }

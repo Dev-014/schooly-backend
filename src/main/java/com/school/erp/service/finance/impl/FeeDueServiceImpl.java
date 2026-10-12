@@ -379,7 +379,7 @@ public class FeeDueServiceImpl implements FeeDueService {
         due.setSchool(school);
         due.setFeeCategory(category);
         due.setAmount(amount);
-        due.setTitle(title);
+        due.setTitle(title != null && !title.trim().isEmpty() ? title : category.getName() + " (Ad-Hoc)");
         due.setDueDate(dueDate);
         due.setStatus("UNPAID");
         due.setIsAdHoc(true);

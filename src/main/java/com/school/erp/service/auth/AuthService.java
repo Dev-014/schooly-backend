@@ -242,8 +242,7 @@ public class AuthService {
         }
 
         List<PermissionContextDto> permissions;
-        if ("SUPER_ADMIN".equalsIgnoreCase(primaryRole) || "SUPERADMIN".equalsIgnoreCase(primaryRole) || "ADMIN".equalsIgnoreCase(primaryRole)) {
-            // Temporary fallback: Treat primary ADMIN as ALL until full backend role management is deployed
+        if ("SUPER_ADMIN".equalsIgnoreCase(primaryRole) || "SUPERADMIN".equalsIgnoreCase(primaryRole)) {
             permissions = List.of(new PermissionContextDto("ALL", "GLOBAL"));
         } else if (targetSchoolId != null) {
             permissions = authorizationService.getEffectivePermissions(targetSchoolId, user.getId())
@@ -334,7 +333,7 @@ public class AuthService {
         authSessionRepository.save(authSession);
 
         List<PermissionContextDto> permissions;
-        if ("SUPER_ADMIN".equalsIgnoreCase(extractRoleEnum(userSchoolRole).name()) || "SUPERADMIN".equalsIgnoreCase(extractRoleEnum(userSchoolRole).name()) || "ADMIN".equalsIgnoreCase(extractRoleEnum(userSchoolRole).name())) {
+        if ("SUPER_ADMIN".equalsIgnoreCase(extractRoleEnum(userSchoolRole).name()) || "SUPERADMIN".equalsIgnoreCase(extractRoleEnum(userSchoolRole).name())) {
             permissions = List.of(new PermissionContextDto("ALL", "GLOBAL"));
         } else {
             permissions = authorizationService.getEffectivePermissions(schoolId, userId)
@@ -508,7 +507,7 @@ public class AuthService {
         authSessionRepository.save(session);
 
         List<PermissionContextDto> permissions;
-        if ("SUPER_ADMIN".equalsIgnoreCase(extractRoleEnum(userSchoolRole).name()) || "SUPERADMIN".equalsIgnoreCase(extractRoleEnum(userSchoolRole).name()) || "ADMIN".equalsIgnoreCase(extractRoleEnum(userSchoolRole).name())) {
+        if ("SUPER_ADMIN".equalsIgnoreCase(extractRoleEnum(userSchoolRole).name()) || "SUPERADMIN".equalsIgnoreCase(extractRoleEnum(userSchoolRole).name())) {
             permissions = List.of(new PermissionContextDto("ALL", "GLOBAL"));
         } else {
             permissions = authorizationService.getEffectivePermissions(school.getId(), user.getId())
@@ -562,7 +561,7 @@ public class AuthService {
         String newRefreshToken = jwtUtil.generateRefreshToken(authUser.userId(), authUser.schoolId(), targetRole);
 
         List<PermissionContextDto> permissions;
-        if (targetRole == UserRole.SUPER_ADMIN || targetRole == UserRole.ADMIN) {
+        if (targetRole == UserRole.SUPER_ADMIN) {
             permissions = List.of(new PermissionContextDto("ALL", "GLOBAL"));
         } else {
             permissions = authorizationService.getEffectivePermissions(authUser.schoolId(), authUser.userId())

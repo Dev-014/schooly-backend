@@ -45,6 +45,9 @@ class ExamScheduleServiceTest {
     private ExamSetupRepository examSetupRepository;
 
     @Mock
+    private com.school.erp.repository.exam.ExamSubjectConfigRepository examSubjectConfigRepository;
+
+    @Mock
     private SchoolRepository schoolRepository;
 
     @Mock
@@ -94,6 +97,8 @@ class ExamScheduleServiceTest {
         when(examSetupRepository.findByIdAndSchoolId(4L, 4L)).thenReturn(Optional.of(examSetup));
         when(schoolClassRepository.findByIdAndSchoolId(10L, 4L)).thenReturn(Optional.of(schoolClass));
         when(subjectRepository.findByIdAndSchoolId(10L, 4L)).thenReturn(Optional.of(subject));
+        when(examSubjectConfigRepository.findBySchoolIdAndExamSetupIdAndSubjectId(4L, 4L, 10L))
+            .thenReturn(Optional.of(new com.school.erp.entity.exam.ExamSubjectConfig()));
         when(examScheduleRepository.save(any(ExamSchedule.class))).thenAnswer(invocation -> {
             ExamSchedule s = invocation.getArgument(0);
             s.setId(100L);
@@ -127,6 +132,8 @@ class ExamScheduleServiceTest {
         when(examSetupRepository.findByIdAndSchoolId(4L, 4L)).thenReturn(Optional.of(examSetup));
         when(schoolClassRepository.findByIdAndSchoolId(10L, 4L)).thenReturn(Optional.of(schoolClass));
         when(subjectRepository.findBySchoolIdAndCode(4L, "MAT-001")).thenReturn(Optional.of(subject));
+        when(examSubjectConfigRepository.findBySchoolIdAndExamSetupIdAndSubjectId(4L, 4L, 10L))
+            .thenReturn(Optional.of(new com.school.erp.entity.exam.ExamSubjectConfig()));
         when(examScheduleRepository.save(any(ExamSchedule.class))).thenAnswer(invocation -> {
             ExamSchedule s = invocation.getArgument(0);
             s.setId(101L);
@@ -155,6 +162,8 @@ class ExamScheduleServiceTest {
         when(examSetupRepository.findByIdAndSchoolId(4L, 4L)).thenReturn(Optional.of(examSetup));
         when(schoolClassRepository.findBySchoolId(4L)).thenReturn(List.of(schoolClass));
         when(subjectRepository.findByIdAndSchoolId(10L, 4L)).thenReturn(Optional.of(subject));
+        when(examSubjectConfigRepository.findBySchoolIdAndExamSetupIdAndSubjectId(4L, 4L, 10L))
+            .thenReturn(Optional.of(new com.school.erp.entity.exam.ExamSubjectConfig()));
         when(examScheduleRepository.save(any(ExamSchedule.class))).thenAnswer(invocation -> {
             ExamSchedule s = invocation.getArgument(0);
             s.setId(102L);
