@@ -22,7 +22,7 @@ public class AdminExamSetupController {
     private final ExamSetupService examSetupService;
 
     @GetMapping
-    @PermissionRequired("exams_results.exam_setup_student.view")
+    @PermissionRequired({"exams_results.exam_setup_student.view", "exams_results.report_card.view"})
     public ResponseEntity<ApiResponse<List<ExamSetupResponse>>> getSetups(
             @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) Long termId) {

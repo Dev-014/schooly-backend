@@ -44,22 +44,24 @@ public class PermissionAuthorizationInterceptor implements HandlerInterceptor {
             throw new ForbiddenException("Authentication and valid school context required to access this resource");
         }
 
-        String requiredPermissionKey = permissionRequired.value();
+        String[] requiredPermissions = permissionRequired.value();
         
         if (authorizationService == null) {
             // In @WebMvcTest slices, the AuthorizationService is not loaded.
             return true; 
         }
         
-        boolean hasPermission = authorizationService.hasPermission(
-                currentUser.schoolId(), 
-                currentUser.userId(), 
-                requiredPermissionKey
-        );
+        boolean hasPermission = false;
+        for (String perm : requiredPermissions) {
+            if (authorizationService.hasPermission(currentUser.schoolId(), currentUser.userId(), perm)) {
+                hasPermission = true;
+                break;
+            }
+        }
 
         if (!hasPermission) {
             throw new ForbiddenException(
-                    "Access denied. Missing permission: " + requiredPermissionKey
+                    "Access denied. Missing permission: " + String.join(", ", requiredPermissions)
             );
         }
 

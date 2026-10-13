@@ -22,7 +22,7 @@ public class AdminExamReportController {
     private final ExamReportService examReportService;
 
     @GetMapping("/analytics")
-    @PermissionRequired("exams_results.examination_reports.view")
+    @PermissionRequired("exams_results.report_card.view")
     public ResponseEntity<ApiResponse<ExamReportAnalyticsResponse>> getAnalytics(
             @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) String academicYear,
@@ -37,7 +37,7 @@ public class AdminExamReportController {
     }
 
     @GetMapping("/metrics")
-    @PermissionRequired("exams_results.examination_reports.view")
+    @PermissionRequired("exams_results.report_card.view")
     public ResponseEntity<ApiResponse<ExamReportMetricsResponse>> getMetrics(
             @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) Long termId,
@@ -52,7 +52,7 @@ public class AdminExamReportController {
     }
 
     @GetMapping("/detailed-preview")
-    @PermissionRequired("exams_results.examination_reports.view")
+    @PermissionRequired("exams_results.report_card.view")
     public ResponseEntity<ApiResponse<List<ExamReportPreviewItemResponse>>> getDetailedPreview(
             @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) Long termId,
@@ -74,7 +74,7 @@ public class AdminExamReportController {
     }
 
     @PostMapping("/generate-pdf")
-    @PermissionRequired("exams_results.examination_reports.edit")
+    @PermissionRequired("exams_results.report_card.edit")
     public ResponseEntity<ApiResponse<PdfReportResponse>> generatePdf(
             @RequestParam(required = false) Long schoolId,
             @Valid @RequestBody GeneratePdfReportRequest request) {

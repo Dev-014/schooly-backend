@@ -27,6 +27,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import com.school.erp.entity.exam.ExamMark;
+import com.school.erp.repository.exam.ExamMarkRepository;
+import java.math.RoundingMode;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +46,7 @@ public class ExamReportCardService {
     private final SchoolClassRepository schoolClassRepository;
     private final SectionRepository sectionRepository;
     private final StudentRepository studentRepository;
+    private final ExamMarkRepository examMarkRepository;
 
     @Transactional(readOnly = true)
     public ReportCardQueueStatusResponse getQueueStatus(Long rawSchoolId) {
@@ -237,24 +242,138 @@ public class ExamReportCardService {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
         List<ExamReportCard> cards = examReportCardRepository.findBySchoolIdAndStudentId(schoolId, studentId);
 
-        return cards.stream().map(c -> StudentReportCardResponse.builder()
-                .id(c.getId())
-                .studentId(c.getStudent().getId())
-                .studentName(c.getStudent().getName())
-                .rollNo(c.getStudent().getRollNumber())
-                .admissionNo(c.getStudent().getAdmissionNo())
-                .className(c.getSchoolClass().getName())
-                .sectionName(c.getSection() != null ? c.getSection().getName() : "")
-                .termName(c.getTerm().getName())
-                .mode(c.getGenerationMode())
-                .templateName(c.getTemplateName())
-                .totalMarks(c.getTotalMarks())
-                .maxMarks(c.getMaxMarks())
-                .percentage(c.getPercentage())
-                .grade(c.getGrade())
-                .division(c.getDivision())
-                .status(c.getStatus())
-                .fileUrl(c.getFileUrl())
-                .build()).collect(Collectors.toList());
+        if (!cards.isEmpty()) {
+            return cards.stream().map(c -> {
+                List<ExamMark> marks = c.getExamSetup() != null
+                        ? examMarkRepository.findBySchoolIdAndExamSetupIdAndStudentId(schoolId, c.getExamSetup().getId(), studentId)
+                        : examMarkRepository.findBySchoolIdAndExamSetupTermIdAndStudentId(schoolId, c.getTerm().getId(), studentId);
+
+                List<SubjectMarkInfo> subjectInfos = marks.stream().map(m -> SubjectMarkInfo.builder()
+                        .subjectName(m.getSubject().getName())
+                        .obtainedMarks(m.getMarksObtained() != null ? m.getMarksObtained() : BigDecimal.ZERO)
+                        .maxMarks(m.getExamSubjectConfig() != null && m.getExamSubjectConfig().getMaxMarks() != null
+                                ? m.getExamSubjectConfig().getMaxMarks() : new BigDecimal("100.00"))
+                        .grade(getGradeFromPercentage(
+                                m.getMarksObtained() != null ? m.getMarksObtained() : BigDecimal.ZERO,
+                                m.getExamSubjectConfig() != null && m.getExamSubjectConfig().getMaxMarks() != null
+                                        ? m.getExamSubjectConfig().getMaxMarks() : new BigDecimal("100.00")))
+                        .build()).toList();
+
+                return StudentReportCardResponse.builder()
+                        .id(c.getId())
+                        .studentId(c.getStudent().getId())
+                        .studentName(c.getStudent().getName())
+                        .rollNo(c.getStudent().getRollNumber())
+                        .admissionNo(c.getStudent().getAdmissionNo())
+                        .className(c.getSchoolClass().getName())
+                        .sectionName(c.getSection() != null ? c.getSection().getName() : "")
+                        .termName(c.getTerm().getName())
+                        .mode(c.getGenerationMode())
+                        .templateName(c.getTemplateName())
+                        .totalMarks(c.getTotalMarks())
+                        .maxMarks(c.getMaxMarks())
+                        .percentage(c.getPercentage())
+                        .grade(c.getGrade())
+                        .division(c.getDivision())
+                        .status(c.getStatus())
+                        .fileUrl(c.getFileUrl())
+                        .subjects(subjectInfos)
+                        .build();
+            }).collect(Collectors.toList());
+        }
+
+        // If no pre-generated cards exist, dynamically aggregate student's marks by ExamSetup
+        List<ExamMark> studentMarks = examMarkRepository.findBySchoolIdAndStudentIdWithDetails(schoolId, studentId);
+        if (studentMarks.isEmpty()) {
+            return List.of();
+        }
+
+        Map<Long, List<ExamMark>> marksBySetup = studentMarks.stream()
+                .filter(m -> m.getExamSetup() != null)
+                .collect(Collectors.groupingBy(m -> m.getExamSetup().getId()));
+
+        Student student = studentMarks.get(0).getStudent();
+        List<StudentReportCardResponse> computedCards = new ArrayList<>();
+
+        for (Map.Entry<Long, List<ExamMark>> entry : marksBySetup.entrySet()) {
+            List<ExamMark> setupMarks = entry.getValue();
+            if (setupMarks.isEmpty()) continue;
+
+            ExamSetup setup = setupMarks.get(0).getExamSetup();
+            ExamTerm term = setup.getTerm();
+
+            BigDecimal totalObtained = BigDecimal.ZERO;
+            BigDecimal totalMax = BigDecimal.ZERO;
+            List<SubjectMarkInfo> subjectInfos = new ArrayList<>();
+
+            for (ExamMark m : setupMarks) {
+                BigDecimal obtained = m.getMarksObtained() != null ? m.getMarksObtained() : BigDecimal.ZERO;
+                BigDecimal max = (m.getExamSubjectConfig() != null && m.getExamSubjectConfig().getMaxMarks() != null)
+                        ? m.getExamSubjectConfig().getMaxMarks()
+                        : new BigDecimal("100.00");
+
+                totalObtained = totalObtained.add(obtained);
+                totalMax = totalMax.add(max);
+
+                subjectInfos.add(SubjectMarkInfo.builder()
+                        .subjectName(m.getSubject().getName())
+                        .obtainedMarks(obtained)
+                        .maxMarks(max)
+                        .grade(getGradeFromPercentage(obtained, max))
+                        .build());
+            }
+
+            BigDecimal percentage = BigDecimal.ZERO;
+            if (totalMax.compareTo(BigDecimal.ZERO) > 0) {
+                percentage = totalObtained.multiply(new BigDecimal("100")).divide(totalMax, 2, RoundingMode.HALF_UP);
+            }
+
+            String grade = getGradeFromPercentage(totalObtained, totalMax);
+            String division = getDivisionFromPercentage(percentage);
+            String status = percentage.compareTo(new BigDecimal("40.00")) >= 0 ? "PASS" : "FAIL";
+
+            computedCards.add(StudentReportCardResponse.builder()
+                    .id(setup.getId())
+                    .studentId(student.getId())
+                    .studentName(student.getName())
+                    .rollNo(student.getRollNumber())
+                    .admissionNo(student.getAdmissionNo())
+                    .className(student.getSchoolClass() != null ? student.getSchoolClass().getName() : "")
+                    .sectionName(student.getSectionId() != null ? ("Section " + student.getSectionId()) : "")
+                    .termName(term != null ? term.getName() : setup.getName())
+                    .mode("EXAM_WISE")
+                    .templateName("Classic CBSE Standard")
+                    .totalMarks(totalObtained)
+                    .maxMarks(totalMax)
+                    .percentage(percentage)
+                    .grade(grade)
+                    .division(division)
+                    .status(status)
+                    .fileUrl("/api/v1/downloads/report-cards/student_" + student.getId() + ".pdf")
+                    .subjects(subjectInfos)
+                    .build());
+        }
+
+        return computedCards;
+    }
+
+    private String getGradeFromPercentage(BigDecimal obtained, BigDecimal max) {
+        if (obtained == null || max == null || max.compareTo(BigDecimal.ZERO) == 0) return "N/A";
+        BigDecimal percent = obtained.multiply(new BigDecimal("100")).divide(max, 2, RoundingMode.HALF_UP);
+        if (percent.compareTo(new BigDecimal("90")) >= 0) return "A+";
+        if (percent.compareTo(new BigDecimal("80")) >= 0) return "A";
+        if (percent.compareTo(new BigDecimal("70")) >= 0) return "B+";
+        if (percent.compareTo(new BigDecimal("60")) >= 0) return "B";
+        if (percent.compareTo(new BigDecimal("50")) >= 0) return "C";
+        if (percent.compareTo(new BigDecimal("40")) >= 0) return "D";
+        return "E";
+    }
+
+    private String getDivisionFromPercentage(BigDecimal percent) {
+        if (percent == null || percent.compareTo(BigDecimal.ZERO) == 0) return "N/A";
+        if (percent.compareTo(new BigDecimal("60")) >= 0) return "First Division";
+        if (percent.compareTo(new BigDecimal("45")) >= 0) return "Second Division";
+        if (percent.compareTo(new BigDecimal("33")) >= 0) return "Third Division";
+        return "Fail";
     }
 }

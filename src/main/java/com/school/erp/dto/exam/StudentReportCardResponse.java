@@ -29,4 +29,5 @@ public class StudentReportCardResponse {
     private String division;
     private String status;
     private String fileUrl;
+    private java.util.List<SubjectMarkInfo> subjects;
 }

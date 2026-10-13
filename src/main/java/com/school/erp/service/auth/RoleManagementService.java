@@ -103,6 +103,8 @@ public class RoleManagementService {
             PermissionDefinitionDto dto = new PermissionDefinitionDto();
             dto.setId(def.getId());
             dto.setKey(def.getPermissionKey());
+            dto.setResourceKey(def.getResourceKey());
+            dto.setActionKey(def.getActionKey());
             dto.setName(def.getName());
             dto.setDescription(def.getDescription());
             dto.setSensitive(def.isSensitive());

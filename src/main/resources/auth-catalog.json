@@ -2285,38 +2285,6 @@
       ]
     },
     {
-      "key": "exams_results.examination_reports.view",
-      "module": "exams_results",
-      "resource": "examination_reports",
-      "action": "view",
-      "name": "Access Examination Reports",
-      "description": "Allows access to the Examination Reports screen",
-      "supportedScopes": [
-        "school"
-      ],
-      "sensitive": false,
-      "status": "active",
-      "audience": [
-        "staff"
-      ]
-    },
-    {
-      "key": "exams_results.examination_reports.edit",
-      "module": "exams_results",
-      "resource": "examination_reports",
-      "action": "edit",
-      "name": "Generate Examination Reports",
-      "description": "Allows exporting and generating examination analytics and reports",
-      "supportedScopes": [
-        "school"
-      ],
-      "sensitive": true,
-      "status": "active",
-      "audience": [
-        "staff"
-      ]
-    },
-    {
       "key": "exams_results.report_generation.view",
       "module": "exams_results",
       "resource": "report_generation",
