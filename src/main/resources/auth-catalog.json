@@ -603,17 +603,19 @@
       "module": "fees",
       "resource": "student_fees",
       "action": "view",
-      "name": "Access Student Fees",
-      "description": "View personal student fee dues, invoices, and payments.",
+      "name": "Student & Child Fees",
+      "description": "View fee dues, invoices, and payment receipts for self (students) or linked children (parents).",
       "supportedScopes": [
         "own",
-        "linked"
+        "linked",
+        "school"
       ],
       "sensitive": false,
       "status": "active",
       "audience": [
         "student",
-        "parent"
+        "parent",
+        "staff"
       ]
     },
     {
@@ -1700,17 +1702,19 @@
       "module": "exams_results",
       "resource": "student_exams",
       "action": "view_results",
-      "name": "View Exam Results",
-      "description": "Allows viewing of exam marks and downloading report cards",
+      "name": "Student & Child Exam Results",
+      "description": "Allows viewing of exam marks and downloading report cards for students and linked children.",
       "supportedScopes": [
         "own",
-        "linked"
+        "linked",
+        "school"
       ],
       "sensitive": true,
       "status": "active",
       "audience": [
         "student",
-        "parent"
+        "parent",
+        "staff"
       ]
     },
     {
@@ -2260,12 +2264,16 @@
       "name": "Access Report Card",
       "description": "Allows access to the Report Card screen",
       "supportedScopes": [
-        "school"
+        "school",
+        "linked",
+        "own"
       ],
       "sensitive": false,
       "status": "active",
       "audience": [
-        "staff"
+        "staff",
+        "parent",
+        "student"
       ]
     },
     {

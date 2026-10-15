@@ -152,12 +152,13 @@ public class AdminLibraryController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) Long memberId,
+            @RequestParam(required = false) Long studentId,
             @RequestParam(required = false) Long bookId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Page<LibraryCirculationResponse> result = libraryService.filterCirculations(
-                schoolId, search, status, memberId, bookId, PageRequest.of(page, size));
+                schoolId, search, status, memberId, studentId, bookId, PageRequest.of(page, size));
 
         return ResponseEntity.ok(ApiResponse.success(
                 result.getContent(),

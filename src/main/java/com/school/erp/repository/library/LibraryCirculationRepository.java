@@ -24,6 +24,7 @@ public interface LibraryCirculationRepository extends JpaRepository<LibraryCircu
             "     OR LOWER(c.book.isbn) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) " +
             "AND (:status IS NULL OR LOWER(c.status) = LOWER(CAST(:status AS string))) " +
             "AND (:memberId IS NULL OR c.member.id = :memberId) " +
+            "AND (:studentId IS NULL OR (c.member.student IS NOT NULL AND c.member.student.id = :studentId)) " +
             "AND (:bookId IS NULL OR c.book.id = :bookId) " +
             "ORDER BY c.issueDate DESC, c.createdAt DESC")
     Page<LibraryCirculation> filterCirculations(
@@ -31,6 +32,7 @@ public interface LibraryCirculationRepository extends JpaRepository<LibraryCircu
             @Param("search") String search,
             @Param("status") String status,
             @Param("memberId") Long memberId,
+            @Param("studentId") Long studentId,
             @Param("bookId") Long bookId,
             Pageable pageable
     );

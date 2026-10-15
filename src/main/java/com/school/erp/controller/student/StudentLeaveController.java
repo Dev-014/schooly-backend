@@ -23,9 +23,10 @@ public class StudentLeaveController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<StudentLeaveResponse>>> getAllLeaves(
-            @RequestParam(required = false) Long schoolId
+            @RequestParam(required = false) Long schoolId,
+            @RequestParam(required = false) Long studentId
     ) {
-        return ResponseEntity.ok(ApiResponse.success(leaveService.getAllLeaves(schoolId), "Student leaves retrieved successfully"));
+        return ResponseEntity.ok(ApiResponse.success(leaveService.getAllLeaves(schoolId, studentId), "Student leaves retrieved successfully"));
     }
 
     @PostMapping

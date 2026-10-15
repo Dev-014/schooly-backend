@@ -13,6 +13,7 @@ import com.school.erp.repository.superadmin.SchoolRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,8 @@ public class CollectionPlanService {
     public CollectionPlanResponse createPlan(Long schoolId, CollectionPlanRequest request) {
         School school = schoolRepository.findById(schoolId)
                 .orElseThrow(() -> new RuntimeException("School not found"));
+
+        validatePlanItems(request.getItems());
 
         CollectionPlan plan = new CollectionPlan();
         plan.setSchool(school);
@@ -71,6 +74,8 @@ public class CollectionPlanService {
         if (!plan.getSchool().getId().equals(schoolId)) {
             throw new RuntimeException("Collection Plan does not belong to the school");
         }
+
+        validatePlanItems(request.getItems());
 
         plan.setName(request.getName());
         plan.setDescription(request.getDescription());
@@ -132,4 +137,50 @@ public class CollectionPlanService {
 
         return res;
     }
+
+    private void validatePlanItems(List<CollectionPlanItemRequest> items) {
+        if (items == null || items.isEmpty()) {
+            throw new IllegalArgumentException("A collection plan must contain at least one installment milestone.");
+        }
+
+        BigDecimal totalPercentage = BigDecimal.ZERO;
+        boolean hasRemainder = false;
+
+        for (int i = 0; i < items.size(); i++) {
+            CollectionPlanItemRequest item = items.get(i);
+            String type = item.getAmountType() != null ? item.getAmountType().toUpperCase() : "PERCENTAGE";
+
+            if ("FIXED".equals(type)) {
+                throw new IllegalArgumentException("Fixed amounts are not permitted in collection plans. Collection plans define installment percentages or remainder splits of the fee structure total.");
+            }
+
+            if ("REMAINDER".equals(type)) {
+                if (hasRemainder) {
+                    throw new IllegalArgumentException("Only one installment can be designated as REMAINDER.");
+                }
+                if (i != items.size() - 1) {
+                    throw new IllegalArgumentException("REMAINDER must be the final installment in the plan.");
+                }
+                hasRemainder = true;
+            } else if ("PERCENTAGE".equals(type)) {
+                if (item.getAmountValue() == null || item.getAmountValue().compareTo(BigDecimal.ZERO) <= 0) {
+                    throw new IllegalArgumentException("Percentage installment value must be greater than 0%.");
+                }
+                totalPercentage = totalPercentage.add(item.getAmountValue());
+            } else {
+                throw new IllegalArgumentException("Unsupported installment amount type: " + item.getAmountType());
+            }
+        }
+
+        if (hasRemainder) {
+            if (totalPercentage.compareTo(BigDecimal.valueOf(100)) >= 0) {
+                throw new IllegalArgumentException("Sum of percentage installments before REMAINDER must be strictly less than 100%. Current sum: " + totalPercentage + "%");
+            }
+        } else {
+            if (totalPercentage.compareTo(BigDecimal.valueOf(100)) != 0) {
+                throw new IllegalArgumentException("Installment percentages must sum exactly to 100% (or end with a REMAINDER milestone). Current sum: " + totalPercentage + "%");
+            }
+        }
+    }
 }
+

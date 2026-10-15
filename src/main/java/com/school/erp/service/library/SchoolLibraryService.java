@@ -229,6 +229,7 @@ public class SchoolLibraryService {
             String search,
             String status,
             Long memberId,
+            Long studentId,
             Long bookId,
             Pageable pageable) {
         final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
@@ -237,7 +238,7 @@ public class SchoolLibraryService {
         String cleanStatus = (status != null && !status.isBlank() && !status.equalsIgnoreCase("all")) ? status.trim() : null;
 
         Page<LibraryCirculation> page = circulationRepository.filterCirculations(
-                schoolId, cleanSearch, cleanStatus, memberId, bookId, pageable);
+                schoolId, cleanSearch, cleanStatus, memberId, studentId, bookId, pageable);
 
         // Auto-check and mark overdue in memory if past due date
         LocalDate today = LocalDate.now();
@@ -453,6 +454,7 @@ public class SchoolLibraryService {
                 .author(c.getBook().getAuthor())
                 .coverImageUrl(c.getBook().getCoverImageUrl())
                 .memberId(c.getMember().getId())
+                .studentId(c.getMember() != null && c.getMember().getStudent() != null ? c.getMember().getStudent().getId() : null)
                 .memberName(c.getMember().getFullName())
                 .memberCardNumber(c.getMember().getCardNumber())
                 .memberType(c.getMember().getMemberType())

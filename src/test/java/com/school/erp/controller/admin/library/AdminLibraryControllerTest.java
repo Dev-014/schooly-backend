@@ -3,6 +3,8 @@ package com.school.erp.controller.admin.library;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.school.erp.dto.library.LibraryBookRequest;
 import com.school.erp.dto.library.LibraryBookResponse;
+import com.school.erp.dto.library.LibraryCirculationResponse;
+import com.school.erp.dto.library.LibraryMemberRequest;
 import com.school.erp.dto.library.LibraryMemberResponse;
 import com.school.erp.dto.library.LibraryStatsResponse;
 import com.school.erp.security.AuthFilterConfig;
@@ -26,6 +28,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -129,5 +132,104 @@ class AdminLibraryControllerTest {
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.id").value(2L))
                 .andExpect(jsonPath("$.data.title").value("The Pragmatic Programmer"));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/admin/library/members should return page of members")
+    void getMembers_ShouldReturnPage() throws Exception {
+        LibraryMemberResponse member = LibraryMemberResponse.builder()
+                .id(10L)
+                .memberType("STUDENT")
+                .cardNumber("LIB-STU-001")
+                .fullName("Elena Rodriguez")
+                .status("Active")
+                .maxBooksAllowed(3)
+                .build();
+
+        when(libraryService.filterMembers(any(), any(), any(), any(), any()))
+                .thenReturn(new PageImpl<>(List.of(member)));
+
+        mockMvc.perform(get("/api/v1/admin/library/members")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data[0].id").value(10L))
+                .andExpect(jsonPath("$.data[0].fullName").value("Elena Rodriguez"))
+                .andExpect(jsonPath("$.data[0].cardNumber").value("LIB-STU-001"));
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/admin/library/members should register new library member")
+    void createMember_ShouldReturnCreated() throws Exception {
+        LibraryMemberRequest request = LibraryMemberRequest.builder()
+                .memberType("STUDENT")
+                .cardNumber("LIB-STU-1001-A9B2")
+                .fullName("Elena Rodriguez")
+                .admissionNumber("AC-2023-458")
+                .maxBooksAllowed(3)
+                .status("Active")
+                .studentId(1L)
+                .build();
+
+        LibraryMemberResponse response = LibraryMemberResponse.builder()
+                .id(10L)
+                .memberType("STUDENT")
+                .cardNumber("LIB-STU-1001-A9B2")
+                .fullName("Elena Rodriguez")
+                .admissionNumber("AC-2023-458")
+                .maxBooksAllowed(3)
+                .status("Active")
+                .studentId(1L)
+                .build();
+
+        when(libraryService.createMember(any(), any(LibraryMemberRequest.class))).thenReturn(response);
+
+        mockMvc.perform(post("/api/v1/admin/library/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.id").value(10L))
+                .andExpect(jsonPath("$.data.cardNumber").value("LIB-STU-1001-A9B2"))
+                .andExpect(jsonPath("$.data.fullName").value("Elena Rodriguez"));
+    }
+
+    @Test
+    @DisplayName("DELETE /api/v1/admin/library/members/{id} should delete member")
+    void deleteMember_ShouldReturnSuccess() throws Exception {
+        mockMvc.perform(delete("/api/v1/admin/library/members/10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/admin/library/circulations should return page filtered by studentId")
+    void getCirculations_WithStudentId_ShouldReturnPage() throws Exception {
+        LibraryCirculationResponse circulation = LibraryCirculationResponse.builder()
+                .id(100L)
+                .bookId(1L)
+                .bookTitle("To Kill a Mockingbird")
+                .author("Harper Lee")
+                .memberId(10L)
+                .studentId(1L)
+                .memberName("Elena Rodriguez")
+                .memberCardNumber("LIB-STU-001")
+                .status("Issued")
+                .fineAmount(java.math.BigDecimal.ZERO)
+                .finePaid(false)
+                .build();
+
+        when(libraryService.filterCirculations(any(), any(), any(), any(), eq(1L), any(), any()))
+                .thenReturn(new PageImpl<>(List.of(circulation)));
+
+        mockMvc.perform(get("/api/v1/admin/library/circulations")
+                        .param("studentId", "1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data[0].id").value(100L))
+                .andExpect(jsonPath("$.data[0].bookTitle").value("To Kill a Mockingbird"))
+                .andExpect(jsonPath("$.data[0].studentId").value(1L));
     }
 }

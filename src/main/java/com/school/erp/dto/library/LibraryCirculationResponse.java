@@ -28,6 +28,7 @@ public class LibraryCirculationResponse {
 
     // Member info
     private Long memberId;
+    private Long studentId;
     private String memberName;
     private String memberCardNumber;
     private String memberType;

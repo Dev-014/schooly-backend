@@ -32,11 +32,21 @@ public class StudentLeaveService {
         this.authContextService = authContextService;
     }
 
-    public List<StudentLeaveResponse> getAllLeaves(Long schoolId) {
+    public List<StudentLeaveResponse> getAllLeaves(Long schoolId, Long studentId) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
-        return leaveRepository.findBySchoolId(effectiveSchoolId).stream()
+        List<StudentLeave> leaves;
+        if (studentId != null) {
+            leaves = leaveRepository.findBySchoolIdAndStudentId(effectiveSchoolId, studentId);
+        } else {
+            leaves = leaveRepository.findBySchoolId(effectiveSchoolId);
+        }
+        return leaves.stream()
                 .map(this::toResponse)
                 .toList();
+    }
+
+    public List<StudentLeaveResponse> getAllLeaves(Long schoolId) {
+        return getAllLeaves(schoolId, null);
     }
 
     @Transactional

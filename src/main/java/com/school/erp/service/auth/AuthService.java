@@ -342,6 +342,15 @@ public class AuthService {
                     .toList();
         }
 
+        RoleArchetype personaArchetype = switch (extractRoleEnum(userSchoolRole)) {
+            case SUPER_ADMIN -> RoleArchetype.SUPER_ADMIN;
+            case ADMIN -> RoleArchetype.SCHOOL_ADMIN;
+            case PARENT -> RoleArchetype.PARENT;
+            case STUDENT -> RoleArchetype.STUDENT;
+            default -> RoleArchetype.STAFF;
+        };
+        PersonaDto persona = new PersonaDto(extractRoleEnum(userSchoolRole).name(), extractRoleEnum(userSchoolRole).name(), personaArchetype);
+
         return new AuthTokenResponse(
                 userId,
                 schoolId,
@@ -351,8 +360,8 @@ public class AuthService {
                 accessToken,
                 refreshToken,
                 permissions,
-                List.of(new PersonaDto(extractRoleEnum(userSchoolRole).name(), extractRoleEnum(userSchoolRole).name(), RoleArchetype.STAFF)),
-                new PersonaDto(extractRoleEnum(userSchoolRole).name(), extractRoleEnum(userSchoolRole).name(), RoleArchetype.STAFF)
+                List.of(persona),
+                persona
         );
     }
     // ──────────────────────────────────────────────
