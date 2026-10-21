@@ -208,6 +208,8 @@
       "name": "Access Take Register",
       "description": "Allows access to the Take Register screen.",
       "supportedScopes": [
+        "class",
+        "section",
         "school"
       ],
       "sensitive": false,
@@ -224,6 +226,8 @@
       "name": "View Subject Attendance",
       "description": "Allows viewing subject and period-wise attendance records.",
       "supportedScopes": [
+        "class",
+        "section",
         "school"
       ],
       "sensitive": false,
@@ -240,6 +244,8 @@
       "name": "Mark Subject Attendance",
       "description": "Allows teachers to record subject and period-wise attendance.",
       "supportedScopes": [
+        "class",
+        "section",
         "school"
       ],
       "sensitive": true,
@@ -540,6 +546,7 @@
       "name": "Access Search Due Fees",
       "description": "Search and filter pending student fee dues.",
       "supportedScopes": [
+        "class",
         "school"
       ],
       "sensitive": false,
@@ -1265,8 +1272,8 @@
       "module": "library",
       "resource": "book_list",
       "action": "view",
-      "name": "Access Book List",
-      "description": "Allows viewing book list and catalog inventory",
+      "name": "Administrative Book Catalog / Inventory",
+      "description": "Allows staff and librarians to view and manage school library book stock, accession numbers, and inventory",
       "supportedScopes": [
         "school"
       ],
@@ -1281,8 +1288,8 @@
       "module": "library",
       "resource": "book",
       "action": "view",
-      "name": "View Library",
-      "description": "Allows viewing library catalog and issued books",
+      "name": "Personal Issued Books & Library View",
+      "description": "Allows viewing personal issued books, loan history, and the school library book list",
       "supportedScopes": [
         "school",
         "linked"

@@ -68,7 +68,7 @@ public class StudentHomeworkController {
     // ─── Get Active Assignments for Student's Class & Section ──────────────────
 
     @GetMapping
-    @PermissionRequired("homework.assignment.view")
+    @PermissionRequired({"homework.portfolio.view", "homework.assignment.view"})
     public ResponseEntity<ApiResponse<List<HomeworkAssignmentResponse>>> getStudentHomework(
             @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) Long studentId,
@@ -126,7 +126,7 @@ public class StudentHomeworkController {
     // ─── View Student Portfolio / Submitted Work ─────────────────────────────────
 
     @GetMapping("/portfolio")
-    @PermissionRequired("homework.assignment.view")
+    @PermissionRequired({"homework.portfolio.view", "homework.assignment.view"})
     public ResponseEntity<ApiResponse<List<HomeworkSubmissionResponse>>> getStudentPortfolio(
             @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) Long studentId) {

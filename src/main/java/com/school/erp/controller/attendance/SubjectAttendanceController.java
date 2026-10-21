@@ -26,6 +26,7 @@ public class SubjectAttendanceController {
     }
 
     @GetMapping
+    @com.school.erp.security.PermissionRequired("attendance.subject_attendance.view")
     public ResponseEntity<ApiResponse<List<SubjectAttendanceResponse>>> getSubjectAttendance(
             @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) Long classId,
@@ -59,6 +60,7 @@ public class SubjectAttendanceController {
     }
 
     @PostMapping("/bulk")
+    @com.school.erp.security.PermissionRequired("attendance.subject_attendance.edit")
     public ResponseEntity<ApiResponse<List<SubjectAttendanceResponse>>> createBulkSubjectAttendance(
             @Valid @RequestBody BulkSubjectAttendanceRequest request
     ) {

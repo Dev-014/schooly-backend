@@ -220,7 +220,7 @@ class AdminLibraryControllerTest {
                 .finePaid(false)
                 .build();
 
-        when(libraryService.filterCirculations(any(), any(), any(), any(), eq(1L), any(), any()))
+        when(libraryService.filterCirculations(any(), any(), any(), any(), eq(1L), any(), any(), any()))
                 .thenReturn(new PageImpl<>(List.of(circulation)));
 
         mockMvc.perform(get("/api/v1/admin/library/circulations")
@@ -231,5 +231,35 @@ class AdminLibraryControllerTest {
                 .andExpect(jsonPath("$.data[0].id").value(100L))
                 .andExpect(jsonPath("$.data[0].bookTitle").value("To Kill a Mockingbird"))
                 .andExpect(jsonPath("$.data[0].studentId").value(1L));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/admin/library/circulations should return page filtered by staffId")
+    void getCirculations_WithStaffId_ShouldReturnPage() throws Exception {
+        LibraryCirculationResponse circulation = LibraryCirculationResponse.builder()
+                .id(101L)
+                .bookId(2L)
+                .bookTitle("Advanced Pedagogical Methods")
+                .author("Dr. Smith")
+                .memberId(20L)
+                .staffId(5L)
+                .memberName("Prof. John Doe")
+                .memberCardNumber("LIB-STF-005")
+                .status("Issued")
+                .fineAmount(java.math.BigDecimal.ZERO)
+                .finePaid(false)
+                .build();
+
+        when(libraryService.filterCirculations(any(), any(), any(), any(), any(), eq(5L), any(), any()))
+                .thenReturn(new PageImpl<>(List.of(circulation)));
+
+        mockMvc.perform(get("/api/v1/admin/library/circulations")
+                        .param("staffId", "5")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data[0].id").value(101L))
+                .andExpect(jsonPath("$.data[0].bookTitle").value("Advanced Pedagogical Methods"))
+                .andExpect(jsonPath("$.data[0].staffId").value(5L));
     }
 }
