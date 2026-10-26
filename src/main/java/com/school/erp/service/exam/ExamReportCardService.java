@@ -47,6 +47,7 @@ public class ExamReportCardService {
     private final SectionRepository sectionRepository;
     private final StudentRepository studentRepository;
     private final ExamMarkRepository examMarkRepository;
+    private final com.school.erp.repository.academic.AcademicYearRepository academicYearRepository;
 
     @Transactional(readOnly = true)
     public ReportCardQueueStatusResponse getQueueStatus(Long rawSchoolId) {
@@ -239,11 +240,41 @@ public class ExamReportCardService {
 
     @Transactional(readOnly = true)
     public List<StudentReportCardResponse> getStudentReportCards(Long rawSchoolId, Long studentId) {
+        return getStudentReportCards(rawSchoolId, studentId, null);
+    }
+
+    private com.school.erp.entity.academic.AcademicYear resolveAcademicYear(ExamTerm term, Long schoolId) {
+        if (term != null && term.getAcademicYear() != null) {
+            return term.getAcademicYear();
+        }
+        if (schoolId != null) {
+            return academicYearRepository.findBySchoolId(schoolId).stream()
+                    .filter(y -> "ACTIVE".equalsIgnoreCase(y.getStatus()))
+                    .findFirst()
+                    .orElse(null);
+        }
+        return null;
+    }
+
+    @Transactional(readOnly = true)
+    public List<StudentReportCardResponse> getStudentReportCards(Long rawSchoolId, Long studentId, Long requestedAcademicYearId) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
         List<ExamReportCard> cards = examReportCardRepository.findBySchoolIdAndStudentId(schoolId, studentId);
 
         if (!cards.isEmpty()) {
-            return cards.stream().map(c -> {
+            return cards.stream()
+                    .filter(c -> {
+                        if (requestedAcademicYearId == null) return true;
+                        com.school.erp.entity.academic.AcademicYear ay = resolveAcademicYear(c.getTerm(), schoolId);
+                        return ay != null && requestedAcademicYearId.equals(ay.getId());
+                    })
+                    .map(c -> {
+                com.school.erp.entity.academic.AcademicYear ay = resolveAcademicYear(c.getTerm(), schoolId);
+                Long ayId = ay != null ? ay.getId() : null;
+                String ayName = ay != null ? (ay.getDisplayName() != null ? ay.getDisplayName() : ay.getName()) : "Current Session";
+                boolean isCurrent = ay != null ? "ACTIVE".equalsIgnoreCase(ay.getStatus()) : true;
+                Long termId = c.getTerm() != null ? c.getTerm().getId() : null;
+
                 List<ExamMark> marks = c.getExamSetup() != null
                         ? examMarkRepository.findBySchoolIdAndExamSetupIdAndStudentId(schoolId, c.getExamSetup().getId(), studentId)
                         : examMarkRepository.findBySchoolIdAndExamSetupTermIdAndStudentId(schoolId, c.getTerm().getId(), studentId);
@@ -268,6 +299,10 @@ public class ExamReportCardService {
                         .className(c.getSchoolClass().getName())
                         .sectionName(c.getSection() != null ? c.getSection().getName() : "")
                         .termName(c.getTerm().getName())
+                        .academicYearId(ayId)
+                        .academicYearName(ayName)
+                        .termId(termId)
+                        .isCurrentYear(isCurrent)
                         .mode(c.getGenerationMode())
                         .templateName(c.getTemplateName())
                         .totalMarks(c.getTotalMarks())
@@ -301,6 +336,16 @@ public class ExamReportCardService {
 
             ExamSetup setup = setupMarks.get(0).getExamSetup();
             ExamTerm term = setup.getTerm();
+            com.school.erp.entity.academic.AcademicYear ay = resolveAcademicYear(term, schoolId);
+            Long ayId = ay != null ? ay.getId() : null;
+
+            if (requestedAcademicYearId != null && (ayId == null || !requestedAcademicYearId.equals(ayId))) {
+                continue;
+            }
+
+            String ayName = ay != null ? (ay.getDisplayName() != null ? ay.getDisplayName() : ay.getName()) : "Current Session";
+            boolean isCurrent = ay != null ? "ACTIVE".equalsIgnoreCase(ay.getStatus()) : true;
+            Long termId = term != null ? term.getId() : null;
 
             BigDecimal totalObtained = BigDecimal.ZERO;
             BigDecimal totalMax = BigDecimal.ZERO;
@@ -341,6 +386,10 @@ public class ExamReportCardService {
                     .className(student.getSchoolClass() != null ? student.getSchoolClass().getName() : "")
                     .sectionName(student.getSectionId() != null ? ("Section " + student.getSectionId()) : "")
                     .termName(term != null ? term.getName() : setup.getName())
+                    .academicYearId(ayId)
+                    .academicYearName(ayName)
+                    .termId(termId)
+                    .isCurrentYear(isCurrent)
                     .mode("EXAM_WISE")
                     .templateName("Classic CBSE Standard")
                     .totalMarks(totalObtained)

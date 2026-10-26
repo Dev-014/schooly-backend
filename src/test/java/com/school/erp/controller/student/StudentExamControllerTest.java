@@ -114,7 +114,7 @@ class StudentExamControllerTest {
                 .subjects(Collections.emptyList())
                 .build();
 
-        when(examReportCardService.getStudentReportCards(1L, 101L)).thenReturn(List.of(card));
+        when(examReportCardService.getStudentReportCards(eq(1L), eq(101L), any())).thenReturn(List.of(card));
 
         mockMvc.perform(get("/api/v1/student/exams/results"))
                 .andExpect(status().isOk())
@@ -155,7 +155,7 @@ class StudentExamControllerTest {
                 .subjects(Collections.emptyList())
                 .build();
 
-        when(examReportCardService.getStudentReportCards(1L, 101L)).thenReturn(List.of(card));
+        when(examReportCardService.getStudentReportCards(eq(1L), eq(101L), any())).thenReturn(List.of(card));
 
         mockMvc.perform(get("/api/v1/student/exams/results").param("studentId", "101"))
                 .andExpect(status().isOk())
@@ -163,5 +163,67 @@ class StudentExamControllerTest {
                 .andExpect(jsonPath("$.data[0].id").value(1))
                 .andExpect(jsonPath("$.data[0].studentName").value("Rahul Sharma"))
                 .andExpect(jsonPath("$.data[0].percentage").value(80.00));
+    }
+
+    private com.school.erp.dto.exam.AdmitCardPreviewResponse previewWithStatus(String status) {
+        return com.school.erp.dto.exam.AdmitCardPreviewResponse.builder()
+                .candidateName("RAHUL SHARMA")
+                .examName("ANNUAL EXAM")
+                .termName("Term 1")
+                .status(status)
+                .cardNumber("AC-1-4-ADM")
+                .schedule(List.of(com.school.erp.dto.exam.AdmitCardPreviewResponse.AdmitCardScheduleItem.builder()
+                        .subjectName("Physics").build()))
+                .build();
+    }
+
+    @Test
+    void student_GetAdmitCard_WhenPending_HidesCardDetails() throws Exception {
+        AuthenticatedUser studentUser = new AuthenticatedUser(50L, 1L, UserRole.STUDENT);
+        AuthContextHolder.set(studentUser);
+        when(authContextService.requireCurrentUser()).thenReturn(studentUser);
+        when(studentRepository.findByUserId(50L)).thenReturn(List.of(mockStudent));
+        when(examAdmitCardService.resolveDefaultExamSetupId(eq(1L), any())).thenReturn(4L);
+        when(examAdmitCardService.getPreview(1L, 4L, 101L)).thenReturn(previewWithStatus("PENDING"));
+
+        mockMvc.perform(get("/api/v1/student/exams/admit-card"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.status").value("PENDING"))
+                .andExpect(jsonPath("$.data.cardNumber").doesNotExist())
+                .andExpect(jsonPath("$.data.schedule").isEmpty())
+                .andExpect(jsonPath("$.message").value("Admit card is not generated yet for this examination"));
+    }
+
+    @Test
+    void student_GetAdmitCard_WhenGenerated_ReturnsCard() throws Exception {
+        AuthenticatedUser studentUser = new AuthenticatedUser(50L, 1L, UserRole.STUDENT);
+        AuthContextHolder.set(studentUser);
+        when(authContextService.requireCurrentUser()).thenReturn(studentUser);
+        when(studentRepository.findByUserId(50L)).thenReturn(List.of(mockStudent));
+        when(examAdmitCardService.getPreview(1L, 4L, 101L)).thenReturn(previewWithStatus("GENERATED"));
+
+        mockMvc.perform(get("/api/v1/student/exams/admit-card").param("examSetupId", "4"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.status").value("GENERATED"))
+                .andExpect(jsonPath("$.data.cardNumber").value("AC-1-4-ADM"))
+                .andExpect(jsonPath("$.data.schedule[0].subjectName").value("Physics"));
+    }
+
+    @Test
+    void parent_GetAdmitCard_WhenReleased_ReturnsCard() throws Exception {
+        AuthenticatedUser parentUser = new AuthenticatedUser(200L, 1L, UserRole.PARENT);
+        AuthContextHolder.set(parentUser);
+        when(authContextService.requireCurrentUser()).thenReturn(parentUser);
+
+        StudentParent sp = new StudentParent();
+        sp.setId(new StudentParentId(200L, 101L));
+        sp.setStudent(mockStudent);
+        when(studentParentRepository.findByIdParentUserId(200L)).thenReturn(List.of(sp));
+        when(examAdmitCardService.getPreview(1L, 4L, 101L)).thenReturn(previewWithStatus("RELEASED"));
+
+        mockMvc.perform(get("/api/v1/student/exams/admit-card").param("examSetupId", "4").param("studentId", "101"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.status").value("RELEASED"))
+                .andExpect(jsonPath("$.data.cardNumber").value("AC-1-4-ADM"));
     }
 }

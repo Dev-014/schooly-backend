@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -19,6 +20,9 @@ public class AdmitCardPreviewResponse {
     private String admissionNo;
     private String gradeAndSection;
     private String verificationStatus;
+    private String status;
+    private LocalDateTime generatedAt;
+    private LocalDateTime releasedAt;
     private String cardNumber;
     private String templateName;
     private List<AdmitCardScheduleItem> schedule;

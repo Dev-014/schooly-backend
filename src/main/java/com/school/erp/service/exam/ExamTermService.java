@@ -155,11 +155,18 @@ public class ExamTermService {
 
     private ExamTermResponse mapToResponse(ExamTerm term) {
         long examCount = examTermRepository.countExamsByTermId(term.getId());
+        AcademicYear ay = term.getAcademicYear();
+        if (ay == null && term.getSchool() != null) {
+            ay = academicYearRepository.findBySchoolId(term.getSchool().getId()).stream()
+                    .filter(y -> "ACTIVE".equalsIgnoreCase(y.getStatus()))
+                    .findFirst()
+                    .orElse(null);
+        }
         return ExamTermResponse.builder()
                 .id(term.getId())
                 .schoolId(term.getSchool().getId())
-                .academicYearId(term.getAcademicYear() != null ? term.getAcademicYear().getId() : null)
-                .academicYearName(term.getAcademicYear() != null ? term.getAcademicYear().getDisplayName() : null)
+                .academicYearId(ay != null ? ay.getId() : null)
+                .academicYearName(ay != null ? (ay.getDisplayName() != null ? ay.getDisplayName() : ay.getName()) : null)
                 .name(term.getName())
                 .description(term.getDescription())
                 .startDate(term.getStartDate())

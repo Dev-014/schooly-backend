@@ -9,6 +9,7 @@ import com.school.erp.entity.academic.SchoolClass;
 import com.school.erp.entity.academic.Section;
 import com.school.erp.entity.student.Student;
 import com.school.erp.entity.exam.ExamAdmitCard;
+import com.school.erp.entity.exam.ExamApplicability;
 import com.school.erp.entity.exam.ExamSchedule;
 import com.school.erp.entity.exam.ExamSetup;
 import com.school.erp.exception.BadRequestException;
@@ -17,6 +18,7 @@ import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.academic.SectionRepository;
 import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.repository.exam.ExamAdmitCardRepository;
+import com.school.erp.repository.exam.ExamApplicabilityRepository;
 import com.school.erp.repository.exam.ExamScheduleRepository;
 import com.school.erp.repository.exam.ExamSetupRepository;
 import com.school.erp.security.AuthContextService;
@@ -38,6 +40,7 @@ public class ExamAdmitCardService {
 
     private final AuthContextService authContextService;
     private final ExamAdmitCardRepository examAdmitCardRepository;
+    private final ExamApplicabilityRepository examApplicabilityRepository;
     private final ExamSetupRepository examSetupRepository;
     private final ExamScheduleRepository examScheduleRepository;
     private final StudentRepository studentRepository;
@@ -69,6 +72,26 @@ public class ExamAdmitCardService {
                 schoolId, examSetupId, classId, sectionId, status, pageable);
 
         return page.map(this::mapToRosterItem);
+    }
+
+    @Transactional(readOnly = true)
+    public Long resolveDefaultExamSetupId(Long rawSchoolId, Student student) {
+        Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        List<ExamSetup> setups = examSetupRepository.findBySchoolIdOrderByOrderNoAsc(schoolId);
+        if (setups.isEmpty()) {
+            throw new ResourceNotFoundException("No examinations have been configured yet");
+        }
+        if (student.getSchoolClass() != null) {
+            Long classId = student.getSchoolClass().getId();
+            for (ExamSetup setup : setups) {
+                if (!examScheduleRepository
+                        .findBySchoolIdAndExamSetupIdAndSchoolClassIdOrderByExamDateAscStartTimeAsc(
+                                schoolId, setup.getId(), classId).isEmpty()) {
+                    return setup.getId();
+                }
+            }
+        }
+        return setups.get(0).getId();
     }
 
     @Transactional(readOnly = true)
@@ -126,6 +149,9 @@ public class ExamAdmitCardService {
                 .admissionNo(student.getAdmissionNo())
                 .gradeAndSection(gradeAndSec)
                 .verificationStatus("VERIFIED")
+                .status(admitCardOpt.map(ExamAdmitCard::getStatus).orElse("PENDING"))
+                .generatedAt(admitCardOpt.map(ExamAdmitCard::getGeneratedAt).orElse(null))
+                .releasedAt(admitCardOpt.map(ExamAdmitCard::getReleasedAt).orElse(null))
                 .cardNumber(admitCardOpt.map(ExamAdmitCard::getCardNumber).orElse("AC-" + student.getRollNumber()))
                 .templateName(admitCardOpt.map(ExamAdmitCard::getTemplateName).orElse("STANDARD"))
                 .schedule(scheduleItems)
@@ -150,6 +176,15 @@ public class ExamAdmitCardService {
                     : studentRepository.findBySchoolIdAndSchoolClassId(schoolId, request.getClassId());
         } else {
             throw new BadRequestException("Either studentIds or classId must be provided for admit card generation");
+        }
+
+        List<ExamApplicability> applicabilities = examApplicabilityRepository.findBySchoolIdAndExamSetupId(schoolId, setup.getId());
+        if (!applicabilities.isEmpty()) {
+            studentsToProcess = studentsToProcess.stream()
+                    .filter(s -> s.getSchoolClass() != null && applicabilities.stream().anyMatch(a ->
+                            a.getSchoolClass().getId().equals(s.getSchoolClass().getId()) &&
+                            (a.getSection() == null || s.getSectionId() == null || a.getSection().getId().equals(s.getSectionId()))))
+                    .collect(Collectors.toList());
         }
 
         School school = schoolRepository.findById(schoolId)
@@ -243,13 +278,55 @@ public class ExamAdmitCardService {
         ExamSetup setup = examSetupRepository.findByIdAndSchoolId(examSetupId, schoolId).orElse(null);
         if (setup == null) return;
 
-        List<Student> students = studentRepository.findBySchoolId(schoolId);
+        List<ExamApplicability> applicabilities = examApplicabilityRepository.findBySchoolIdAndExamSetupId(schoolId, examSetupId);
+        List<Student> students;
+
+        if (!applicabilities.isEmpty()) {
+            students = new java.util.ArrayList<>();
+            for (ExamApplicability app : applicabilities) {
+                Long cId = app.getSchoolClass().getId();
+                if (app.getSection() != null) {
+                    students.addAll(studentRepository.findBySchoolIdAndSchoolClassIdAndSectionId(schoolId, cId, app.getSection().getId()));
+                } else {
+                    students.addAll(studentRepository.findBySchoolIdAndSchoolClassId(schoolId, cId));
+                }
+            }
+            students = students.stream().distinct().collect(Collectors.toList());
+
+            // Purge admit card records for students whose class/section is no longer applicable
+            List<ExamAdmitCard> existingCards = examAdmitCardRepository.findBySchoolIdAndExamSetupId(schoolId, examSetupId);
+            for (ExamAdmitCard card : existingCards) {
+                boolean isStillApplicable = applicabilities.stream().anyMatch(app ->
+                        app.getSchoolClass().getId().equals(card.getSchoolClass().getId()) &&
+                        (app.getSection() == null || card.getSection() == null || app.getSection().getId().equals(card.getSection().getId())));
+                if (!isStillApplicable) {
+                    examAdmitCardRepository.delete(card);
+                }
+            }
+        } else {
+            students = studentRepository.findBySchoolId(schoolId);
+        }
+
         syncStudentsToRoster(setup, students);
     }
 
     private void syncRosterForClass(Long schoolId, Long examSetupId, Long classId, Long sectionId) {
         ExamSetup setup = examSetupRepository.findByIdAndSchoolId(examSetupId, schoolId).orElse(null);
         if (setup == null) return;
+
+        List<ExamApplicability> applicabilities = examApplicabilityRepository.findBySchoolIdAndExamSetupId(schoolId, examSetupId);
+        if (!applicabilities.isEmpty()) {
+            boolean isApplicable = applicabilities.stream().anyMatch(app ->
+                    app.getSchoolClass().getId().equals(classId) &&
+                    (app.getSection() == null || sectionId == null || app.getSection().getId().equals(sectionId)));
+            if (!isApplicable) {
+                List<ExamAdmitCard> cardsToDelete = examAdmitCardRepository.findBySchoolIdAndExamSetupIdAndSchoolClassId(schoolId, examSetupId, classId);
+                if (!cardsToDelete.isEmpty()) {
+                    examAdmitCardRepository.deleteAll(cardsToDelete);
+                }
+                return;
+            }
+        }
 
         List<Student> students = (sectionId != null)
                 ? studentRepository.findBySchoolIdAndSchoolClassIdAndSectionId(schoolId, classId, sectionId)

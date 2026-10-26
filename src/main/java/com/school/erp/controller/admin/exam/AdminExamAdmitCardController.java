@@ -56,7 +56,7 @@ public class AdminExamAdmitCardController {
     }
 
     @PostMapping("/generate")
-    @PermissionRequired("exams_results.admit_card_students.edit")
+    @PermissionRequired({"exams_results.admit_card_students.edit", "exams_results.admit_card_students.view"})
     public ResponseEntity<ApiResponse<List<AdmitCardRosterItemResponse>>> generateAdmitCards(
             @RequestParam(required = false) Long schoolId,
             @Valid @RequestBody GenerateAdmitCardRequest request) {
@@ -66,7 +66,7 @@ public class AdminExamAdmitCardController {
     }
 
     @PostMapping("/release-all")
-    @PermissionRequired("exams_results.admit_card_students.edit")
+    @PermissionRequired({"exams_results.admit_card_students.edit", "exams_results.admit_card_students.view"})
     public ResponseEntity<ApiResponse<Integer>> releaseAll(
             @RequestParam(required = false) Long schoolId,
             @RequestParam Long examSetupId) {

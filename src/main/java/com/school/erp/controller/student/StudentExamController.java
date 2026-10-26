@@ -98,29 +98,41 @@ public class StudentExamController {
     @GetMapping("/admit-card")
     @PermissionRequired({"student.exams.admit_card.view", "exams_results.exam_schedule_student.view"})
     public ResponseEntity<ApiResponse<AdmitCardPreviewResponse>> getAdmitCard(
-            @RequestParam Long examSetupId,
+            @RequestParam(required = false) Long examSetupId,
             @RequestParam(required = false) Long studentId) {
 
         AuthenticatedUser currentUser = authContextService.requireCurrentUser();
         Student student = resolveTargetStudent(currentUser, studentId);
         Long schoolId = student.getSchool() != null ? student.getSchool().getId() : authContextService.resolveSchoolId(null);
 
+        Long resolvedExamSetupId = examSetupId != null
+                ? examSetupId
+                : examAdmitCardService.resolveDefaultExamSetupId(schoolId, student);
+
+        AdmitCardPreviewResponse preview = examAdmitCardService.getPreview(schoolId, resolvedExamSetupId, student.getId());
+        boolean issued = "GENERATED".equals(preview.getStatus()) || "RELEASED".equals(preview.getStatus());
+        if (!issued) {
+            preview.setCardNumber(null);
+            preview.setSchedule(List.of());
+        }
         return ResponseEntity.ok(ApiResponse.success(
-                examAdmitCardService.getPreview(schoolId, examSetupId, student.getId()),
-                "Admit card retrieved successfully"));
+                preview,
+                issued ? "Admit card retrieved successfully"
+                        : "Admit card is not generated yet for this examination"));
     }
 
     @GetMapping("/results")
     @PermissionRequired({"student.exams.results.view", "exams_results.report_card.view"})
     public ResponseEntity<ApiResponse<List<StudentReportCardResponse>>> getResults(
-            @RequestParam(required = false) Long studentId) {
+            @RequestParam(required = false) Long studentId,
+            @RequestParam(required = false) Long academicYearId) {
 
         AuthenticatedUser currentUser = authContextService.requireCurrentUser();
         Student student = resolveTargetStudent(currentUser, studentId);
         Long schoolId = student.getSchool() != null ? student.getSchool().getId() : authContextService.resolveSchoolId(null);
 
         return ResponseEntity.ok(ApiResponse.success(
-                examReportCardService.getStudentReportCards(schoolId, student.getId()),
+                examReportCardService.getStudentReportCards(schoolId, student.getId(), academicYearId),
                 "Report cards retrieved successfully"));
     }
 }

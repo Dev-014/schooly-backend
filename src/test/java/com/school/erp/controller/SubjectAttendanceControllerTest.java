@@ -49,6 +49,22 @@ class SubjectAttendanceControllerTest {
     @MockitoBean
     private AuthContextService authContextService;
 
+    @MockitoBean
+    private com.school.erp.service.auth.AuthorizationService authorizationService;
+
+    @org.junit.jupiter.api.BeforeEach
+    void setUp() {
+        com.school.erp.security.AuthContextHolder.set(
+                new com.school.erp.security.AuthenticatedUser(100L, 4L, com.school.erp.entity.auth.UserRole.ADMIN)
+        );
+        org.mockito.Mockito.when(authorizationService.hasPermission(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any())).thenReturn(true);
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    void tearDown() {
+        com.school.erp.security.AuthContextHolder.clear();
+    }
+
     @Test
     void getSubjectAttendance_ForStudent_ShouldReturnList() throws Exception {
         SubjectAttendanceResponse resp = new SubjectAttendanceResponse(
