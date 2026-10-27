@@ -37,7 +37,17 @@ public class StaffLeaveService {
 
     @Transactional
     public StaffLeaveDTO applyLeave(Long schoolId, StaffLeaveRequest request) {
-        Staff staff = staffRepository.findByIdAndSchoolId(request.getStaffId(), schoolId)
+        Long targetStaffId = request.getStaffId();
+        Staff staff = (targetStaffId != null ? staffRepository.findByIdAndSchoolId(targetStaffId, schoolId) : java.util.Optional.<Staff>empty())
+                .or(() -> targetStaffId != null ? staffRepository.findBySchoolIdAndUserId(schoolId, targetStaffId) : java.util.Optional.empty())
+                .or(() -> targetStaffId != null ? staffRepository.findByUserId(targetStaffId).filter(s -> s.getSchool() != null && s.getSchool().getId().equals(schoolId)) : java.util.Optional.empty())
+                .or(() -> {
+                    if (com.school.erp.security.AuthContextHolder.get() != null && com.school.erp.security.AuthContextHolder.get().userId() != null) {
+                        return staffRepository.findBySchoolIdAndUserId(schoolId, com.school.erp.security.AuthContextHolder.get().userId())
+                                .or(() -> staffRepository.findByUserId(com.school.erp.security.AuthContextHolder.get().userId()));
+                    }
+                    return java.util.Optional.empty();
+                })
                 .orElseThrow(() -> new RuntimeException("Staff not found"));
 
         SchoolLeaveType leaveType = leaveTypeRepository.findById(request.getLeaveTypeId())
@@ -74,11 +84,27 @@ public class StaffLeaveService {
             throw new RuntimeException("Leave doesn't belong to this school");
         }
         
-        Staff admin = staffRepository.findById(adminStaffId)
-                .orElseThrow(() -> new RuntimeException("Admin staff not found"));
+        Long approverStaffId = adminStaffId;
+        if (approverStaffId == null && com.school.erp.security.AuthContextHolder.get() != null
+                && com.school.erp.security.AuthContextHolder.get().userId() != null) {
+            approverStaffId = staffRepository.findByUserId(com.school.erp.security.AuthContextHolder.get().userId())
+                    .map(Staff::getId)
+                    .orElse(null);
+        }
+
+        if (approverStaffId != null && leave.getStaff() != null && approverStaffId.equals(leave.getStaff().getId())) {
+            throw new IllegalArgumentException("Staff cannot approve their own leave request");
+        }
 
         leave.setStatus(status);
-        leave.setApprovedBy(admin.getId());
+        if (approverStaffId != null) {
+            leave.setApprovedBy(approverStaffId);
+        } else if (com.school.erp.security.AuthContextHolder.get() != null
+                && com.school.erp.security.AuthContextHolder.get().userId() != null) {
+            leave.setApprovedBy(com.school.erp.security.AuthContextHolder.get().userId());
+        } else {
+            leave.setApprovedBy(1L);
+        }
 
         // Update Leave Balance if APPROVED
         if ("APPROVED".equalsIgnoreCase(status)) {
@@ -103,25 +129,43 @@ public class StaffLeaveService {
         return mapToDTO(staffLeaveRepository.save(leave));
     }
 
+    @Transactional(readOnly = true)
     public List<StaffLeaveDTO> getAllLeaves(Long schoolId) {
+        List<SchoolLeaveType> leaveTypes = leaveTypeRepository.findBySchoolId(schoolId);
+        java.util.Map<Long, String> typeMap = leaveTypes.stream()
+                .collect(Collectors.toMap(SchoolLeaveType::getId, SchoolLeaveType::getName, (a, b) -> a));
+
         return staffLeaveRepository.findBySchoolId(schoolId)
                 .stream()
-                .map(this::mapToDTO)
+                .map(leave -> mapToDTO(leave, typeMap))
                 .collect(Collectors.toList());
     }
 
     private StaffLeaveDTO mapToDTO(StaffLeave leave) {
+        return mapToDTO(leave, null);
+    }
+
+    private StaffLeaveDTO mapToDTO(StaffLeave leave, java.util.Map<Long, String> typeMap) {
         StaffLeaveDTO dto = new StaffLeaveDTO();
         dto.setId(leave.getId());
-        dto.setSchoolId(leave.getSchool().getId());
-        dto.setStaffId(leave.getStaff().getId());
-        dto.setStaffName((leave.getStaff().getFirstName() != null ? leave.getStaff().getFirstName() : "") + " " +
-                (leave.getStaff().getLastName() != null ? leave.getStaff().getLastName() : ""));
+        dto.setSchoolId(leave.getSchool() != null ? leave.getSchool().getId() : null);
+        if (leave.getStaff() != null) {
+            dto.setStaffId(leave.getStaff().getId());
+            String firstName = leave.getStaff().getFirstName() != null ? leave.getStaff().getFirstName() : "";
+            String lastName = leave.getStaff().getLastName() != null ? leave.getStaff().getLastName() : "";
+            dto.setStaffName((firstName + " " + lastName).trim());
+        }
         dto.setLeaveTypeId(leave.getLeaveTypeId());
-        String typeName = leaveTypeRepository.findById(leave.getLeaveTypeId())
-                .map(SchoolLeaveType::getName)
-                .orElse("Leave Type " + leave.getLeaveTypeId());
-        dto.setLeaveTypeName(typeName);
+        String typeName = null;
+        if (typeMap != null && leave.getLeaveTypeId() != null) {
+            typeName = typeMap.get(leave.getLeaveTypeId());
+        }
+        if (typeName == null && leave.getLeaveTypeId() != null) {
+            typeName = leaveTypeRepository.findById(leave.getLeaveTypeId())
+                    .map(SchoolLeaveType::getName)
+                    .orElse("Leave Type " + leave.getLeaveTypeId());
+        }
+        dto.setLeaveTypeName(typeName != null ? typeName : "Leave Type " + leave.getLeaveTypeId());
         dto.setStartDate(leave.getStartDate());
         dto.setEndDate(leave.getEndDate());
         dto.setNumberOfDays(leave.getNumberOfDays());

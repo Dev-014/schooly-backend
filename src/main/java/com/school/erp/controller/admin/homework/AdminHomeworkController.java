@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
+import com.school.erp.exception.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -120,15 +121,26 @@ public class AdminHomeworkController {
 
     // ─── Grade / Evaluate Submission ─────────────────────────────────────────────
 
-    @PutMapping("/submissions/{submissionId}/evaluate")
+    @PutMapping(value = {"/submissions/{submissionId}/evaluate", "/submissions/evaluate"})
     @PermissionRequired("homework.submission.grade")
     public ResponseEntity<ApiResponse<HomeworkSubmissionResponse>> evaluateSubmission(
             @RequestParam(required = false) Long schoolId,
-            @PathVariable Long submissionId,
+            @PathVariable(required = false) String submissionId,
             @RequestBody HomeworkEvaluationRequest request) {
 
+        Long parsedSubmissionId = null;
+        if (submissionId != null && !submissionId.trim().isEmpty() &&
+                !"null".equalsIgnoreCase(submissionId.trim()) &&
+                !"undefined".equalsIgnoreCase(submissionId.trim())) {
+            try {
+                parsedSubmissionId = Long.parseLong(submissionId.trim());
+            } catch (NumberFormatException e) {
+                throw new BadRequestException("Invalid submission ID: " + submissionId);
+            }
+        }
+
         return ResponseEntity.ok(ApiResponse.success(
-                homeworkService.evaluateSubmission(schoolId, submissionId, request),
+                homeworkService.evaluateSubmission(schoolId, parsedSubmissionId, request),
                 "Submission evaluated successfully"));
     }
 

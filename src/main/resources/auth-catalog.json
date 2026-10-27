@@ -1870,6 +1870,41 @@
       ]
     },
     {
+      "key": "leave_management.staff_leaves.edit",
+      "module": "leave_management",
+      "resource": "staff_leaves",
+      "action": "edit",
+      "name": "Approve & Manage Staff Leaves",
+      "description": "Approve, reject, and manage staff leave requests.",
+      "supportedScopes": [
+        "school",
+        "assigned"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "leave_management.student_leaves.edit",
+      "module": "leave_management",
+      "resource": "student_leaves",
+      "action": "edit",
+      "name": "Approve & Manage Student Leaves",
+      "description": "Approve, reject, and manage student leave requests.",
+      "supportedScopes": [
+        "school",
+        "assigned",
+        "class"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
       "key": "downloads.student_materials.view",
       "module": "downloads",
       "resource": "student_materials",

@@ -297,8 +297,28 @@ public class HomeworkService {
 
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
-        HomeworkSubmission submission = submissionRepository.findByIdAndSchoolId(submissionId, schoolId)
-                .orElseThrow(() -> new ResourceNotFoundException("Submission not found with id: " + submissionId));
+        HomeworkSubmission submission;
+        if (submissionId != null) {
+            submission = submissionRepository.findByIdAndSchoolId(submissionId, schoolId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Submission not found with id: " + submissionId));
+        } else if (request.getAssignmentId() != null && request.getStudentId() != null) {
+            submission = submissionRepository.findByAssignmentIdAndStudentId(request.getAssignmentId(), request.getStudentId())
+                    .orElseGet(() -> {
+                        HomeworkAssignment assignment = assignmentRepository.findByIdAndSchoolId(request.getAssignmentId(), schoolId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Assignment not found with id: " + request.getAssignmentId()));
+                        Student student = studentRepository.findByIdAndSchoolId(request.getStudentId(), schoolId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + request.getStudentId()));
+                        return HomeworkSubmission.builder()
+                                .school(assignment.getSchool())
+                                .assignment(assignment)
+                                .student(student)
+                                .submissionDate(LocalDateTime.now())
+                                .status(SubmissionStatus.SUBMITTED)
+                                .build();
+                    });
+        } else {
+            throw new BadRequestException("Either submissionId or both assignmentId and studentId must be provided");
+        }
 
         if (request.getMarksObtained() != null) {
             BigDecimal maxMarks = submission.getAssignment().getMaxMarks();

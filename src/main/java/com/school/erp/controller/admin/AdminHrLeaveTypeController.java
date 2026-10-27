@@ -29,7 +29,7 @@ public class AdminHrLeaveTypeController {
     }
 
     @GetMapping("/leave-types")
-    @PermissionRequired("leave_management.staff_leaves.view")
+    @PermissionRequired({"leave_management.staff_leaves.view", "leave_management.student_leaves.view"})
     public ResponseEntity<List<SchoolLeaveTypeDTO>> getLeaveTypes(
             @PathVariable(value = "schoolId", required = false) Long pathSchoolId,
             @RequestParam(value = "schoolId", required = false) Long paramSchoolId) {
