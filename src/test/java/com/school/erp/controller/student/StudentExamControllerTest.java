@@ -67,6 +67,18 @@ class StudentExamControllerTest {
     @MockitoBean
     private ExamReportCardService examReportCardService;
 
+    @MockitoBean
+    private com.school.erp.repository.exam.ExamTermRepository examTermRepository;
+
+    @MockitoBean
+    private com.school.erp.repository.exam.ExamSetupRepository examSetupRepository;
+
+    @MockitoBean
+    private com.school.erp.repository.exam.ExamApplicabilityRepository examApplicabilityRepository;
+
+    @MockitoBean
+    private com.school.erp.repository.exam.ExamScheduleRepository examScheduleRepository;
+
     private School mockSchool;
     private Student mockStudent;
 
@@ -114,7 +126,7 @@ class StudentExamControllerTest {
                 .subjects(Collections.emptyList())
                 .build();
 
-        when(examReportCardService.getStudentReportCards(eq(1L), eq(101L), any())).thenReturn(List.of(card));
+        when(examReportCardService.getStudentReportCards(eq(1L), eq(101L), any(), any(), any())).thenReturn(List.of(card));
 
         mockMvc.perform(get("/api/v1/student/exams/results"))
                 .andExpect(status().isOk())
@@ -155,7 +167,7 @@ class StudentExamControllerTest {
                 .subjects(Collections.emptyList())
                 .build();
 
-        when(examReportCardService.getStudentReportCards(eq(1L), eq(101L), any())).thenReturn(List.of(card));
+        when(examReportCardService.getStudentReportCards(eq(1L), eq(101L), any(), any(), any())).thenReturn(List.of(card));
 
         mockMvc.perform(get("/api/v1/student/exams/results").param("studentId", "101"))
                 .andExpect(status().isOk())
@@ -225,5 +237,110 @@ class StudentExamControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.status").value("RELEASED"))
                 .andExpect(jsonPath("$.data.cardNumber").value("AC-1-4-ADM"));
+    }
+
+    @Test
+    void student_GetEligibleExams_Success() throws Exception {
+        AuthenticatedUser studentUser = new AuthenticatedUser(50L, 1L, UserRole.STUDENT);
+        AuthContextHolder.set(studentUser);
+        when(authContextService.requireCurrentUser()).thenReturn(studentUser);
+        when(studentRepository.findByUserId(50L)).thenReturn(List.of(mockStudent));
+
+        com.school.erp.entity.exam.ExamTerm term = new com.school.erp.entity.exam.ExamTerm();
+        term.setId(10L);
+        term.setName("Term 1");
+        term.setSchool(mockSchool);
+        term.setStatus("ACTIVE");
+        term.setStartDate(java.time.LocalDate.now().minusMonths(1));
+        term.setEndDate(java.time.LocalDate.now().plusMonths(1));
+
+        com.school.erp.entity.exam.ExamSetup setup = new com.school.erp.entity.exam.ExamSetup();
+        setup.setId(100L);
+        setup.setName("Mid-Term Examination");
+        setup.setTerm(term);
+        setup.setSchool(mockSchool);
+        setup.setStatus("ACTIVE");
+        setup.setOrderNo(1);
+
+        when(examTermRepository.findBySchoolIdOrderByStartDateDesc(1L)).thenReturn(List.of(term));
+        when(examSetupRepository.findBySchoolIdAndTermIdOrderByOrderNoAsc(1L, 10L)).thenReturn(List.of(setup));
+        when(examApplicabilityRepository.countBySchoolIdAndExamSetupId(1L, 100L)).thenReturn(0);
+        when(examSetupRepository.countSchedulesByExamSetupId(100L)).thenReturn(0L);
+
+        mockMvc.perform(get("/api/v1/student/exams/eligible-exams"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data[0].termId").value(10))
+                .andExpect(jsonPath("$.data[0].termName").value("Term 1"))
+                .andExpect(jsonPath("$.data[0].exams[0].id").value(100))
+                .andExpect(jsonPath("$.data[0].exams[0].name").value("Mid-Term Examination"));
+    }
+
+    @Test
+    void parent_GetEligibleExams_Success() throws Exception {
+        AuthenticatedUser parentUser = new AuthenticatedUser(200L, 1L, UserRole.PARENT);
+        AuthContextHolder.set(parentUser);
+        when(authContextService.requireCurrentUser()).thenReturn(parentUser);
+
+        StudentParent sp = new StudentParent();
+        sp.setId(new StudentParentId(200L, 101L));
+        sp.setStudent(mockStudent);
+        when(studentParentRepository.findByIdParentUserId(200L)).thenReturn(List.of(sp));
+
+        com.school.erp.entity.exam.ExamTerm term = new com.school.erp.entity.exam.ExamTerm();
+        term.setId(10L);
+        term.setName("Term 1");
+        term.setSchool(mockSchool);
+        term.setStatus("ACTIVE");
+
+        com.school.erp.entity.exam.ExamSetup setup = new com.school.erp.entity.exam.ExamSetup();
+        setup.setId(100L);
+        setup.setName("Mid-Term Examination");
+        setup.setTerm(term);
+        setup.setSchool(mockSchool);
+        setup.setStatus("ACTIVE");
+        setup.setOrderNo(1);
+
+        when(examTermRepository.findBySchoolIdOrderByStartDateDesc(1L)).thenReturn(List.of(term));
+        when(examSetupRepository.findBySchoolIdAndTermIdOrderByOrderNoAsc(1L, 10L)).thenReturn(List.of(setup));
+        when(examApplicabilityRepository.countBySchoolIdAndExamSetupId(1L, 100L)).thenReturn(0);
+        when(examSetupRepository.countSchedulesByExamSetupId(100L)).thenReturn(0L);
+
+        mockMvc.perform(get("/api/v1/student/exams/eligible-exams").param("studentId", "101"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data[0].termId").value(10))
+                .andExpect(jsonPath("$.data[0].exams[0].name").value("Mid-Term Examination"));
+    }
+
+    @Test
+    void student_GetResults_WithTermAndExamFilters() throws Exception {
+        AuthenticatedUser studentUser = new AuthenticatedUser(50L, 1L, UserRole.STUDENT);
+        AuthContextHolder.set(studentUser);
+        when(authContextService.requireCurrentUser()).thenReturn(studentUser);
+        when(studentRepository.findByUserId(50L)).thenReturn(List.of(mockStudent));
+
+        StudentReportCardResponse report = StudentReportCardResponse.builder()
+                .id(1L)
+                .studentId(101L)
+                .studentName("Rahul Sharma")
+                .termName("Term 1")
+                .totalMarks(BigDecimal.valueOf(450))
+                .maxMarks(BigDecimal.valueOf(500))
+                .percentage(BigDecimal.valueOf(90.0))
+                .grade("A+")
+                .division("FIRST")
+                .subjects(Collections.emptyList())
+                .build();
+
+        when(examReportCardService.getStudentReportCards(1L, 101L, null, 10L, 100L))
+                .thenReturn(List.of(report));
+
+        mockMvc.perform(get("/api/v1/student/exams/results")
+                        .param("termId", "10")
+                        .param("examSetupId", "100"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].termName").value("Term 1"))
+                .andExpect(jsonPath("$.data[0].percentage").value(90.0));
     }
 }

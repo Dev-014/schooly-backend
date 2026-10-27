@@ -258,15 +258,29 @@ public class ExamReportCardService {
 
     @Transactional(readOnly = true)
     public List<StudentReportCardResponse> getStudentReportCards(Long rawSchoolId, Long studentId, Long requestedAcademicYearId) {
+        return getStudentReportCards(rawSchoolId, studentId, requestedAcademicYearId, null, null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StudentReportCardResponse> getStudentReportCards(
+            Long rawSchoolId, Long studentId, Long requestedAcademicYearId, Long requestedTermId, Long requestedExamSetupId) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
         List<ExamReportCard> cards = examReportCardRepository.findBySchoolIdAndStudentId(schoolId, studentId);
 
         if (!cards.isEmpty()) {
             return cards.stream()
                     .filter(c -> {
-                        if (requestedAcademicYearId == null) return true;
-                        com.school.erp.entity.academic.AcademicYear ay = resolveAcademicYear(c.getTerm(), schoolId);
-                        return ay != null && requestedAcademicYearId.equals(ay.getId());
+                        if (requestedAcademicYearId != null) {
+                            com.school.erp.entity.academic.AcademicYear ay = resolveAcademicYear(c.getTerm(), schoolId);
+                            if (ay == null || !requestedAcademicYearId.equals(ay.getId())) return false;
+                        }
+                        if (requestedTermId != null && (c.getTerm() == null || !requestedTermId.equals(c.getTerm().getId()))) {
+                            return false;
+                        }
+                        if (requestedExamSetupId != null && (c.getExamSetup() == null || !requestedExamSetupId.equals(c.getExamSetup().getId()))) {
+                            return false;
+                        }
+                        return true;
                     })
                     .map(c -> {
                 com.school.erp.entity.academic.AcademicYear ay = resolveAcademicYear(c.getTerm(), schoolId);
@@ -340,6 +354,12 @@ public class ExamReportCardService {
             Long ayId = ay != null ? ay.getId() : null;
 
             if (requestedAcademicYearId != null && (ayId == null || !requestedAcademicYearId.equals(ayId))) {
+                continue;
+            }
+            if (requestedTermId != null && (term == null || !requestedTermId.equals(term.getId()))) {
+                continue;
+            }
+            if (requestedExamSetupId != null && (setup.getId() == null || !requestedExamSetupId.equals(setup.getId()))) {
                 continue;
             }
 
