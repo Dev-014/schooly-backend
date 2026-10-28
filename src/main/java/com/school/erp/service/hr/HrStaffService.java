@@ -197,6 +197,66 @@ public class HrStaffService {
     @Transactional
     public UserAssignmentResponse assignRole(Long schoolId, Long staffId, UserAssignmentRequest request) {
         Staff staff = getStaffById(schoolId, staffId);
+
+        // 1. Direct Academic SOT: Class Teacher Assignments go directly to class_teacher_assignments
+        if ("class_teacher".equalsIgnoreCase(request.assignmentType())) {
+            School school = schoolRepository.findById(schoolId)
+                    .orElseThrow(() -> new RuntimeException("School not found"));
+            SchoolClass schoolClass = classRepository.findByIdAndSchoolId(request.classId(), schoolId)
+                    .orElseThrow(() -> new RuntimeException("Class not found for ID: " + request.classId()));
+            Section section = request.sectionId() != null
+                    ? sectionRepository.findByIdAndSchoolId(request.sectionId(), schoolId).orElse(null)
+                    : null;
+
+            Long yearId = request.academicSessionId();
+            AcademicYear year = yearId != null
+                    ? academicYearRepository.findByIdAndSchoolId(yearId, schoolId).orElse(null)
+                    : academicYearRepository.findBySchoolId(schoolId).stream()
+                            .filter(y -> "ACTIVE".equalsIgnoreCase(y.getStatus()))
+                            .findFirst()
+                            .orElse(null);
+
+            if (year == null) {
+                throw new RuntimeException("Active Academic Year not found for school " + schoolId);
+            }
+
+            // Deactivate previous active class teacher assignment for this section and year
+            if (section != null) {
+                classTeacherAssignmentRepository.findBySchoolIdAndSectionIdAndAcademicYearIdAndStatus(schoolId, section.getId(), year.getId(), "ACTIVE")
+                        .ifPresent(existing -> {
+                            existing.setStatus("INACTIVE");
+                            classTeacherAssignmentRepository.saveAndFlush(existing);
+                        });
+            }
+
+            ClassTeacherAssignment assignment = new ClassTeacherAssignment();
+            assignment.setSchool(school);
+            assignment.setStaff(staff);
+            assignment.setSchoolClass(schoolClass);
+            assignment.setSection(section);
+            assignment.setAcademicYear(year);
+            assignment.setStatus("ACTIVE");
+
+            ClassTeacherAssignment saved = classTeacherAssignmentRepository.save(assignment);
+
+            return UserAssignmentResponse.builder()
+                    .id(saved.getId())
+                    .schoolId(schoolId)
+                    .userId(staff.getUserId())
+                    .academicSessionId(year.getId())
+                    .sessionName(year.getName())
+                    .assignmentType("class_teacher")
+                    .classId(schoolClass.getId())
+                    .className(schoolClass.getName())
+                    .sectionId(section != null ? section.getId() : null)
+                    .sectionName(section != null ? section.getName() : null)
+                    .effectiveFrom(saved.getCreatedAt() != null ? saved.getCreatedAt() : LocalDateTime.now())
+                    .isActive(true)
+                    .source("ACADEMIC_CLASS_TEACHER")
+                    .build();
+        }
+
+        // 2. Non-academic / Department scopes are stored in user_assignments
         if (staff.getUserId() == null) {
             throw new RuntimeException("Staff does not have an associated user account");
         }
