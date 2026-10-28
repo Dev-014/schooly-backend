@@ -408,6 +408,45 @@ public class AcademicService {
         List<ClassSubjectAssignmentResponse> result = new java.util.ArrayList<>();
         java.util.Set<String> seenKeys = new java.util.HashSet<>();
 
+        // 1. Primary SOT: Timetable Entries from Academic Master Data
+        Staff staff = staffRepository.findBySchoolIdAndUserId(effectiveSchoolId, currentUser.userId())
+                .or(() -> staffRepository.findByUserId(currentUser.userId()))
+                .orElse(null);
+
+        if (staff != null) {
+            List<TimetableEntry> entries = timetableEntryRepository.findBySchoolIdAndTeacherId(effectiveSchoolId, staff.getId());
+            for (TimetableEntry te : entries) {
+                if (te.getSchoolClass() == null || te.getSubject() == null) {
+                    continue;
+                }
+                Long classId = te.getSchoolClass().getId();
+                Long sectionId = te.getSection() != null ? te.getSection().getId() : null;
+                Long subjectId = te.getSubject().getId();
+
+                String key = classId + "_" + (sectionId != null ? sectionId : "all") + "_" + subjectId;
+                if (!seenKeys.contains(key)) {
+                    seenKeys.add(key);
+
+                    result.add(new ClassSubjectAssignmentResponse(
+                            te.getId(),
+                            te.getSchool() != null ? te.getSchool().getId() : effectiveSchoolId,
+                            classId,
+                            te.getSchoolClass().getName(),
+                            sectionId,
+                            te.getSection() != null ? te.getSection().getName() : null,
+                            subjectId,
+                            te.getSubject().getName(),
+                            te.getSubject().getCode(),
+                            te.getAcademicYear() != null ? te.getAcademicYear().getId() : null,
+                            te.getAcademicYear() != null ? te.getAcademicYear().getName() : null,
+                            te.getSubject().getType() != null ? te.getSubject().getType() : "THEORY",
+                            te.getStatus() != null ? te.getStatus() : "ACTIVE"
+                    ));
+                }
+            }
+        }
+
+        // 2. Secondary / Fallback: user_assignments table
         List<com.school.erp.entity.auth.UserAssignment> userAssignments = userAssignmentRepository.findBySchoolIdAndUserIdAndAssignmentTypeAndIsActiveTrue(
                 effectiveSchoolId, currentUser.userId(), "subject_teacher");
 
