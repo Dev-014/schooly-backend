@@ -5,7 +5,9 @@ import com.school.erp.dto.student.StudentLeaveResponse;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
+import com.school.erp.service.auth.AuthorizationService;
 import com.school.erp.service.student.StudentLeaveService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -23,6 +25,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,6 +46,14 @@ class StudentLeaveControllerTest {
 
     @MockitoBean
     private AuthContextService authContextService;
+
+    @MockitoBean
+    private AuthorizationService authorizationService;
+
+    @AfterEach
+    void tearDown() {
+        com.school.erp.security.AuthContextHolder.clear();
+    }
 
     @Test
     void getAllLeaves_withoutStudentId_returnsAllSchoolLeaves() throws Exception {
@@ -119,5 +130,67 @@ class StudentLeaveControllerTest {
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.id").value(10))
                 .andExpect(jsonPath("$.data.studentName").value("Paras Patel"));
+    }
+
+    @Test
+    void updateLeave_withPermission_updatesSuccessfully() throws Exception {
+        com.school.erp.security.AuthContextHolder.set(
+                new com.school.erp.security.AuthenticatedUser(1L, 1L, com.school.erp.entity.auth.UserRole.ADMIN));
+        when(authorizationService.hasPermission(eq(1L), eq(1L), eq("leave_management.student_leaves.edit"))).thenReturn(true);
+
+        StudentLeaveResponse updated = new StudentLeaveResponse(
+                10L, 1L, 15L, "Paras Patel", "AC-2024-001", "Grade 10",
+                LocalDate.now(), LocalDate.now().plusDays(1), LocalDate.now().plusDays(3), 3,
+                "Sister wedding", "APPROVED", "Approved by Principal", LocalDate.now().atStartOfDay()
+        );
+
+        when(leaveService.updateLeave(eq(10L), any(StudentLeaveRequest.class))).thenReturn(updated);
+
+        String jsonBody = """
+                {
+                    "schoolId": 1,
+                    "studentId": 15,
+                    "fromDate": "2026-10-15",
+                    "toDate": "2026-10-17",
+                    "days": 3,
+                    "reason": "Sister wedding",
+                    "status": "APPROVED",
+                    "reply": "Approved by Principal"
+                }
+                """;
+
+        mockMvc.perform(put("/api/student-leaves/10")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonBody)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.status").value("APPROVED"))
+                .andExpect(jsonPath("$.data.reply").value("Approved by Principal"));
+    }
+
+    @Test
+    void updateLeave_withoutPermission_isForbidden() throws Exception {
+        com.school.erp.security.AuthContextHolder.set(
+                new com.school.erp.security.AuthenticatedUser(15L, 1L, com.school.erp.entity.auth.UserRole.STUDENT));
+        when(authorizationService.hasPermission(eq(1L), eq(15L), eq("leave_management.student_leaves.edit"))).thenReturn(false);
+
+        String jsonBody = """
+                {
+                    "schoolId": 1,
+                    "studentId": 15,
+                    "fromDate": "2026-10-15",
+                    "toDate": "2026-10-17",
+                    "days": 3,
+                    "reason": "Sister wedding",
+                    "status": "APPROVED"
+                }
+                """;
+
+        mockMvc.perform(put("/api/student-leaves/10")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonBody)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
     }
 }

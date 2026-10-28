@@ -848,6 +848,26 @@ public class AcademicService {
         entitlementService.enforceModuleAccess(effectiveSchoolId, "ACADEMICS");
         entitlementService.enforceSchoolActive(effectiveSchoolId);
 
+        com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+        if (currentUser != null && (currentUser.role() == com.school.erp.entity.auth.UserRole.STUDENT || currentUser.role() == com.school.erp.entity.auth.UserRole.PARENT)) {
+            throw new com.school.erp.exception.ForbiddenException("Students and parents cannot edit timetables");
+        }
+        if (currentUser != null && currentUser.role() == com.school.erp.entity.auth.UserRole.TEACHER) {
+            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            boolean hasPermission = auth != null && auth.getAuthorities() != null && auth.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("academics.class_timetable.edit") || a.getAuthority().equals("ALL"));
+            if (!hasPermission) {
+                List<ClassTeacherAssignmentResponse> assignments = getMyClassTeacherAssignments(effectiveSchoolId);
+                boolean isAssignedClassTeacher = assignments.stream().anyMatch(a ->
+                        a.classId().equals(request.classId()) &&
+                        (request.sectionId() == null || a.sectionId() == null || a.sectionId().equals(request.sectionId()))
+                );
+                if (!isAssignedClassTeacher) {
+                    throw new com.school.erp.exception.ForbiddenException("Only the assigned Class Teacher, administrators, or authorized staff can edit the timetable for this class");
+                }
+            }
+        }
+
         School school = getSchool(effectiveSchoolId);
         SchoolClass schoolClass = classRepository.findByIdAndSchoolId(request.classId(), effectiveSchoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Class not found"));
@@ -903,6 +923,28 @@ public class AcademicService {
         if (!entry.getSchool().getId().equals(effectiveSchoolId)) {
             throw new ResourceNotFoundException("Timetable entry not found");
         }
+
+        com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+        if (currentUser != null && (currentUser.role() == com.school.erp.entity.auth.UserRole.STUDENT || currentUser.role() == com.school.erp.entity.auth.UserRole.PARENT)) {
+            throw new com.school.erp.exception.ForbiddenException("Students and parents cannot delete timetable entries");
+        }
+        if (currentUser != null && currentUser.role() == com.school.erp.entity.auth.UserRole.TEACHER) {
+            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            boolean hasPermission = auth != null && auth.getAuthorities() != null && auth.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("academics.class_timetable.edit") || a.getAuthority().equals("ALL"));
+            if (!hasPermission) {
+                Long classId = entry.getSchoolClass() != null ? entry.getSchoolClass().getId() : null;
+                Long sectionId = entry.getSection() != null ? entry.getSection().getId() : null;
+                List<ClassTeacherAssignmentResponse> assignments = getMyClassTeacherAssignments(effectiveSchoolId);
+                boolean isAssigned = classId != null && assignments.stream().anyMatch(a ->
+                        a.classId().equals(classId) && (sectionId == null || a.sectionId() == null || a.sectionId().equals(sectionId))
+                );
+                if (!isAssigned) {
+                    throw new com.school.erp.exception.ForbiddenException("Only the assigned Class Teacher, administrators, or authorized staff can delete timetable entries for this class");
+                }
+            }
+        }
+
         timetableEntryRepository.delete(entry);
     }
 

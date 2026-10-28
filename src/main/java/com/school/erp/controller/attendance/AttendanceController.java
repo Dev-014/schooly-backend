@@ -23,6 +23,7 @@ public class AttendanceController {
     }
 
     @GetMapping
+    @com.school.erp.security.PermissionRequired({"attendance.attendance_record.view", "attendance.attendance_my_records.view"})
     public ResponseEntity<ApiResponse<List<AttendanceResponse>>> getAttendance(
             @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) Long studentId

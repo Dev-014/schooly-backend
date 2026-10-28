@@ -7,13 +7,17 @@ import com.school.erp.entity.academic.AcademicYear;
 import com.school.erp.entity.academic.SchoolClass;
 import com.school.erp.entity.academic.TimetableEntry;
 import com.school.erp.entity.academic.TimetablePeriod;
+import com.school.erp.entity.auth.UserRole;
 import com.school.erp.entity.superadmin.School;
+import com.school.erp.exception.ForbiddenException;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.academic.*;
+import com.school.erp.repository.auth.UserAssignmentRepository;
 import com.school.erp.repository.hr.StaffRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
-import com.school.erp.service.academic.AcademicService;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.security.AuthenticatedUser;
+import com.school.erp.service.academic.AcademicService;
 import com.school.erp.service.superadmin.EntitlementService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +26,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +46,8 @@ class AcademicServiceTimetableTest {
     @Mock private SchoolRepository schoolRepository;
     @Mock private AuthContextService authContextService;
     @Mock private EntitlementService entitlementService;
+    @Mock private ClassTeacherAssignmentRepository assignmentRepository;
+    @Mock private UserAssignmentRepository userAssignmentRepository;
 
     @InjectMocks
     private AcademicService academicService;
@@ -101,6 +106,41 @@ class AcademicServiceTimetableTest {
         assertEquals(1, responses.size());
         assertEquals(1L, responses.get(0).id());
         verify(timetableEntryRepository, times(1)).save(any());
+    }
+
+    @Test
+    void saveTimetableGrid_WhenStudentRole_ShouldThrowForbiddenException() {
+        TimetableEntryRequest req = new TimetableEntryRequest(1L, 1L, null, 1L, "MONDAY", 1L, null, null, "101");
+        BulkTimetableRequest request = new BulkTimetableRequest(1L, 1L, null, 1L, List.of(req));
+
+        when(authContextService.resolveSchoolId(1L)).thenReturn(1L);
+        when(authContextService.getCurrentUserOrNull())
+                .thenReturn(new AuthenticatedUser(100L, 1L, UserRole.STUDENT));
+
+        ForbiddenException ex = assertThrows(ForbiddenException.class, () ->
+                academicService.saveTimetableGrid(request)
+        );
+        assertTrue(ex.getMessage().contains("Students and parents cannot edit timetables"));
+    }
+
+    @Test
+    void saveTimetableGrid_WhenTeacherNotAssignedToClass_ShouldThrowForbiddenException() {
+        TimetableEntryRequest req = new TimetableEntryRequest(1L, 1L, null, 1L, "MONDAY", 1L, null, null, "101");
+        BulkTimetableRequest request = new BulkTimetableRequest(1L, 1L, null, 1L, List.of(req));
+
+        when(authContextService.resolveSchoolId(1L)).thenReturn(1L);
+        when(authContextService.getCurrentUserOrNull())
+                .thenReturn(new AuthenticatedUser(5L, 1L, UserRole.TEACHER));
+
+        // Teacher has no assignments for class 1
+        when(staffRepository.findByUserId(5L)).thenReturn(Optional.empty());
+        when(userAssignmentRepository.findBySchoolIdAndUserIdAndAssignmentTypeAndIsActiveTrue(any(), any(), any()))
+                .thenReturn(List.of());
+
+        ForbiddenException ex = assertThrows(ForbiddenException.class, () ->
+                academicService.saveTimetableGrid(request)
+        );
+        assertTrue(ex.getMessage().contains("Only the assigned Class Teacher"));
     }
 
     @Test

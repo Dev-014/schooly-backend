@@ -902,6 +902,22 @@
       ]
     },
     {
+      "key": "academics.class_timetable.edit",
+      "module": "academic",
+      "resource": "class_timetable",
+      "action": "edit",
+      "name": "Edit Class Timetable",
+      "description": "Allows creating and updating class timetable schedules and period assignments.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
       "key": "academics.daily_class_timetable.view",
       "module": "academic",
       "resource": "daily_class_timetable",
