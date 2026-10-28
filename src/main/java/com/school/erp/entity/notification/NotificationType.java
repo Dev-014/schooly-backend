@@ -1,0 +1,45 @@
+package com.school.erp.entity.notification;
+
+public enum NotificationType {
+    // Academic & Homework
+    HOMEWORK_ASSIGNED,
+    HOMEWORK_SUBMITTED,
+    HOMEWORK_GRADED,
+    EXAM_SCHEDULE_PUBLISHED,
+    EXAM_ADMIT_CARD_READY,
+    EXAM_RESULT_PUBLISHED,
+
+    // Attendance
+    ATTENDANCE_ABSENT,
+    ATTENDANCE_LATE,
+    ATTENDANCE_LOW_WARNING,
+
+    // Finance & Fees
+    FEE_INVOICE_GENERATED,
+    FEE_DUE_REMINDER,
+    FEE_PAYMENT_SUCCESS,
+    FEE_OVERDUE_ALERT,
+
+    // HR & Staff
+    LEAVE_REQUESTED,
+    LEAVE_STATUS_UPDATED,
+    PAYROLL_GENERATED,
+    STAFF_TASK_ASSIGNED,
+
+    // Front Office
+    VISITOR_CHECKED_IN,
+    GATE_PASS_ISSUED,
+    PARCEL_RECEIVED,
+    COMPLAINT_FILED,
+    COMPLAINT_RESOLVED,
+
+    // Library
+    BOOK_ISSUED,
+    BOOK_DUE_REMINDER,
+    BOOK_OVERDUE_ALERT,
+
+    // Communication & System
+    CIRCULAR_ANNOUNCEMENT,
+    EMERGENCY_ALERT,
+    SYSTEM_NOTIFICATION
+}

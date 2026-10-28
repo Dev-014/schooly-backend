@@ -486,3 +486,13 @@ This backend structure provides a strong foundation for production-scale educati
 
 - `GET /parent/children`: Return children linked to the authenticated parent user.
 
+### Notifications System
+- See dedicated frontend integration guide: [NOTIFICATION_API_DOCUMENTATION.md](file:///c:/Users/rampr/OneDrive/Desktop/Projects/schooly/schooly-backend/docs/api/NOTIFICATION_API_DOCUMENTATION.md)
+- `GET /api/notifications`: List paginated notifications for current user with filtering (`isRead`, `category`, `type`, `priority`).
+- `GET /api/notifications/unread-count`: Fetch total unread count and category breakdown for bell badges.
+- `PUT /api/notifications/{id}/read`: Mark a single notification as read.
+- `PUT /api/notifications/read-all`: Mark all notifications as read for current user.
+- `PUT /api/notifications/batch-read`: Mark a batch of notification IDs as read.
+- `DELETE /api/notifications/{id}`: Dismiss/delete a notification.
+- `DELETE /api/notifications/clear-read`: Delete all read notifications.
+- `POST /api/notifications`: Dispatch notification to user or broadcast to target role.
