@@ -3,6 +3,7 @@ package com.school.erp.controller.finance;
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.payment.FeeStatsDTO;
 import com.school.erp.dto.payment.StudentFeeRecordDTO;
+import com.school.erp.security.PermissionRequired;
 import com.school.erp.service.finance.FeeRecordService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +21,7 @@ public class FeeRecordController {
     }
 
     @GetMapping
+    @PermissionRequired("fees.search_due_fees.view")
     public ResponseEntity<ApiResponse<Page<StudentFeeRecordDTO>>> getFeeRecords(
             @RequestParam Long schoolId,
             @RequestParam(required = false) Long classGroupId,
@@ -32,7 +34,10 @@ public class FeeRecordController {
     }
 
     @GetMapping("/stats")
-    public ResponseEntity<ApiResponse<FeeStatsDTO>> getFeeStats(@RequestParam Long schoolId) {
-        return ResponseEntity.ok(ApiResponse.success(feeRecordService.getFeeStats(schoolId), "Fee stats fetched successfully"));
+    @PermissionRequired("fees.search_due_fees.view")
+    public ResponseEntity<ApiResponse<FeeStatsDTO>> getFeeStats(
+            @RequestParam Long schoolId,
+            @RequestParam(required = false) Long classGroupId) {
+        return ResponseEntity.ok(ApiResponse.success(feeRecordService.getFeeStats(schoolId, classGroupId), "Fee stats fetched successfully"));
     }
 }

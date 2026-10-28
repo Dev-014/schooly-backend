@@ -27,6 +27,11 @@ public class StudentReportCardResponse {
     private BigDecimal percentage;
     private String grade;
     private String division;
+    private Long academicYearId;
+    private String academicYearName;
+    private Long termId;
+    private Boolean isCurrentYear;
     private String status;
     private String fileUrl;
+    private java.util.List<SubjectMarkInfo> subjects;
 }

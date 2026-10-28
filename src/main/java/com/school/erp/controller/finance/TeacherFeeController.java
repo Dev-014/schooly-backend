@@ -23,7 +23,7 @@ public class TeacherFeeController {
     private final TeacherFeeService teacherFeeService;
 
     @GetMapping("/classes")
-    @PermissionRequired("fees.my_class_fees.view")
+    @PermissionRequired({"fees.my_class_fees.view", "fees.search_due_fees.view"})
     public ResponseEntity<ApiResponse<List<TeacherClassResponse>>> getAssignedClasses(
             @RequestParam Long schoolId) {
         return ResponseEntity.ok(ApiResponse.success(

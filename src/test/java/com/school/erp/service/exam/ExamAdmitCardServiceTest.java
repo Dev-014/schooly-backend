@@ -13,6 +13,7 @@ import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.academic.SectionRepository;
 import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.repository.exam.ExamAdmitCardRepository;
+import com.school.erp.repository.exam.ExamApplicabilityRepository;
 import com.school.erp.repository.exam.ExamScheduleRepository;
 import com.school.erp.repository.exam.ExamSetupRepository;
 import com.school.erp.security.AuthContextService;
@@ -41,6 +42,9 @@ class ExamAdmitCardServiceTest {
 
     @Mock
     private ExamAdmitCardRepository examAdmitCardRepository;
+
+    @Mock
+    private ExamApplicabilityRepository examApplicabilityRepository;
 
     @Mock
     private ExamSetupRepository examSetupRepository;
@@ -172,6 +176,28 @@ class ExamAdmitCardServiceTest {
     }
 
     @Test
+    void filterAdmitCards_WithApplicabilitiesConfigured_SyncsOnlyApplicableClassStudents() {
+        when(authContextService.resolveSchoolId(4L)).thenReturn(4L);
+        when(examSetupRepository.findByIdAndSchoolId(4L, 4L)).thenReturn(Optional.of(examSetup));
+
+        com.school.erp.entity.exam.ExamApplicability appClass10 = new com.school.erp.entity.exam.ExamApplicability();
+        appClass10.setSchoolClass(schoolClass10);
+        when(examApplicabilityRepository.findBySchoolIdAndExamSetupId(4L, 4L)).thenReturn(List.of(appClass10));
+        when(studentRepository.findBySchoolIdAndSchoolClassId(4L, 10L)).thenReturn(List.of(student1));
+        when(examAdmitCardRepository.findBySchoolIdAndExamSetupId(4L, 4L)).thenReturn(List.of());
+
+        Page<ExamAdmitCard> mockPage = new PageImpl<>(List.of(), PageRequest.of(0, 10), 0);
+        when(examAdmitCardRepository.filterAdmitCards(eq(4L), eq(4L), isNull(), isNull(), isNull(), any()))
+                .thenReturn(mockPage);
+
+        examAdmitCardService.filterAdmitCards(4L, 4L, null, null, null, PageRequest.of(0, 10));
+
+        // Verifies that only applicable class 10 is synced, not findBySchoolId
+        verify(studentRepository).findBySchoolIdAndSchoolClassId(4L, 10L);
+        verify(studentRepository, never()).findBySchoolId(4L);
+    }
+
+    @Test
     void getStats_WithClassId_ReturnsClassFilteredCounts() {
         when(authContextService.resolveSchoolId(4L)).thenReturn(4L);
         when(examSetupRepository.findByIdAndSchoolId(4L, 4L)).thenReturn(Optional.of(examSetup));
@@ -223,4 +249,69 @@ class ExamAdmitCardServiceTest {
 
         assertEquals(5, released);
     }
+
+    private void stubPreviewDependencies() {
+        when(authContextService.resolveSchoolId(4L)).thenReturn(4L);
+        when(studentRepository.findById(16L)).thenReturn(Optional.of(student1));
+        when(examSetupRepository.findByIdAndSchoolId(4L, 4L)).thenReturn(Optional.of(examSetup));
+        when(schoolRepository.findById(4L)).thenReturn(Optional.of(school));
+        when(sectionRepository.findById(6L)).thenReturn(Optional.of(sectionA));
+    }
+
+    @Test
+    void getPreview_WhenNoCardRecord_ReturnsPendingStatus() {
+        stubPreviewDependencies();
+        when(examAdmitCardRepository.findBySchoolIdAndExamSetupIdAndStudentId(4L, 4L, 16L)).thenReturn(Optional.empty());
+
+        var preview = examAdmitCardService.getPreview(4L, 4L, 16L);
+
+        assertEquals("PENDING", preview.getStatus());
+        assertNull(preview.getGeneratedAt());
+    }
+
+    @Test
+    void getPreview_WhenCardPending_ReturnsPendingStatus() {
+        stubPreviewDependencies();
+        ExamAdmitCard card = new ExamAdmitCard();
+        card.setStatus("PENDING");
+        card.setCardNumber("AC-4-4-ADM-16");
+        when(examAdmitCardRepository.findBySchoolIdAndExamSetupIdAndStudentId(4L, 4L, 16L)).thenReturn(Optional.of(card));
+
+        var preview = examAdmitCardService.getPreview(4L, 4L, 16L);
+
+        assertEquals("PENDING", preview.getStatus());
+    }
+
+    @Test
+    void getPreview_WhenCardGenerated_ReturnsGeneratedStatus() {
+        stubPreviewDependencies();
+        ExamAdmitCard card = new ExamAdmitCard();
+        card.setStatus("GENERATED");
+        card.setCardNumber("AC-4-4-ADM-16");
+        card.setGeneratedAt(java.time.LocalDateTime.of(2026, 10, 1, 10, 0));
+        when(examAdmitCardRepository.findBySchoolIdAndExamSetupIdAndStudentId(4L, 4L, 16L)).thenReturn(Optional.of(card));
+
+        var preview = examAdmitCardService.getPreview(4L, 4L, 16L);
+
+        assertEquals("GENERATED", preview.getStatus());
+        assertEquals("AC-4-4-ADM-16", preview.getCardNumber());
+        assertNotNull(preview.getGeneratedAt());
+    }
+
+    @Test
+    void resolveDefaultExamSetupId_PrefersExamWithScheduleForStudentClass() {
+        ExamSetup first = new ExamSetup();
+        first.setId(1L);
+        ExamSetup second = new ExamSetup();
+        second.setId(2L);
+        when(authContextService.resolveSchoolId(4L)).thenReturn(4L);
+        when(examSetupRepository.findBySchoolIdOrderByOrderNoAsc(4L)).thenReturn(List.of(first, second));
+        when(examScheduleRepository.findBySchoolIdAndExamSetupIdAndSchoolClassIdOrderByExamDateAscStartTimeAsc(4L, 1L, 10L))
+                .thenReturn(List.of());
+        when(examScheduleRepository.findBySchoolIdAndExamSetupIdAndSchoolClassIdOrderByExamDateAscStartTimeAsc(4L, 2L, 10L))
+                .thenReturn(List.of(new com.school.erp.entity.exam.ExamSchedule()));
+
+        assertEquals(2L, examAdmitCardService.resolveDefaultExamSetupId(4L, student1));
+    }
+
 }

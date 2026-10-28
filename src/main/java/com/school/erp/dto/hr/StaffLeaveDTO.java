@@ -1,11 +1,17 @@
 package com.school.erp.dto.hr;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class StaffLeaveDTO {
     private Long id;
     private Long schoolId;
@@ -19,4 +25,15 @@ public class StaffLeaveDTO {
     private String reason;
     private String status;
     private Long approvedBy;
+
+    @JsonProperty("fromDate")
+    public LocalDate getFromDate() {
+        return startDate;
+    }
+
+    @JsonProperty("toDate")
+    public LocalDate getToDate() {
+        return endDate;
+    }
 }
+

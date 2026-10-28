@@ -37,6 +37,7 @@ public class SchoolLibraryService {
     private final SchoolRepository schoolRepository;
     private final StudentRepository studentRepository;
     private final StaffRepository staffRepository;
+    private final org.springframework.beans.factory.ObjectProvider<com.school.erp.service.auth.AuthorizationService> authorizationServiceProvider;
 
     // ─── Books ───────────────────────────────────────────────────────────────
 
@@ -229,15 +230,51 @@ public class SchoolLibraryService {
             String search,
             String status,
             Long memberId,
+            Long studentId,
+            Long staffId,
             Long bookId,
             Pageable pageable) {
         final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+
+        Long effectiveMemberId = memberId;
+        Long effectiveStudentId = studentId;
+        Long effectiveStaffId = staffId;
+
+        com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+        if (currentUser != null && currentUser.userId() != null) {
+            boolean isFullAdmin = currentUser.role() == com.school.erp.entity.auth.UserRole.SUPER_ADMIN
+                    || currentUser.role() == com.school.erp.entity.auth.UserRole.ADMIN;
+            com.school.erp.service.auth.AuthorizationService authService = authorizationServiceProvider.getIfAvailable();
+            boolean hasAdminCatalogPerm = isFullAdmin || (authService != null && (
+                    authService.hasPermission(schoolId, currentUser.userId(), "library.book_list.view")
+                    || authService.hasPermission(schoolId, currentUser.userId(), "library.book.edit")
+            ));
+
+            if (!hasAdminCatalogPerm) {
+                // Non-administrative user: only allowed to see their own borrowed records
+                java.util.Optional<Staff> staffOpt = staffRepository.findByUserId(currentUser.userId());
+                if (staffOpt.isPresent()) {
+                    effectiveStaffId = staffOpt.get().getId();
+                    effectiveStudentId = null;
+                    effectiveMemberId = null;
+                } else {
+                    java.util.List<Student> students = studentRepository.findByUserId(currentUser.userId());
+                    if (!students.isEmpty()) {
+                        effectiveStudentId = students.get(0).getId();
+                        effectiveStaffId = null;
+                        effectiveMemberId = null;
+                    } else if (currentUser.role() != com.school.erp.entity.auth.UserRole.PARENT) {
+                        return Page.empty(pageable);
+                    }
+                }
+            }
+        }
 
         String cleanSearch = (search != null && !search.isBlank()) ? search.trim() : null;
         String cleanStatus = (status != null && !status.isBlank() && !status.equalsIgnoreCase("all")) ? status.trim() : null;
 
         Page<LibraryCirculation> page = circulationRepository.filterCirculations(
-                schoolId, cleanSearch, cleanStatus, memberId, bookId, pageable);
+                schoolId, cleanSearch, cleanStatus, effectiveMemberId, effectiveStudentId, effectiveStaffId, bookId, pageable);
 
         // Auto-check and mark overdue in memory if past due date
         LocalDate today = LocalDate.now();
@@ -453,6 +490,8 @@ public class SchoolLibraryService {
                 .author(c.getBook().getAuthor())
                 .coverImageUrl(c.getBook().getCoverImageUrl())
                 .memberId(c.getMember().getId())
+                .studentId(c.getMember() != null && c.getMember().getStudent() != null ? c.getMember().getStudent().getId() : null)
+                .staffId(c.getMember() != null && c.getMember().getStaff() != null ? c.getMember().getStaff().getId() : null)
                 .memberName(c.getMember().getFullName())
                 .memberCardNumber(c.getMember().getCardNumber())
                 .memberType(c.getMember().getMemberType())

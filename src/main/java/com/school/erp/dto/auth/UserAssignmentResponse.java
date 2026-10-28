@@ -22,5 +22,6 @@ public record UserAssignmentResponse(
         String departmentName,
         LocalDateTime effectiveFrom,
         LocalDateTime effectiveTo,
-        boolean isActive
+        boolean isActive,
+        String source
 ) {}

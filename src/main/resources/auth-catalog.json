@@ -95,6 +95,18 @@
     {
       "key": "exams_results",
       "name": "Exams & Results"
+    },
+    {
+      "key": "leave_management",
+      "name": "Leave Management"
+    },
+    {
+      "key": "settings",
+      "name": "Settings"
+    },
+    {
+      "key": "students",
+      "name": "Students & Admission"
     }
   ],
   "scopes": [
@@ -162,7 +174,12 @@
         "linked"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff",
+        "student",
+        "parent"
+      ]
     },
     {
       "key": "attendance.attendance_record.edit",
@@ -178,7 +195,128 @@
         "section"
       ],
       "sensitive": true,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "attendance.attendance_register.view",
+      "module": "attendance",
+      "resource": "attendance_register",
+      "action": "view",
+      "name": "Access Take Register",
+      "description": "Allows access to the Take Register screen.",
+      "supportedScopes": [
+        "class",
+        "section",
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "attendance.subject_attendance.view",
+      "module": "attendance",
+      "resource": "subject_attendance",
+      "action": "view",
+      "name": "View Subject Attendance",
+      "description": "Allows viewing subject and period-wise attendance records.",
+      "supportedScopes": [
+        "class",
+        "section",
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "attendance.subject_attendance.edit",
+      "module": "attendance",
+      "resource": "subject_attendance",
+      "action": "edit",
+      "name": "Mark Subject Attendance",
+      "description": "Allows teachers to record subject and period-wise attendance.",
+      "supportedScopes": [
+        "class",
+        "section",
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "attendance.attendance_analytics.view",
+      "module": "attendance",
+      "resource": "attendance_analytics",
+      "action": "view",
+      "name": "Access Analytics",
+      "description": "Allows access to the Analytics screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "attendance.attendance_my_records.view",
+      "module": "attendance",
+      "resource": "attendance_my_records",
+      "action": "view",
+      "name": "Access My Attendance",
+      "description": "Allows access to the My Attendance screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "attendance.student_attendance.view",
+      "module": "attendance",
+      "resource": "student_attendance",
+      "action": "view",
+      "name": "Access Student Attendance",
+      "description": "Allows access to the Student Attendance screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "attendance.attendance_reports.view",
+      "module": "attendance",
+      "resource": "attendance_reports",
+      "action": "view",
+      "name": "Access Attendance Reports",
+      "description": "Allows access to the Attendance Reports screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "student.student.view",
@@ -195,7 +333,12 @@
         "linked"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff",
+        "student",
+        "parent"
+      ]
     },
     {
       "key": "student.student.create",
@@ -208,7 +351,10 @@
         "school"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "student.student.edit",
@@ -222,7 +368,10 @@
         "assigned"
       ],
       "sensitive": true,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "student.student.delete",
@@ -235,7 +384,10 @@
         "school"
       ],
       "sensitive": true,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "student.student.promote",
@@ -248,7 +400,10 @@
         "school"
       ],
       "sensitive": true,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "staff.staff.view",
@@ -262,7 +417,10 @@
         "own"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "staff.staff.create",
@@ -275,7 +433,10 @@
         "school"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "staff.staff.edit",
@@ -289,7 +450,10 @@
         "own"
       ],
       "sensitive": true,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "fees.fee_invoice.view",
@@ -303,7 +467,12 @@
         "linked"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff",
+        "student",
+        "parent"
+      ]
     },
     {
       "key": "fees.fee_invoice.edit",
@@ -316,7 +485,194 @@
         "school"
       ],
       "sensitive": true,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "fees.fee_master.view",
+      "module": "fees",
+      "resource": "fee_master",
+      "action": "view",
+      "name": "Access Fee Master",
+      "description": "Configure fee categories, groups, and structures.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "fees.collect_fees.view",
+      "module": "fees",
+      "resource": "collect_fees",
+      "action": "view",
+      "name": "Access Collect Fees",
+      "description": "Collect and process student fee payments.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "fees.collection_plans.view",
+      "module": "fees",
+      "resource": "collection_plans",
+      "action": "view",
+      "name": "Access Collection Plans",
+      "description": "Manage fee installment schedules and collection plans.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "fees.search_due_fees.view",
+      "module": "fees",
+      "resource": "search_due_fees",
+      "action": "view",
+      "name": "Access Search Due Fees",
+      "description": "Search and filter pending student fee dues.",
+      "supportedScopes": [
+        "class",
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "fees.demand_notices.view",
+      "module": "fees",
+      "resource": "demand_notices",
+      "action": "view",
+      "name": "Access Demand Notices",
+      "description": "Generate and dispatch fee demand notices.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "fees.payment_receipts.view",
+      "module": "fees",
+      "resource": "payment_receipts",
+      "action": "view",
+      "name": "Access Payment Receipts",
+      "description": "View and print fee transaction receipts.",
+      "supportedScopes": [
+        "school",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff",
+        "parent"
+      ]
+    },
+    {
+      "key": "fees.reminder_history.view",
+      "module": "fees",
+      "resource": "reminder_history",
+      "action": "view",
+      "name": "Access Reminder History",
+      "description": "Track history of sent fee payment reminders.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "fees.student_fees.view",
+      "module": "fees",
+      "resource": "student_fees",
+      "action": "view",
+      "name": "Student & Child Fees",
+      "description": "View fee dues, invoices, and payment receipts for self (students) or linked children (parents).",
+      "supportedScopes": [
+        "own",
+        "linked",
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "student",
+        "parent",
+        "staff"
+      ]
+    },
+    {
+      "key": "fees.my_class_fees.view",
+      "module": "fees",
+      "resource": "my_class_fees",
+      "action": "view",
+      "name": "Access My Class Fees",
+      "description": "Access assigned class student fee status register.",
+      "supportedScopes": [
+        "class",
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "fees.fee_installments.view",
+      "module": "fees",
+      "resource": "fee_installments",
+      "action": "view",
+      "name": "Access Fee Installments",
+      "description": "View installment milestones and due dates.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "fees.fee_collection.refund",
+      "module": "fees",
+      "resource": "fee_collection",
+      "action": "refund",
+      "name": "Refund Fees",
+      "description": "Process fee refunds and credit adjustments.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "academic.timetable_period.view",
@@ -329,7 +685,10 @@
         "school"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "academic.timetable_period.edit",
@@ -342,7 +701,10 @@
         "school"
       ],
       "sensitive": true,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "academic.class_setup.view",
@@ -356,7 +718,10 @@
         "assigned"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "academic.class_setup.edit",
@@ -369,7 +734,10 @@
         "school"
       ],
       "sensitive": true,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "academic.assignment.edit",
@@ -382,7 +750,221 @@
         "school"
       ],
       "sensitive": true,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "academics.promote_student.view",
+      "module": "academic",
+      "resource": "promote_student",
+      "action": "view",
+      "name": "Access Promote Student",
+      "description": "Allows access to the Promote Student screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "academics.assign_class_teacher.view",
+      "module": "academic",
+      "resource": "assign_class_teacher",
+      "action": "view",
+      "name": "Access Assign Class Teacher",
+      "description": "Allows access to the Assign Class Teacher screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "academics.assign_subject_class.view",
+      "module": "academic",
+      "resource": "assign_subject_class",
+      "action": "view",
+      "name": "Access Assign Subject Class",
+      "description": "Allows access to the Assign Subject Class screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "academics.student_assigned_sub.view",
+      "module": "academic",
+      "resource": "student_assigned_sub",
+      "action": "view",
+      "name": "Access Student Assigned Sub",
+      "description": "Allows access to the Student Assigned Sub screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "academics.teacher_timetable.view",
+      "module": "academic",
+      "resource": "teacher_timetable",
+      "action": "view",
+      "name": "Access Teacher Timetable",
+      "description": "Allows access to the Teacher Timetable screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "academics.subjects_management.view",
+      "module": "academic",
+      "resource": "subjects_management",
+      "action": "view",
+      "name": "Access Subjects Management",
+      "description": "Allows access to the Subjects Management screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "academics.class.view",
+      "module": "academic",
+      "resource": "class",
+      "action": "view",
+      "name": "Access Class",
+      "description": "Allows access to the Class screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "academics.cocurricular_subjects.view",
+      "module": "academic",
+      "resource": "cocurricular_subjects",
+      "action": "view",
+      "name": "Access CoCurricular Subjects",
+      "description": "Allows access to the CoCurricular Subjects screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "academics.class_timetable.view",
+      "module": "academic",
+      "resource": "class_timetable",
+      "action": "view",
+      "name": "Access Class Timetable",
+      "description": "Allows access to the Class Timetable screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff",
+        "student",
+        "parent"
+      ]
+    },
+    {
+      "key": "academics.daily_class_timetable.view",
+      "module": "academic",
+      "resource": "daily_class_timetable",
+      "action": "view",
+      "name": "Access Daily Class Timetable",
+      "description": "Allows access to the Daily Class Timetable screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff",
+        "student"
+      ]
+    },
+    {
+      "key": "academics.assign_teacher_timetable.view",
+      "module": "academic",
+      "resource": "assign_teacher_timetable",
+      "action": "view",
+      "name": "Access Assign Teacher Timetable",
+      "description": "Allows access to the Assign Teacher Timetable screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "academics.section_management.view",
+      "module": "academic",
+      "resource": "section_management",
+      "action": "view",
+      "name": "Access Section Management",
+      "description": "Allows access to the Section Management screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "academics.session_configure.view",
+      "module": "academic",
+      "resource": "session_configure",
+      "action": "view",
+      "name": "Access Session Configure",
+      "description": "Allows access to the Session Configure screen.",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "support.ticket.view",
@@ -397,7 +979,10 @@
         "own"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "support.ticket.edit",
@@ -412,7 +997,10 @@
         "own"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "family.family_profile.view",
@@ -426,7 +1014,12 @@
         "linked"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff",
+        "student",
+        "parent"
+      ]
     },
     {
       "key": "family.family_profile.edit",
@@ -440,7 +1033,10 @@
         "linked"
       ],
       "sensitive": true,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "certificates.certificate.view",
@@ -455,7 +1051,12 @@
         "linked"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff",
+        "student",
+        "parent"
+      ]
     },
     {
       "key": "online_class.session.view",
@@ -471,7 +1072,12 @@
         "linked"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff",
+        "student",
+        "parent"
+      ]
     },
     {
       "key": "online_exams.exam.view",
@@ -486,7 +1092,12 @@
         "linked"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff",
+        "student",
+        "parent"
+      ]
     },
     {
       "key": "lesson_module.plan.view",
@@ -501,7 +1112,12 @@
         "linked"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff",
+        "student",
+        "parent"
+      ]
     },
     {
       "key": "downloads.material.view",
@@ -516,7 +1132,60 @@
         "linked"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff",
+        "student",
+        "parent"
+      ]
+    },
+    {
+      "key": "income.add_income.view",
+      "module": "income",
+      "resource": "add_income",
+      "action": "view",
+      "name": "Access Add Income",
+      "description": "Allows access to the Add Income screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "income.search_income.view",
+      "module": "income",
+      "resource": "search_income",
+      "action": "view",
+      "name": "Access Search Income",
+      "description": "Allows access to the Search Income screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "income.income_head.view",
+      "module": "income",
+      "resource": "income_head",
+      "action": "view",
+      "name": "Access Income Head",
+      "description": "Allows access to the Income Head screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "income.transaction.view",
@@ -529,21 +1198,173 @@
         "school"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "income.transaction.edit",
+      "module": "income",
+      "resource": "transaction",
+      "action": "edit",
+      "name": "Edit Income",
+      "description": "Allows creating, updating, and deleting income records and heads",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "library.issue_return_report.view",
+      "module": "library",
+      "resource": "issue_return_report",
+      "action": "view",
+      "name": "Access Issue Return Report",
+      "description": "Allows viewing library issue and return reports",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "library.library_member_directory.view",
+      "module": "library",
+      "resource": "library_member_directory",
+      "action": "view",
+      "name": "Access Library Member Directory",
+      "description": "Allows viewing library member directory and member cards",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "library.issue_return_dashboard.view",
+      "module": "library",
+      "resource": "issue_return_dashboard",
+      "action": "view",
+      "name": "Access Issue & Return Dashboard",
+      "description": "Allows managing book issues, returns, and circulation dashboard",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "library.book_list.view",
+      "module": "library",
+      "resource": "book_list",
+      "action": "view",
+      "name": "Administrative Book Catalog / Inventory",
+      "description": "Allows staff and librarians to view and manage school library book stock, accession numbers, and inventory",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "library.book.view",
       "module": "library",
       "resource": "book",
       "action": "view",
-      "name": "View Library",
-      "description": "Allows viewing library catalog and issued books",
+      "name": "Personal Issued Books & Library View",
+      "description": "Allows viewing personal issued books, loan history, and the school library book list",
       "supportedScopes": [
         "school",
         "linked"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff",
+        "student",
+        "parent"
+      ]
+    },
+    {
+      "key": "library.book.edit",
+      "module": "library",
+      "resource": "book",
+      "action": "edit",
+      "name": "Manage Library",
+      "description": "Allows creating, updating, issuing, and managing books and library members",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "expense.add_expense.view",
+      "module": "expense",
+      "resource": "add_expense",
+      "action": "view",
+      "name": "Access Add Expense",
+      "description": "Allows access to the Add Expense screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "expense.search_expense.view",
+      "module": "expense",
+      "resource": "search_expense",
+      "action": "view",
+      "name": "Access Search Expense",
+      "description": "Allows access to the Search Expense screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "expense.expense_head.view",
+      "module": "expense",
+      "resource": "expense_head",
+      "action": "view",
+      "name": "Access Expense Head",
+      "description": "Allows access to the Expense Head screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "expense.transaction.view",
@@ -556,7 +1377,26 @@
         "school"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "expense.transaction.edit",
+      "module": "expense",
+      "resource": "transaction",
+      "action": "edit",
+      "name": "Edit Expenses",
+      "description": "Allows creating, updating, and deleting expense records and heads",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "question_paper.paper.view",
@@ -570,7 +1410,12 @@
         "class"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff",
+        "student",
+        "parent"
+      ]
     },
     {
       "key": "discipline.record.view",
@@ -585,7 +1430,12 @@
         "linked"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff",
+        "student",
+        "parent"
+      ]
     },
     {
       "key": "inventory.stock.view",
@@ -598,7 +1448,10 @@
         "school"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "front_office.enquiry.view",
@@ -611,7 +1464,10 @@
         "school"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "front_office.admission_enquiry.view",
@@ -624,7 +1480,10 @@
         "school"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "front_office.visitor_book.view",
@@ -637,7 +1496,10 @@
         "school"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "front_office.gate_pass.view",
@@ -650,7 +1512,10 @@
         "school"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "front_office.parcel_receive.view",
@@ -663,7 +1528,10 @@
         "school"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "front_office.parcel_dispatch.view",
@@ -676,7 +1544,10 @@
         "school"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "communication.message.view",
@@ -689,7 +1560,12 @@
         "school"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff",
+        "student",
+        "parent"
+      ]
     },
     {
       "key": "homework.assignment.view",
@@ -705,7 +1581,92 @@
         "linked"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "staff",
+        "student",
+        "parent"
+      ]
+    },
+    {
+      "key": "homework.homework.view",
+      "module": "homework",
+      "resource": "homework",
+      "action": "view",
+      "name": "Access HomeWork",
+      "description": "Allows access to the HomeWork screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "homework.classwork.view",
+      "module": "homework",
+      "resource": "classwork",
+      "action": "view",
+      "name": "Access ClassWork",
+      "description": "Allows access to the ClassWork screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "homework.unassigned_report.view",
+      "module": "homework",
+      "resource": "unassigned_report",
+      "action": "view",
+      "name": "Access UnAssigned Report",
+      "description": "Allows access to the UnAssigned Report screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "homework.hw_report.view",
+      "module": "homework",
+      "resource": "hw_report",
+      "action": "view",
+      "name": "Access HW Report",
+      "description": "Allows access to the HW Report screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "homework.cw_report.view",
+      "module": "homework",
+      "resource": "cw_report",
+      "action": "view",
+      "name": "Access CW Report",
+      "description": "Allows access to the CW Report screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     },
     {
       "key": "student.exams.timetable.view",
@@ -719,7 +1680,11 @@
         "linked"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "student",
+        "parent"
+      ]
     },
     {
       "key": "student.exams.admit_card.view",
@@ -733,21 +1698,31 @@
         "linked"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "student",
+        "parent"
+      ]
     },
     {
       "key": "student.exams.results.view",
       "module": "exams_results",
       "resource": "student_exams",
       "action": "view_results",
-      "name": "View Exam Results",
-      "description": "Allows viewing of exam marks and downloading report cards",
+      "name": "Student & Child Exam Results",
+      "description": "Allows viewing of exam marks and downloading report cards for students and linked children.",
       "supportedScopes": [
         "own",
-        "linked"
+        "linked",
+        "school"
       ],
       "sensitive": true,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "student",
+        "parent",
+        "staff"
+      ]
     },
     {
       "key": "student.exams.syllabus.view",
@@ -763,7 +1738,1017 @@
         "section"
       ],
       "sensitive": false,
-      "status": "active"
+      "status": "active",
+      "audience": [
+        "student",
+        "parent"
+      ]
+    },
+    {
+      "key": "student.dashboard.view",
+      "module": "student",
+      "resource": "dashboard",
+      "action": "view",
+      "name": "View Student Dashboard",
+      "description": "Access the student dashboard and profile.",
+      "supportedScopes": [
+        "own",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "student",
+        "parent"
+      ]
+    },
+    {
+      "key": "academic.student_timetable.view",
+      "module": "academic",
+      "resource": "student_timetable",
+      "action": "view",
+      "name": "View Student Timetable",
+      "description": "Access the student's personal timetable.",
+      "supportedScopes": [
+        "own",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "student",
+        "parent"
+      ]
+    },
+    {
+      "key": "academic.parent_calendar.view",
+      "module": "academic",
+      "resource": "parent_calendar",
+      "action": "view",
+      "name": "View Parent Calendar",
+      "description": "Access the parent academic calendar.",
+      "supportedScopes": [
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "parent"
+      ]
+    },
+    {
+      "key": "homework.portfolio.view",
+      "module": "homework",
+      "resource": "portfolio",
+      "action": "view",
+      "name": "View Homework Portfolio",
+      "description": "Access the student homework and classwork portfolio.",
+      "supportedScopes": [
+        "own",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "student",
+        "parent"
+      ]
+    },
+    {
+      "key": "discipline.assessment.view",
+      "module": "discipline",
+      "resource": "assessment",
+      "action": "view",
+      "name": "View Discipline Assessment",
+      "description": "Access student disciplinary assessments.",
+      "supportedScopes": [
+        "own",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "student",
+        "parent"
+      ]
+    },
+    {
+      "key": "leave_management.student_leaves.view",
+      "module": "leave_management",
+      "resource": "student_leaves",
+      "action": "view",
+      "name": "View Student Leaves",
+      "description": "Access student leave records.",
+      "supportedScopes": [
+        "own",
+        "linked",
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "student",
+        "parent",
+        "staff"
+      ]
+    },
+    {
+      "key": "leave_management.staff_leaves.view",
+      "module": "leave_management",
+      "resource": "staff_leaves",
+      "action": "view",
+      "name": "View Staff Leaves",
+      "description": "Access staff leave records.",
+      "supportedScopes": [
+        "own",
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "leave_management.staff_leaves.edit",
+      "module": "leave_management",
+      "resource": "staff_leaves",
+      "action": "edit",
+      "name": "Approve & Manage Staff Leaves",
+      "description": "Approve, reject, and manage staff leave requests.",
+      "supportedScopes": [
+        "school",
+        "assigned"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "leave_management.student_leaves.edit",
+      "module": "leave_management",
+      "resource": "student_leaves",
+      "action": "edit",
+      "name": "Approve & Manage Student Leaves",
+      "description": "Approve, reject, and manage student leave requests.",
+      "supportedScopes": [
+        "school",
+        "assigned",
+        "class"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "downloads.student_materials.view",
+      "module": "downloads",
+      "resource": "student_materials",
+      "action": "view",
+      "name": "View Student Materials",
+      "description": "Access student study materials and assignments.",
+      "supportedScopes": [
+        "own",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "student",
+        "parent"
+      ]
+    },
+    {
+      "key": "exams_results.student_exams.view",
+      "module": "exams_results",
+      "resource": "student_exams",
+      "action": "view",
+      "name": "View Student Exams",
+      "description": "Access student examination schedules and results.",
+      "supportedScopes": [
+        "own",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "student",
+        "parent"
+      ]
+    },
+    {
+      "key": "academic.subject_directory.view",
+      "module": "academic",
+      "resource": "subject_directory",
+      "action": "view",
+      "name": "View Subject Directory",
+      "description": "Access the course and subject directory.",
+      "supportedScopes": [
+        "own",
+        "linked"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "student",
+        "parent"
+      ]
+    },
+    {
+      "key": "staff.teacher_dashboard.view",
+      "module": "staff",
+      "resource": "teacher_dashboard",
+      "action": "view",
+      "name": "View Teacher Dashboard",
+      "description": "Access the teacher dashboard overview.",
+      "supportedScopes": [
+        "own"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.term_setup.view",
+      "module": "exams_results",
+      "resource": "term_setup",
+      "action": "view",
+      "name": "Access Term Setup",
+      "description": "Allows access to the Term Setup screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.term_setup.edit",
+      "module": "exams_results",
+      "resource": "term_setup",
+      "action": "edit",
+      "name": "Manage Term Setup",
+      "description": "Allows configuring and modifying exam terms",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.exam_setup_student.view",
+      "module": "exams_results",
+      "resource": "exam_setup_student",
+      "action": "view",
+      "name": "Access Exam Setup Student",
+      "description": "Allows access to the Exam Setup Student screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.exam_setup_student.edit",
+      "module": "exams_results",
+      "resource": "exam_setup_student",
+      "action": "edit",
+      "name": "Manage Exam Setup",
+      "description": "Allows configuring examination structures, grouping and weightage",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.exam_schedule_student.view",
+      "module": "exams_results",
+      "resource": "exam_schedule_student",
+      "action": "view",
+      "name": "Access Exam Schedule Student",
+      "description": "Allows access to the Exam Schedule Student screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.exam_schedule_student.edit",
+      "module": "exams_results",
+      "resource": "exam_schedule_student",
+      "action": "edit",
+      "name": "Manage Exam Schedule",
+      "description": "Allows creating and editing examination timetable schedules",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.admit_card_students.view",
+      "module": "exams_results",
+      "resource": "admit_card_students",
+      "action": "view",
+      "name": "Access Admit Card Students",
+      "description": "Allows access to the Admit Card Students screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.admit_card_students.edit",
+      "module": "exams_results",
+      "resource": "admit_card_students",
+      "action": "edit",
+      "name": "Issue Admit Cards",
+      "description": "Allows generating, printing and releasing admit cards",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.marks_entry.view",
+      "module": "exams_results",
+      "resource": "marks_entry",
+      "action": "view",
+      "name": "Access Marks Entry",
+      "description": "Allows access to the Marks Entry screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.marks_entry.edit",
+      "module": "exams_results",
+      "resource": "marks_entry",
+      "action": "edit",
+      "name": "Enter Exam Marks",
+      "description": "Allows entering and updating student exam marks",
+      "supportedScopes": [
+        "school",
+        "assigned"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.co_curricular_grades.view",
+      "module": "exams_results",
+      "resource": "co_curricular_grades",
+      "action": "view",
+      "name": "Access Co-Curricular Grades",
+      "description": "Allows access to the Co-Curricular Grades screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.co_curricular_grades.edit",
+      "module": "exams_results",
+      "resource": "co_curricular_grades",
+      "action": "edit",
+      "name": "Assess Co-Curricular Grades",
+      "description": "Allows recording and updating co-curricular performance",
+      "supportedScopes": [
+        "school",
+        "assigned"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.teacher_remark.view",
+      "module": "exams_results",
+      "resource": "teacher_remark",
+      "action": "view",
+      "name": "Access Teacher Remark",
+      "description": "Allows access to the Teacher Remark screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.teacher_remark.edit",
+      "module": "exams_results",
+      "resource": "teacher_remark",
+      "action": "edit",
+      "name": "Enter Teacher Remarks",
+      "description": "Allows submitting qualitative feedback and remarks for students",
+      "supportedScopes": [
+        "school",
+        "assigned"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.grade_list.view",
+      "module": "exams_results",
+      "resource": "grade_list",
+      "action": "view",
+      "name": "Access Grade List",
+      "description": "Allows access to the Grade List screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.grade_list.edit",
+      "module": "exams_results",
+      "resource": "grade_list",
+      "action": "edit",
+      "name": "Manage Grade Scales",
+      "description": "Allows creating and configuring academic grade thresholds",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.division.view",
+      "module": "exams_results",
+      "resource": "division",
+      "action": "view",
+      "name": "Access Division",
+      "description": "Allows access to the Division screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.division.edit",
+      "module": "exams_results",
+      "resource": "division",
+      "action": "edit",
+      "name": "Manage Divisions",
+      "description": "Allows creating and configuring academic divisions",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.exam_attendance.view",
+      "module": "exams_results",
+      "resource": "exam_attendance",
+      "action": "view",
+      "name": "Access Exam Attendance",
+      "description": "Allows access to the Exam Attendance screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.exam_attendance.edit",
+      "module": "exams_results",
+      "resource": "exam_attendance",
+      "action": "edit",
+      "name": "Mark Exam Attendance",
+      "description": "Allows marking and updating examination attendance",
+      "supportedScopes": [
+        "school",
+        "assigned"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.report_card.view",
+      "module": "exams_results",
+      "resource": "report_card",
+      "action": "view",
+      "name": "Access Report Card",
+      "description": "Allows access to the Report Card screen",
+      "supportedScopes": [
+        "school",
+        "linked",
+        "own"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff",
+        "parent",
+        "student"
+      ]
+    },
+    {
+      "key": "exams_results.report_card.edit",
+      "module": "exams_results",
+      "resource": "report_card",
+      "action": "edit",
+      "name": "Generate Report Cards",
+      "description": "Allows configuring and issuing student academic report cards",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.report_generation.view",
+      "module": "exams_results",
+      "resource": "report_generation",
+      "action": "view",
+      "name": "Access Report Generation",
+      "description": "Allows access to the Report Generation screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "exams_results.report_generation.edit",
+      "module": "exams_results",
+      "resource": "report_generation",
+      "action": "edit",
+      "name": "Manage Report Generation",
+      "description": "Allows managing batch processing and templates for report generation",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_office.admission_enquiry.edit",
+      "module": "front_office",
+      "resource": "admission_enquiry",
+      "action": "edit",
+      "name": "Manage Admission Enquiry",
+      "description": "Allows managing admission enquiries",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_office.visitor_book.edit",
+      "module": "front_office",
+      "resource": "visitor_book",
+      "action": "edit",
+      "name": "Manage Visitor Book",
+      "description": "Allows managing visitor entries",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_office.gate_pass.edit",
+      "module": "front_office",
+      "resource": "gate_pass",
+      "action": "edit",
+      "name": "Manage Gate Pass",
+      "description": "Allows managing and approving gate passes",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_office.entrance_exam.view",
+      "module": "front_office",
+      "resource": "entrance_exam",
+      "action": "view",
+      "name": "Access Entrance Exam",
+      "description": "Allows access to the Entrance Exam screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_office.entrance_exam.edit",
+      "module": "front_office",
+      "resource": "entrance_exam",
+      "action": "edit",
+      "name": "Manage Entrance Exam",
+      "description": "Allows managing entrance exam candidates and evaluations",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_office.parcel_receive.edit",
+      "module": "front_office",
+      "resource": "parcel_receive",
+      "action": "edit",
+      "name": "Manage Parcel Receive",
+      "description": "Allows managing parcel receipts",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_office.parcel_dispatch.edit",
+      "module": "front_office",
+      "resource": "parcel_dispatch",
+      "action": "edit",
+      "name": "Manage Parcel Dispatch",
+      "description": "Allows managing parcel dispatches",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_office.complaints.view",
+      "module": "front_office",
+      "resource": "complaints",
+      "action": "view",
+      "name": "Access Complaints",
+      "description": "Allows access to the Complaints screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_office.complaints.edit",
+      "module": "front_office",
+      "resource": "complaints",
+      "action": "edit",
+      "name": "Manage Complaints",
+      "description": "Allows resolving and managing student/parent complaints",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_office.setup_front_office.view",
+      "module": "front_office",
+      "resource": "setup_front_office",
+      "action": "view",
+      "name": "Access Setup Front Office",
+      "description": "Allows access to the Setup Front Office screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_office.setup_front_office.edit",
+      "module": "front_office",
+      "resource": "setup_front_office",
+      "action": "edit",
+      "name": "Manage Setup Front Office",
+      "description": "Allows configuring front office master settings",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "settings.academic.edit",
+      "module": "settings",
+      "resource": "academic",
+      "action": "edit",
+      "name": "Manage Settings",
+      "description": "Allows editing global school settings",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "settings.roles__legacy_.view",
+      "module": "settings",
+      "resource": "roles_legacy",
+      "action": "view",
+      "name": "Access Roles (Legacy)",
+      "description": "Allows access to the Roles (Legacy) screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "settings.roles___permissions.view",
+      "module": "settings",
+      "resource": "roles_permissions",
+      "action": "view",
+      "name": "Access Roles & Permissions",
+      "description": "Allows access to the Roles & Permissions screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "settings.academic_setup.view",
+      "module": "settings",
+      "resource": "academic_setup",
+      "action": "view",
+      "name": "Access Academic Setup",
+      "description": "Allows access to the Academic Setup screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "settings.support.view",
+      "module": "settings",
+      "resource": "support",
+      "action": "view",
+      "name": "Access Support",
+      "description": "Allows access to the Support screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "students.student_directory.view",
+      "module": "students",
+      "resource": "student_directory",
+      "action": "view",
+      "name": "Access All Students",
+      "description": "Allows access to the All Students screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "students.student_admission.view",
+      "module": "students",
+      "resource": "student_admission",
+      "action": "view",
+      "name": "Access Student Admission",
+      "description": "Allows access to the Student Admission screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "students.online_admission.view",
+      "module": "students",
+      "resource": "online_admission",
+      "action": "view",
+      "name": "Access Online Admission",
+      "description": "Allows access to the Online Admission screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "students.student_category.view",
+      "module": "students",
+      "resource": "student_category",
+      "action": "view",
+      "name": "Access Student Category",
+      "description": "Allows access to the Student Category screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "students.student_house.view",
+      "module": "students",
+      "resource": "student_house",
+      "action": "view",
+      "name": "Access Student House",
+      "description": "Allows access to the Student House screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "students.student_referral.view",
+      "module": "students",
+      "resource": "student_referral",
+      "action": "view",
+      "name": "Access Student Referral",
+      "description": "Allows access to the Student Referral screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "students.student_reports.view",
+      "module": "students",
+      "resource": "student_reports",
+      "action": "view",
+      "name": "Access Student Reports",
+      "description": "Allows access to the Student Reports screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "students.link_siblings.view",
+      "module": "students",
+      "resource": "link_siblings",
+      "action": "view",
+      "name": "Access Link Siblings",
+      "description": "Allows access to the Link Siblings screen",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
     }
   ]
 }

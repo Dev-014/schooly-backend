@@ -224,16 +224,11 @@ public class FeeDueServiceImpl implements FeeDueService {
                 CollectionPlanItem cpItem = planItems.get(i);
                 BigDecimal amountForThisInst = BigDecimal.ZERO;
                 
-                if ("PERCENTAGE".equalsIgnoreCase(cpItem.getAmountType())) {
+                if ("PERCENTAGE".equalsIgnoreCase(cpItem.getAmountType()) && i < planItems.size() - 1) {
                     amountForThisInst = totalPlanAmount.multiply(cpItem.getAmountValue()).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
-                } else if ("FIXED".equalsIgnoreCase(cpItem.getAmountType())) {
-                    amountForThisInst = cpItem.getAmountValue();
-                } else if ("REMAINDER".equalsIgnoreCase(cpItem.getAmountType()) || i == planItems.size() - 1) {
-                    amountForThisInst = totalPlanAmount.subtract(totalDistributed);
-                }
-                
-                if (i == planItems.size() - 1 && "PERCENTAGE".equalsIgnoreCase(cpItem.getAmountType())) {
-                    amountForThisInst = totalPlanAmount.subtract(totalDistributed);
+                } else {
+                    // REMAINDER or final installment absorbs any fractional pennies
+                    amountForThisInst = totalPlanAmount.subtract(totalDistributed).max(BigDecimal.ZERO);
                 }
                 
                 FeeDue due = new FeeDue();
@@ -379,7 +374,7 @@ public class FeeDueServiceImpl implements FeeDueService {
         due.setSchool(school);
         due.setFeeCategory(category);
         due.setAmount(amount);
-        due.setTitle(title);
+        due.setTitle(title != null && !title.trim().isEmpty() ? title : category.getName() + " (Ad-Hoc)");
         due.setDueDate(dueDate);
         due.setStatus("UNPAID");
         due.setIsAdHoc(true);

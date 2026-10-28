@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface FeeRecordService {
     Page<StudentFeeRecordDTO> getStudentFeeRecords(Long schoolId, Long classId, String search, String status, Pageable pageable);
-    FeeStatsDTO getFeeStats(Long schoolId);
+    FeeStatsDTO getFeeStats(Long schoolId, Long classId);
 }

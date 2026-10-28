@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 @Builder
 public class HomeworkEvaluationRequest {
 
+    private Long assignmentId;
+    private Long studentId;
     private BigDecimal marksObtained;
     private String remarks;
     @Builder.Default

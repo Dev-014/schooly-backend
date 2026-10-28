@@ -103,10 +103,13 @@ public class RoleManagementService {
             PermissionDefinitionDto dto = new PermissionDefinitionDto();
             dto.setId(def.getId());
             dto.setKey(def.getPermissionKey());
+            dto.setResourceKey(def.getResourceKey());
+            dto.setActionKey(def.getActionKey());
             dto.setName(def.getName());
             dto.setDescription(def.getDescription());
             dto.setSensitive(def.isSensitive());
             dto.setAvailableScopes(def.getSupportedScopeTypes());
+            dto.setAudience(def.getAudience());
             
             RolePermission granted = grantedMap.get(def.getPermissionKey());
             if (granted != null) {
@@ -133,7 +136,10 @@ public class RoleManagementService {
     }
 
     @Transactional
-    @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_USER_PERMISSIONS, allEntries = true)
+    @org.springframework.cache.annotation.Caching(evict = {
+        @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_USER_PERMISSIONS, allEntries = true),
+        @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_ENTITLEMENTS, allEntries = true)
+    })
     public void updateRolePermissions(Long schoolId, String roleId, UpdateRolePermissionsRequest request) {
         Role role = roleRepository.findById(roleId)
                 .filter(r -> r.isSystemRole() || r.getSchoolId().equals(schoolId))
@@ -184,7 +190,10 @@ public class RoleManagementService {
     }
     
     @Transactional
-    @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_USER_PERMISSIONS, allEntries = true)
+    @org.springframework.cache.annotation.Caching(evict = {
+        @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_USER_PERMISSIONS, allEntries = true),
+        @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_ENTITLEMENTS, allEntries = true)
+    })
     public void updateSystemRolePermissions(String roleId, UpdateRolePermissionsRequest request) {
         Role role = roleRepository.findById(roleId)
                 .filter(Role::isSystemRole)

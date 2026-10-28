@@ -61,12 +61,19 @@ public class ExamAttendanceService {
             Pageable pageable) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
-        if (termId != null && classId != null) {
-            syncAttendanceRoster(schoolId, termId, classId, sectionId, examSetupId, subjectId);
+        Long effectiveTermId = termId;
+        if (effectiveTermId == null && examSetupId != null) {
+            effectiveTermId = examSetupRepository.findByIdAndSchoolId(examSetupId, schoolId)
+                    .map(setup -> setup.getTerm() != null ? setup.getTerm().getId() : null)
+                    .orElse(null);
+        }
+
+        if (effectiveTermId != null && classId != null) {
+            syncAttendanceRoster(schoolId, effectiveTermId, classId, sectionId, examSetupId, subjectId);
         }
 
         Page<ExamAttendance> page = examAttendanceRepository.filterAttendance(
-                schoolId, termId, classId, sectionId, examSetupId, subjectId, status, search, pageable);
+                schoolId, effectiveTermId, classId, sectionId, examSetupId, subjectId, status, search, pageable);
 
         return page.map(this::mapToResponse);
     }
@@ -76,30 +83,30 @@ public class ExamAttendanceService {
             Long rawSchoolId, Long termId, Long examSetupId, Long classId, Long sectionId, Long subjectId) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
-        long present = examAttendanceRepository.countPresent(schoolId, termId, examSetupId, classId, sectionId, subjectId);
-        long absent = examAttendanceRepository.countAbsent(schoolId, termId, examSetupId, classId, sectionId, subjectId);
-        long leave = examAttendanceRepository.countLeave(schoolId, termId, examSetupId, classId, sectionId, subjectId);
-        long total = examAttendanceRepository.countTotal(schoolId, termId, examSetupId, classId, sectionId, subjectId);
+        Long effectiveTermId = termId;
+        if (effectiveTermId == null && examSetupId != null) {
+            effectiveTermId = examSetupRepository.findByIdAndSchoolId(examSetupId, schoolId)
+                    .map(setup -> setup.getTerm() != null ? setup.getTerm().getId() : null)
+                    .orElse(null);
+        }
+
+        long present = examAttendanceRepository.countPresent(schoolId, effectiveTermId, examSetupId, classId, sectionId, subjectId);
+        long absent = examAttendanceRepository.countAbsent(schoolId, effectiveTermId, examSetupId, classId, sectionId, subjectId);
+        long leave = examAttendanceRepository.countLeave(schoolId, effectiveTermId, examSetupId, classId, sectionId, subjectId);
+        long total = examAttendanceRepository.countTotal(schoolId, effectiveTermId, examSetupId, classId, sectionId, subjectId);
 
         String room = "Not Scheduled";
         String upcoming = "No Upcoming Exams";
         String examDate = null;
         String examStartTime = null;
         
-        List<ExamSchedule> schedules = examScheduleRepository.findSchedulesForAttendanceSummary(schoolId, termId, examSetupId, classId, sectionId, subjectId);
+        List<ExamSchedule> schedules = examScheduleRepository.findSchedulesForAttendanceSummary(schoolId, effectiveTermId, examSetupId, classId, sectionId, subjectId);
         if (!schedules.isEmpty()) {
             ExamSchedule latest = schedules.get(0);
             room = latest.getRoomNumber() != null ? latest.getRoomNumber() : "TBA";
             upcoming = latest.getSubject().getName() + " (" + latest.getExamDate().toString() + " " + latest.getStartTime().toString() + ")";
             examDate = latest.getExamDate().toString();
             examStartTime = latest.getStartTime().toString();
-        }
-
-        if (total == 0) {
-            present = 3;
-            absent = 1;
-            leave = 1;
-            total = 40;
         }
 
         return ExamSessionSummaryResponse.builder()

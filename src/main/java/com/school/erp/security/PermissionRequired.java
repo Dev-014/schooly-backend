@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PermissionRequired {
-    String value(); // The permissionKey e.g. "attendance.attendance_record.edit"
+    String[] value(); // One or more permissionKeys (any match grants access)
 }

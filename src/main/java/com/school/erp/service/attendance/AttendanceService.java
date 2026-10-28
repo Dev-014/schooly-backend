@@ -169,14 +169,16 @@ public class AttendanceService {
         School school = getSchool(effectiveSchoolId);
         
         List<AttendanceResponse> responses = new java.util.ArrayList<>();
-        boolean validatedAuth = false;
+        java.util.Set<String> validatedClassSections = new java.util.HashSet<>();
         
         for (BulkAttendanceRequest.AttendanceEntry entry : request.entries()) {
             Student student = getStudent(entry.studentId(), effectiveSchoolId);
+            Long classId = student.getSchoolClass() != null ? student.getSchoolClass().getId() : null;
+            Long sectionId = student.getSectionId();
+            String key = classId + ":" + sectionId;
             
-            if (!validatedAuth) {
+            if (validatedClassSections.add(key)) {
                 validateClassTeacherOrAdmin(effectiveSchoolId, student);
-                validatedAuth = true;
             }
             
             Attendance attendance = attendanceRepository
@@ -221,7 +223,7 @@ public class AttendanceService {
             return;
         }
 
-        // For non-admin (e.g. TEACHER, STAFF), verify assignment
+        // For non-admin (e.g. TEACHER, STAFF, or custom roles), verify assignment
         if (currentUser.userId() != null) {
             Long classId = student.getSchoolClass() != null ? student.getSchoolClass().getId() : null;
             Long sectionId = student.getSectionId();
@@ -234,7 +236,9 @@ public class AttendanceService {
                     Long staffId = staffOpt.get().getId();
                     if (sectionId != null) {
                         isAssignedInTable = assignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndSectionIdAndStatus(
-                                schoolId, staffId, classId, sectionId, "ACTIVE");
+                                schoolId, staffId, classId, sectionId, "ACTIVE")
+                                || assignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndSectionIsNullAndStatus(
+                                schoolId, staffId, classId, "ACTIVE");
                     } else {
                         isAssignedInTable = assignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndStatus(
                                 schoolId, staffId, classId, "ACTIVE");
@@ -257,8 +261,11 @@ public class AttendanceService {
                     return;
                 }
 
+                String sectionMsg = sectionId != null ? "Section " + sectionId : "the assigned section";
+                String classMsg = student.getSchoolClass() != null && student.getSchoolClass().getName() != null
+                        ? student.getSchoolClass().getName() : "Class " + classId;
                 throw new com.school.erp.exception.ForbiddenException(
-                        "Access Denied: Only the assigned Class Teacher or School Administrator can mark daily roll call attendance for this class/section."
+                        "Access Denied: You are not assigned to mark attendance for " + classMsg + " (" + sectionMsg + ")."
                 );
             }
         }

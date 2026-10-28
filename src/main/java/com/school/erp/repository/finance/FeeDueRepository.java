@@ -22,4 +22,10 @@ public interface FeeDueRepository extends JpaRepository<FeeDue, Long> {
     @org.springframework.data.jpa.repository.Query("SELECT SUM(d.amount) AS totalFees, SUM(d.paidAmount) AS amountPaid " +
            "FROM FeeDue d WHERE d.school.id = :schoolId")
     StudentFeeAggregation aggregateSchoolFeeStats(@org.springframework.data.repository.query.Param("schoolId") Long schoolId);
+
+    @org.springframework.data.jpa.repository.Query("SELECT SUM(d.amount) AS totalFees, SUM(d.paidAmount) AS amountPaid " +
+           "FROM FeeDue d JOIN d.student s WHERE d.school.id = :schoolId AND s.schoolClass.id IN :classIds")
+    StudentFeeAggregation aggregateClassFeeStats(
+            @org.springframework.data.repository.query.Param("schoolId") Long schoolId,
+            @org.springframework.data.repository.query.Param("classIds") List<Long> classIds);
 }

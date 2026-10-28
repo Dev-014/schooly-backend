@@ -27,6 +27,17 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
            "LOWER(s.lastName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')))")
     org.springframework.data.domain.Page<Student> findBySchoolIdAndSearchAndClassId(@org.springframework.data.repository.query.Param("schoolId") Long schoolId, @org.springframework.data.repository.query.Param("search") String search, @org.springframework.data.repository.query.Param("classId") Long classId, org.springframework.data.domain.Pageable pageable);
 
+    @EntityGraph(attributePaths = {"school", "schoolClass", "category", "house", "family"})
+    @org.springframework.data.jpa.repository.Query("SELECT s FROM Student s WHERE s.school.id = :schoolId AND " +
+           "(s.schoolClass.id IN :classIds) AND " +
+           "(:search IS NULL OR :search = '' OR LOWER(s.firstName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR " +
+           "LOWER(s.lastName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')))")
+    org.springframework.data.domain.Page<Student> findBySchoolIdAndSearchAndClassIdIn(
+            @org.springframework.data.repository.query.Param("schoolId") Long schoolId,
+            @org.springframework.data.repository.query.Param("search") String search,
+            @org.springframework.data.repository.query.Param("classIds") List<Long> classIds,
+            org.springframework.data.domain.Pageable pageable);
+
     @EntityGraph(attributePaths = {"school", "schoolClass"})
     @org.springframework.data.jpa.repository.Query("SELECT s FROM Student s WHERE s.school.id = :schoolId AND " +
            "(:classId IS NULL OR s.schoolClass.id = :classId) AND " +

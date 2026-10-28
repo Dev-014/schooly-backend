@@ -43,6 +43,13 @@ public class HomeworkAssignmentResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    // Student-specific submission fields
+    private String submissionStatus;
+    private BigDecimal marksObtained;
+    private String remarks;
+    private String evaluatorName;
+    private LocalDateTime evaluatedAt;
+
     public LocalDate getAssignmentDate() {
         return assignedDate;
     }

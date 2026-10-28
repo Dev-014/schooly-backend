@@ -13,6 +13,7 @@ import com.school.erp.entity.auth.UserRole;
 import com.school.erp.entity.hr.Staff;
 import com.school.erp.entity.student.Student;
 import com.school.erp.entity.superadmin.School;
+import com.school.erp.exception.BadRequestException;
 import com.school.erp.exception.ForbiddenException;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.academic.ClassTeacherAssignmentRepository;
@@ -174,6 +175,13 @@ public class SubjectAttendanceService {
             Student student = studentRepository.findByIdAndSchoolId(entry.studentId(), effectiveSchoolId)
                     .orElseThrow(() -> new ResourceNotFoundException("Student not found for id: " + entry.studentId()));
 
+            if (student.getSchoolClass() != null && !student.getSchoolClass().getId().equals(request.classId())) {
+                throw new BadRequestException("Student with id " + entry.studentId() + " does not belong to class " + request.classId());
+            }
+            if (request.sectionId() != null && student.getSectionId() != null && !student.getSectionId().equals(request.sectionId())) {
+                throw new BadRequestException("Student with id " + entry.studentId() + " does not belong to section " + request.sectionId());
+            }
+
             SubjectAttendance attendance = (request.timetableEntryId() != null)
                     ? subjectAttendanceRepository.findBySchoolIdAndStudentIdAndSubjectIdAndAttendanceDateAndTimetableEntryId(
                             effectiveSchoolId, student.getId(), subject.getId(), request.attendanceDate(), request.timetableEntryId())
@@ -249,7 +257,9 @@ public class SubjectAttendanceService {
                 boolean isSubjectTeacher;
                 if (sectionId != null) {
                     isSubjectTeacher = timetableEntryRepository.existsBySchoolIdAndTeacherIdAndSchoolClassIdAndSectionIdAndSubjectId(
-                            schoolId, staffId, classId, sectionId, subjectId);
+                            schoolId, staffId, classId, sectionId, subjectId)
+                            || timetableEntryRepository.existsBySchoolIdAndTeacherIdAndSchoolClassIdAndSectionIsNullAndSubjectId(
+                            schoolId, staffId, classId, subjectId);
                 } else {
                     isSubjectTeacher = timetableEntryRepository.existsBySchoolIdAndTeacherIdAndSchoolClassIdAndSubjectId(
                             schoolId, staffId, classId, subjectId);
@@ -263,7 +273,9 @@ public class SubjectAttendanceService {
                 boolean isClassTeacher;
                 if (sectionId != null) {
                     isClassTeacher = classTeacherAssignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndSectionIdAndStatus(
-                            schoolId, staffId, classId, sectionId, "ACTIVE");
+                            schoolId, staffId, classId, sectionId, "ACTIVE")
+                            || classTeacherAssignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndSectionIsNullAndStatus(
+                            schoolId, staffId, classId, "ACTIVE");
                 } else {
                     isClassTeacher = classTeacherAssignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndStatus(
                             schoolId, staffId, classId, "ACTIVE");

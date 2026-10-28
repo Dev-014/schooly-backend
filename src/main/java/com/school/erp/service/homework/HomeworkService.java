@@ -208,12 +208,41 @@ public class HomeworkService {
     @Transactional(readOnly = true)
     public List<HomeworkSubmissionResponse> getSubmissionsForAssignment(Long rawSchoolId, Long assignmentId) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
-        // Ensure assignment exists
-        assignmentRepository.findByIdAndSchoolId(assignmentId, schoolId)
+        HomeworkAssignment assignment = assignmentRepository.findByIdAndSchoolId(assignmentId, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Assignment not found with id: " + assignmentId));
 
         List<HomeworkSubmission> submissions = submissionRepository.findByAssignmentIdAndSchoolId(assignmentId, schoolId);
-        return submissions.stream().map(this::toSubmissionResponse).collect(Collectors.toList());
+
+        List<Student> students;
+        if (assignment.getSection() != null) {
+            students = studentRepository.findBySchoolIdAndSchoolClassIdAndSectionId(
+                    schoolId, assignment.getSchoolClass().getId(), assignment.getSection().getId());
+        } else {
+            students = studentRepository.findBySchoolIdAndSchoolClassId(
+                    schoolId, assignment.getSchoolClass().getId());
+        }
+
+        java.util.Set<Long> submittedStudentIds = submissions.stream()
+                .map(s -> s.getStudent().getId())
+                .collect(Collectors.toSet());
+
+        List<HomeworkSubmissionResponse> responses = submissions.stream()
+                .map(this::toSubmissionResponse)
+                .collect(Collectors.toList());
+
+        for (Student student : students) {
+            if (!submittedStudentIds.contains(student.getId())) {
+                HomeworkSubmissionResponse pending = new HomeworkSubmissionResponse();
+                pending.setAssignmentId(assignmentId);
+                pending.setStudentId(student.getId());
+                pending.setStudentName(student.getFirstName() + " " + student.getLastName());
+                pending.setStudentAdmissionNo(student.getAdmissionNo());
+                pending.setStatus(SubmissionStatus.PENDING);
+                responses.add(pending);
+            }
+        }
+
+        return responses;
     }
 
     // ─── Student Submits Homework ────────────────────────────────────────────────
@@ -268,8 +297,28 @@ public class HomeworkService {
 
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
-        HomeworkSubmission submission = submissionRepository.findByIdAndSchoolId(submissionId, schoolId)
-                .orElseThrow(() -> new ResourceNotFoundException("Submission not found with id: " + submissionId));
+        HomeworkSubmission submission;
+        if (submissionId != null) {
+            submission = submissionRepository.findByIdAndSchoolId(submissionId, schoolId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Submission not found with id: " + submissionId));
+        } else if (request.getAssignmentId() != null && request.getStudentId() != null) {
+            submission = submissionRepository.findByAssignmentIdAndStudentId(request.getAssignmentId(), request.getStudentId())
+                    .orElseGet(() -> {
+                        HomeworkAssignment assignment = assignmentRepository.findByIdAndSchoolId(request.getAssignmentId(), schoolId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Assignment not found with id: " + request.getAssignmentId()));
+                        Student student = studentRepository.findByIdAndSchoolId(request.getStudentId(), schoolId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + request.getStudentId()));
+                        return HomeworkSubmission.builder()
+                                .school(assignment.getSchool())
+                                .assignment(assignment)
+                                .student(student)
+                                .submissionDate(LocalDateTime.now())
+                                .status(SubmissionStatus.SUBMITTED)
+                                .build();
+                    });
+        } else {
+            throw new BadRequestException("Either submissionId or both assignmentId and studentId must be provided");
+        }
 
         if (request.getMarksObtained() != null) {
             BigDecimal maxMarks = submission.getAssignment().getMaxMarks();
@@ -327,7 +376,26 @@ public class HomeworkService {
         List<HomeworkAssignment> assignments = assignmentRepository.findActiveForClassAndSection(
                 schoolId, classId, sectionId, assignmentType);
 
-        return assignments.stream().map(this::toAssignmentResponse).collect(Collectors.toList());
+        List<HomeworkSubmission> submissions = submissionRepository.findByStudentIdAndSchoolId(studentId, schoolId);
+        java.util.Map<Long, HomeworkSubmission> subMap = submissions.stream()
+                .collect(Collectors.toMap(s -> s.getAssignment().getId(), s -> s));
+
+        return assignments.stream().map(a -> {
+            HomeworkAssignmentResponse res = toAssignmentResponse(a);
+            HomeworkSubmission sub = subMap.get(a.getId());
+            if (sub != null) {
+                res.setSubmissionStatus(sub.getStatus().name());
+                res.setMarksObtained(sub.getMarksObtained());
+                res.setRemarks(sub.getRemarks());
+                res.setEvaluatedAt(sub.getEvaluatedAt());
+                if (sub.getEvaluatedBy() != null) {
+                    res.setEvaluatorName(sub.getEvaluatedBy().getFirstName() + " " + sub.getEvaluatedBy().getLastName());
+                }
+            } else {
+                res.setSubmissionStatus("PENDING");
+            }
+            return res;
+        }).collect(Collectors.toList());
     }
 
     // ─── Student Submissions Portfolio ───────────────────────────────────────────

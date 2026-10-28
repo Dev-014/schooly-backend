@@ -29,7 +29,7 @@ public class AdminHrLeaveTypeController {
     }
 
     @GetMapping("/leave-types")
-    @PermissionRequired("staff_hr.staff_leaves.view")
+    @PermissionRequired({"leave_management.staff_leaves.view", "leave_management.student_leaves.view"})
     public ResponseEntity<List<SchoolLeaveTypeDTO>> getLeaveTypes(
             @PathVariable(value = "schoolId", required = false) Long pathSchoolId,
             @RequestParam(value = "schoolId", required = false) Long paramSchoolId) {
@@ -37,7 +37,7 @@ public class AdminHrLeaveTypeController {
     }
 
     @PostMapping("/leave-types")
-    @PermissionRequired("staff_hr.staff_leaves.view")
+    @PermissionRequired("leave_management.staff_leaves.view")
     public ResponseEntity<SchoolLeaveTypeDTO> createLeaveType(
             @PathVariable(value = "schoolId", required = false) Long pathSchoolId,
             @RequestParam(value = "schoolId", required = false) Long paramSchoolId,
@@ -46,7 +46,7 @@ public class AdminHrLeaveTypeController {
     }
 
     @PutMapping("/leave-types/{id}")
-    @PermissionRequired("staff_hr.staff_leaves.view")
+    @PermissionRequired("leave_management.staff_leaves.view")
     public ResponseEntity<SchoolLeaveTypeDTO> updateLeaveType(
             @PathVariable(value = "schoolId", required = false) Long pathSchoolId,
             @RequestParam(value = "schoolId", required = false) Long paramSchoolId,
@@ -56,7 +56,7 @@ public class AdminHrLeaveTypeController {
     }
 
     @DeleteMapping("/leave-types/{id}")
-    @PermissionRequired("staff_hr.staff_leaves.view")
+    @PermissionRequired("leave_management.staff_leaves.view")
     public ResponseEntity<Void> deleteLeaveType(
             @PathVariable(value = "schoolId", required = false) Long pathSchoolId,
             @RequestParam(value = "schoolId", required = false) Long paramSchoolId,
@@ -66,7 +66,7 @@ public class AdminHrLeaveTypeController {
     }
 
     @GetMapping("/staff/{staffId}/leave-balances")
-    @PermissionRequired("staff_hr.staff_leaves.view")
+    @PermissionRequired("leave_management.staff_leaves.view")
     public ResponseEntity<List<StaffLeaveBalanceDTO>> getStaffLeaveBalances(
             @PathVariable(value = "schoolId", required = false) Long pathSchoolId,
             @RequestParam(value = "schoolId", required = false) Long paramSchoolId,
@@ -75,7 +75,7 @@ public class AdminHrLeaveTypeController {
     }
 
     @PutMapping("/staff/{staffId}/leave-balances")
-    @PermissionRequired("staff_hr.staff_leaves.view")
+    @PermissionRequired("leave_management.staff_leaves.view")
     public ResponseEntity<StaffLeaveBalanceDTO> updateStaffLeaveBalance(
             @PathVariable(value = "schoolId", required = false) Long pathSchoolId,
             @RequestParam(value = "schoolId", required = false) Long paramSchoolId,

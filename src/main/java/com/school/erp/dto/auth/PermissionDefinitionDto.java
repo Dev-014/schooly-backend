@@ -7,10 +7,13 @@ import java.util.List;
 public class PermissionDefinitionDto {
     private String id;
     private String key;
+    private String resourceKey;
+    private String actionKey;
     private String name;
     private String description;
     private boolean isSensitive;
     private boolean granted;
     private String scope;
     private List<String> availableScopes;
+    private List<String> audience;
 }

@@ -24,6 +24,18 @@ public interface ExamMarkRepository extends JpaRepository<ExamMark, Long> {
 
     List<ExamMark> findBySchoolIdAndExamSetupTermIdAndStudentId(Long schoolId, Long termId, Long studentId);
 
+    @Query("SELECT m FROM ExamMark m " +
+           "JOIN FETCH m.subject sub " +
+           "JOIN FETCH m.examSetup setup " +
+           "LEFT JOIN FETCH setup.term term " +
+           "LEFT JOIN FETCH m.examSubjectConfig esc " +
+           "WHERE m.school.id = :schoolId " +
+           "AND m.student.id = :studentId " +
+           "ORDER BY setup.id ASC")
+    List<ExamMark> findBySchoolIdAndStudentIdWithDetails(
+            @Param("schoolId") Long schoolId,
+            @Param("studentId") Long studentId);
+
     @Query(value = "SELECT m FROM ExamMark m " +
            "JOIN FETCH m.student s " +
            "JOIN FETCH m.schoolClass c " +

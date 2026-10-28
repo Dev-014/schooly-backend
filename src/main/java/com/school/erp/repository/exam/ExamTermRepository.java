@@ -16,7 +16,8 @@ public interface ExamTermRepository extends JpaRepository<ExamTerm, Long> {
 
     Optional<ExamTerm> findFirstBySchoolIdOrderByStartDateDesc(Long schoolId);
 
-    List<ExamTerm> findBySchoolIdAndAcademicYearIdOrderByStartDateDesc(Long schoolId, Long academicYearId);
+    @Query("SELECT t FROM ExamTerm t WHERE t.school.id = :schoolId AND (t.academicYear.id = :academicYearId OR t.academicYear IS NULL) ORDER BY t.startDate DESC")
+    List<ExamTerm> findBySchoolIdAndAcademicYearIdOrderByStartDateDesc(@Param("schoolId") Long schoolId, @Param("academicYearId") Long academicYearId);
 
     Optional<ExamTerm> findByIdAndSchoolId(Long id, Long schoolId);
 

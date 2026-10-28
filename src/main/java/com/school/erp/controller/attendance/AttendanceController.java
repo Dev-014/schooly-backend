@@ -67,6 +67,7 @@ public class AttendanceController {
     }
 
     @GetMapping("/daily")
+    @com.school.erp.security.PermissionRequired("attendance.attendance_register.view")
     public ResponseEntity<ApiResponse<List<AttendanceResponse>>> getAttendanceByDate(
             @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) Long classId,
@@ -87,6 +88,7 @@ public class AttendanceController {
     }
 
     @PostMapping("/bulk")
+    @com.school.erp.security.PermissionRequired({"attendance.attendance_record.edit", "attendance.attendance_register.view"})
     public ResponseEntity<ApiResponse<List<AttendanceResponse>>> createBulkAttendance(@Valid @RequestBody BulkAttendanceRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(
                 attendanceService.saveBulkAttendance(request),

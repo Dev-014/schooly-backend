@@ -44,6 +44,10 @@ public class PermissionDefinition {
     @Column(name = "supported_scope_types", columnDefinition = "jsonb")
     private java.util.List<String> supportedScopeTypes;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "audience", columnDefinition = "jsonb")
+    private java.util.List<String> audience;
+
     @Column(name = "requires_assignment", nullable = false)
     private boolean requiresAssignment = false;
 

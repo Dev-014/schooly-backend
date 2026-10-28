@@ -22,7 +22,7 @@ public class AdminExamTermController {
     private final ExamTermService examTermService;
 
     @GetMapping
-    @PermissionRequired("exams_results.term_setup.view")
+    @PermissionRequired({"exams_results.term_setup.view", "exams_results.report_card.view"})
     public ResponseEntity<ApiResponse<List<ExamTermResponse>>> getTerms(
             @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) Long academicYearId) {

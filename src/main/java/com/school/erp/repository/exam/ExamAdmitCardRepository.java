@@ -36,6 +36,8 @@ public interface ExamAdmitCardRepository extends JpaRepository<ExamAdmitCard, Lo
 
     List<ExamAdmitCard> findBySchoolIdAndExamSetupIdAndSchoolClassId(Long schoolId, Long examSetupId, Long classId);
 
+    List<ExamAdmitCard> findBySchoolIdAndExamSetupId(Long schoolId, Long examSetupId);
+
     long countBySchoolIdAndExamSetupId(Long schoolId, Long examSetupId);
 
     long countBySchoolIdAndExamSetupIdAndStatus(Long schoolId, Long examSetupId, String status);
