@@ -8,6 +8,8 @@ import com.school.erp.entity.student.Student;
 import com.school.erp.entity.auth.User;
 import com.school.erp.entity.exam.ExamTeacherRemark;
 import com.school.erp.entity.exam.ExamTerm;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.academic.SectionRepository;
@@ -16,13 +18,16 @@ import com.school.erp.repository.auth.UserRepository;
 import com.school.erp.repository.exam.ExamTeacherRemarkRepository;
 import com.school.erp.repository.exam.ExamTermRepository;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -36,6 +41,9 @@ public class ExamTeacherRemarkService {
     private final SectionRepository sectionRepository;
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     @Transactional
     public Page<TeacherRemarkItemResponse> filterRemarks(
@@ -91,6 +99,28 @@ public class ExamTeacherRemarkService {
         remark.setStatus(hasText ? "COMPLETED" : "PENDING");
 
         ExamTeacherRemark saved = teacherRemarkRepository.save(remark);
+
+        if (notificationService != null && hasText) {
+            notificationService.notifyStudentAndParents(
+                    schoolId,
+                    student,
+                    NotificationType.TEACHER_REMARK_ADDED,
+                    NotificationPriority.MEDIUM,
+                    "Teacher Remark Added (" + term.getName() + ")",
+                    "A teacher remark has been recorded for " + student.getName() + " for " + term.getName() + ": \"" + saved.getTeacherRemarks() + "\"",
+                    "/exams/report-cards",
+                    "View Remarks",
+                    "EXAM_TEACHER_REMARK",
+                    String.valueOf(saved.getId()),
+                    Map.of(
+                            "remarkId", saved.getId(),
+                            "termId", term.getId(),
+                            "termName", term.getName(),
+                            "studentId", student.getId()
+                    )
+            );
+        }
+
         return mapToResponse(saved);
     }
 

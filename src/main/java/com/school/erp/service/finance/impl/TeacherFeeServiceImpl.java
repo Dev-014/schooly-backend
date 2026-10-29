@@ -5,6 +5,8 @@ import com.school.erp.dto.payment.SendFeeReminderRequest;
 import com.school.erp.dto.payment.TeacherClassResponse;
 import com.school.erp.entity.academic.ClassTeacherAssignment;
 import com.school.erp.entity.finance.FeeReminder;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.hr.Staff;
 import com.school.erp.entity.student.Student;
@@ -24,7 +26,9 @@ import com.school.erp.entity.academic.Section;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.security.AuthenticatedUser;
 import com.school.erp.service.finance.TeacherFeeService;
+import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,6 +54,9 @@ public class TeacherFeeServiceImpl implements TeacherFeeService {
     private final SchoolClassRepository schoolClassRepository;
     private final SectionRepository sectionRepository;
     private final FeeDueRepository feeDueRepository;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     @Override
     @Transactional(readOnly = true)
@@ -127,7 +135,27 @@ public class TeacherFeeServiceImpl implements TeacherFeeService {
             reminder.setStatus("SENT");
             reminder.setSentAt(LocalDateTime.now());
             
-            feeReminderRepository.save(reminder);
+            FeeReminder saved = feeReminderRepository.save(reminder);
+
+            if (notificationService != null) {
+                notificationService.notifyStudentAndParents(
+                        schoolId,
+                        student,
+                        NotificationType.FEE_DUE_REMINDER,
+                        NotificationPriority.HIGH,
+                        "Fee Payment Reminder: " + student.getName(),
+                        "Pending fee balance of " + totalPending + " is due for " + student.getName() + ". Please clear the dues at the earliest.",
+                        "/finance/dues",
+                        "Pay Now",
+                        "FEE_REMINDER",
+                        String.valueOf(saved.getId()),
+                        Map.of(
+                                "reminderId", saved.getId(),
+                                "studentId", student.getId(),
+                                "pendingAmount", totalPending
+                        )
+                );
+            }
         }
     }
 

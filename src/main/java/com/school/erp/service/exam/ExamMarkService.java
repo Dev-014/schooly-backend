@@ -5,12 +5,12 @@ import com.school.erp.dto.exam.ClassMarksStatsResponse;
 import com.school.erp.dto.exam.ExamMarkEntryRequest;
 import com.school.erp.dto.exam.ExamMarkItemResponse;
 import com.school.erp.entity.superadmin.School;
-import com.school.erp.entity.academic.SchoolClass;
-import com.school.erp.entity.academic.Section;
 import com.school.erp.entity.student.Student;
 import com.school.erp.entity.academic.Subject;
 import com.school.erp.entity.exam.ExamMark;
 import com.school.erp.entity.exam.ExamSetup;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.academic.SchoolClassRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
@@ -22,7 +22,9 @@ import com.school.erp.repository.exam.ExamSetupRepository;
 import com.school.erp.repository.exam.ExamSubjectConfigRepository;
 import com.school.erp.entity.exam.ExamSubjectConfig;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -49,6 +51,9 @@ public class ExamMarkService {
     private final SubjectRepository subjectRepository;
     private final StudentRepository studentRepository;
     private final ExamSubjectConfigRepository examSubjectConfigRepository;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     @Transactional
     public Page<ExamMarkItemResponse> filterMarks(
@@ -113,6 +118,31 @@ public class ExamMarkService {
         mark.setRemarks(request.getRemarks());
 
         ExamMark saved = examMarkRepository.save(mark);
+
+        if (notificationService != null && saved.getMarksObtained() != null) {
+            String maxStr = config.getMaxMarks() != null ? "/" + config.getMaxMarks() : "";
+            notificationService.notifyStudentAndParents(
+                    schoolId,
+                    student,
+                    NotificationType.EXAM_MARKS_ENTERED,
+                    NotificationPriority.MEDIUM,
+                    "Exam Marks Updated: " + subject.getName(),
+                    student.getName() + " scored " + saved.getMarksObtained() + maxStr + " in " + subject.getName() + " (" + setup.getName() + ").",
+                    "/exams/report-cards",
+                    "View Marks",
+                    "EXAM_MARK",
+                    String.valueOf(saved.getId()),
+                    Map.of(
+                            "examMarkId", saved.getId(),
+                            "examSetupId", setup.getId(),
+                            "examName", setup.getName(),
+                            "subjectId", subject.getId(),
+                            "subjectName", subject.getName(),
+                            "marksObtained", saved.getMarksObtained()
+                    )
+            );
+        }
+
         return mapToResponse(saved);
     }
 
@@ -123,6 +153,28 @@ public class ExamMarkService {
         for (ExamMarkEntryRequest item : request.getMarks()) {
             responses.add(saveMark(schoolId, item));
         }
+
+        if (notificationService != null && !responses.isEmpty()) {
+            ExamMarkItemResponse first = responses.get(0);
+            notificationService.notifySchoolAdmins(
+                    schoolId,
+                    NotificationType.EXAM_MARKS_ENTERED,
+                    NotificationPriority.LOW,
+                    "Exam Marks Submitted: " + first.getSubjectName(),
+                    responses.size() + " student mark entries were submitted for " + first.getSubjectName()
+                            + " (" + first.getClassName() + " - " + first.getExamName() + ").",
+                    "/exams/marks",
+                    "Review Marks",
+                    "EXAM_SETUP",
+                    String.valueOf(first.getExamSetupId()),
+                    Map.of(
+                            "examSetupId", first.getExamSetupId(),
+                            "subjectId", first.getSubjectId(),
+                            "count", responses.size()
+                    )
+            );
+        }
+
         return responses;
     }
 

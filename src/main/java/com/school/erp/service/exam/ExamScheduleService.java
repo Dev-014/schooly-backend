@@ -10,6 +10,8 @@ import com.school.erp.entity.academic.Section;
 import com.school.erp.entity.academic.Subject;
 import com.school.erp.entity.exam.ExamSchedule;
 import com.school.erp.entity.exam.ExamSetup;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.exception.BadRequestException;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.academic.SchoolClassRepository;
@@ -21,7 +23,9 @@ import com.school.erp.repository.exam.ExamSetupRepository;
 import com.school.erp.repository.exam.ExamSubjectConfigRepository;
 import com.school.erp.entity.exam.ExamSubjectConfig;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +48,9 @@ public class ExamScheduleService {
     private final SectionRepository sectionRepository;
     private final SubjectRepository subjectRepository;
     private final ExamSubjectConfigRepository examSubjectConfigRepository;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     @Transactional(readOnly = true)
     public Page<ExamScheduleResponse> filterSchedules(
@@ -112,6 +119,35 @@ public class ExamScheduleService {
         schedule.setStatus(request.getStatus() != null ? request.getStatus().toUpperCase() : "SCHEDULED");
 
         ExamSchedule saved = examScheduleRepository.save(schedule);
+
+        if (notificationService != null) {
+            Long secId = section != null ? section.getId() : null;
+            notificationService.notifyClassAndSection(
+                    schoolId,
+                    schoolClass.getId(),
+                    secId,
+                    true,
+                    true,
+                    true,
+                    NotificationType.EXAM_SCHEDULE_PUBLISHED,
+                    NotificationPriority.MEDIUM,
+                    "Exam Scheduled: " + subject.getName(),
+                    setup.getName() + " exam for " + subject.getName() + " (" + schoolClass.getName()
+                            + ") has been scheduled on " + saved.getExamDate() + " from " + saved.getStartTime() + " to " + saved.getEndTime() + ".",
+                    "/exams/schedule",
+                    "View Schedule",
+                    "EXAM_SCHEDULE",
+                    String.valueOf(saved.getId()),
+                    Map.of(
+                            "examScheduleId", saved.getId(),
+                            "examSetupId", setup.getId(),
+                            "examName", setup.getName(),
+                            "subjectName", subject.getName(),
+                            "examDate", saved.getExamDate().toString()
+                    )
+            );
+        }
+
         return mapToResponse(saved);
     }
 

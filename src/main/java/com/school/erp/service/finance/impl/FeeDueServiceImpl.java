@@ -10,6 +10,7 @@ import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.repository.finance.FeeGenerationBatchRepository;
 import com.school.erp.service.finance.FeeDueService;
+import com.school.erp.service.notification.NotificationService;
 import com.school.erp.entity.finance.FeeDue;
 import com.school.erp.entity.finance.FeeCategory;
 import com.school.erp.entity.superadmin.School;
@@ -20,8 +21,11 @@ import com.school.erp.entity.finance.CollectionPlan;
 import com.school.erp.entity.finance.CollectionPlanItem;
 import com.school.erp.entity.finance.StudentFeeStructure;
 import com.school.erp.entity.finance.FeeGenerationBatch;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.repository.finance.FeeStructureRepository;
 import com.school.erp.repository.finance.StudentFeeStructureRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +35,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.Optional;
 
@@ -45,6 +50,9 @@ public class FeeDueServiceImpl implements FeeDueService {
     private final FeeStructureRepository feeStructureRepository;
     private final StudentFeeStructureRepository studentFeeStructureRepository;
     private final FeeGenerationBatchRepository feeGenerationBatchRepository;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     public FeeDueServiceImpl(FeeDueRepository feeDueRepository, FeeCategoryRepository feeCategoryRepository, SchoolRepository schoolRepository, StudentRepository studentRepository, FeeStructureRepository feeStructureRepository, StudentFeeStructureRepository studentFeeStructureRepository, FeeGenerationBatchRepository feeGenerationBatchRepository) {
         this.feeDueRepository = feeDueRepository;
@@ -112,6 +120,26 @@ public class FeeDueServiceImpl implements FeeDueService {
         }
 
         feeDueRepository.save(due);
+
+        if (notificationService != null && due.getStudent() != null) {
+            notificationService.notifyStudentAndParents(
+                    schoolId,
+                    due.getStudent(),
+                    NotificationType.FEE_DISCOUNT_APPLIED,
+                    NotificationPriority.MEDIUM,
+                    "Fee Discount Applied: " + due.getTitle(),
+                    "A discount of " + request.discountAmount() + " has been applied to " + due.getTitle() + " for " + due.getStudent().getName() + ".",
+                    "/finance/dues",
+                    "View Fee Dues",
+                    "FEE_DUE",
+                    String.valueOf(due.getId()),
+                    Map.of(
+                            "feeDueId", due.getId(),
+                            "discountAmount", request.discountAmount(),
+                            "title", due.getTitle()
+                    )
+            );
+        }
 
         return new FeeDueResponse(
                 due.getId(),
@@ -359,7 +387,29 @@ public class FeeDueServiceImpl implements FeeDueService {
         batch.setGeneratedBy(generatedBy);
         batch.setGeneratedAt(LocalDateTime.now());
 
-        feeGenerationBatchRepository.save(batch);
+        FeeGenerationBatch savedBatch = feeGenerationBatchRepository.save(batch);
+
+        if (notificationService != null) {
+            for (Student student : eligibleStudents) {
+                notificationService.notifyStudentAndParents(
+                        schoolId,
+                        student,
+                        NotificationType.FEE_INVOICE_GENERATED,
+                        NotificationPriority.MEDIUM,
+                        "Fee Invoice Generated (" + feeStructure.getSchoolClass().getName() + ")",
+                        "Fee dues totaling " + perStudentTotal + " have been generated for " + student.getName() + ".",
+                        "/finance/dues",
+                        "Pay Fees",
+                        "FEE_GENERATION_BATCH",
+                        String.valueOf(savedBatch.getId()),
+                        Map.of(
+                                "batchId", savedBatch.getId(),
+                                "studentId", student.getId(),
+                                "totalAmount", perStudentTotal
+                        )
+                );
+            }
+        }
     }
 
     @Override
@@ -381,6 +431,29 @@ public class FeeDueServiceImpl implements FeeDueService {
         due.setTermName("Ad-Hoc");
 
         due = feeDueRepository.save(due);
+
+        if (notificationService != null) {
+            notificationService.notifyStudentAndParents(
+                    schoolId,
+                    student,
+                    NotificationType.FEE_INVOICE_GENERATED,
+                    NotificationPriority.MEDIUM,
+                    "New Fee Assigned: " + due.getTitle(),
+                    "A fee of " + due.getAmount() + " for " + due.getTitle() + " has been assigned to " + student.getName()
+                            + (dueDate != null ? " (Due: " + dueDate + ")." : "."),
+                    "/finance/dues",
+                    "View Fee",
+                    "FEE_DUE",
+                    String.valueOf(due.getId()),
+                    Map.of(
+                            "feeDueId", due.getId(),
+                            "title", due.getTitle(),
+                            "amount", due.getAmount(),
+                            "dueDate", dueDate != null ? dueDate.toString() : ""
+                    )
+            );
+        }
+
         return new FeeDueResponse(
                 due.getId(),
                 due.getTitle(),

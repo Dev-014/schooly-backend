@@ -11,6 +11,8 @@ import com.school.erp.entity.academic.TimetableEntry;
 import com.school.erp.entity.attendance.SubjectAttendance;
 import com.school.erp.entity.auth.UserRole;
 import com.school.erp.entity.hr.Staff;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.student.Student;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.exception.BadRequestException;
@@ -27,13 +29,16 @@ import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.security.AuthenticatedUser;
+import com.school.erp.service.notification.NotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
@@ -50,6 +55,9 @@ public class SubjectAttendanceService {
     private final com.school.erp.repository.auth.UserAssignmentRepository userAssignmentRepository;
     private final StaffRepository staffRepository;
     private final AuthContextService authContextService;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     public SubjectAttendanceService(
             SubjectAttendanceRepository subjectAttendanceRepository,
@@ -199,7 +207,9 @@ public class SubjectAttendanceService {
             attendance.setRemarks(entry.remarks());
             attendance.setMarkedBy(markedBy);
 
-            responses.add(toResponse(subjectAttendanceRepository.save(attendance)));
+            SubjectAttendance saved = subjectAttendanceRepository.save(attendance);
+            dispatchSubjectAttendanceAlert(effectiveSchoolId, student, subject, saved);
+            responses.add(toResponse(saved));
         }
 
         return responses;
@@ -237,7 +247,50 @@ public class SubjectAttendanceService {
         attendance.setRemarks(request.remarks());
         attendance.setMarkedBy(resolveCurrentStaffOrUserId());
 
-        return toResponse(subjectAttendanceRepository.save(attendance));
+        SubjectAttendance saved = subjectAttendanceRepository.save(attendance);
+        dispatchSubjectAttendanceAlert(effectiveSchoolId, student, subject, saved);
+        return toResponse(saved);
+    }
+
+    private void dispatchSubjectAttendanceAlert(Long schoolId, Student student, Subject subject, SubjectAttendance saved) {
+        if (notificationService == null || saved == null || saved.getStatus() == null) {
+            return;
+        }
+        String status = saved.getStatus().trim().toUpperCase();
+        if (!"ABSENT".equals(status) && !"LATE".equals(status)) {
+            return;
+        }
+        String studentName = student.getName() != null
+                ? student.getName()
+                : ((student.getFirstName() != null ? student.getFirstName() : "") + " " +
+                   (student.getLastName() != null ? student.getLastName() : "")).trim();
+        String subjectName = subject != null ? subject.getName() : "Subject";
+        Map<String, Object> meta = new HashMap<>();
+        meta.put("status", status);
+        meta.put("subject", subjectName);
+        meta.put("date", saved.getAttendanceDate() != null ? saved.getAttendanceDate().toString() : "");
+
+        NotificationType type = "ABSENT".equals(status)
+                ? NotificationType.ATTENDANCE_ABSENT
+                : NotificationType.ATTENDANCE_LATE;
+        NotificationPriority priority = "ABSENT".equals(status)
+                ? NotificationPriority.HIGH
+                : NotificationPriority.NORMAL;
+
+        notificationService.notifyStudentAndParents(
+                schoolId,
+                student,
+                type,
+                priority,
+                "Period Attendance Alert: " + subjectName,
+                "You were marked " + status.toLowerCase() + " for " + subjectName + " on " + saved.getAttendanceDate() + ".",
+                "Period Attendance Alert (" + subjectName + "): " + studentName,
+                studentName + " was marked " + status.toLowerCase() + " for " + subjectName + " on " + saved.getAttendanceDate() + ".",
+                "/attendance",
+                "SUBJECT_ATTENDANCE",
+                saved.getId(),
+                meta
+        );
     }
 
     private void validateSubjectTeacherOrAdmin(Long schoolId, Long classId, Long sectionId, Long subjectId) {

@@ -3,15 +3,19 @@ package com.school.erp.service.frontoffice;
 import com.school.erp.dto.frontoffice.ParcelReceiveRequest;
 import com.school.erp.dto.frontoffice.ParcelReceiveResponse;
 import com.school.erp.dto.frontoffice.ParcelReceiveStatsResponse;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.hr.Staff;
 import com.school.erp.entity.frontoffice.ParcelReceive;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.service.notification.NotificationService;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.hr.StaffRepository;
 import com.school.erp.repository.frontoffice.ParcelReceiveRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +35,9 @@ public class ParcelReceiveService {
     private final SchoolRepository schoolRepository;
     private final StaffRepository staffRepository;
 
+    @Autowired(required = false)
+    private NotificationService notificationService;
+
     @Transactional(readOnly = true)
     public Page<ParcelReceiveResponse> filterParcelReceives(
             Long rawSchoolId,
@@ -38,7 +46,6 @@ public class ParcelReceiveService {
             String status,
             Pageable pageable) {
         final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
-        
 
         String cleanSearch = (search != null && !search.isBlank()) ? search.trim() : null;
         String cleanStatus = (status != null && !status.isBlank() && !status.equalsIgnoreCase("all")) ? status.trim() : null;
@@ -80,6 +87,42 @@ public class ParcelReceiveService {
         }
 
         ParcelReceive saved = parcelReceiveRepository.save(parcel);
+
+        if (notificationService != null) {
+            Map<String, Object> metadata = Map.of(
+                    "parcelId", saved.getId(),
+                    "recipientName", saved.getRecipientName(),
+                    "senderName", saved.getSenderName()
+            );
+            if (saved.getReceivedByStaff() != null) {
+                notificationService.notifyStaffMember(
+                        schoolId,
+                        saved.getReceivedByStaff(),
+                        NotificationType.PARCEL_RECEIVED,
+                        NotificationPriority.MEDIUM,
+                        "Parcel Received for " + saved.getRecipientName(),
+                        "A parcel from " + saved.getSenderName() + " for " + saved.getRecipientName() + " has been logged at the front desk.",
+                        "/front-office/parcels",
+                        "View Parcel",
+                        "PARCEL_RECEIVE",
+                        String.valueOf(saved.getId()),
+                        metadata
+                );
+            }
+            notificationService.notifySchoolAdmins(
+                    schoolId,
+                    NotificationType.PARCEL_RECEIVED,
+                    NotificationPriority.LOW,
+                    "Parcel Logged: " + saved.getRecipientName(),
+                    "Parcel from " + saved.getSenderName() + " addressed to " + saved.getRecipientName() + " received at front desk.",
+                    "/front-office/parcels",
+                    "View Parcel",
+                    "PARCEL_RECEIVE",
+                    String.valueOf(saved.getId()),
+                    metadata
+            );
+        }
+
         return mapToResponse(saved);
     }
 
@@ -95,6 +138,26 @@ public class ParcelReceiveService {
         parcel.setCollectedBy(collectedBy != null && !collectedBy.isBlank() ? collectedBy : parcel.getRecipientName());
 
         ParcelReceive updated = parcelReceiveRepository.save(parcel);
+
+        if (notificationService != null) {
+            notificationService.notifySchoolAdmins(
+                    schoolId,
+                    NotificationType.PARCEL_COLLECTED,
+                    NotificationPriority.LOW,
+                    "Parcel Collected: " + updated.getRecipientName(),
+                    "Parcel from " + updated.getSenderName() + " for " + updated.getRecipientName() + " was collected by " + updated.getCollectedBy() + ".",
+                    "/front-office/parcels",
+                    "View Parcel",
+                    "PARCEL_RECEIVE",
+                    String.valueOf(updated.getId()),
+                    Map.of(
+                            "parcelId", updated.getId(),
+                            "recipientName", updated.getRecipientName(),
+                            "collectedBy", updated.getCollectedBy()
+                    )
+            );
+        }
+
         return mapToResponse(updated);
     }
 

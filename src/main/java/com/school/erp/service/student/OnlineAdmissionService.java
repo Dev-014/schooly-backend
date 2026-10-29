@@ -2,6 +2,8 @@ package com.school.erp.service.student;
 
 import com.school.erp.dto.student.OnlineAdmissionRequest;
 import com.school.erp.dto.student.OnlineAdmissionResponse;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.student.OnlineAdmission;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.academic.SchoolClass;
@@ -12,10 +14,13 @@ import com.school.erp.repository.academic.SchoolClassRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.student.StudentCategoryRepository;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.service.notification.NotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -27,6 +32,9 @@ public class OnlineAdmissionService {
     private final SchoolClassRepository classRepository;
     private final StudentCategoryRepository categoryRepository;
     private final AuthContextService authContextService;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     public OnlineAdmissionService(OnlineAdmissionRepository admissionRepository, SchoolRepository schoolRepository, SchoolClassRepository classRepository, StudentCategoryRepository categoryRepository, AuthContextService authContextService) {
         this.admissionRepository = admissionRepository;
@@ -72,7 +80,29 @@ public class OnlineAdmissionService {
         admission.setPreviousSchool(request.previousSchool());
         admission.setTransactionStatus(request.transactionStatus() != null ? request.transactionStatus() : "UNPAID");
 
-        return toResponse(admissionRepository.save(admission));
+        OnlineAdmission saved = admissionRepository.save(admission);
+
+        if (notificationService != null) {
+            notificationService.notifySchoolAdmins(
+                    effectiveSchoolId,
+                    NotificationType.ONLINE_ADMISSION_SUBMITTED,
+                    NotificationPriority.HIGH,
+                    "New Online Admission Application: " + saved.getStudentName(),
+                    "Application " + saved.getApplicationId() + " has been submitted for " + saved.getStudentName()
+                            + (schoolClass != null ? " (" + schoolClass.getName() + ")." : "."),
+                    "/students/online-admissions",
+                    "Review Application",
+                    "ONLINE_ADMISSION",
+                    String.valueOf(saved.getId()),
+                    Map.of(
+                            "admissionId", saved.getId(),
+                            "applicationId", saved.getApplicationId(),
+                            "studentName", saved.getStudentName()
+                    )
+            );
+        }
+
+        return toResponse(saved);
     }
 
     @Transactional
@@ -81,7 +111,28 @@ public class OnlineAdmissionService {
         OnlineAdmission admission = admissionRepository.findByIdAndSchoolId(id, effectiveSchoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Admission not found"));
         admission.setStatus(status);
-        return toResponse(admissionRepository.save(admission));
+        OnlineAdmission saved = admissionRepository.save(admission);
+
+        if (notificationService != null) {
+            notificationService.notifySchoolAdmins(
+                    effectiveSchoolId,
+                    NotificationType.ONLINE_ADMISSION_STATUS_UPDATED,
+                    NotificationPriority.MEDIUM,
+                    "Online Admission " + saved.getStatus() + ": " + saved.getStudentName(),
+                    "Application " + saved.getApplicationId() + " for " + saved.getStudentName() + " was updated to " + saved.getStatus() + ".",
+                    "/students/online-admissions",
+                    "View Application",
+                    "ONLINE_ADMISSION",
+                    String.valueOf(saved.getId()),
+                    Map.of(
+                            "admissionId", saved.getId(),
+                            "applicationId", saved.getApplicationId(),
+                            "status", saved.getStatus()
+                    )
+            );
+        }
+
+        return toResponse(saved);
     }
 
     private OnlineAdmissionResponse toResponse(OnlineAdmission admission) {

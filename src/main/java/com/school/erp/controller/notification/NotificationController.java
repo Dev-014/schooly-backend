@@ -39,6 +39,7 @@ public class NotificationController {
     @Operation(summary = "Get user notifications with filtering and pagination")
     public ResponseEntity<ApiResponse<List<NotificationResponse>>> getNotifications(
             @RequestParam(required = false) Long schoolId,
+            @RequestParam(required = false) String targetRole,
             @RequestParam(required = false) Boolean isRead,
             @RequestParam(required = false) NotificationCategory category,
             @RequestParam(required = false) NotificationType type,
@@ -53,6 +54,7 @@ public class NotificationController {
         Page<NotificationResponse> notificationPage = notificationService.getNotifications(
                 user.userId(),
                 resolvedSchoolId,
+                targetRole,
                 isRead,
                 category,
                 type,
@@ -76,12 +78,14 @@ public class NotificationController {
     @GetMapping("/unread-count")
     @Operation(summary = "Get total unread count and category breakdown for current user")
     public ResponseEntity<ApiResponse<NotificationCountResponse>> getUnreadSummary(
-            @RequestParam(required = false) Long schoolId
+            @RequestParam(required = false) Long schoolId,
+            @RequestParam(required = false) String targetRole
     ) {
         AuthenticatedUser user = authContextService.requireCurrentUser();
         Long resolvedSchoolId = authContextService.resolveSchoolId(schoolId);
 
-        NotificationCountResponse response = notificationService.getUnreadSummary(user.userId(), resolvedSchoolId);
+        NotificationCountResponse response = notificationService.getUnreadSummary(
+                user.userId(), resolvedSchoolId, targetRole);
         return ResponseEntity.ok(ApiResponse.success(response, "Unread count fetched successfully"));
     }
 
