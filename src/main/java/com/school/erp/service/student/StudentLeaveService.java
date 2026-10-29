@@ -4,6 +4,8 @@ import com.school.erp.dto.academic.ClassTeacherAssignmentResponse;
 import com.school.erp.dto.student.StudentLeaveRequest;
 import com.school.erp.dto.student.StudentLeaveResponse;
 import com.school.erp.entity.auth.UserRole;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.student.Student;
 import com.school.erp.entity.student.StudentLeave;
@@ -15,11 +17,14 @@ import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.security.AuthenticatedUser;
 import com.school.erp.service.academic.AcademicService;
+import com.school.erp.service.notification.NotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,6 +35,9 @@ public class StudentLeaveService {
     private final SchoolRepository schoolRepository;
     private final AuthContextService authContextService;
     private final AcademicService academicService;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     public StudentLeaveService(
             StudentLeaveRepository leaveRepository,
@@ -122,7 +130,49 @@ public class StudentLeaveService {
             leave.setStatus(request.status());
         }
         
-        return toResponse(leaveRepository.save(leave));
+        StudentLeave saved = leaveRepository.save(leave);
+
+        if (notificationService != null) {
+            String title = "Student Leave Request: " + student.getName();
+            String message = student.getName() + " requested leave from " + saved.getFromDate() + " to " + saved.getToDate()
+                    + (saved.getReason() != null && !saved.getReason().isBlank() ? " (Reason: " + saved.getReason() + ")." : ".");
+            Map<String, Object> metadata = Map.of(
+                    "leaveId", saved.getId(),
+                    "studentId", student.getId(),
+                    "studentName", student.getName(),
+                    "fromDate", saved.getFromDate().toString(),
+                    "toDate", saved.getToDate().toString()
+            );
+
+            notificationService.notifyClassTeachersOfStudent(
+                    effectiveSchoolId,
+                    student,
+                    NotificationType.STUDENT_LEAVE_REQUESTED,
+                    NotificationPriority.HIGH,
+                    title,
+                    message,
+                    "/students/leaves",
+                    "Review Leave",
+                    "STUDENT_LEAVE",
+                    String.valueOf(saved.getId()),
+                    metadata
+            );
+
+            notificationService.notifySchoolAdmins(
+                    effectiveSchoolId,
+                    NotificationType.STUDENT_LEAVE_REQUESTED,
+                    NotificationPriority.MEDIUM,
+                    title,
+                    message,
+                    "/students/leaves",
+                    "Review Leave",
+                    "STUDENT_LEAVE",
+                    String.valueOf(saved.getId()),
+                    metadata
+            );
+        }
+
+        return toResponse(saved);
     }
 
     @Transactional
@@ -147,6 +197,7 @@ public class StudentLeaveService {
             }
         }
 
+        String oldStatus = leave.getStatus();
         leave.setFromDate(request.fromDate());
         leave.setToDate(request.toDate());
         leave.setDays(request.days());
@@ -157,7 +208,32 @@ public class StudentLeaveService {
             leave.setStatus(request.status());
         }
 
-        return toResponse(leaveRepository.save(leave));
+        StudentLeave saved = leaveRepository.save(leave);
+
+        if (notificationService != null && saved.getStudent() != null && saved.getStatus() != null
+                && !saved.getStatus().equalsIgnoreCase(oldStatus)) {
+            notificationService.notifyStudentAndParents(
+                    effectiveSchoolId,
+                    saved.getStudent(),
+                    NotificationType.STUDENT_LEAVE_STATUS_UPDATED,
+                    NotificationPriority.HIGH,
+                    "Student Leave " + saved.getStatus() + ": " + saved.getStudent().getName(),
+                    "Leave request for " + saved.getStudent().getName() + " (" + saved.getFromDate() + " to " + saved.getToDate()
+                            + ") has been marked as " + saved.getStatus()
+                            + (saved.getReply() != null && !saved.getReply().isBlank() ? ". Remark: " + saved.getReply() : "."),
+                    "/students/leaves",
+                    "View Leave Status",
+                    "STUDENT_LEAVE",
+                    String.valueOf(saved.getId()),
+                    Map.of(
+                            "leaveId", saved.getId(),
+                            "studentId", saved.getStudent().getId(),
+                            "status", saved.getStatus()
+                    )
+            );
+        }
+
+        return toResponse(saved);
     }
 
     @Transactional

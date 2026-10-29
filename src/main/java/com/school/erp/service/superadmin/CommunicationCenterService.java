@@ -1,6 +1,8 @@
 package com.school.erp.service.superadmin;
 
 import com.school.erp.dto.communication.*;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.auth.User;
 import com.school.erp.entity.communication.*;
@@ -9,14 +11,14 @@ import com.school.erp.repository.auth.UserRepository;
 import com.school.erp.repository.communication.CommunicationAnnouncementRepository;
 import com.school.erp.repository.communication.CommunicationDeliveryRepository;
 import com.school.erp.repository.communication.CommunicationTemplateRepository;
+import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -31,6 +33,9 @@ public class CommunicationCenterService {
     private final CommunicationTemplateRepository templateRepo;
     private final SchoolRepository schoolRepo;
     private final UserRepository userRepo;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     @Transactional
     public CommunicationAnnouncementDTO createAnnouncement(CreateAnnouncementRequest request, Long userId) {
@@ -68,6 +73,30 @@ public class CommunicationCenterService {
         // Generate deliveries synchronously for MVP, but easily adaptable to @Async if needed
         if (announcement.getStatus() == CommunicationStatus.SENT) {
             generateDeliveries(announcement, targetSchools, request.getDeliveryChannels());
+            if (notificationService != null) {
+                String imp = String.valueOf(announcement.getImportance());
+                boolean isUrgent = "HIGH".equalsIgnoreCase(imp) || "URGENT".equalsIgnoreCase(imp) || "CRITICAL".equalsIgnoreCase(imp);
+                NotificationType type = isUrgent ? NotificationType.EMERGENCY_ALERT : NotificationType.CIRCULAR_ANNOUNCEMENT;
+                NotificationPriority priority = isUrgent ? NotificationPriority.URGENT : NotificationPriority.MEDIUM;
+
+                for (School school : targetSchools) {
+                    notificationService.notifySchoolAdmins(
+                            school.getId(),
+                            type,
+                            priority,
+                            announcement.getSubject(),
+                            announcement.getMessage(),
+                            "/notifications",
+                            "View Announcement",
+                            "COMMUNICATION_ANNOUNCEMENT",
+                            String.valueOf(announcement.getId()),
+                            Map.of(
+                                    "announcementId", announcement.getId(),
+                                    "importance", imp
+                            )
+                    );
+                }
+            }
         }
 
         return mapToDTO(announcement);

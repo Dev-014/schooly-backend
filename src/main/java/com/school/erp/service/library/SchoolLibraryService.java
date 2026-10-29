@@ -4,6 +4,8 @@ import com.school.erp.dto.library.*;
 import com.school.erp.entity.library.LibraryBook;
 import com.school.erp.entity.library.LibraryCirculation;
 import com.school.erp.entity.library.LibraryMember;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.student.Student;
 import com.school.erp.entity.hr.Staff;
@@ -16,7 +18,9 @@ import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.repository.hr.StaffRepository;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +43,9 @@ public class SchoolLibraryService {
     private final StudentRepository studentRepository;
     private final StaffRepository staffRepository;
     private final org.springframework.beans.factory.ObjectProvider<com.school.erp.service.auth.AuthorizationService> authorizationServiceProvider;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     // ─── Books ───────────────────────────────────────────────────────────────
 
@@ -340,6 +348,50 @@ public class SchoolLibraryService {
         memberRepository.save(member);
 
         LibraryCirculation saved = circulationRepository.save(circ);
+
+        if (notificationService != null) {
+            String title = "Library Book Issued: " + book.getTitle();
+            String message = "\"" + book.getTitle() + "\" has been issued to " + member.getFullName()
+                    + (saved.getDueDate() != null ? " (Due: " + saved.getDueDate() + ")." : ".");
+            Map<String, Object> metadata = Map.of(
+                    "circulationId", saved.getId(),
+                    "bookId", book.getId(),
+                    "bookTitle", book.getTitle(),
+                    "dueDate", saved.getDueDate() != null ? saved.getDueDate().toString() : ""
+            );
+
+            if (member.getStudent() != null) {
+                notificationService.notifyStudentAndParents(
+                        schoolId,
+                        member.getStudent(),
+                        NotificationType.BOOK_ISSUED,
+                        NotificationPriority.LOW,
+                        title,
+                        message,
+                        "/library/circulation",
+                        "View Library",
+                        "LIBRARY_CIRCULATION",
+                        String.valueOf(saved.getId()),
+                        metadata
+                );
+            }
+            if (member.getStaff() != null) {
+                notificationService.notifyStaffMember(
+                        schoolId,
+                        member.getStaff(),
+                        NotificationType.BOOK_ISSUED,
+                        NotificationPriority.LOW,
+                        title,
+                        message,
+                        "/library/circulation",
+                        "View Library",
+                        "LIBRARY_CIRCULATION",
+                        String.valueOf(saved.getId()),
+                        metadata
+                );
+            }
+        }
+
         return mapCirculationToResponse(saved);
     }
 
@@ -385,6 +437,50 @@ public class SchoolLibraryService {
         memberRepository.save(member);
 
         LibraryCirculation saved = circulationRepository.save(circ);
+
+        if (notificationService != null) {
+            String title = "Library Book Returned: " + book.getTitle();
+            String fineMsg = fine.compareTo(BigDecimal.ZERO) > 0 ? " Overdue fine: " + fine + "." : "";
+            String message = "\"" + book.getTitle() + "\" borrowed by " + member.getFullName() + " was returned on " + returnDate + "." + fineMsg;
+            Map<String, Object> metadata = Map.of(
+                    "circulationId", saved.getId(),
+                    "bookId", book.getId(),
+                    "bookTitle", book.getTitle(),
+                    "fineAmount", fine
+            );
+
+            if (member.getStudent() != null) {
+                notificationService.notifyStudentAndParents(
+                        schoolId,
+                        member.getStudent(),
+                        NotificationType.BOOK_RETURNED,
+                        fine.compareTo(BigDecimal.ZERO) > 0 ? NotificationPriority.MEDIUM : NotificationPriority.LOW,
+                        title,
+                        message,
+                        "/library/circulation",
+                        "View Library",
+                        "LIBRARY_CIRCULATION",
+                        String.valueOf(saved.getId()),
+                        metadata
+                );
+            }
+            if (member.getStaff() != null) {
+                notificationService.notifyStaffMember(
+                        schoolId,
+                        member.getStaff(),
+                        NotificationType.BOOK_RETURNED,
+                        fine.compareTo(BigDecimal.ZERO) > 0 ? NotificationPriority.MEDIUM : NotificationPriority.LOW,
+                        title,
+                        message,
+                        "/library/circulation",
+                        "View Library",
+                        "LIBRARY_CIRCULATION",
+                        String.valueOf(saved.getId()),
+                        metadata
+                );
+            }
+        }
+
         return mapCirculationToResponse(saved);
     }
 

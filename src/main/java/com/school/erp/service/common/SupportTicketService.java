@@ -3,16 +3,22 @@ package com.school.erp.service.common;
 import com.school.erp.dto.common.*;
 import com.school.erp.entity.auth.User;
 import com.school.erp.entity.common.*;
+import com.school.erp.entity.notification.NotificationCategory;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.repository.auth.UserRepository;
 import com.school.erp.repository.common.*;
 import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,6 +31,9 @@ public class SupportTicketService {
     private final TicketHistoryRepository historyRepository;
     private final SchoolRepository schoolRepository;
     private final UserRepository userRepository;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     @Transactional(readOnly = true)
     public List<SupportTicketDTO> getAllTickets() {
@@ -89,6 +98,54 @@ public class SupportTicketService {
         
         logHistory(ticket, null, "NEW", creator, "Ticket created");
 
+        if (notificationService != null) {
+            NotificationPriority priority = "HIGH".equalsIgnoreCase(ticket.getPriority()) || "URGENT".equalsIgnoreCase(ticket.getPriority())
+                    ? NotificationPriority.HIGH
+                    : NotificationPriority.MEDIUM;
+            Map<String, Object> metadata = Map.of(
+                    "ticketId", ticket.getId(),
+                    "ticketCode", ticket.getTicketCode(),
+                    "subject", ticket.getSubject()
+            );
+
+            notificationService.broadcastToRole(
+                    school.getId(),
+                    "SUPER_ADMIN",
+                    NotificationType.SUPPORT_TICKET_CREATED,
+                    NotificationCategory.SYSTEM,
+                    priority,
+                    "New Support Ticket (" + ticket.getTicketCode() + ")",
+                    school.getName() + " submitted ticket " + ticket.getTicketCode() + ": " + ticket.getSubject(),
+                    creator.getId(),
+                    ticket.getPortalSource(),
+                    creator.getName(),
+                    "/support/tickets",
+                    "NAVIGATE",
+                    "SUPPORT_TICKET",
+                    ticket.getId(),
+                    metadata
+            );
+
+            notificationService.sendDirectNotification(
+                    school.getId(),
+                    creator.getId(),
+                    ticket.getPortalSource() != null ? ticket.getPortalSource() : "ADMIN",
+                    NotificationType.SUPPORT_TICKET_CREATED,
+                    NotificationCategory.SYSTEM,
+                    NotificationPriority.LOW,
+                    "Support Ticket Submitted (" + ticket.getTicketCode() + ")",
+                    "Your support ticket \"" + ticket.getSubject() + "\" (" + ticket.getTicketCode() + ") has been logged.",
+                    creator.getId(),
+                    ticket.getPortalSource(),
+                    creator.getName(),
+                    "/support/tickets",
+                    "NAVIGATE",
+                    "SUPPORT_TICKET",
+                    ticket.getId(),
+                    metadata
+            );
+        }
+
         return mapToDTO(ticket);
     }
 
@@ -106,6 +163,55 @@ public class SupportTicketService {
         
         ticket = ticketRepository.save(ticket);
         logHistory(ticket, oldStatus, "ASSIGNED", actionUser, "Assigned to " + assignee.getName());
+
+        if (notificationService != null) {
+            Map<String, Object> metadata = Map.of(
+                    "ticketId", ticket.getId(),
+                    "ticketCode", ticket.getTicketCode(),
+                    "status", "ASSIGNED",
+                    "assigneeName", assignee.getName()
+            );
+
+            notificationService.sendDirectNotification(
+                    ticket.getSchool().getId(),
+                    assignee.getId(),
+                    "SUPER_ADMIN",
+                    NotificationType.SUPPORT_TICKET_UPDATED,
+                    NotificationCategory.SYSTEM,
+                    NotificationPriority.HIGH,
+                    "Support Ticket Assigned (" + ticket.getTicketCode() + ")",
+                    "Ticket " + ticket.getTicketCode() + " (\"" + ticket.getSubject() + "\") has been assigned to you.",
+                    actionUser != null ? actionUser.getId() : null,
+                    "SUPER_ADMIN",
+                    actionUser != null ? actionUser.getName() : "System",
+                    "/support/tickets",
+                    "NAVIGATE",
+                    "SUPPORT_TICKET",
+                    ticket.getId(),
+                    metadata
+            );
+
+            if (ticket.getCreatorUser() != null && !ticket.getCreatorUser().getId().equals(assignee.getId())) {
+                notificationService.sendDirectNotification(
+                        ticket.getSchool().getId(),
+                        ticket.getCreatorUser().getId(),
+                        ticket.getPortalSource() != null ? ticket.getPortalSource() : "ADMIN",
+                        NotificationType.SUPPORT_TICKET_UPDATED,
+                        NotificationCategory.SYSTEM,
+                        NotificationPriority.MEDIUM,
+                        "Ticket Assigned (" + ticket.getTicketCode() + ")",
+                        "Your support ticket " + ticket.getTicketCode() + " has been assigned to " + assignee.getName() + ".",
+                        actionUser != null ? actionUser.getId() : null,
+                        "SUPER_ADMIN",
+                        actionUser != null ? actionUser.getName() : "System",
+                        "/support/tickets",
+                        "NAVIGATE",
+                        "SUPPORT_TICKET",
+                        ticket.getId(),
+                        metadata
+                );
+            }
+        }
         
         return mapToDTO(ticket);
     }
@@ -126,6 +232,32 @@ public class SupportTicketService {
         
         ticket = ticketRepository.save(ticket);
         logHistory(ticket, oldStatus, newStatus, actionUser, request.getRemark());
+
+        if (notificationService != null && ticket.getCreatorUser() != null) {
+            notificationService.sendDirectNotification(
+                    ticket.getSchool().getId(),
+                    ticket.getCreatorUser().getId(),
+                    ticket.getPortalSource() != null ? ticket.getPortalSource() : "ADMIN",
+                    NotificationType.SUPPORT_TICKET_UPDATED,
+                    NotificationCategory.SYSTEM,
+                    NotificationPriority.MEDIUM,
+                    "Support Ticket " + newStatus + " (" + ticket.getTicketCode() + ")",
+                    "Your ticket \"" + ticket.getSubject() + "\" (" + ticket.getTicketCode() + ") is now " + newStatus
+                            + (request.getRemark() != null && !request.getRemark().isBlank() ? ". Remark: " + request.getRemark() : "."),
+                    actionUser != null ? actionUser.getId() : null,
+                    "SUPER_ADMIN",
+                    actionUser != null ? actionUser.getName() : "System",
+                    "/support/tickets",
+                    "NAVIGATE",
+                    "SUPPORT_TICKET",
+                    ticket.getId(),
+                    Map.of(
+                            "ticketId", ticket.getId(),
+                            "ticketCode", ticket.getTicketCode(),
+                            "status", newStatus
+                    )
+            );
+        }
         
         return mapToDTO(ticket);
     }

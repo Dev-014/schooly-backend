@@ -4,5 +4,7 @@ public enum NotificationPriority {
     LOW,
     NORMAL,
     HIGH,
-    URGENT
+    URGENT;
+
+    public static final NotificationPriority MEDIUM = NORMAL;
 }

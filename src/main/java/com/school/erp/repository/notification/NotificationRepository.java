@@ -43,9 +43,56 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
             Pageable pageable
     );
 
+    @Query("""
+        SELECT n FROM Notification n
+        WHERE n.schoolId = :schoolId
+          AND n.userId = :userId
+          AND (:targetRole IS NULL OR UPPER(n.targetRole) = UPPER(:targetRole) OR UPPER(n.targetRole) = 'GENERAL')
+          AND (:isRead IS NULL OR n.isRead = :isRead)
+          AND (:category IS NULL OR n.category = :category)
+          AND (:notificationType IS NULL OR n.notificationType = :notificationType)
+          AND (:priority IS NULL OR n.priority = :priority)
+        ORDER BY n.createdAt DESC
+    """)
+    Page<Notification> filterNotificationsByRole(
+            @Param("schoolId") Long schoolId,
+            @Param("userId") Long userId,
+            @Param("targetRole") String targetRole,
+            @Param("isRead") Boolean isRead,
+            @Param("category") NotificationCategory category,
+            @Param("notificationType") NotificationType notificationType,
+            @Param("priority") NotificationPriority priority,
+            Pageable pageable
+    );
+
     long countBySchoolIdAndUserIdAndIsReadFalse(Long schoolId, Long userId);
 
     long countBySchoolIdAndUserId(Long schoolId, Long userId);
+
+    @Query("""
+        SELECT COUNT(n) FROM Notification n
+        WHERE n.schoolId = :schoolId
+          AND n.userId = :userId
+          AND (:targetRole IS NULL OR UPPER(n.targetRole) = UPPER(:targetRole) OR UPPER(n.targetRole) = 'GENERAL')
+          AND n.isRead = false
+    """)
+    long countUnreadByRole(
+            @Param("schoolId") Long schoolId,
+            @Param("userId") Long userId,
+            @Param("targetRole") String targetRole
+    );
+
+    @Query("""
+        SELECT COUNT(n) FROM Notification n
+        WHERE n.schoolId = :schoolId
+          AND n.userId = :userId
+          AND (:targetRole IS NULL OR UPPER(n.targetRole) = UPPER(:targetRole) OR UPPER(n.targetRole) = 'GENERAL')
+    """)
+    long countTotalByRole(
+            @Param("schoolId") Long schoolId,
+            @Param("userId") Long userId,
+            @Param("targetRole") String targetRole
+    );
 
     @Query("""
         SELECT n.category, COUNT(n) FROM Notification n
@@ -53,6 +100,20 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
         GROUP BY n.category
     """)
     List<Object[]> countUnreadGroupedByCategory(@Param("schoolId") Long schoolId, @Param("userId") Long userId);
+
+    @Query("""
+        SELECT n.category, COUNT(n) FROM Notification n
+        WHERE n.schoolId = :schoolId
+          AND n.userId = :userId
+          AND (:targetRole IS NULL OR UPPER(n.targetRole) = UPPER(:targetRole) OR UPPER(n.targetRole) = 'GENERAL')
+          AND n.isRead = false
+        GROUP BY n.category
+    """)
+    List<Object[]> countUnreadGroupedByCategoryAndRole(
+            @Param("schoolId") Long schoolId,
+            @Param("userId") Long userId,
+            @Param("targetRole") String targetRole
+    );
 
     @Modifying
     @Query("UPDATE Notification n SET n.isRead = true, n.readAt = :readAt WHERE n.schoolId = :schoolId AND n.userId = :userId AND n.isRead = false")

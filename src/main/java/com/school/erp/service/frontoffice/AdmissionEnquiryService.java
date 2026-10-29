@@ -1,6 +1,8 @@
 package com.school.erp.service.frontoffice;
 
 import com.school.erp.dto.frontoffice.*;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.academic.SchoolClass;
 import com.school.erp.entity.hr.Staff;
@@ -8,12 +10,14 @@ import com.school.erp.entity.frontoffice.AdmissionEnquiry;
 import com.school.erp.entity.frontoffice.AdmissionEnquiryFollowUp;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.service.notification.NotificationService;
 import com.school.erp.repository.academic.SchoolClassRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.hr.StaffRepository;
 import com.school.erp.repository.frontoffice.AdmissionEnquiryFollowUpRepository;
 import com.school.erp.repository.frontoffice.AdmissionEnquiryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +41,9 @@ public class AdmissionEnquiryService {
     private final SchoolClassRepository schoolClassRepository;
     private final StaffRepository staffRepository;
 
+    @Autowired(required = false)
+    private NotificationService notificationService;
+
     @Transactional(readOnly = true)
     public Page<AdmissionEnquiryResponse> filterEnquiries(
             Long rawSchoolId,
@@ -46,7 +54,6 @@ public class AdmissionEnquiryService {
             String status,
             Pageable pageable) {
         final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
-        
 
         String cleanSearch = (search != null && !search.isBlank()) ? search.trim() : null;
         String cleanSource = (source != null && !source.isBlank() && !source.equalsIgnoreCase("all") && !source.equalsIgnoreCase("all sources")) ? source.trim() : null;
@@ -84,6 +91,48 @@ public class AdmissionEnquiryService {
 
         populateEnquiryFields(enquiry, request);
         AdmissionEnquiry saved = enquiryRepository.save(enquiry);
+
+        if (notificationService != null) {
+            String title = "New Admission Enquiry (" + saved.getEnquiryNumber() + ")";
+            String message = "New admission enquiry received for " + saved.getStudentName()
+                    + (saved.getSchoolClass() != null ? " (" + saved.getSchoolClass().getName() + ")" : "")
+                    + " via " + saved.getSource() + ".";
+            Map<String, Object> metadata = Map.of(
+                    "enquiryId", saved.getId(),
+                    "enquiryNumber", saved.getEnquiryNumber(),
+                    "studentName", saved.getStudentName()
+            );
+
+            if (saved.getAssignedTo() != null) {
+                notificationService.notifyStaffMember(
+                        schoolId,
+                        saved.getAssignedTo(),
+                        NotificationType.ADMISSION_ENQUIRY_CREATED,
+                        NotificationPriority.MEDIUM,
+                        title,
+                        message,
+                        "/front-office/enquiries",
+                        "Follow Up Enquiry",
+                        "ADMISSION_ENQUIRY",
+                        String.valueOf(saved.getId()),
+                        metadata
+                );
+            }
+
+            notificationService.notifySchoolAdmins(
+                    schoolId,
+                    NotificationType.ADMISSION_ENQUIRY_CREATED,
+                    NotificationPriority.MEDIUM,
+                    title,
+                    message,
+                    "/front-office/enquiries",
+                    "View Enquiry",
+                    "ADMISSION_ENQUIRY",
+                    String.valueOf(saved.getId()),
+                    metadata
+            );
+        }
+
         return mapToResponse(saved);
     }
 

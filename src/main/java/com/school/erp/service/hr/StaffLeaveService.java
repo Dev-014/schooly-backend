@@ -10,19 +10,24 @@ import com.school.erp.entity.hr.Staff;
 import com.school.erp.entity.hr.SchoolLeaveType;
 import com.school.erp.entity.hr.StaffLeave;
 import com.school.erp.entity.hr.StaffLeaveBalance;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.repository.hr.StaffRepository;
 import com.school.erp.repository.hr.SchoolLeaveTypeRepository;
 import com.school.erp.repository.hr.StaffLeaveBalanceRepository;
 import com.school.erp.repository.hr.StaffLeaveRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +39,9 @@ public class StaffLeaveService {
     private final SchoolLeaveTypeRepository leaveTypeRepository;
     private final StaffLeaveBalanceRepository leaveBalanceRepository;
     private final SchoolRepository schoolRepository;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     @Transactional
     public StaffLeaveDTO applyLeave(Long schoolId, StaffLeaveRequest request) {
@@ -72,7 +80,32 @@ public class StaffLeaveService {
         leave.setReason(request.getReason());
         leave.setStatus("PENDING");
 
-        return mapToDTO(staffLeaveRepository.save(leave));
+        StaffLeave saved = staffLeaveRepository.save(leave);
+        StaffLeaveDTO dto = mapToDTO(saved);
+
+        if (notificationService != null) {
+            notificationService.notifySchoolAdmins(
+                    schoolId,
+                    NotificationType.LEAVE_REQUESTED,
+                    NotificationPriority.HIGH,
+                    "Staff Leave Request: " + dto.getStaffName(),
+                    dto.getStaffName() + " applied for " + dto.getLeaveTypeName() + " (" + days + " day(s): "
+                            + saved.getStartDate() + " to " + saved.getEndDate() + ").",
+                    "/hr/leaves",
+                    "Review Leave Request",
+                    "STAFF_LEAVE",
+                    String.valueOf(saved.getId()),
+                    Map.of(
+                            "leaveId", saved.getId(),
+                            "staffId", staff.getId(),
+                            "staffName", dto.getStaffName(),
+                            "leaveTypeName", dto.getLeaveTypeName(),
+                            "days", days
+                    )
+            );
+        }
+
+        return dto;
     }
 
     @Transactional
@@ -126,7 +159,31 @@ public class StaffLeaveService {
             leaveBalanceRepository.save(balance);
         }
 
-        return mapToDTO(staffLeaveRepository.save(leave));
+        StaffLeave saved = staffLeaveRepository.save(leave);
+        StaffLeaveDTO dto = mapToDTO(saved);
+
+        if (notificationService != null && saved.getStaff() != null) {
+            notificationService.notifyStaffMember(
+                    schoolId,
+                    saved.getStaff(),
+                    NotificationType.LEAVE_STATUS_UPDATED,
+                    NotificationPriority.HIGH,
+                    "Leave Request " + saved.getStatus(),
+                    "Your " + dto.getLeaveTypeName() + " request (" + saved.getStartDate() + " to " + saved.getEndDate()
+                            + ") has been " + saved.getStatus().toLowerCase() + ".",
+                    "/hr/leaves",
+                    "View Leave Status",
+                    "STAFF_LEAVE",
+                    String.valueOf(saved.getId()),
+                    Map.of(
+                            "leaveId", saved.getId(),
+                            "status", saved.getStatus(),
+                            "leaveTypeName", dto.getLeaveTypeName()
+                    )
+            );
+        }
+
+        return dto;
     }
 
     @Transactional(readOnly = true)

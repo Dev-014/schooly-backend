@@ -5,13 +5,14 @@ import com.school.erp.dto.exam.AdmitCardRosterItemResponse;
 import com.school.erp.dto.exam.AdmitCardStatsResponse;
 import com.school.erp.dto.exam.GenerateAdmitCardRequest;
 import com.school.erp.entity.superadmin.School;
-import com.school.erp.entity.academic.SchoolClass;
 import com.school.erp.entity.academic.Section;
 import com.school.erp.entity.student.Student;
 import com.school.erp.entity.exam.ExamAdmitCard;
 import com.school.erp.entity.exam.ExamApplicability;
 import com.school.erp.entity.exam.ExamSchedule;
 import com.school.erp.entity.exam.ExamSetup;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.exception.BadRequestException;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.superadmin.SchoolRepository;
@@ -22,7 +23,9 @@ import com.school.erp.repository.exam.ExamApplicabilityRepository;
 import com.school.erp.repository.exam.ExamScheduleRepository;
 import com.school.erp.repository.exam.ExamSetupRepository;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -46,6 +50,9 @@ public class ExamAdmitCardService {
     private final StudentRepository studentRepository;
     private final SchoolRepository schoolRepository;
     private final SectionRepository sectionRepository;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm a");
 
@@ -217,7 +224,31 @@ public class ExamAdmitCardService {
             if (request.getTemplateName() != null) {
                 card.setTemplateName(request.getTemplateName());
             }
-            return examAdmitCardRepository.save(card);
+            ExamAdmitCard saved = examAdmitCardRepository.save(card);
+
+            if (notificationService != null) {
+                notificationService.notifyStudentAndParents(
+                        schoolId,
+                        student,
+                        NotificationType.EXAM_ADMIT_CARD_READY,
+                        NotificationPriority.HIGH,
+                        "Exam Admit Card Ready: " + setup.getName(),
+                        "Admit card (" + saved.getCardNumber() + ") for " + student.getName() + " in " + setup.getName() + " has been generated.",
+                        "/exams/admit-cards",
+                        "Download Admit Card",
+                        "EXAM_ADMIT_CARD",
+                        String.valueOf(saved.getId()),
+                        Map.of(
+                                "admitCardId", saved.getId(),
+                                "cardNumber", saved.getCardNumber(),
+                                "examSetupId", setup.getId(),
+                                "examName", setup.getName(),
+                                "studentId", student.getId()
+                        )
+                );
+            }
+
+            return saved;
         }).collect(Collectors.toList());
 
         return savedCards.stream().map(this::mapToRosterItem).collect(Collectors.toList());
@@ -229,7 +260,35 @@ public class ExamAdmitCardService {
         ExamSetup setup = examSetupRepository.findByIdAndSchoolId(examSetupId, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Exam setup not found with id: " + examSetupId));
 
-        return examAdmitCardRepository.releaseAllGeneratedCards(schoolId, setup.getId(), LocalDateTime.now());
+        int released = examAdmitCardRepository.releaseAllGeneratedCards(schoolId, setup.getId(), LocalDateTime.now());
+
+        if (released > 0 && notificationService != null) {
+            List<ExamAdmitCard> cards = examAdmitCardRepository.findBySchoolIdAndExamSetupId(schoolId, setup.getId());
+            for (ExamAdmitCard card : cards) {
+                if (card.getStudent() != null) {
+                    notificationService.notifyStudentAndParents(
+                            schoolId,
+                            card.getStudent(),
+                            NotificationType.EXAM_ADMIT_CARD_READY,
+                            NotificationPriority.HIGH,
+                            "Admit Card Released: " + setup.getName(),
+                            "The admit card for " + card.getStudent().getName() + " (" + setup.getName() + ") has been officially released.",
+                            "/exams/admit-cards",
+                            "View Admit Card",
+                            "EXAM_ADMIT_CARD",
+                            String.valueOf(card.getId()),
+                            Map.of(
+                                    "admitCardId", card.getId(),
+                                    "examSetupId", setup.getId(),
+                                    "examName", setup.getName(),
+                                    "studentId", card.getStudent().getId()
+                            )
+                    );
+                }
+            }
+        }
+
+        return released;
     }
 
     @Transactional

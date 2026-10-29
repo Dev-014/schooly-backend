@@ -5,6 +5,8 @@ import com.school.erp.dto.payment.PaymentResponse;
 import com.school.erp.entity.finance.FeeDue;
 import com.school.erp.entity.finance.FeePaymentAllocation;
 import com.school.erp.entity.finance.Payment;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.student.Student;
 import com.school.erp.repository.finance.FeeDueRepository;
@@ -13,12 +15,15 @@ import com.school.erp.repository.finance.PaymentRepository;
 import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.service.finance.FeePaymentService;
+import com.school.erp.service.notification.NotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +37,9 @@ public class FeePaymentServiceImpl implements FeePaymentService {
     private final FeePaymentAllocationRepository feePaymentAllocationRepository;
     private final StudentRepository studentRepository;
     private final SchoolRepository schoolRepository;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     public FeePaymentServiceImpl(PaymentRepository paymentRepository, FeeDueRepository feeDueRepository, FeePaymentAllocationRepository feePaymentAllocationRepository, StudentRepository studentRepository, SchoolRepository schoolRepository) {
         this.paymentRepository = paymentRepository;
@@ -99,6 +107,45 @@ public class FeePaymentServiceImpl implements FeePaymentService {
             
             payment.setUnallocatedAmount(remainingToAllocate);
             paymentRepository.save(payment);
+        }
+
+        if (notificationService != null) {
+            notificationService.notifyStudentAndParents(
+                    school.getId(),
+                    student,
+                    NotificationType.FEE_PAYMENT_SUCCESS,
+                    NotificationPriority.MEDIUM,
+                    "Fee Payment Successful (" + payment.getReceiptNumber() + ")",
+                    "Payment of " + payment.getAmount() + " for " + student.getName() + " was received via " + payment.getPaymentMode() + ". Receipt: " + payment.getReceiptNumber() + ".",
+                    "/finance/payments",
+                    "Download Receipt",
+                    "FEE_PAYMENT",
+                    String.valueOf(payment.getId()),
+                    Map.of(
+                            "paymentId", payment.getId(),
+                            "receiptNumber", payment.getReceiptNumber(),
+                            "amount", payment.getAmount(),
+                            "studentId", student.getId()
+                    )
+            );
+
+            notificationService.notifySchoolAdmins(
+                    school.getId(),
+                    NotificationType.FEE_PAYMENT_SUCCESS,
+                    NotificationPriority.LOW,
+                    "Fee Payment Received: " + student.getName(),
+                    "Fee payment of " + payment.getAmount() + " received for " + student.getName() + " (Receipt: " + payment.getReceiptNumber() + ").",
+                    "/finance/payments",
+                    "View Payment",
+                    "FEE_PAYMENT",
+                    String.valueOf(payment.getId()),
+                    Map.of(
+                            "paymentId", payment.getId(),
+                            "receiptNumber", payment.getReceiptNumber(),
+                            "amount", payment.getAmount(),
+                            "studentId", student.getId()
+                    )
+            );
         }
 
         return new PaymentResponse(

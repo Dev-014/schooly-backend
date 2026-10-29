@@ -3,15 +3,19 @@ package com.school.erp.service.frontoffice;
 import com.school.erp.dto.frontoffice.VisitorLogRequest;
 import com.school.erp.dto.frontoffice.VisitorLogResponse;
 import com.school.erp.dto.frontoffice.VisitorStatsResponse;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.hr.Staff;
 import com.school.erp.entity.frontoffice.VisitorLog;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.service.notification.NotificationService;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.hr.StaffRepository;
 import com.school.erp.repository.frontoffice.VisitorLogRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +35,9 @@ public class VisitorLogService {
     private final SchoolRepository schoolRepository;
     private final StaffRepository staffRepository;
 
+    @Autowired(required = false)
+    private NotificationService notificationService;
+
     @Transactional(readOnly = true)
     public Page<VisitorLogResponse> filterVisitors(
             Long rawSchoolId,
@@ -39,7 +47,6 @@ public class VisitorLogService {
             String status,
             Pageable pageable) {
         final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
-        
 
         String cleanSearch = (search != null && !search.isBlank()) ? search.trim() : null;
         String cleanPurpose = (purpose != null && !purpose.isBlank() && !purpose.equalsIgnoreCase("all")) ? purpose.trim() : null;
@@ -86,6 +93,42 @@ public class VisitorLogService {
         }
 
         VisitorLog saved = visitorLogRepository.save(visitor);
+
+        if (notificationService != null) {
+            Map<String, Object> metadata = Map.of(
+                    "visitorId", saved.getId(),
+                    "visitorName", saved.getVisitorName(),
+                    "purpose", saved.getPurpose() != null ? saved.getPurpose() : ""
+            );
+            if (saved.getMeetingWithStaff() != null) {
+                notificationService.notifyStaffMember(
+                        schoolId,
+                        saved.getMeetingWithStaff(),
+                        NotificationType.VISITOR_CHECKED_IN,
+                        NotificationPriority.HIGH,
+                        "Visitor Arrived: " + saved.getVisitorName(),
+                        saved.getVisitorName() + " has checked in at the front desk to meet you (Purpose: " + saved.getPurpose() + ").",
+                        "/front-office/visitors",
+                        "View Visitor Log",
+                        "VISITOR_LOG",
+                        String.valueOf(saved.getId()),
+                        metadata
+                );
+            }
+            notificationService.notifySchoolAdmins(
+                    schoolId,
+                    NotificationType.VISITOR_CHECKED_IN,
+                    NotificationPriority.LOW,
+                    "Visitor Checked In: " + saved.getVisitorName(),
+                    saved.getVisitorName() + " checked in at " + saved.getTimeIn() + " (Purpose: " + saved.getPurpose() + ").",
+                    "/front-office/visitors",
+                    "View Visitor Log",
+                    "VISITOR_LOG",
+                    String.valueOf(saved.getId()),
+                    metadata
+            );
+        }
+
         return mapToResponse(saved);
     }
 
