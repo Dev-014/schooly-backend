@@ -71,6 +71,7 @@ public class StudentProfileService {
                                (student.getLastName() != null ? student.getLastName() : "")).trim();
             if (!combined.isBlank()) student.setName(combined);
         }
+        if (request.rollNumber() != null) student.setRollNumber(request.rollNumber().trim());
         if (request.phone() != null) student.setPhone(request.phone().trim());
         if (request.email() != null) student.setEmail(request.email().trim());
         if (request.gender() != null) student.setGender(request.gender().trim());

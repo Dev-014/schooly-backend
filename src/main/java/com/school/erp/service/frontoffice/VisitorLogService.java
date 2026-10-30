@@ -146,6 +146,42 @@ public class VisitorLogService {
         return mapToResponse(saved);
     }
 
+    @Transactional
+    public VisitorLogResponse updateVisitor(Long rawSchoolId, Long id, VisitorLogRequest request) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+
+        VisitorLog visitor = visitorLogRepository.findByIdAndSchoolId(id, schoolId)
+                .orElseThrow(() -> new ResourceNotFoundException("Visitor log not found with id: " + id));
+
+        visitor.setVisitorName(request.getVisitorName());
+        visitor.setPurpose(request.getPurpose());
+        visitor.setMeetingWith(request.getMeetingWith());
+        visitor.setPhone(request.getPhone());
+        visitor.setEmail(request.getEmail());
+        if (request.getNumberOfPeople() != null) {
+            visitor.setNumberOfPeople(request.getNumberOfPeople());
+        }
+        visitor.setIdCardNumber(request.getIdCardNumber());
+        if (request.getVisitDate() != null) {
+            visitor.setVisitDate(request.getVisitDate());
+        }
+        if (request.getTimeIn() != null) {
+            visitor.setTimeIn(request.getTimeIn());
+        }
+        if (request.getEstTimeOut() != null) {
+            visitor.setEstTimeOut(request.getEstTimeOut());
+        }
+        visitor.setNote(request.getNote());
+
+        if (request.getMeetingWithStaffId() != null) {
+            staffRepository.findByIdAndSchoolId(request.getMeetingWithStaffId(), schoolId)
+                    .ifPresent(visitor::setMeetingWithStaff);
+        }
+
+        VisitorLog saved = visitorLogRepository.save(visitor);
+        return mapToResponse(saved);
+    }
+
     @Transactional(readOnly = true)
     public VisitorStatsResponse getVisitorStats(Long rawSchoolId) {
         final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);

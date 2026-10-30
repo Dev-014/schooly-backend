@@ -80,23 +80,68 @@ public class FeeDueServiceImpl implements FeeDueService {
 
         return dues.stream().map(due -> {
             try {
-                return new FeeDueResponse(
-                        due.getId(),
-                        due.getTitle(),
-                        due.getAmount(),
-                        due.getPaidAmount() != null ? due.getPaidAmount() : java.math.BigDecimal.ZERO,
-                        due.getDiscountAmount() != null ? due.getDiscountAmount() : java.math.BigDecimal.ZERO,
-                        due.getDueDate(),
-                        due.getStatus(),
-                        due.getFeeCategory() != null ? due.getFeeCategory().getId() : null,
-                        due.getFeeCategory() != null ? due.getFeeCategory().getName() : "Unknown",
-                        due.getTermName()
-                );
+                return mapToFeeDueResponse(due);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
         }).filter(java.util.Objects::nonNull).collect(Collectors.toList());
+    }
+
+    private FeeDueResponse mapToFeeDueResponse(FeeDue due) {
+        Long categoryId = null;
+        String categoryName = null;
+
+        if (due.getFeeCategory() != null) {
+            categoryId = due.getFeeCategory().getId();
+            categoryName = due.getFeeCategory().getName();
+        } else if (due.getFeeStructure() != null && due.getFeeStructure().getItems() != null && !due.getFeeStructure().getItems().isEmpty()) {
+            FeeCategory resolvedCat = due.getFeeStructure().getItems().stream()
+                    .filter(it -> Boolean.TRUE.equals(it.getIsPartOfCollectionPlan()) && it.getFeeCategory() != null)
+                    .sorted((a, b) -> (b.getAmount() != null ? b.getAmount() : BigDecimal.ZERO)
+                            .compareTo(a.getAmount() != null ? a.getAmount() : BigDecimal.ZERO))
+                    .map(FeeStructureItem::getFeeCategory)
+                    .findFirst()
+                    .orElseGet(() -> due.getFeeStructure().getItems().get(0).getFeeCategory());
+            if (resolvedCat != null) {
+                categoryId = resolvedCat.getId();
+                categoryName = resolvedCat.getName();
+            }
+        }
+
+        if (categoryId == null && due.getSchool() != null && due.getSchool().getId() != null) {
+            try {
+                List<FeeCategory> schoolCats = feeCategoryRepository.findBySchoolId(due.getSchool().getId());
+                if (schoolCats != null && !schoolCats.isEmpty()) {
+                    FeeCategory tuitionCat = schoolCats.stream()
+                            .filter(c -> c.getName() != null && c.getName().toLowerCase().contains("tuition"))
+                            .findFirst()
+                            .orElse(schoolCats.get(0));
+                    categoryId = tuitionCat.getId();
+                    if (categoryName == null || categoryName.isBlank() || "Unknown".equalsIgnoreCase(categoryName)) {
+                        categoryName = tuitionCat.getName();
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        if (categoryName == null || categoryName.isBlank() || "Unknown".equalsIgnoreCase(categoryName)) {
+            categoryName = (due.getTitle() != null && !due.getTitle().isBlank()) ? due.getTitle() : "Tuition Fee";
+        }
+
+        return new FeeDueResponse(
+                due.getId(),
+                due.getTitle(),
+                due.getAmount(),
+                due.getPaidAmount() != null ? due.getPaidAmount() : BigDecimal.ZERO,
+                due.getDiscountAmount() != null ? due.getDiscountAmount() : BigDecimal.ZERO,
+                due.getDueDate(),
+                due.getStatus(),
+                categoryId,
+                categoryName,
+                due.getTermName()
+        );
     }
 
     @Override
@@ -141,18 +186,7 @@ public class FeeDueServiceImpl implements FeeDueService {
             );
         }
 
-        return new FeeDueResponse(
-                due.getId(),
-                due.getTitle(),
-                due.getAmount(),
-                due.getPaidAmount() != null ? due.getPaidAmount() : java.math.BigDecimal.ZERO,
-                due.getDiscountAmount() != null ? due.getDiscountAmount() : java.math.BigDecimal.ZERO,
-                due.getDueDate(),
-                due.getStatus(),
-                due.getFeeCategory() != null ? due.getFeeCategory().getId() : null,
-                due.getFeeCategory() != null ? due.getFeeCategory().getName() : "Unknown",
-                due.getTermName()
-        );
+        return mapToFeeDueResponse(due);
     }
 
     @Override
@@ -244,6 +278,17 @@ public class FeeDueServiceImpl implements FeeDueService {
                 newDues.add(due);
             }
             
+            FeeCategory planCategory = null;
+            if (activeStructure.getItems() != null && !activeStructure.getItems().isEmpty()) {
+                planCategory = activeStructure.getItems().stream()
+                        .filter(it -> Boolean.TRUE.equals(it.getIsPartOfCollectionPlan()) && it.getFeeCategory() != null)
+                        .sorted((a, b) -> (b.getAmount() != null ? b.getAmount() : BigDecimal.ZERO)
+                                .compareTo(a.getAmount() != null ? a.getAmount() : BigDecimal.ZERO))
+                        .map(FeeStructureItem::getFeeCategory)
+                        .findFirst()
+                        .orElseGet(() -> activeStructure.getItems().get(0).getFeeCategory());
+            }
+
             BigDecimal totalDistributed = BigDecimal.ZERO;
             List<CollectionPlanItem> planItems = collectionPlan.getItems();
             planItems.sort((a, b) -> a.getSequenceOrder().compareTo(b.getSequenceOrder()));
@@ -264,6 +309,7 @@ public class FeeDueServiceImpl implements FeeDueService {
                 due.setSchool(student.getSchool());
                 due.setFeeStructure(activeStructure);
                 due.setCollectionPlanItem(cpItem);
+                due.setFeeCategory(planCategory);
                 due.setIsAdHoc(false);
                 due.setTitle(cpItem.getLabel());
                 due.setAmount(amountForThisInst);
@@ -454,17 +500,6 @@ public class FeeDueServiceImpl implements FeeDueService {
             );
         }
 
-        return new FeeDueResponse(
-                due.getId(),
-                due.getTitle(),
-                due.getAmount(),
-                BigDecimal.ZERO,
-                BigDecimal.ZERO,
-                due.getDueDate(),
-                due.getStatus(),
-                category.getId(),
-                category.getName(),
-                due.getTermName()
-        );
+        return mapToFeeDueResponse(due);
     }
 }

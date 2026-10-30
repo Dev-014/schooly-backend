@@ -15,6 +15,7 @@ public class StudentFeeRecordDTO {
     private String studentName;
     private String admissionNumber;
     private String classGroupName;
+    private Long sectionId;
     private String photoUrl;
     
     private BigDecimal totalFees;
@@ -23,4 +24,10 @@ public class StudentFeeRecordDTO {
     
     private LocalDate lastPaymentDate;
     private String status;
+
+    public StudentFeeRecordDTO(String id, String studentId, String studentName, String admissionNumber,
+                               String classGroupName, String photoUrl, BigDecimal totalFees, BigDecimal amountPaid,
+                               BigDecimal balance, LocalDate lastPaymentDate, String status) {
+        this(id, studentId, studentName, admissionNumber, classGroupName, null, photoUrl, totalFees, amountPaid, balance, lastPaymentDate, status);
+    }
 }
