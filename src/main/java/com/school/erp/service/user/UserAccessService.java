@@ -45,8 +45,7 @@ public class UserAccessService {
             Student student = studentRepository.findById(request.getEntityId())
                     .orElseThrow(() -> new IllegalArgumentException("Student not found"));
             name = student.getName();
-            // In a real app, student might have email/phone on their entity or linked parent
-            email = null; // Assume null for this demo unless they have a field
+            email = null;
             phone = null;
             entityIdentifier = student.getAdmissionNo();
             school = student.getSchool();
@@ -54,13 +53,9 @@ public class UserAccessService {
             
             // Check if they already have a user
             if (student.getUserId() != null) {
-                return GrantAccessResponseDTO.builder()
-                        .success(false)
-                        .message("Student already has login access.")
-                        .build();
+                return getCredentials(request.getEntityType(), request.getEntityId());
             }
         } 
-        // Implement STAFF and PARENT logic here...
         else {
             throw new IllegalArgumentException("Entity type not supported yet");
         }
@@ -86,6 +81,8 @@ public class UserAccessService {
         
         org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder encoder = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
         user.setPasswordHash(encoder.encode(tempPassword));
+        user.getMetadata().put("tempPassword", tempPassword);
+        user.getMetadata().put("username", username);
         user = userRepository.save(user);
 
         // Link back to entity (e.g. Student)
@@ -106,7 +103,6 @@ public class UserAccessService {
 
         // 3. Apply Contact Strategy
         if (email != null) {
-            // Trigger password reset email
             userSupportService.sendPasswordResetLink(user.getId());
             return GrantAccessResponseDTO.builder()
                     .success(true)
@@ -114,14 +110,12 @@ public class UserAccessService {
                     .message("Login access granted. A password reset link has been sent to their email.")
                     .build();
         } else if (phone != null) {
-            // Trigger SMS (mocked)
             return GrantAccessResponseDTO.builder()
                     .success(true)
                     .strategyUsed("SMS")
                     .message("Login access granted. A temporary password has been sent via SMS.")
                     .build();
         } else {
-            // Manual Handover
             return GrantAccessResponseDTO.builder()
                     .success(true)
                     .strategyUsed("MANUAL")
@@ -130,5 +124,88 @@ public class UserAccessService {
                     .generatedPassword(tempPassword)
                     .build();
         }
+    }
+
+    @Transactional
+    public GrantAccessResponseDTO getCredentials(String entityType, Long entityId) {
+        if ("STUDENT".equalsIgnoreCase(entityType)) {
+            Student student = studentRepository.findById(entityId)
+                    .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+            if (student.getUserId() == null) {
+                return GrantAccessResponseDTO.builder()
+                        .success(false)
+                        .message("No login credentials generated yet.")
+                        .build();
+            }
+
+            User user = userRepository.findById(student.getUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("Linked user account not found"));
+
+            String username = user.getMetadata().get("username") != null
+                    ? user.getMetadata().get("username").toString()
+                    : (user.getEmail() != null ? user.getEmail() : student.getAdmissionNo());
+
+            String tempPassword = user.getMetadata().get("tempPassword") != null
+                    ? user.getMetadata().get("tempPassword").toString()
+                    : null;
+
+            if (tempPassword == null) {
+                tempPassword = UUID.randomUUID().toString().substring(0, 8);
+                org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder encoder = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+                user.setPasswordHash(encoder.encode(tempPassword));
+                user.getMetadata().put("tempPassword", tempPassword);
+                user.getMetadata().put("username", username);
+                userRepository.save(user);
+            }
+
+            return GrantAccessResponseDTO.builder()
+                    .success(true)
+                    .strategyUsed("MANUAL")
+                    .message("Login credentials retrieved.")
+                    .generatedUsername(username)
+                    .generatedPassword(tempPassword)
+                    .build();
+        }
+
+        throw new IllegalArgumentException("Entity type not supported yet");
+    }
+
+    @Transactional
+    public GrantAccessResponseDTO resetCredentials(String entityType, Long entityId) {
+        if ("STUDENT".equalsIgnoreCase(entityType)) {
+            Student student = studentRepository.findById(entityId)
+                    .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+
+            if (student.getUserId() == null) {
+                GrantAccessDTO dto = new GrantAccessDTO();
+                dto.setEntityId(entityId);
+                dto.setEntityType(entityType);
+                return grantAccess(dto);
+            }
+
+            User user = userRepository.findById(student.getUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("Linked user account not found"));
+
+            String username = user.getMetadata().get("username") != null
+                    ? user.getMetadata().get("username").toString()
+                    : (user.getEmail() != null ? user.getEmail() : student.getAdmissionNo());
+
+            String newPassword = UUID.randomUUID().toString().substring(0, 8);
+            org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder encoder = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+            user.setPasswordHash(encoder.encode(newPassword));
+            user.getMetadata().put("tempPassword", newPassword);
+            user.getMetadata().put("username", username);
+            userRepository.save(user);
+
+            return GrantAccessResponseDTO.builder()
+                    .success(true)
+                    .strategyUsed("MANUAL")
+                    .message("Credentials reset successfully.")
+                    .generatedUsername(username)
+                    .generatedPassword(newPassword)
+                    .build();
+        }
+
+        throw new IllegalArgumentException("Entity type not supported yet");
     }
 }

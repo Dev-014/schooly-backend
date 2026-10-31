@@ -4,15 +4,20 @@ import com.school.erp.dto.hr.StaffTaskDTO;
 import com.school.erp.dto.hr.StaffTaskRequest;
 import com.school.erp.entity.hr.Staff;
 import com.school.erp.entity.hr.StaffTask;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.repository.hr.StaffRepository;
 import com.school.erp.repository.hr.StaffTaskRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +27,9 @@ public class StaffTaskService {
     private final StaffTaskRepository taskRepository;
     private final StaffRepository staffRepository;
     private final SchoolRepository schoolRepository;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     @Transactional(readOnly = true)
     public List<StaffTaskDTO> getTasks(Long schoolId, Long staffId, String status, String priority) {
@@ -70,7 +78,33 @@ public class StaffTaskService {
         task.setPriority(request.getPriority() != null ? request.getPriority().toUpperCase() : "MEDIUM");
         task.setStatus(request.getStatus() != null ? request.getStatus().toUpperCase() : "PENDING");
 
-        return mapToDTO(taskRepository.save(task));
+        StaffTask saved = taskRepository.save(task);
+
+        if (notificationService != null) {
+            NotificationPriority priority = "HIGH".equalsIgnoreCase(saved.getPriority()) || "URGENT".equalsIgnoreCase(saved.getPriority())
+                    ? NotificationPriority.HIGH
+                    : NotificationPriority.MEDIUM;
+            notificationService.notifyStaffMember(
+                    schoolId,
+                    staff,
+                    NotificationType.STAFF_TASK_ASSIGNED,
+                    priority,
+                    "New Task Assigned: " + saved.getTitle(),
+                    "You have been assigned a new task: \"" + saved.getTitle() + "\""
+                            + (saved.getDueDate() != null ? " (Due: " + saved.getDueDate() + ")." : "."),
+                    "/hr/tasks",
+                    "View Task",
+                    "STAFF_TASK",
+                    String.valueOf(saved.getId()),
+                    Map.of(
+                            "taskId", saved.getId(),
+                            "title", saved.getTitle(),
+                            "priority", saved.getPriority()
+                    )
+            );
+        }
+
+        return mapToDTO(saved);
     }
 
     @Transactional
@@ -106,7 +140,30 @@ public class StaffTaskService {
                 .orElseThrow(() -> new RuntimeException("Task not found"));
 
         task.setStatus(status != null ? status.toUpperCase() : "PENDING");
-        return mapToDTO(taskRepository.save(task));
+        StaffTask saved = taskRepository.save(task);
+        StaffTaskDTO dto = mapToDTO(saved);
+
+        if (notificationService != null && "COMPLETED".equalsIgnoreCase(saved.getStatus())) {
+            notificationService.notifySchoolAdmins(
+                    schoolId,
+                    NotificationType.STAFF_TASK_UPDATED,
+                    NotificationPriority.LOW,
+                    "Staff Task Completed: " + saved.getTitle(),
+                    dto.getStaffName() + " marked task \"" + saved.getTitle() + "\" as COMPLETED.",
+                    "/hr/tasks",
+                    "View Task",
+                    "STAFF_TASK",
+                    String.valueOf(saved.getId()),
+                    Map.of(
+                            "taskId", saved.getId(),
+                            "title", saved.getTitle(),
+                            "status", saved.getStatus(),
+                            "staffName", dto.getStaffName()
+                    )
+            );
+        }
+
+        return dto;
     }
 
     @Transactional

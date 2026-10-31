@@ -4,6 +4,8 @@ import com.school.erp.dto.attendance.AttendanceRequest;
 import com.school.erp.dto.attendance.AttendanceResponse;
 import com.school.erp.dto.attendance.BulkAttendanceRequest;
 import com.school.erp.entity.attendance.Attendance;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.student.Student;
 import com.school.erp.exception.ResourceNotFoundException;
@@ -11,10 +13,14 @@ import com.school.erp.repository.attendance.AttendanceRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.service.notification.NotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,6 +35,9 @@ public class AttendanceService {
     private final com.school.erp.repository.academic.ClassTeacherAssignmentRepository assignmentRepository;
     private final com.school.erp.repository.auth.UserAssignmentRepository userAssignmentRepository;
     private final AuthContextService authContextService;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     public AttendanceService(
             AttendanceRepository attendanceRepository,
@@ -51,7 +60,6 @@ public class AttendanceService {
         this.userAssignmentRepository = userAssignmentRepository;
         this.authContextService = authContextService;
     }
-
 
     public List<AttendanceResponse> getAttendance(Long schoolId, Long studentId) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
@@ -169,14 +177,16 @@ public class AttendanceService {
         School school = getSchool(effectiveSchoolId);
         
         List<AttendanceResponse> responses = new java.util.ArrayList<>();
-        boolean validatedAuth = false;
+        java.util.Set<String> validatedClassSections = new java.util.HashSet<>();
         
         for (BulkAttendanceRequest.AttendanceEntry entry : request.entries()) {
             Student student = getStudent(entry.studentId(), effectiveSchoolId);
+            Long classId = student.getSchoolClass() != null ? student.getSchoolClass().getId() : null;
+            Long sectionId = student.getSectionId();
+            String key = classId + ":" + sectionId;
             
-            if (!validatedAuth) {
+            if (validatedClassSections.add(key)) {
                 validateClassTeacherOrAdmin(effectiveSchoolId, student);
-                validatedAuth = true;
             }
             
             Attendance attendance = attendanceRepository
@@ -188,7 +198,9 @@ public class AttendanceService {
             attendance.setAttendanceDate(request.attendanceDate());
             attendance.setStatus(entry.status());
             
-            responses.add(toResponse(attendanceRepository.save(attendance)));
+            Attendance saved = attendanceRepository.save(attendance);
+            dispatchAttendanceAlert(effectiveSchoolId, student, saved);
+            responses.add(toResponse(saved));
         }
         
         return responses;
@@ -207,7 +219,61 @@ public class AttendanceService {
         attendance.setAttendanceDate(request.attendanceDate());
         attendance.setStatus(request.status());
 
-        return toResponse(attendanceRepository.save(attendance));
+        Attendance saved = attendanceRepository.save(attendance);
+        dispatchAttendanceAlert(effectiveSchoolId, student, saved);
+        return toResponse(saved);
+    }
+
+    private void dispatchAttendanceAlert(Long schoolId, Student student, Attendance saved) {
+        if (notificationService == null || saved == null || saved.getStatus() == null) {
+            return;
+        }
+        String status = saved.getStatus().trim().toUpperCase();
+        String studentName = formatStudentName(student);
+        Map<String, Object> meta = new HashMap<>();
+        meta.put("status", status);
+        meta.put("date", saved.getAttendanceDate() != null ? saved.getAttendanceDate().toString() : "");
+        meta.put("studentId", student.getId());
+
+        if ("ABSENT".equals(status)) {
+            notificationService.notifyStudentAndParents(
+                    schoolId,
+                    student,
+                    NotificationType.ATTENDANCE_ABSENT,
+                    NotificationPriority.HIGH,
+                    "Attendance Alert: Marked Absent",
+                    "You were marked absent on " + saved.getAttendanceDate() + ".",
+                    "Attendance Alert: " + studentName + " Absent",
+                    studentName + " was marked absent on " + saved.getAttendanceDate() + ". Please inform the class teacher if planned.",
+                    "/attendance",
+                    "ATTENDANCE",
+                    saved.getId(),
+                    meta
+            );
+        } else if ("LATE".equals(status)) {
+            notificationService.notifyStudentAndParents(
+                    schoolId,
+                    student,
+                    NotificationType.ATTENDANCE_LATE,
+                    NotificationPriority.NORMAL,
+                    "Attendance Alert: Marked Late",
+                    "You were marked late for school on " + saved.getAttendanceDate() + ".",
+                    "Attendance Alert: " + studentName + " Late Arrival",
+                    studentName + " was marked late on " + saved.getAttendanceDate() + ".",
+                    "/attendance",
+                    "ATTENDANCE",
+                    saved.getId(),
+                    meta
+            );
+        }
+    }
+
+    private String formatStudentName(Student student) {
+        if (student == null) return "Student";
+        if (student.getName() != null && !student.getName().isBlank()) return student.getName().trim();
+        String full = ((student.getFirstName() != null ? student.getFirstName() : "") + " "
+                + (student.getLastName() != null ? student.getLastName() : "")).trim();
+        return full.isEmpty() ? "Student #" + student.getId() : full;
     }
 
     private void validateClassTeacherOrAdmin(Long schoolId, Student student) {
@@ -221,7 +287,7 @@ public class AttendanceService {
             return;
         }
 
-        // For non-admin (e.g. TEACHER, STAFF), verify assignment
+        // For non-admin (e.g. TEACHER, STAFF, or custom roles), verify assignment
         if (currentUser.userId() != null) {
             Long classId = student.getSchoolClass() != null ? student.getSchoolClass().getId() : null;
             Long sectionId = student.getSectionId();
@@ -234,7 +300,9 @@ public class AttendanceService {
                     Long staffId = staffOpt.get().getId();
                     if (sectionId != null) {
                         isAssignedInTable = assignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndSectionIdAndStatus(
-                                schoolId, staffId, classId, sectionId, "ACTIVE");
+                                schoolId, staffId, classId, sectionId, "ACTIVE")
+                                || assignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndSectionIsNullAndStatus(
+                                schoolId, staffId, classId, "ACTIVE");
                     } else {
                         isAssignedInTable = assignmentRepository.existsBySchoolIdAndStaffIdAndSchoolClassIdAndStatus(
                                 schoolId, staffId, classId, "ACTIVE");
@@ -257,8 +325,11 @@ public class AttendanceService {
                     return;
                 }
 
+                String sectionMsg = sectionId != null ? "Section " + sectionId : "the assigned section";
+                String classMsg = student.getSchoolClass() != null && student.getSchoolClass().getName() != null
+                        ? student.getSchoolClass().getName() : "Class " + classId;
                 throw new com.school.erp.exception.ForbiddenException(
-                        "Access Denied: Only the assigned Class Teacher or School Administrator can mark daily roll call attendance for this class/section."
+                        "Access Denied: You are not assigned to mark attendance for " + classMsg + " (" + sectionMsg + ")."
                 );
             }
         }

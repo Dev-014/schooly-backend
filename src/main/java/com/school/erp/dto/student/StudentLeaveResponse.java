@@ -17,5 +17,26 @@ public record StudentLeaveResponse(
         String reason,
         String status,
         String reply,
-        LocalDateTime createdAt
-) {}
+        LocalDateTime createdAt,
+        Long classId,
+        Long sectionId
+) {
+    public StudentLeaveResponse(
+            Long id,
+            Long schoolId,
+            Long studentId,
+            String studentName,
+            String admissionNo,
+            String classKey,
+            LocalDate applyDate,
+            LocalDate fromDate,
+            LocalDate toDate,
+            Integer days,
+            String reason,
+            String status,
+            String reply,
+            LocalDateTime createdAt
+    ) {
+        this(id, schoolId, studentId, studentName, admissionNo, classKey, applyDate, fromDate, toDate, days, reason, status, reply, createdAt, null, null);
+    }
+}

@@ -272,4 +272,66 @@ class AdminHomeworkControllerTest {
                 .andExpect(jsonPath("$.data.status").value("GRADED"))
                 .andExpect(jsonPath("$.data.submissionStatus").value("GRADED"));
     }
+
+    @Test
+    void evaluateSubmission_WithNullLiteralInPath_ShouldEvaluateViaAssignmentAndStudentId() throws Exception {
+        HomeworkEvaluationRequest evalReq = HomeworkEvaluationRequest.builder()
+                .assignmentId(1L)
+                .studentId(5L)
+                .marksObtained(BigDecimal.valueOf(25))
+                .remarks("Offline grading")
+                .status(SubmissionStatus.GRADED)
+                .build();
+
+        HomeworkSubmissionResponse evaluatedSub = HomeworkSubmissionResponse.builder()
+                .id(99L)
+                .assignmentId(1L)
+                .studentId(5L)
+                .marksObtained(BigDecimal.valueOf(25))
+                .remarks("Offline grading")
+                .status(SubmissionStatus.GRADED)
+                .build();
+
+        when(homeworkService.evaluateSubmission(any(), isNull(), any(HomeworkEvaluationRequest.class)))
+                .thenReturn(evaluatedSub);
+
+        mockMvc.perform(put("/api/v1/homework/submissions/null/evaluate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(evalReq)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.id").value(99))
+                .andExpect(jsonPath("$.data.marksObtained").value(25));
+    }
+
+    @Test
+    void evaluateSubmission_WithoutSubmissionIdInPath_ShouldEvaluateViaAssignmentAndStudentId() throws Exception {
+        HomeworkEvaluationRequest evalReq = HomeworkEvaluationRequest.builder()
+                .assignmentId(1L)
+                .studentId(5L)
+                .marksObtained(BigDecimal.valueOf(30))
+                .remarks("Direct evaluation")
+                .status(SubmissionStatus.GRADED)
+                .build();
+
+        HomeworkSubmissionResponse evaluatedSub = HomeworkSubmissionResponse.builder()
+                .id(100L)
+                .assignmentId(1L)
+                .studentId(5L)
+                .marksObtained(BigDecimal.valueOf(30))
+                .remarks("Direct evaluation")
+                .status(SubmissionStatus.GRADED)
+                .build();
+
+        when(homeworkService.evaluateSubmission(any(), isNull(), any(HomeworkEvaluationRequest.class)))
+                .thenReturn(evaluatedSub);
+
+        mockMvc.perform(put("/api/v1/homework/submissions/evaluate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(evalReq)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.id").value(100))
+                .andExpect(jsonPath("$.data.marksObtained").value(30));
+    }
 }

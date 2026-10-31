@@ -66,12 +66,13 @@ class FeeRecordControllerTest {
                 "1", "1", "Aarav Sharma", "ADM-001", "Class 10", null,
                 new BigDecimal("25000.00"), new BigDecimal("15000.00"), new BigDecimal("10000.00"), null, "PARTIAL"
         );
-        when(feeRecordService.getStudentFeeRecords(eq(1L), any(), any(), any(), any(PageRequest.class)))
+        when(feeRecordService.getStudentFeeRecords(eq(1L), any(), any(), any(), any(), any(PageRequest.class)))
                 .thenReturn(new PageImpl<>(List.of(record)));
 
         mockMvc.perform(get("/api/v1/finance/fee-records")
                         .param("schoolId", "1")
                         .param("classGroupId", "5")
+                        .param("sectionId", "2")
                         .param("page", "0")
                         .param("size", "50"))
                 .andExpect(status().isOk())
@@ -89,11 +90,12 @@ class FeeRecordControllerTest {
                 new BigDecimal("150000.00"),
                 0L
         );
-        when(feeRecordService.getFeeStats(eq(1L), eq(5L))).thenReturn(stats);
+        when(feeRecordService.getFeeStats(eq(1L), eq(5L), any())).thenReturn(stats);
 
         mockMvc.perform(get("/api/v1/finance/fee-records/stats")
                         .param("schoolId", "1")
-                        .param("classGroupId", "5"))
+                        .param("classGroupId", "5")
+                        .param("sectionId", "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.totalExpected").value(500000.00))

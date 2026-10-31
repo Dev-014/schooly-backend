@@ -66,6 +66,17 @@ public class AdminVisitorBookController {
                 "Visitor entry recorded successfully"));
     }
 
+    @PutMapping("/{id}")
+    @PermissionRequired("front_office.visitor_book.view")
+    public ResponseEntity<ApiResponse<VisitorLogResponse>> updateVisitor(
+            @RequestParam(required = false) Long schoolId,
+            @PathVariable Long id,
+            @Valid @RequestBody VisitorLogRequest request) {
+        return ResponseEntity.ok(ApiResponse.success(
+                visitorLogService.updateVisitor(schoolId, id, request),
+                "Visitor entry updated successfully"));
+    }
+
     @PutMapping("/{id}/checkout")
     @PermissionRequired("front_office.visitor_book.view")
     public ResponseEntity<ApiResponse<VisitorLogResponse>> checkoutVisitor(

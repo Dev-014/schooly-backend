@@ -13,6 +13,7 @@ import com.school.erp.exception.BadRequestException;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.academic.AcademicYearRepository;
 import com.school.erp.repository.academic.SchoolClassRepository;
+import com.school.erp.repository.academic.SectionRepository;
 import com.school.erp.repository.auth.UserRepository;
 import com.school.erp.repository.auth.UserSchoolRoleRepository;
 import com.school.erp.repository.student.*;
@@ -34,6 +35,7 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final SchoolRepository schoolRepository;
     private final SchoolClassRepository schoolClassRepository;
+    private final SectionRepository sectionRepository;
     private final StudentDocumentRepository documentRepository;
     private final AuthContextService authContextService;
     private final EntitlementService entitlementService;
@@ -51,6 +53,7 @@ public class StudentService {
             StudentRepository studentRepository,
             SchoolRepository schoolRepository,
             SchoolClassRepository schoolClassRepository,
+            SectionRepository sectionRepository,
             StudentDocumentRepository documentRepository,
             AuthContextService authContextService,
             EntitlementService entitlementService,
@@ -67,6 +70,7 @@ public class StudentService {
         this.studentRepository = studentRepository;
         this.schoolRepository = schoolRepository;
         this.schoolClassRepository = schoolClassRepository;
+        this.sectionRepository = sectionRepository;
         this.documentRepository = documentRepository;
         this.authContextService = authContextService;
         this.entitlementService = entitlementService;
@@ -368,6 +372,12 @@ public class StudentService {
     }
 
     private StudentResponse toResponse(Student student) {
+        String sectionName = null;
+        if (student.getSectionId() != null) {
+            sectionName = sectionRepository.findById(student.getSectionId())
+                    .map(com.school.erp.entity.academic.Section::getName)
+                    .orElse(null);
+        }
         return new StudentResponse(
                 student.getId(),
                 student.getUserId(),
@@ -380,6 +390,7 @@ public class StudentService {
                 student.getSchoolClass().getId(),
                 student.getSchoolClass().getName(),
                 student.getSectionId(),
+                sectionName,
                 student.getAcademicYearId(),
                 student.getFirstName(),
                 student.getLastName(),

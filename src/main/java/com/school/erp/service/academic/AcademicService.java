@@ -408,6 +408,45 @@ public class AcademicService {
         List<ClassSubjectAssignmentResponse> result = new java.util.ArrayList<>();
         java.util.Set<String> seenKeys = new java.util.HashSet<>();
 
+        // 1. Primary SOT: Timetable Entries from Academic Master Data
+        Staff staff = staffRepository.findBySchoolIdAndUserId(effectiveSchoolId, currentUser.userId())
+                .or(() -> staffRepository.findByUserId(currentUser.userId()))
+                .orElse(null);
+
+        if (staff != null) {
+            List<TimetableEntry> entries = timetableEntryRepository.findBySchoolIdAndTeacherId(effectiveSchoolId, staff.getId());
+            for (TimetableEntry te : entries) {
+                if (te.getSchoolClass() == null || te.getSubject() == null) {
+                    continue;
+                }
+                Long classId = te.getSchoolClass().getId();
+                Long sectionId = te.getSection() != null ? te.getSection().getId() : null;
+                Long subjectId = te.getSubject().getId();
+
+                String key = classId + "_" + (sectionId != null ? sectionId : "all") + "_" + subjectId;
+                if (!seenKeys.contains(key)) {
+                    seenKeys.add(key);
+
+                    result.add(new ClassSubjectAssignmentResponse(
+                            te.getId(),
+                            te.getSchool() != null ? te.getSchool().getId() : effectiveSchoolId,
+                            classId,
+                            te.getSchoolClass().getName(),
+                            sectionId,
+                            te.getSection() != null ? te.getSection().getName() : null,
+                            subjectId,
+                            te.getSubject().getName(),
+                            te.getSubject().getCode(),
+                            te.getAcademicYear() != null ? te.getAcademicYear().getId() : null,
+                            te.getAcademicYear() != null ? te.getAcademicYear().getName() : null,
+                            te.getSubject().getType() != null ? te.getSubject().getType() : "THEORY",
+                            te.getStatus() != null ? te.getStatus() : "ACTIVE"
+                    ));
+                }
+            }
+        }
+
+        // 2. Secondary / Fallback: user_assignments table
         List<com.school.erp.entity.auth.UserAssignment> userAssignments = userAssignmentRepository.findBySchoolIdAndUserIdAndAssignmentTypeAndIsActiveTrue(
                 effectiveSchoolId, currentUser.userId(), "subject_teacher");
 
@@ -809,6 +848,26 @@ public class AcademicService {
         entitlementService.enforceModuleAccess(effectiveSchoolId, "ACADEMICS");
         entitlementService.enforceSchoolActive(effectiveSchoolId);
 
+        com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+        if (currentUser != null && (currentUser.role() == com.school.erp.entity.auth.UserRole.STUDENT || currentUser.role() == com.school.erp.entity.auth.UserRole.PARENT)) {
+            throw new com.school.erp.exception.ForbiddenException("Students and parents cannot edit timetables");
+        }
+        if (currentUser != null && currentUser.role() == com.school.erp.entity.auth.UserRole.TEACHER) {
+            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            boolean hasPermission = auth != null && auth.getAuthorities() != null && auth.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("academics.class_timetable.edit") || a.getAuthority().equals("ALL"));
+            if (!hasPermission) {
+                List<ClassTeacherAssignmentResponse> assignments = getMyClassTeacherAssignments(effectiveSchoolId);
+                boolean isAssignedClassTeacher = assignments.stream().anyMatch(a ->
+                        a.classId().equals(request.classId()) &&
+                        (request.sectionId() == null || a.sectionId() == null || a.sectionId().equals(request.sectionId()))
+                );
+                if (!isAssignedClassTeacher) {
+                    throw new com.school.erp.exception.ForbiddenException("Only the assigned Class Teacher, administrators, or authorized staff can edit the timetable for this class");
+                }
+            }
+        }
+
         School school = getSchool(effectiveSchoolId);
         SchoolClass schoolClass = classRepository.findByIdAndSchoolId(request.classId(), effectiveSchoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Class not found"));
@@ -864,6 +923,28 @@ public class AcademicService {
         if (!entry.getSchool().getId().equals(effectiveSchoolId)) {
             throw new ResourceNotFoundException("Timetable entry not found");
         }
+
+        com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+        if (currentUser != null && (currentUser.role() == com.school.erp.entity.auth.UserRole.STUDENT || currentUser.role() == com.school.erp.entity.auth.UserRole.PARENT)) {
+            throw new com.school.erp.exception.ForbiddenException("Students and parents cannot delete timetable entries");
+        }
+        if (currentUser != null && currentUser.role() == com.school.erp.entity.auth.UserRole.TEACHER) {
+            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            boolean hasPermission = auth != null && auth.getAuthorities() != null && auth.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("academics.class_timetable.edit") || a.getAuthority().equals("ALL"));
+            if (!hasPermission) {
+                Long classId = entry.getSchoolClass() != null ? entry.getSchoolClass().getId() : null;
+                Long sectionId = entry.getSection() != null ? entry.getSection().getId() : null;
+                List<ClassTeacherAssignmentResponse> assignments = getMyClassTeacherAssignments(effectiveSchoolId);
+                boolean isAssigned = classId != null && assignments.stream().anyMatch(a ->
+                        a.classId().equals(classId) && (sectionId == null || a.sectionId() == null || a.sectionId().equals(sectionId))
+                );
+                if (!isAssigned) {
+                    throw new com.school.erp.exception.ForbiddenException("Only the assigned Class Teacher, administrators, or authorized staff can delete timetable entries for this class");
+                }
+            }
+        }
+
         timetableEntryRepository.delete(entry);
     }
 

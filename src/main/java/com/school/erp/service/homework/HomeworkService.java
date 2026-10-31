@@ -6,6 +6,8 @@ import com.school.erp.entity.academic.Section;
 import com.school.erp.entity.academic.Subject;
 import com.school.erp.entity.homework.*;
 import com.school.erp.entity.hr.Staff;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.student.Student;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.exception.BadRequestException;
@@ -19,8 +21,10 @@ import com.school.erp.repository.hr.StaffRepository;
 import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -48,6 +52,9 @@ public class HomeworkService {
     private final StaffRepository staffRepository;
     private final StudentRepository studentRepository;
     private final AuthContextService authContextService;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     // ─── Filter Assignments ──────────────────────────────────────────────────────
 
@@ -138,6 +145,32 @@ public class HomeworkService {
 
         HomeworkAssignment saved = assignmentRepository.save(assignment);
         log.info("Created assignment id={} for schoolId={}", saved.getId(), schoolId);
+
+        if (notificationService != null && saved.getStatus() == AssignmentStatus.PUBLISHED) {
+            Map<String, Object> meta = new HashMap<>();
+            meta.put("subject", subject.getName());
+            meta.put("className", schoolClass.getName());
+            meta.put("dueDate", saved.getDueDate() != null ? saved.getDueDate().toString() : "");
+            notificationService.notifyClassAndSection(
+                    schoolId,
+                    schoolClass.getId(),
+                    section != null ? section.getId() : null,
+                    true,
+                    true,
+                    false,
+                    NotificationType.HOMEWORK_ASSIGNED,
+                    NotificationPriority.NORMAL,
+                    "New Homework Assigned: " + subject.getName(),
+                    saved.getTitle() + " has been assigned for " + schoolClass.getName()
+                            + (section != null ? " (" + section.getName() + ")" : "")
+                            + ", due on " + saved.getDueDate() + ".",
+                    "/homework",
+                    "HOMEWORK",
+                    saved.getId(),
+                    meta
+            );
+        }
+
         return toAssignmentResponse(saved);
     }
 
@@ -286,6 +319,45 @@ public class HomeworkService {
 
         HomeworkSubmission saved = submissionRepository.save(submission);
         log.info("Student id={} submitted assignment id={}", studentId, assignmentId);
+
+        if (notificationService != null) {
+            String studentName = formatStudentName(student);
+            String subjectName = assignment.getSubject() != null ? assignment.getSubject().getName() : "Assignment";
+            Map<String, Object> meta = new HashMap<>();
+            meta.put("assignmentId", assignment.getId());
+            meta.put("studentId", student.getId());
+            meta.put("subject", subjectName);
+            meta.put("status", saved.getStatus().name());
+
+            if (assignment.getTeacher() != null) {
+                notificationService.notifyStaffMember(
+                        schoolId,
+                        assignment.getTeacher(),
+                        NotificationType.HOMEWORK_SUBMITTED,
+                        NotificationPriority.NORMAL,
+                        "Homework Submitted: " + assignment.getTitle(),
+                        studentName + " submitted homework for " + subjectName + ".",
+                        "/admin/homework/submissions",
+                        "HOMEWORK_SUBMISSION",
+                        saved.getId(),
+                        meta
+                );
+            } else {
+                notificationService.notifyClassTeachersOfStudent(
+                        schoolId,
+                        student,
+                        NotificationType.HOMEWORK_SUBMITTED,
+                        NotificationPriority.NORMAL,
+                        "Homework Submitted: " + assignment.getTitle(),
+                        studentName + " submitted homework for " + subjectName + ".",
+                        "/admin/homework/submissions",
+                        "HOMEWORK_SUBMISSION",
+                        saved.getId(),
+                        meta
+                );
+            }
+        }
+
         return toSubmissionResponse(saved);
     }
 
@@ -297,8 +369,28 @@ public class HomeworkService {
 
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
-        HomeworkSubmission submission = submissionRepository.findByIdAndSchoolId(submissionId, schoolId)
-                .orElseThrow(() -> new ResourceNotFoundException("Submission not found with id: " + submissionId));
+        HomeworkSubmission submission;
+        if (submissionId != null) {
+            submission = submissionRepository.findByIdAndSchoolId(submissionId, schoolId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Submission not found with id: " + submissionId));
+        } else if (request.getAssignmentId() != null && request.getStudentId() != null) {
+            submission = submissionRepository.findByAssignmentIdAndStudentId(request.getAssignmentId(), request.getStudentId())
+                    .orElseGet(() -> {
+                        HomeworkAssignment assignment = assignmentRepository.findByIdAndSchoolId(request.getAssignmentId(), schoolId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Assignment not found with id: " + request.getAssignmentId()));
+                        Student student = studentRepository.findByIdAndSchoolId(request.getStudentId(), schoolId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + request.getStudentId()));
+                        return HomeworkSubmission.builder()
+                                .school(assignment.getSchool())
+                                .assignment(assignment)
+                                .student(student)
+                                .submissionDate(LocalDateTime.now())
+                                .status(SubmissionStatus.SUBMITTED)
+                                .build();
+                    });
+        } else {
+            throw new BadRequestException("Either submissionId or both assignmentId and studentId must be provided");
+        }
 
         if (request.getMarksObtained() != null) {
             BigDecimal maxMarks = submission.getAssignment().getMaxMarks();
@@ -332,6 +424,38 @@ public class HomeworkService {
 
         HomeworkSubmission saved = submissionRepository.save(submission);
         log.info("Evaluated submission id={} with status={}", submissionId, saved.getStatus());
+
+        if (notificationService != null && saved.getStudent() != null && saved.getAssignment() != null) {
+            String subjectName = saved.getAssignment().getSubject() != null
+                    ? saved.getAssignment().getSubject().getName()
+                    : saved.getAssignment().getTitle();
+            String marksPart = saved.getMarksObtained() != null
+                    ? " Marks: " + saved.getMarksObtained() + "/" + saved.getAssignment().getMaxMarks() + "."
+                    : "";
+            String remarkPart = (saved.getRemarks() != null && !saved.getRemarks().isBlank())
+                    ? " Remark: \"" + saved.getRemarks() + "\""
+                    : "";
+            Map<String, Object> meta = new HashMap<>();
+            meta.put("assignmentId", saved.getAssignment().getId());
+            if (saved.getMarksObtained() != null) meta.put("marks", saved.getMarksObtained());
+            if (saved.getAssignment().getMaxMarks() != null) meta.put("maxMarks", saved.getAssignment().getMaxMarks());
+
+            notificationService.notifyStudentAndParents(
+                    schoolId,
+                    saved.getStudent(),
+                    NotificationType.HOMEWORK_GRADED,
+                    NotificationPriority.NORMAL,
+                    "Homework Evaluated: " + subjectName,
+                    "Your assignment \"" + saved.getAssignment().getTitle() + "\" was reviewed!" + marksPart + remarkPart,
+                    "Homework Evaluated for " + formatStudentName(saved.getStudent()) + ": " + subjectName,
+                    formatStudentName(saved.getStudent()) + "'s assignment \"" + saved.getAssignment().getTitle() + "\" was reviewed." + marksPart + remarkPart,
+                    "/homework",
+                    "HOMEWORK_SUBMISSION",
+                    saved.getId(),
+                    meta
+            );
+        }
+
         return toSubmissionResponse(saved);
     }
 
@@ -504,6 +628,14 @@ public class HomeworkService {
     }
 
     // ─── Mapping Helpers ─────────────────────────────────────────────────────────
+
+    private String formatStudentName(Student student) {
+        if (student == null) return "Student";
+        if (student.getName() != null && !student.getName().isBlank()) return student.getName().trim();
+        String full = ((student.getFirstName() != null ? student.getFirstName() : "") + " "
+                + (student.getLastName() != null ? student.getLastName() : "")).trim();
+        return full.isEmpty() ? "Student #" + student.getId() : full;
+    }
 
     private HomeworkAssignmentResponse toAssignmentResponse(HomeworkAssignment a) {
         int totalStudents = 0;

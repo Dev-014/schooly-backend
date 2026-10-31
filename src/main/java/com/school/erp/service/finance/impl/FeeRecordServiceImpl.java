@@ -62,7 +62,7 @@ public class FeeRecordServiceImpl implements FeeRecordService {
     }
 
     @Override
-    public Page<StudentFeeRecordDTO> getStudentFeeRecords(Long schoolId, Long classId, String search, String status, Pageable pageable) {
+    public Page<StudentFeeRecordDTO> getStudentFeeRecords(Long schoolId, Long classId, Long sectionId, String search, String status, Pageable pageable) {
         String safeSearch = (search == null) ? "" : search;
         AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
@@ -70,7 +70,7 @@ public class FeeRecordServiceImpl implements FeeRecordService {
 
         Page<Student> students;
         if (schoolScope) {
-            students = studentRepository.findBySchoolIdAndSearchAndClassId(effectiveSchoolId, safeSearch, classId, pageable);
+            students = studentRepository.findBySchoolIdAndSearchAndClassIdAndSectionId(effectiveSchoolId, safeSearch, classId, sectionId, pageable);
         } else {
             List<Long> assignedClassIds = teacherFeeService.getAssignedClasses(effectiveSchoolId).stream()
                     .map(TeacherClassResponse::getClassId)
@@ -86,7 +86,7 @@ public class FeeRecordServiceImpl implements FeeRecordService {
                 if (!assignedClassIds.contains(classId)) {
                     return Page.empty(pageable);
                 }
-                students = studentRepository.findBySchoolIdAndSearchAndClassId(effectiveSchoolId, safeSearch, classId, pageable);
+                students = studentRepository.findBySchoolIdAndSearchAndClassIdAndSectionId(effectiveSchoolId, safeSearch, classId, sectionId, pageable);
             } else {
                 students = studentRepository.findBySchoolIdAndSearchAndClassIdIn(effectiveSchoolId, safeSearch, assignedClassIds, pageable);
             }
@@ -121,6 +121,7 @@ public class FeeRecordServiceImpl implements FeeRecordService {
                     student.getFirstName() + " " + student.getLastName(),
                     student.getAdmissionNo(),
                     student.getSchoolClass() != null ? student.getSchoolClass().getName() : "-",
+                    student.getSectionId(),
                     null,
                     totalFees,
                     amountPaid,
@@ -133,6 +134,11 @@ public class FeeRecordServiceImpl implements FeeRecordService {
 
     @Override
     public FeeStatsDTO getFeeStats(Long schoolId, Long classId) {
+        return getFeeStats(schoolId, classId, null);
+    }
+
+    @Override
+    public FeeStatsDTO getFeeStats(Long schoolId, Long classId, Long sectionId) {
         AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
         boolean schoolScope = hasSchoolScope(effectiveSchoolId, currentUser);
@@ -140,7 +146,9 @@ public class FeeRecordServiceImpl implements FeeRecordService {
         StudentFeeAggregation agg;
         if (schoolScope) {
             if (classId != null) {
-                agg = feeDueRepository.aggregateClassFeeStats(effectiveSchoolId, List.of(classId));
+                agg = feeDueRepository.aggregateClassAndSectionFeeStats(effectiveSchoolId, List.of(classId), sectionId);
+            } else if (sectionId != null) {
+                agg = feeDueRepository.aggregateSectionFeeStats(effectiveSchoolId, sectionId);
             } else {
                 agg = feeDueRepository.aggregateSchoolFeeStats(effectiveSchoolId);
             }
@@ -159,9 +167,9 @@ public class FeeRecordServiceImpl implements FeeRecordService {
                 if (!assignedClassIds.contains(classId)) {
                     return new FeeStatsDTO(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, 0L);
                 }
-                agg = feeDueRepository.aggregateClassFeeStats(effectiveSchoolId, List.of(classId));
+                agg = feeDueRepository.aggregateClassAndSectionFeeStats(effectiveSchoolId, List.of(classId), sectionId);
             } else {
-                agg = feeDueRepository.aggregateClassFeeStats(effectiveSchoolId, assignedClassIds);
+                agg = feeDueRepository.aggregateClassAndSectionFeeStats(effectiveSchoolId, assignedClassIds, sectionId);
             }
         }
 

@@ -25,11 +25,12 @@ public class FeeRecordController {
     public ResponseEntity<ApiResponse<Page<StudentFeeRecordDTO>>> getFeeRecords(
             @RequestParam Long schoolId,
             @RequestParam(required = false) Long classGroupId,
+            @RequestParam(required = false) Long sectionId,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size) {
-        Page<StudentFeeRecordDTO> records = feeRecordService.getStudentFeeRecords(schoolId, classGroupId, search, status, PageRequest.of(page, size));
+        Page<StudentFeeRecordDTO> records = feeRecordService.getStudentFeeRecords(schoolId, classGroupId, sectionId, search, status, PageRequest.of(page, size));
         return ResponseEntity.ok(ApiResponse.success(records, "Fee records fetched successfully"));
     }
 
@@ -37,7 +38,8 @@ public class FeeRecordController {
     @PermissionRequired("fees.search_due_fees.view")
     public ResponseEntity<ApiResponse<FeeStatsDTO>> getFeeStats(
             @RequestParam Long schoolId,
-            @RequestParam(required = false) Long classGroupId) {
-        return ResponseEntity.ok(ApiResponse.success(feeRecordService.getFeeStats(schoolId, classGroupId), "Fee stats fetched successfully"));
+            @RequestParam(required = false) Long classGroupId,
+            @RequestParam(required = false) Long sectionId) {
+        return ResponseEntity.ok(ApiResponse.success(feeRecordService.getFeeStats(schoolId, classGroupId, sectionId), "Fee stats fetched successfully"));
     }
 }

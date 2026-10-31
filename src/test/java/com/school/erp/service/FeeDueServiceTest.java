@@ -60,7 +60,31 @@ public class FeeDueServiceTest {
         feeDueRepository.save(due);
         
         List<FeeDueResponse> dues = feeDueService.getStudentDues(student.getId(), school.getId(), null);
-        System.out.println("Dues size: " + dues.size());
-        System.out.println("Category Name: " + dues.get(0).feeCategoryName());
+        org.junit.jupiter.api.Assertions.assertFalse(dues.isEmpty());
+        org.junit.jupiter.api.Assertions.assertNotNull(dues.get(0).feeCategoryId());
+        org.junit.jupiter.api.Assertions.assertNotNull(dues.get(0).feeCategoryName());
+        org.junit.jupiter.api.Assertions.assertNotEquals("Unknown", dues.get(0).feeCategoryName());
+    }
+
+    @Test
+    @Transactional
+    public void testDueCategoryFallbackWhenFeeCategoryNull() {
+        School school = schoolRepository.findAll().get(0);
+        Student student = studentRepository.findAll().get(0);
+
+        FeeDue due = new FeeDue();
+        due.setSchool(school);
+        due.setStudent(student);
+        due.setFeeCategory(null); // Explicitly null
+        due.setTitle("Term 1");
+        due.setAmount(new BigDecimal("10400.00"));
+        due.setDueDate(LocalDate.now());
+        feeDueRepository.save(due);
+
+        List<FeeDueResponse> dues = feeDueService.getStudentDues(student.getId(), school.getId(), null);
+        org.junit.jupiter.api.Assertions.assertFalse(dues.isEmpty());
+        FeeDueResponse termDue = dues.stream().filter(d -> "Term 1".equals(d.title())).findFirst().orElseThrow();
+        org.junit.jupiter.api.Assertions.assertNotNull(termDue.feeCategoryName());
+        org.junit.jupiter.api.Assertions.assertNotEquals("Unknown", termDue.feeCategoryName());
     }
 }

@@ -4,12 +4,16 @@ import com.school.erp.dto.frontoffice.ComplaintRequest;
 import com.school.erp.dto.frontoffice.ComplaintResponse;
 import com.school.erp.dto.frontoffice.ComplaintStatsResponse;
 import com.school.erp.entity.frontoffice.SchoolComplaint;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.frontoffice.SchoolComplaintRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +30,9 @@ public class SchoolComplaintService {
     private final AuthContextService authContextService;
     private final SchoolComplaintRepository schoolComplaintRepository;
     private final SchoolRepository schoolRepository;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     @Transactional(readOnly = true)
     public Page<ComplaintResponse> filterComplaints(
@@ -72,6 +80,26 @@ public class SchoolComplaintService {
         complaint.setComplaintDate(request.getComplaintDate() != null ? request.getComplaintDate() : LocalDate.now());
 
         SchoolComplaint saved = schoolComplaintRepository.save(complaint);
+
+        if (notificationService != null) {
+            notificationService.notifySchoolAdmins(
+                    schoolId,
+                    NotificationType.COMPLAINT_FILED,
+                    NotificationPriority.HIGH,
+                    "New Complaint Filed (" + saved.getComplaintType() + ")",
+                    saved.getComplainantName() + " filed a " + saved.getComplaintType() + " complaint: \"" + saved.getDescription() + "\"",
+                    "/front-office/complaints",
+                    "Review Complaint",
+                    "SCHOOL_COMPLAINT",
+                    String.valueOf(saved.getId()),
+                    Map.of(
+                            "complaintId", saved.getId(),
+                            "complainantName", saved.getComplainantName(),
+                            "complaintType", saved.getComplaintType()
+                    )
+            );
+        }
+
         return mapToResponse(saved);
     }
 
@@ -82,6 +110,7 @@ public class SchoolComplaintService {
         SchoolComplaint complaint = schoolComplaintRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Complaint not found with id: " + id));
 
+        String oldStatus = complaint.getStatus();
         if (request.getComplainantName() != null && !request.getComplainantName().isBlank()) {
             complaint.setComplainantName(request.getComplainantName());
         }
@@ -100,6 +129,7 @@ public class SchoolComplaintService {
         }
 
         SchoolComplaint saved = schoolComplaintRepository.save(complaint);
+        notifyIfComplaintResolved(schoolId, oldStatus, saved);
         return mapToResponse(saved);
     }
 
@@ -110,6 +140,7 @@ public class SchoolComplaintService {
         SchoolComplaint complaint = schoolComplaintRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Complaint not found with id: " + id));
 
+        String oldStatus = complaint.getStatus();
         if (status != null && !status.isBlank()) {
             complaint.setStatus(status);
         }
@@ -118,7 +149,32 @@ public class SchoolComplaintService {
         }
 
         SchoolComplaint saved = schoolComplaintRepository.save(complaint);
+        notifyIfComplaintResolved(schoolId, oldStatus, saved);
         return mapToResponse(saved);
+    }
+
+    private void notifyIfComplaintResolved(Long schoolId, String oldStatus, SchoolComplaint saved) {
+        if (notificationService == null || saved.getStatus() == null) {
+            return;
+        }
+        boolean nowResolved = "RESOLVED".equalsIgnoreCase(saved.getStatus()) || "CLOSED".equalsIgnoreCase(saved.getStatus());
+        if (nowResolved && !saved.getStatus().equalsIgnoreCase(oldStatus)) {
+            notificationService.notifySchoolAdmins(
+                    schoolId,
+                    NotificationType.COMPLAINT_RESOLVED,
+                    NotificationPriority.MEDIUM,
+                    "Complaint " + saved.getStatus() + ": " + saved.getComplainantName(),
+                    "Complaint by " + saved.getComplainantName() + " (" + saved.getComplaintType() + ") has been marked as " + saved.getStatus() + ".",
+                    "/front-office/complaints",
+                    "View Complaint",
+                    "SCHOOL_COMPLAINT",
+                    String.valueOf(saved.getId()),
+                    Map.of(
+                            "complaintId", saved.getId(),
+                            "status", saved.getStatus()
+                    )
+            );
+        }
     }
 
     @Transactional

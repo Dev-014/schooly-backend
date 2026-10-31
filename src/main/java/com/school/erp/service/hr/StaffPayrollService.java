@@ -2,10 +2,14 @@ package com.school.erp.service.hr;
 
 import com.school.erp.dto.hr.*;
 import com.school.erp.entity.hr.*;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.repository.hr.*;
 import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +18,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +31,9 @@ public class StaffPayrollService {
     private final StaffAdvanceRepository staffAdvanceRepository;
     private final StaffRepository staffRepository;
     private final SchoolRepository schoolRepository;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     @Transactional
     public StaffPayrollDTO runPayroll(Long schoolId, StaffPayrollRequest request) {
@@ -49,7 +57,31 @@ public class StaffPayrollService {
         payroll.setNetPayableSalary(request.getNetPayableSalary());
         payroll.setStatus("PENDING");
 
-        return mapToDTO(staffPayrollRepository.save(payroll));
+        StaffPayroll saved = staffPayrollRepository.save(payroll);
+
+        if (notificationService != null) {
+            notificationService.notifyStaffMember(
+                    schoolId,
+                    staff,
+                    NotificationType.PAYROLL_GENERATED,
+                    NotificationPriority.MEDIUM,
+                    "Payslip Generated (" + saved.getPayrollMonth() + " " + saved.getPayrollYear() + ")",
+                    "Your payroll for " + saved.getPayrollMonth() + " " + saved.getPayrollYear()
+                            + " (Net Payable: " + saved.getNetPayableSalary() + ") has been generated.",
+                    "/hr/payroll",
+                    "View Payslip",
+                    "STAFF_PAYROLL",
+                    String.valueOf(saved.getId()),
+                    Map.of(
+                            "payrollId", saved.getId(),
+                            "payrollMonth", saved.getPayrollMonth(),
+                            "payrollYear", saved.getPayrollYear(),
+                            "netPayableSalary", saved.getNetPayableSalary()
+                    )
+            );
+        }
+
+        return mapToDTO(saved);
     }
 
     @Transactional
@@ -106,7 +138,29 @@ public class StaffPayrollService {
                 payroll.setStatus("PENDING");
             }
 
-            result.add(mapToDTO(staffPayrollRepository.save(payroll)));
+            StaffPayroll saved = staffPayrollRepository.save(payroll);
+            result.add(mapToDTO(saved));
+
+            if (notificationService != null) {
+                notificationService.notifyStaffMember(
+                        schoolId,
+                        staff,
+                        NotificationType.PAYROLL_GENERATED,
+                        NotificationPriority.MEDIUM,
+                        "Payslip Generated (" + payrollMonth + " " + payrollYear + ")",
+                        "Your payroll for " + payrollMonth + " " + payrollYear + " (Net Payable: " + net + ") has been generated.",
+                        "/hr/payroll",
+                        "View Payslip",
+                        "STAFF_PAYROLL",
+                        String.valueOf(saved.getId()),
+                        Map.of(
+                                "payrollId", saved.getId(),
+                                "payrollMonth", payrollMonth,
+                                "payrollYear", payrollYear,
+                                "netPayableSalary", net
+                        )
+                );
+            }
         }
 
         return result;
@@ -228,7 +282,31 @@ public class StaffPayrollService {
             payroll.setPaymentDate(LocalDate.now());
         }
 
-        return mapToDTO(staffPayrollRepository.save(payroll));
+        StaffPayroll saved = staffPayrollRepository.save(payroll);
+
+        if (notificationService != null && "PAID".equalsIgnoreCase(saved.getStatus()) && saved.getStaff() != null) {
+            notificationService.notifyStaffMember(
+                    schoolId,
+                    saved.getStaff(),
+                    NotificationType.PAYROLL_PAID,
+                    NotificationPriority.HIGH,
+                    "Salary Disbursed (" + saved.getPayrollMonth() + " " + saved.getPayrollYear() + ")",
+                    "Your salary of " + saved.getNetPayableSalary() + " for " + saved.getPayrollMonth() + " "
+                            + saved.getPayrollYear() + " has been marked as PAID on " + saved.getPaymentDate() + ".",
+                    "/hr/payroll",
+                    "Download Payslip",
+                    "STAFF_PAYROLL",
+                    String.valueOf(saved.getId()),
+                    Map.of(
+                            "payrollId", saved.getId(),
+                            "payrollMonth", saved.getPayrollMonth(),
+                            "payrollYear", saved.getPayrollYear(),
+                            "netPayableSalary", saved.getNetPayableSalary()
+                    )
+            );
+        }
+
+        return mapToDTO(saved);
     }
 
     // Salary Advances

@@ -10,6 +10,7 @@ import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.repository.finance.FeeGenerationBatchRepository;
 import com.school.erp.service.finance.FeeDueService;
+import com.school.erp.service.notification.NotificationService;
 import com.school.erp.entity.finance.FeeDue;
 import com.school.erp.entity.finance.FeeCategory;
 import com.school.erp.entity.superadmin.School;
@@ -20,8 +21,11 @@ import com.school.erp.entity.finance.CollectionPlan;
 import com.school.erp.entity.finance.CollectionPlanItem;
 import com.school.erp.entity.finance.StudentFeeStructure;
 import com.school.erp.entity.finance.FeeGenerationBatch;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.repository.finance.FeeStructureRepository;
 import com.school.erp.repository.finance.StudentFeeStructureRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +35,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.Optional;
 
@@ -45,6 +50,9 @@ public class FeeDueServiceImpl implements FeeDueService {
     private final FeeStructureRepository feeStructureRepository;
     private final StudentFeeStructureRepository studentFeeStructureRepository;
     private final FeeGenerationBatchRepository feeGenerationBatchRepository;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     public FeeDueServiceImpl(FeeDueRepository feeDueRepository, FeeCategoryRepository feeCategoryRepository, SchoolRepository schoolRepository, StudentRepository studentRepository, FeeStructureRepository feeStructureRepository, StudentFeeStructureRepository studentFeeStructureRepository, FeeGenerationBatchRepository feeGenerationBatchRepository) {
         this.feeDueRepository = feeDueRepository;
@@ -72,23 +80,68 @@ public class FeeDueServiceImpl implements FeeDueService {
 
         return dues.stream().map(due -> {
             try {
-                return new FeeDueResponse(
-                        due.getId(),
-                        due.getTitle(),
-                        due.getAmount(),
-                        due.getPaidAmount() != null ? due.getPaidAmount() : java.math.BigDecimal.ZERO,
-                        due.getDiscountAmount() != null ? due.getDiscountAmount() : java.math.BigDecimal.ZERO,
-                        due.getDueDate(),
-                        due.getStatus(),
-                        due.getFeeCategory() != null ? due.getFeeCategory().getId() : null,
-                        due.getFeeCategory() != null ? due.getFeeCategory().getName() : "Unknown",
-                        due.getTermName()
-                );
+                return mapToFeeDueResponse(due);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
         }).filter(java.util.Objects::nonNull).collect(Collectors.toList());
+    }
+
+    private FeeDueResponse mapToFeeDueResponse(FeeDue due) {
+        Long categoryId = null;
+        String categoryName = null;
+
+        if (due.getFeeCategory() != null) {
+            categoryId = due.getFeeCategory().getId();
+            categoryName = due.getFeeCategory().getName();
+        } else if (due.getFeeStructure() != null && due.getFeeStructure().getItems() != null && !due.getFeeStructure().getItems().isEmpty()) {
+            FeeCategory resolvedCat = due.getFeeStructure().getItems().stream()
+                    .filter(it -> Boolean.TRUE.equals(it.getIsPartOfCollectionPlan()) && it.getFeeCategory() != null)
+                    .sorted((a, b) -> (b.getAmount() != null ? b.getAmount() : BigDecimal.ZERO)
+                            .compareTo(a.getAmount() != null ? a.getAmount() : BigDecimal.ZERO))
+                    .map(FeeStructureItem::getFeeCategory)
+                    .findFirst()
+                    .orElseGet(() -> due.getFeeStructure().getItems().get(0).getFeeCategory());
+            if (resolvedCat != null) {
+                categoryId = resolvedCat.getId();
+                categoryName = resolvedCat.getName();
+            }
+        }
+
+        if (categoryId == null && due.getSchool() != null && due.getSchool().getId() != null) {
+            try {
+                List<FeeCategory> schoolCats = feeCategoryRepository.findBySchoolId(due.getSchool().getId());
+                if (schoolCats != null && !schoolCats.isEmpty()) {
+                    FeeCategory tuitionCat = schoolCats.stream()
+                            .filter(c -> c.getName() != null && c.getName().toLowerCase().contains("tuition"))
+                            .findFirst()
+                            .orElse(schoolCats.get(0));
+                    categoryId = tuitionCat.getId();
+                    if (categoryName == null || categoryName.isBlank() || "Unknown".equalsIgnoreCase(categoryName)) {
+                        categoryName = tuitionCat.getName();
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        if (categoryName == null || categoryName.isBlank() || "Unknown".equalsIgnoreCase(categoryName)) {
+            categoryName = (due.getTitle() != null && !due.getTitle().isBlank()) ? due.getTitle() : "Tuition Fee";
+        }
+
+        return new FeeDueResponse(
+                due.getId(),
+                due.getTitle(),
+                due.getAmount(),
+                due.getPaidAmount() != null ? due.getPaidAmount() : BigDecimal.ZERO,
+                due.getDiscountAmount() != null ? due.getDiscountAmount() : BigDecimal.ZERO,
+                due.getDueDate(),
+                due.getStatus(),
+                categoryId,
+                categoryName,
+                due.getTermName()
+        );
     }
 
     @Override
@@ -113,18 +166,27 @@ public class FeeDueServiceImpl implements FeeDueService {
 
         feeDueRepository.save(due);
 
-        return new FeeDueResponse(
-                due.getId(),
-                due.getTitle(),
-                due.getAmount(),
-                due.getPaidAmount() != null ? due.getPaidAmount() : java.math.BigDecimal.ZERO,
-                due.getDiscountAmount() != null ? due.getDiscountAmount() : java.math.BigDecimal.ZERO,
-                due.getDueDate(),
-                due.getStatus(),
-                due.getFeeCategory() != null ? due.getFeeCategory().getId() : null,
-                due.getFeeCategory() != null ? due.getFeeCategory().getName() : "Unknown",
-                due.getTermName()
-        );
+        if (notificationService != null && due.getStudent() != null) {
+            notificationService.notifyStudentAndParents(
+                    schoolId,
+                    due.getStudent(),
+                    NotificationType.FEE_DISCOUNT_APPLIED,
+                    NotificationPriority.MEDIUM,
+                    "Fee Discount Applied: " + due.getTitle(),
+                    "A discount of " + request.discountAmount() + " has been applied to " + due.getTitle() + " for " + due.getStudent().getName() + ".",
+                    "/finance/dues",
+                    "View Fee Dues",
+                    "FEE_DUE",
+                    String.valueOf(due.getId()),
+                    Map.of(
+                            "feeDueId", due.getId(),
+                            "discountAmount", request.discountAmount(),
+                            "title", due.getTitle()
+                    )
+            );
+        }
+
+        return mapToFeeDueResponse(due);
     }
 
     @Override
@@ -216,6 +278,17 @@ public class FeeDueServiceImpl implements FeeDueService {
                 newDues.add(due);
             }
             
+            FeeCategory planCategory = null;
+            if (activeStructure.getItems() != null && !activeStructure.getItems().isEmpty()) {
+                planCategory = activeStructure.getItems().stream()
+                        .filter(it -> Boolean.TRUE.equals(it.getIsPartOfCollectionPlan()) && it.getFeeCategory() != null)
+                        .sorted((a, b) -> (b.getAmount() != null ? b.getAmount() : BigDecimal.ZERO)
+                                .compareTo(a.getAmount() != null ? a.getAmount() : BigDecimal.ZERO))
+                        .map(FeeStructureItem::getFeeCategory)
+                        .findFirst()
+                        .orElseGet(() -> activeStructure.getItems().get(0).getFeeCategory());
+            }
+
             BigDecimal totalDistributed = BigDecimal.ZERO;
             List<CollectionPlanItem> planItems = collectionPlan.getItems();
             planItems.sort((a, b) -> a.getSequenceOrder().compareTo(b.getSequenceOrder()));
@@ -236,6 +309,7 @@ public class FeeDueServiceImpl implements FeeDueService {
                 due.setSchool(student.getSchool());
                 due.setFeeStructure(activeStructure);
                 due.setCollectionPlanItem(cpItem);
+                due.setFeeCategory(planCategory);
                 due.setIsAdHoc(false);
                 due.setTitle(cpItem.getLabel());
                 due.setAmount(amountForThisInst);
@@ -359,7 +433,29 @@ public class FeeDueServiceImpl implements FeeDueService {
         batch.setGeneratedBy(generatedBy);
         batch.setGeneratedAt(LocalDateTime.now());
 
-        feeGenerationBatchRepository.save(batch);
+        FeeGenerationBatch savedBatch = feeGenerationBatchRepository.save(batch);
+
+        if (notificationService != null) {
+            for (Student student : eligibleStudents) {
+                notificationService.notifyStudentAndParents(
+                        schoolId,
+                        student,
+                        NotificationType.FEE_INVOICE_GENERATED,
+                        NotificationPriority.MEDIUM,
+                        "Fee Invoice Generated (" + feeStructure.getSchoolClass().getName() + ")",
+                        "Fee dues totaling " + perStudentTotal + " have been generated for " + student.getName() + ".",
+                        "/finance/dues",
+                        "Pay Fees",
+                        "FEE_GENERATION_BATCH",
+                        String.valueOf(savedBatch.getId()),
+                        Map.of(
+                                "batchId", savedBatch.getId(),
+                                "studentId", student.getId(),
+                                "totalAmount", perStudentTotal
+                        )
+                );
+            }
+        }
     }
 
     @Override
@@ -381,17 +477,29 @@ public class FeeDueServiceImpl implements FeeDueService {
         due.setTermName("Ad-Hoc");
 
         due = feeDueRepository.save(due);
-        return new FeeDueResponse(
-                due.getId(),
-                due.getTitle(),
-                due.getAmount(),
-                BigDecimal.ZERO,
-                BigDecimal.ZERO,
-                due.getDueDate(),
-                due.getStatus(),
-                category.getId(),
-                category.getName(),
-                due.getTermName()
-        );
+
+        if (notificationService != null) {
+            notificationService.notifyStudentAndParents(
+                    schoolId,
+                    student,
+                    NotificationType.FEE_INVOICE_GENERATED,
+                    NotificationPriority.MEDIUM,
+                    "New Fee Assigned: " + due.getTitle(),
+                    "A fee of " + due.getAmount() + " for " + due.getTitle() + " has been assigned to " + student.getName()
+                            + (dueDate != null ? " (Due: " + dueDate + ")." : "."),
+                    "/finance/dues",
+                    "View Fee",
+                    "FEE_DUE",
+                    String.valueOf(due.getId()),
+                    Map.of(
+                            "feeDueId", due.getId(),
+                            "title", due.getTitle(),
+                            "amount", due.getAmount(),
+                            "dueDate", dueDate != null ? dueDate.toString() : ""
+                    )
+            );
+        }
+
+        return mapToFeeDueResponse(due);
     }
 }

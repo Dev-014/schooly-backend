@@ -3,6 +3,7 @@ package com.school.erp.controller.student;
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.student.StudentLeaveRequest;
 import com.school.erp.dto.student.StudentLeaveResponse;
+import com.school.erp.security.PermissionRequired;
 import com.school.erp.service.student.StudentLeaveService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,7 @@ public class StudentLeaveController {
     }
 
     @PutMapping("/{id}")
+    @PermissionRequired("leave_management.student_leaves.edit")
     public ResponseEntity<ApiResponse<StudentLeaveResponse>> updateLeave(
             @PathVariable Long id,
             @Valid @RequestBody StudentLeaveRequest request
@@ -45,6 +47,7 @@ public class StudentLeaveController {
     }
 
     @DeleteMapping("/{id}")
+    @PermissionRequired("leave_management.student_leaves.edit")
     public ResponseEntity<ApiResponse<Void>> deleteLeave(
             @PathVariable Long id,
             @RequestParam(required = false) Long schoolId

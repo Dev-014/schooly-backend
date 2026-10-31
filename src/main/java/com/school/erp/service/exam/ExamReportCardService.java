@@ -9,6 +9,8 @@ import com.school.erp.entity.exam.ExamReportCard;
 import com.school.erp.entity.exam.ExamReportCardBatch;
 import com.school.erp.entity.exam.ExamSetup;
 import com.school.erp.entity.exam.ExamTerm;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.academic.SchoolClassRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
@@ -19,7 +21,9 @@ import com.school.erp.repository.exam.ExamReportCardRepository;
 import com.school.erp.repository.exam.ExamSetupRepository;
 import com.school.erp.repository.exam.ExamTermRepository;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +52,9 @@ public class ExamReportCardService {
     private final StudentRepository studentRepository;
     private final ExamMarkRepository examMarkRepository;
     private final com.school.erp.repository.academic.AcademicYearRepository academicYearRepository;
+
+    @Autowired(required = false)
+    private NotificationService notificationService;
 
     @Transactional(readOnly = true)
     public ReportCardQueueStatusResponse getQueueStatus(Long rawSchoolId) {
@@ -118,8 +125,6 @@ public class ExamReportCardService {
                 count = studentRepository.countBySchoolIdAndSchoolClassId(schoolId, classId);
             }
         }
-
-
 
         return ReportCardCriteriaCountResponse.builder()
                 .studentCount(count)
@@ -201,6 +206,33 @@ public class ExamReportCardService {
             examReportCardRepository.save(card);
         }
 
+        if (notificationService != null) {
+            String examLabel = setup != null ? setup.getName() : term.getName();
+            notificationService.notifyClassAndSection(
+                    schoolId,
+                    sc.getId(),
+                    sec != null ? sec.getId() : null,
+                    true,
+                    true,
+                    true,
+                    NotificationType.EXAM_RESULT_PUBLISHED,
+                    NotificationPriority.HIGH,
+                    "Exam Results Published: " + examLabel,
+                    "Report cards for " + examLabel + " (" + batchName + ") have been published and are ready to view.",
+                    "/exams/report-cards",
+                    "View Report Card",
+                    "EXAM_REPORT_CARD_BATCH",
+                    String.valueOf(savedBatch.getId()),
+                    Map.of(
+                            "batchId", savedBatch.getId(),
+                            "termId", term.getId(),
+                            "termName", term.getName(),
+                            "classId", sc.getId(),
+                            "className", sc.getName()
+                    )
+            );
+        }
+
         return ReportCardQueueStatusResponse.builder()
                 .batchName("Batch Processing")
                 .progressPercent(new BigDecimal("100.00"))
@@ -258,15 +290,29 @@ public class ExamReportCardService {
 
     @Transactional(readOnly = true)
     public List<StudentReportCardResponse> getStudentReportCards(Long rawSchoolId, Long studentId, Long requestedAcademicYearId) {
+        return getStudentReportCards(rawSchoolId, studentId, requestedAcademicYearId, null, null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StudentReportCardResponse> getStudentReportCards(
+            Long rawSchoolId, Long studentId, Long requestedAcademicYearId, Long requestedTermId, Long requestedExamSetupId) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
         List<ExamReportCard> cards = examReportCardRepository.findBySchoolIdAndStudentId(schoolId, studentId);
 
         if (!cards.isEmpty()) {
             return cards.stream()
                     .filter(c -> {
-                        if (requestedAcademicYearId == null) return true;
-                        com.school.erp.entity.academic.AcademicYear ay = resolveAcademicYear(c.getTerm(), schoolId);
-                        return ay != null && requestedAcademicYearId.equals(ay.getId());
+                        if (requestedAcademicYearId != null) {
+                            com.school.erp.entity.academic.AcademicYear ay = resolveAcademicYear(c.getTerm(), schoolId);
+                            if (ay == null || !requestedAcademicYearId.equals(ay.getId())) return false;
+                        }
+                        if (requestedTermId != null && (c.getTerm() == null || !requestedTermId.equals(c.getTerm().getId()))) {
+                            return false;
+                        }
+                        if (requestedExamSetupId != null && (c.getExamSetup() == null || !requestedExamSetupId.equals(c.getExamSetup().getId()))) {
+                            return false;
+                        }
+                        return true;
                     })
                     .map(c -> {
                 com.school.erp.entity.academic.AcademicYear ay = resolveAcademicYear(c.getTerm(), schoolId);
@@ -340,6 +386,12 @@ public class ExamReportCardService {
             Long ayId = ay != null ? ay.getId() : null;
 
             if (requestedAcademicYearId != null && (ayId == null || !requestedAcademicYearId.equals(ayId))) {
+                continue;
+            }
+            if (requestedTermId != null && (term == null || !requestedTermId.equals(term.getId()))) {
+                continue;
+            }
+            if (requestedExamSetupId != null && (setup.getId() == null || !requestedExamSetupId.equals(setup.getId()))) {
                 continue;
             }
 

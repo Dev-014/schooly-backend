@@ -3,17 +3,21 @@ package com.school.erp.service.frontoffice;
 import com.school.erp.dto.frontoffice.GatePassRequest;
 import com.school.erp.dto.frontoffice.GatePassResponse;
 import com.school.erp.dto.frontoffice.GatePassStatsResponse;
+import com.school.erp.entity.notification.NotificationPriority;
+import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.hr.Staff;
 import com.school.erp.entity.student.Student;
 import com.school.erp.entity.frontoffice.GatePass;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.security.AuthContextService;
+import com.school.erp.service.notification.NotificationService;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.hr.StaffRepository;
 import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.repository.frontoffice.GatePassRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +38,9 @@ public class GatePassService {
     private final StudentRepository studentRepository;
     private final StaffRepository staffRepository;
 
+    @Autowired(required = false)
+    private NotificationService notificationService;
+
     @Transactional(readOnly = true)
     public Page<GatePassResponse> filterGatePasses(
             Long rawSchoolId,
@@ -42,7 +50,6 @@ public class GatePassService {
             String status,
             Pageable pageable) {
         final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
-        
 
         String cleanSearch = (search != null && !search.isBlank()) ? search.trim() : null;
         String cleanRole = (role != null && !role.isBlank() && !role.equalsIgnoreCase("all")) ? role.trim() : null;
@@ -102,6 +109,61 @@ public class GatePassService {
         }
 
         GatePass saved = gatePassRepository.save(gatePass);
+
+        if (notificationService != null) {
+            String title = "Gate Pass Issued (" + saved.getPassNumber() + ")";
+            String message = "Gate pass " + saved.getPassNumber() + " has been issued for " + saved.getPersonName()
+                    + " at " + saved.getExitTime() + " (Reason: " + saved.getReasonForExit() + ").";
+            Map<String, Object> metadata = Map.of(
+                    "gatePassId", saved.getId(),
+                    "passNumber", saved.getPassNumber(),
+                    "personName", saved.getPersonName()
+            );
+
+            if (saved.getStudent() != null) {
+                notificationService.notifyStudentAndParents(
+                        schoolId,
+                        saved.getStudent(),
+                        NotificationType.GATE_PASS_ISSUED,
+                        NotificationPriority.HIGH,
+                        title,
+                        message,
+                        "/front-office/gate-passes",
+                        "View Gate Pass",
+                        "GATE_PASS",
+                        String.valueOf(saved.getId()),
+                        metadata
+                );
+            }
+            if (saved.getStaff() != null) {
+                notificationService.notifyStaffMember(
+                        schoolId,
+                        saved.getStaff(),
+                        NotificationType.GATE_PASS_ISSUED,
+                        NotificationPriority.MEDIUM,
+                        title,
+                        message,
+                        "/front-office/gate-passes",
+                        "View Gate Pass",
+                        "GATE_PASS",
+                        String.valueOf(saved.getId()),
+                        metadata
+                );
+            }
+            notificationService.notifySchoolAdmins(
+                    schoolId,
+                    NotificationType.GATE_PASS_ISSUED,
+                    NotificationPriority.LOW,
+                    title,
+                    message,
+                    "/front-office/gate-passes",
+                    "View Gate Pass",
+                    "GATE_PASS",
+                    String.valueOf(saved.getId()),
+                    metadata
+            );
+        }
+
         return mapToResponse(saved);
     }
 
