@@ -114,7 +114,7 @@ class FeeRecordServiceImplTest {
 
         // Verify repository called with assigned classes
         verify(studentRepository).findBySchoolIdAndSearchAndClassIdIn(eq(1L), eq(""), eq(List.of(10L, 11L)), any());
-        verify(studentRepository, never()).findBySchoolIdAndSearchAndClassId(any(), any(), any(), any());
+        verify(studentRepository, never()).findBySchoolIdAndSearchAndClassIdAndSectionId(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -152,7 +152,7 @@ class FeeRecordServiceImplTest {
         student.setFirstName("Pooja");
         student.setLastName("Patel");
 
-        when(studentRepository.findBySchoolIdAndSearchAndClassId(eq(1L), eq(""), eq(null), any()))
+        when(studentRepository.findBySchoolIdAndSearchAndClassIdAndSectionId(eq(1L), eq(""), eq(null), eq(null), any()))
                 .thenReturn(new PageImpl<>(List.of(student)));
 
         StudentFeeAggregation agg = mock(StudentFeeAggregation.class);
@@ -165,7 +165,7 @@ class FeeRecordServiceImplTest {
 
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getStatus()).isEqualTo("PAID");
-        verify(studentRepository).findBySchoolIdAndSearchAndClassId(eq(1L), eq(""), eq(null), any());
+        verify(studentRepository).findBySchoolIdAndSearchAndClassIdAndSectionId(eq(1L), eq(""), eq(null), eq(null), any());
     }
 
     @Test
@@ -185,7 +185,7 @@ class FeeRecordServiceImplTest {
         when(agg.getTotalFees()).thenReturn(new BigDecimal("100000.00"));
         when(agg.getAmountPaid()).thenReturn(new BigDecimal("70000.00"));
 
-        when(feeDueRepository.aggregateClassFeeStats(eq(1L), eq(List.of(10L)))).thenReturn(agg);
+        when(feeDueRepository.aggregateClassAndSectionFeeStats(eq(1L), eq(List.of(10L)), isNull())).thenReturn(agg);
 
         FeeStatsDTO stats = feeRecordService.getFeeStats(1L, null);
 
@@ -193,7 +193,7 @@ class FeeRecordServiceImplTest {
         assertThat(stats.getTotalCollected()).isEqualByComparingTo("70000.00");
         assertThat(stats.getOverdueBalance()).isEqualByComparingTo("30000.00");
 
-        verify(feeDueRepository).aggregateClassFeeStats(eq(1L), eq(List.of(10L)));
+        verify(feeDueRepository).aggregateClassAndSectionFeeStats(eq(1L), eq(List.of(10L)), isNull());
         verify(feeDueRepository, never()).aggregateSchoolFeeStats(any());
     }
 }
