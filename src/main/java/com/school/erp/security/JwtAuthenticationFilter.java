@@ -40,7 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String uri = request.getRequestURI();
         String servletPath = request.getServletPath();
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod()) || isPublicPath(uri) || isPublicPath(servletPath)) {
+        String method = request.getMethod();
+        if ("OPTIONS".equalsIgnoreCase(method) || isPublicPath(uri, method) || isPublicPath(servletPath, method)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -88,7 +89,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    private boolean isPublicPath(String requestUri) {
+    private boolean isPublicPath(String requestUri, String method) {
         if (requestUri == null) {
             return false;
         }
@@ -98,6 +99,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             requestUri.equals("/api/v1/auth/me") || requestUri.equals("/api/v1/auth/logout") || requestUri.equals("/api/v1/auth/stop-impersonation")) {
             return false;
         }
+
+        // Public access for Front CMS endpoints (Website pages, banners, galleries, notices, settings, menus)
+        if (requestUri.startsWith("/api/v1/cms") || requestUri.startsWith("/api/cms")) {
+            return true;
+        }
+
         return requestUri.equals("/health") ||
                requestUri.startsWith("/auth/") ||
                requestUri.startsWith("/api/auth/") ||

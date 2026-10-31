@@ -290,7 +290,17 @@ public class CmsService {
 
     @Transactional(readOnly = true)
     public List<CmsPageDto> getAllPages(Long schoolId, String search) {
-        return pageRepository.searchPages(schoolId, search).stream()
+        List<CmsPage> pages;
+        if (search == null || search.trim().isEmpty()) {
+            if (schoolId == null) {
+                pages = pageRepository.findAllByOrderByIdDesc();
+            } else {
+                pages = pageRepository.findBySchoolIdOrderByIdDesc(schoolId);
+            }
+        } else {
+            pages = pageRepository.searchPages(schoolId, search.trim());
+        }
+        return pages.stream()
                 .map(this::toPageDto)
                 .collect(Collectors.toList());
     }
@@ -813,19 +823,52 @@ public class CmsService {
     }
 
     private void seedPages() {
-        if (pageRepository.count() > 0) return;
-        pageRepository.save(CmsPage.builder()
-                .title("About Us")
-                .pageType("Standard")
-                .url("https://erp.schooly.com/page/about-us")
-                .description("<p>Empowering minds and inspiring generations with world-class educational experiences.</p>")
-                .build());
-        pageRepository.save(CmsPage.builder()
-                .title("Admissions Overview")
-                .pageType("Standard")
-                .url("https://erp.schooly.com/page/admissions")
-                .description("<p>Comprehensive guide to applicant eligibility, requirements, scholarship tests, and enrollment procedures.</p>")
-                .build());
+        seedPageIfMissing("About Us", "Standard", "https://erp.schooly.com/pages/about-us",
+                "<p>Empowering minds and inspiring generations with world-class educational experiences, leadership values, and research-led holistic instruction.</p>",
+                "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800&auto=format&fit=crop&q=80");
+        seedPageIfMissing("Philosophy", "Standard", "https://erp.schooly.com/pages/philosophy",
+                "<p>Our core pedagogical philosophy, student-centric learning ethos, and values-driven holistic curriculum that nurtures global citizens.</p>",
+                "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&auto=format&fit=crop&q=80");
+        seedPageIfMissing("Principal Message", "Standard", "https://erp.schooly.com/pages/principal-message",
+                "<p>Term circular from the Principal outlining co-curricular activities, exam preparedness, scientific rigor, and mentor guidance.</p>",
+                "https://images.unsplash.com/photo-1577495508048-b635879837f1?w=800&auto=format&fit=crop&q=80");
+        seedPageIfMissing("Manager Message", "Standard", "https://erp.schooly.com/pages/manager-message",
+                "<p>Institutional administrative manager welcome note, operational highlights, state-of-the-art campus infrastructure, and community updates.</p>",
+                null);
+        seedPageIfMissing("Principal's Message", "Standard", "https://erp.schooly.com/pages/principals-message",
+                "<p>Annual welcome letter from the Principal, inspiring academic excellence, integrity, character development, and lifelong learning.</p>",
+                null);
+        seedPageIfMissing("CEO Message", "Standard", "https://erp.schooly.com/pages/ceo-message-t",
+                "<p>Address from the Chief Executive Officer outlining leadership principles, continuous investment in STEM, and the vision for institutional growth.</p>",
+                "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800&auto=format&fit=crop&q=80");
+        seedPageIfMissing("Admissions Policy", "Standard", "https://erp.schooly.com/pages/admissions-policy",
+                "<p>Comprehensive guide to applicant eligibility, requirements, scholarship entrance tests, reservation criteria, and enrollment procedures for the 2026-27 academic year.</p>",
+                "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=80");
+        seedPageIfMissing("Our Faculty", "Standard", "https://erp.schooly.com/pages/faculty-staff",
+                "<p>Meet our distinguished educators, doctoral faculty, department chairs, and career counselors who provide continuous academic mentorship and pastoral care.</p>",
+                "https://images.unsplash.com/photo-1577495508048-b635879837f1?w=800&auto=format&fit=crop&q=80");
+        seedPageIfMissing("Careers & Recruitment", "Standard", "https://erp.schooly.com/pages/careers",
+                "<p>Join our progressive educational team. Explore open faculty positions, teaching fellowships, competitive benefits packages, and career advancement opportunities.</p>",
+                "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&auto=format&fit=crop&q=80");
+        seedPageIfMissing("Contact Us", "Standard", "https://erp.schooly.com/pages/contact-us",
+                "<p>Connect with campus admissions, student counseling, infirmary services, and principal secretariats. Campus hours: Monday to Friday (8:00 AM – 3:30 PM).</p>",
+                "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop&q=80");
+        seedPageIfMissing("School Motto", "Standard", "https://erp.schooly.com/pages/school-motto",
+                "<p>Knowledge, Integrity, and Excellence — our historic motto, shield heritage, and institutional crest history.</p>",
+                null);
+    }
+
+    private void seedPageIfMissing(String title, String pageType, String url, String description, String featuredImage) {
+        if (!pageRepository.existsByTitleIgnoreCase(title)) {
+            pageRepository.save(CmsPage.builder()
+                    .title(title)
+                    .pageType(pageType)
+                    .url(url)
+                    .description(description)
+                    .featuredImage(featuredImage)
+                    .sidebar(true)
+                    .build());
+        }
     }
 
     private void seedMenus() {
