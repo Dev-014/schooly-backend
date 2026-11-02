@@ -41,7 +41,7 @@ public class StudentFeeController {
     private final StudentParentRepository studentParentRepository;
 
     @GetMapping("/dues")
-    @PermissionRequired("fees.student_fees.view")
+    @PermissionRequired({"fees.student_fees.view", "fees.collect_fees.view", "fees.search_due_fees.view"})
     public ResponseEntity<ApiResponse<List<FeeDueResponse>>> getMyDues(
             @RequestParam(required = false) Long studentId) {
         ResolvedFeeContext ctx = resolveTargetStudent(studentId);
@@ -50,7 +50,7 @@ public class StudentFeeController {
     }
 
     @GetMapping("/payments")
-    @PermissionRequired("fees.student_fees.view")
+    @PermissionRequired({"fees.student_fees.view", "fees.collect_fees.view", "fees.payment_receipts.view"})
     public ResponseEntity<ApiResponse<Page<PaymentResponse>>> getMyPayments(
             @RequestParam(required = false) Long studentId,
             @RequestParam(defaultValue = "0") int page,
@@ -63,7 +63,7 @@ public class StudentFeeController {
     }
 
     @GetMapping("/summary")
-    @PermissionRequired("fees.student_fees.view")
+    @PermissionRequired({"fees.student_fees.view", "fees.collect_fees.view", "fees.search_due_fees.view"})
     public ResponseEntity<ApiResponse<StudentFeeSummaryResponse>> getMyFeeSummary(
             @RequestParam(required = false) Long studentId) {
         ResolvedFeeContext ctx = resolveTargetStudent(studentId);

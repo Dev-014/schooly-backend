@@ -154,4 +154,27 @@ class StudentFeeControllerTest {
                 .andExpect(jsonPath("$.data.content[0].receiptNumber").value("RCP-2026-001"))
                 .andExpect(jsonPath("$.data.content[0].amount").value(5000.00));
     }
+
+    @Test
+    void admin_GetStudentSummaryAndDues_Success() throws Exception {
+        AuthContextHolder.set(new AuthenticatedUser(10L, 1L, UserRole.ADMIN));
+
+        FeeDueResponse due = new FeeDueResponse(
+                1L, "Term 1 Tuition",
+                new BigDecimal("15000.00"), new BigDecimal("5000.00"), BigDecimal.ZERO,
+                LocalDate.now().plusDays(10), "PARTIAL", 1L, "Tuition", "Term 1"
+        );
+        when(feeDueService.getStudentDues(17L, 1L, null)).thenReturn(List.of(due));
+
+        mockMvc.perform(get("/api/v1/student/fees/summary").param("studentId", "17"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.totalFee").value(15000.00))
+                .andExpect(jsonPath("$.data.pendingAmount").value(10000.00));
+
+        mockMvc.perform(get("/api/v1/student/fees/dues").param("studentId", "17"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data[0].id").value(1));
+    }
 }
