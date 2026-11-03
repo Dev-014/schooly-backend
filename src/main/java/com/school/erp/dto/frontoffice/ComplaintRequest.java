@@ -30,5 +30,15 @@ public class ComplaintRequest {
 
     private String status;
 
+    private String complaintCode;
+
+    private Long createdByUserId;
+
+    private String createdByRole;
+
+    private String sourceScope;
+
+    private String priority;
+
     private LocalDate complaintDate;
 }

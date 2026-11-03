@@ -16,6 +16,7 @@ public class ComplaintResponse {
 
     private Long id;
     private Long schoolId;
+    private String complaintCode;
     private String complainantName;
     private String mobileNumber;
     private String complaintType;
@@ -23,6 +24,11 @@ public class ComplaintResponse {
     private String assignedBy;
     private String actionTaken;
     private String status;
+    private Long createdByUserId;
+    private String createdByRole;
+    private String sourceScope;
+    private String priority;
+    private Boolean isOwn;
     private LocalDate complaintDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

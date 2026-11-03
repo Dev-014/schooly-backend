@@ -41,4 +41,7 @@ public interface FeeDueRepository extends JpaRepository<FeeDue, Long> {
     StudentFeeAggregation aggregateSectionFeeStats(
             @org.springframework.data.repository.query.Param("schoolId") Long schoolId,
             @org.springframework.data.repository.query.Param("sectionId") Long sectionId);
+
+    @org.springframework.data.jpa.repository.Query("SELECT COALESCE(fc.name, 'Other'), COALESCE(SUM(d.amount), 0) FROM FeeDue d LEFT JOIN d.feeCategory fc WHERE d.school.id = :schoolId GROUP BY fc.name")
+    List<Object[]> sumFeesByCategory(@org.springframework.data.repository.query.Param("schoolId") Long schoolId);
 }

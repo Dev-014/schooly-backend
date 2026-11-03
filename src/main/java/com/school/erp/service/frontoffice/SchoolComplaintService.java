@@ -40,15 +40,27 @@ public class SchoolComplaintService {
             String search,
             String complaintType,
             String status,
+            String scope,
             Pageable pageable) {
         final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
         String cleanSearch = (search != null && !search.isBlank()) ? search.trim() : null;
-        String cleanType = (complaintType != null && !complaintType.isBlank() && !complaintType.equalsIgnoreCase("all")) ? complaintType.trim() : null;
-        String cleanStatus = (status != null && !status.isBlank() && !status.equalsIgnoreCase("all")) ? status.trim() : null;
+        String cleanType = (complaintType != null && !complaintType.isBlank() && !complaintType.equalsIgnoreCase("all"))
+                ? complaintType.trim()
+                : null;
+        String cleanStatus = (status != null && !status.isBlank() && !status.equalsIgnoreCase("all")) ? status.trim()
+                : null;
+
+        Long filterUserId = null;
+        if ("own".equalsIgnoreCase(scope)) {
+            com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+            if (currentUser != null && currentUser.userId() != null) {
+                filterUserId = currentUser.userId();
+            }
+        }
 
         Page<SchoolComplaint> page = schoolComplaintRepository.filterComplaints(
-                schoolId, cleanSearch, cleanType, cleanStatus, pageable);
+                schoolId, cleanSearch, cleanType, cleanStatus, filterUserId, pageable);
         return page.map(this::mapToResponse);
     }
 
@@ -68,6 +80,12 @@ public class SchoolComplaintService {
         School school = schoolRepository.findById(schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("School not found with id: " + schoolId));
 
+        com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+        Long creatorId = request.getCreatedByUserId() != null ? request.getCreatedByUserId()
+                : (currentUser != null ? currentUser.userId() : null);
+        String creatorRole = request.getCreatedByRole() != null ? request.getCreatedByRole()
+                : (currentUser != null && currentUser.role() != null ? currentUser.role().name() : null);
+
         SchoolComplaint complaint = new SchoolComplaint();
         complaint.setSchool(school);
         complaint.setComplainantName(request.getComplainantName());
@@ -76,10 +94,26 @@ public class SchoolComplaintService {
         complaint.setDescription(request.getDescription());
         complaint.setAssignedBy(request.getAssignedBy());
         complaint.setActionTaken(request.getActionTaken());
-        complaint.setStatus(request.getStatus() != null && !request.getStatus().isBlank() ? request.getStatus() : "Open");
+        complaint.setStatus(
+                request.getStatus() != null && !request.getStatus().isBlank() ? request.getStatus() : "Open");
         complaint.setComplaintDate(request.getComplaintDate() != null ? request.getComplaintDate() : LocalDate.now());
+        complaint.setCreatedByUserId(creatorId);
+        complaint.setCreatedByRole(creatorRole);
+        complaint.setSourceScope(
+                request.getSourceScope() != null && !request.getSourceScope().isBlank() ? request.getSourceScope()
+                        : "SCHOOL");
+        complaint.setPriority(
+                request.getPriority() != null && !request.getPriority().isBlank() ? request.getPriority() : "NORMAL");
+
+        if (request.getComplaintCode() != null && !request.getComplaintCode().isBlank()) {
+            complaint.setComplaintCode(request.getComplaintCode());
+        }
 
         SchoolComplaint saved = schoolComplaintRepository.save(complaint);
+        if (saved.getComplaintCode() == null || saved.getComplaintCode().isBlank()) {
+            saved.setComplaintCode(String.format("CMP-%05d", saved.getId()));
+            saved = schoolComplaintRepository.save(saved);
+        }
 
         if (notificationService != null) {
             notificationService.notifySchoolAdmins(
@@ -87,7 +121,8 @@ public class SchoolComplaintService {
                     NotificationType.COMPLAINT_FILED,
                     NotificationPriority.HIGH,
                     "New Complaint Filed (" + saved.getComplaintType() + ")",
-                    saved.getComplainantName() + " filed a " + saved.getComplaintType() + " complaint: \"" + saved.getDescription() + "\"",
+                    saved.getComplainantName() + " filed a " + saved.getComplaintType() + " complaint: \""
+                            + saved.getDescription() + "\"",
                     "/front-office/complaints",
                     "Review Complaint",
                     "SCHOOL_COMPLAINT",
@@ -95,9 +130,7 @@ public class SchoolComplaintService {
                     Map.of(
                             "complaintId", saved.getId(),
                             "complainantName", saved.getComplainantName(),
-                            "complaintType", saved.getComplaintType()
-                    )
-            );
+                            "complaintType", saved.getComplaintType()));
         }
 
         return mapToResponse(saved);
@@ -110,22 +143,38 @@ public class SchoolComplaintService {
         SchoolComplaint complaint = schoolComplaintRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Complaint not found with id: " + id));
 
+        com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+        boolean isOwner = currentUser != null && complaint.getCreatedByUserId() != null
+                && complaint.getCreatedByUserId().equals(currentUser.userId());
+        boolean isAdmin = currentUser != null && currentUser.role() != null
+                && (currentUser.role() == com.school.erp.entity.auth.UserRole.SUPER_ADMIN
+                        || currentUser.role() == com.school.erp.entity.auth.UserRole.ADMIN);
+
         String oldStatus = complaint.getStatus();
-        if (request.getComplainantName() != null && !request.getComplainantName().isBlank()) {
-            complaint.setComplainantName(request.getComplainantName());
+
+        // If NOT owner and NOT admin, only status and actionTaken can be updated!
+        if (isOwner || isAdmin) {
+            if (request.getComplainantName() != null && !request.getComplainantName().isBlank()) {
+                complaint.setComplainantName(request.getComplainantName());
+            }
+            complaint.setMobileNumber(request.getMobileNumber());
+            if (request.getComplaintType() != null && !request.getComplaintType().isBlank()) {
+                complaint.setComplaintType(request.getComplaintType());
+            }
+            complaint.setDescription(request.getDescription());
+            complaint.setAssignedBy(request.getAssignedBy());
+            if (request.getComplaintDate() != null) {
+                complaint.setComplaintDate(request.getComplaintDate());
+            }
+            if (request.getPriority() != null && !request.getPriority().isBlank()) {
+                complaint.setPriority(request.getPriority());
+            }
         }
-        complaint.setMobileNumber(request.getMobileNumber());
-        if (request.getComplaintType() != null && !request.getComplaintType().isBlank()) {
-            complaint.setComplaintType(request.getComplaintType());
-        }
-        complaint.setDescription(request.getDescription());
-        complaint.setAssignedBy(request.getAssignedBy());
+
+        // Status & actionTaken can be updated
         complaint.setActionTaken(request.getActionTaken());
         if (request.getStatus() != null && !request.getStatus().isBlank()) {
             complaint.setStatus(request.getStatus());
-        }
-        if (request.getComplaintDate() != null) {
-            complaint.setComplaintDate(request.getComplaintDate());
         }
 
         SchoolComplaint saved = schoolComplaintRepository.save(complaint);
@@ -157,23 +206,23 @@ public class SchoolComplaintService {
         if (notificationService == null || saved.getStatus() == null) {
             return;
         }
-        boolean nowResolved = "RESOLVED".equalsIgnoreCase(saved.getStatus()) || "CLOSED".equalsIgnoreCase(saved.getStatus());
+        boolean nowResolved = "RESOLVED".equalsIgnoreCase(saved.getStatus())
+                || "CLOSED".equalsIgnoreCase(saved.getStatus());
         if (nowResolved && !saved.getStatus().equalsIgnoreCase(oldStatus)) {
             notificationService.notifySchoolAdmins(
                     schoolId,
                     NotificationType.COMPLAINT_RESOLVED,
                     NotificationPriority.MEDIUM,
                     "Complaint " + saved.getStatus() + ": " + saved.getComplainantName(),
-                    "Complaint by " + saved.getComplainantName() + " (" + saved.getComplaintType() + ") has been marked as " + saved.getStatus() + ".",
+                    "Complaint by " + saved.getComplainantName() + " (" + saved.getComplaintType()
+                            + ") has been marked as " + saved.getStatus() + ".",
                     "/front-office/complaints",
                     "View Complaint",
                     "SCHOOL_COMPLAINT",
                     String.valueOf(saved.getId()),
                     Map.of(
                             "complaintId", saved.getId(),
-                            "status", saved.getStatus()
-                    )
-            );
+                            "status", saved.getStatus()));
         }
     }
 
@@ -197,7 +246,8 @@ public class SchoolComplaintService {
         YearMonth ym = YearMonth.now();
         LocalDate startOfMonth = ym.atDay(1);
         LocalDate endOfMonth = ym.atEndOfMonth();
-        long resolvedThisMonth = schoolComplaintRepository.countResolvedBetweenDates(schoolId, startOfMonth, endOfMonth);
+        long resolvedThisMonth = schoolComplaintRepository.countResolvedBetweenDates(schoolId, startOfMonth,
+                endOfMonth);
 
         return ComplaintStatsResponse.builder()
                 .totalComplaints(total)
@@ -208,9 +258,15 @@ public class SchoolComplaintService {
     }
 
     private ComplaintResponse mapToResponse(SchoolComplaint c) {
+        com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+        boolean isOwn = currentUser != null && c.getCreatedByUserId() != null
+                && c.getCreatedByUserId().equals(currentUser.userId());
+
         return ComplaintResponse.builder()
                 .id(c.getId())
                 .schoolId(c.getSchool().getId())
+                .complaintCode(
+                        c.getComplaintCode() != null ? c.getComplaintCode() : String.format("CMP-%05d", c.getId()))
                 .complainantName(c.getComplainantName())
                 .mobileNumber(c.getMobileNumber())
                 .complaintType(c.getComplaintType())
@@ -218,6 +274,11 @@ public class SchoolComplaintService {
                 .assignedBy(c.getAssignedBy())
                 .actionTaken(c.getActionTaken())
                 .status(c.getStatus())
+                .createdByUserId(c.getCreatedByUserId())
+                .createdByRole(c.getCreatedByRole())
+                .sourceScope(c.getSourceScope() != null ? c.getSourceScope() : "SCHOOL")
+                .priority(c.getPriority() != null ? c.getPriority() : "NORMAL")
+                .isOwn(isOwn)
                 .complaintDate(c.getComplaintDate())
                 .createdAt(c.getCreatedAt())
                 .updatedAt(c.getUpdatedAt())

@@ -11,6 +11,7 @@ public record DashboardKpiResponse(
         long staffTotal,
         long studentPresent,
         long studentTotal,
-        String collectionTrend
+        String collectionTrend,
+        BigDecimal monthlyIncome
 ) {
 }

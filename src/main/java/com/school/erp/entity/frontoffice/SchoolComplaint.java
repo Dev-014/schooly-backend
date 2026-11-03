@@ -50,6 +50,21 @@ public class SchoolComplaint {
     @Column(name = "status", nullable = false, length = 50)
     private String status = "Open";
 
+    @Column(name = "complaint_code", length = 50)
+    private String complaintCode;
+
+    @Column(name = "created_by_user_id")
+    private Long createdByUserId;
+
+    @Column(name = "created_by_role", length = 50)
+    private String createdByRole;
+
+    @Column(name = "source_scope", length = 50)
+    private String sourceScope = "SCHOOL";
+
+    @Column(name = "priority", length = 20)
+    private String priority = "NORMAL";
+
     @Column(name = "complaint_date")
     private LocalDate complaintDate = LocalDate.now();
 

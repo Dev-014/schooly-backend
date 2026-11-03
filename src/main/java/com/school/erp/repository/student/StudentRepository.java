@@ -92,4 +92,13 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     long countByFamilyId(Long familyId);
 
     long countByHouseIdAndGender(Long houseId, String gender);
+
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(s) FROM Student s WHERE s.school.id = :schoolId AND extract(month from s.admissionDate) = :month AND extract(year from s.admissionDate) = :year")
+    long countNewAdmissionsBySchoolAndMonthAndYear(@org.springframework.data.repository.query.Param("schoolId") Long schoolId, @org.springframework.data.repository.query.Param("month") int month, @org.springframework.data.repository.query.Param("year") int year);
+
+    @org.springframework.data.jpa.repository.Query("SELECT s FROM Student s LEFT JOIN FETCH s.schoolClass WHERE s.school.id = :schoolId AND extract(month from s.dateOfBirth) = :month AND extract(day from s.dateOfBirth) = :day")
+    List<Student> findStudentsWithBirthdayToday(@org.springframework.data.repository.query.Param("schoolId") Long schoolId, @org.springframework.data.repository.query.Param("month") int month, @org.springframework.data.repository.query.Param("day") int day);
+
+    @org.springframework.data.jpa.repository.Query("SELECT c.id, c.name, COUNT(s.id) FROM SchoolClass c LEFT JOIN Student s ON s.schoolClass.id = c.id AND s.school.id = :schoolId WHERE c.school.id = :schoolId GROUP BY c.id, c.name ORDER BY c.name ASC")
+    List<Object[]> countStudentsPerClass(@org.springframework.data.repository.query.Param("schoolId") Long schoolId);
 }

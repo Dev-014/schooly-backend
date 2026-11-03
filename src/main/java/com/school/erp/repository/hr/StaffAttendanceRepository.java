@@ -14,4 +14,5 @@ public interface StaffAttendanceRepository extends JpaRepository<StaffAttendance
     List<StaffAttendance> findBySchoolIdAndAttendanceDate(Long schoolId, java.time.LocalDate date);
     List<StaffAttendance> findByStaffIdAndAttendanceDateBetween(Long staffId, java.time.LocalDate startDate, java.time.LocalDate endDate);
     List<StaffAttendance> findBySchoolIdAndAttendanceDateBetween(Long schoolId, java.time.LocalDate startDate, java.time.LocalDate endDate);
+    long countBySchoolIdAndAttendanceDateAndStatus(Long schoolId, java.time.LocalDate attendanceDate, String status);
 }

@@ -48,4 +48,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             @Param("schoolId") Long schoolId,
             @Param("year") int year
     );
+
+    @Query("SELECT p.paymentMode, COALESCE(SUM(p.amount), 0), COUNT(p) FROM Payment p WHERE p.school.id = :schoolId GROUP BY p.paymentMode")
+    List<Object[]> sumAmountByPaymentMode(@Param("schoolId") Long schoolId);
 }

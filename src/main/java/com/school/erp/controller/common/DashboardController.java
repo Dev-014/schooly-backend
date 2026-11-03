@@ -3,6 +3,7 @@ package com.school.erp.controller.common;
 import com.school.erp.api.ApiResponse;
 import com.school.erp.dto.dashboard.ActivityFeedResponse;
 import com.school.erp.dto.dashboard.CollectionExpensePointResponse;
+import com.school.erp.dto.dashboard.DashboardBreakdownResponse;
 import com.school.erp.dto.dashboard.DashboardKpiResponse;
 import com.school.erp.service.common.DashboardService;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,46 @@ public class DashboardController {
         return ResponseEntity.ok(ApiResponse.success(
                 dashboardService.getCollectionVsExpense(schoolId, year),
                 "Collection vs expenses chart fetched successfully"
+        ));
+    }
+
+    @GetMapping("/earning-modes")
+    public ResponseEntity<ApiResponse<List<DashboardBreakdownResponse.EarningModeItem>>> getEarningModes(
+            @RequestParam(required = false) Long schoolId
+    ) {
+        return ResponseEntity.ok(ApiResponse.success(
+                dashboardService.getEarningModes(schoolId),
+                "Dashboard earning modes fetched successfully"
+        ));
+    }
+
+    @GetMapping("/fee-distribution")
+    public ResponseEntity<ApiResponse<List<DashboardBreakdownResponse.FeeDistributionItem>>> getFeeDistribution(
+            @RequestParam(required = false) Long schoolId
+    ) {
+        return ResponseEntity.ok(ApiResponse.success(
+                dashboardService.getFeeDistribution(schoolId),
+                "Dashboard fee distribution fetched successfully"
+        ));
+    }
+
+    @GetMapping("/class-distribution")
+    public ResponseEntity<ApiResponse<List<DashboardBreakdownResponse.ClassDistributionItem>>> getClassDistribution(
+            @RequestParam(required = false) Long schoolId
+    ) {
+        return ResponseEntity.ok(ApiResponse.success(
+                dashboardService.getClassDistribution(schoolId),
+                "Dashboard class distribution fetched successfully"
+        ));
+    }
+
+    @GetMapping("/student-birthdays")
+    public ResponseEntity<ApiResponse<List<DashboardBreakdownResponse.StudentBirthdayItem>>> getStudentBirthdays(
+            @RequestParam(required = false) Long schoolId
+    ) {
+        return ResponseEntity.ok(ApiResponse.success(
+                dashboardService.getStudentBirthdays(schoolId),
+                "Dashboard student birthdays fetched successfully"
         ));
     }
 
