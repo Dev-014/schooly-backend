@@ -80,16 +80,21 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                 
                 if ("PAID".equals(due.getStatus())) continue;
 
-                BigDecimal amountNeeded = due.getAmount().subtract(due.getPaidAmount());
+                BigDecimal discount = due.getDiscountAmount() != null ? due.getDiscountAmount() : BigDecimal.ZERO;
+                BigDecimal paid = due.getPaidAmount() != null ? due.getPaidAmount() : BigDecimal.ZERO;
+                BigDecimal amountNeeded = due.getAmount().subtract(paid).subtract(discount);
                 
                 if (amountNeeded.compareTo(BigDecimal.ZERO) > 0) {
                     BigDecimal allocated = amountNeeded.min(remainingToAllocate);
                     
-                    due.setPaidAmount(due.getPaidAmount().add(allocated));
-                    if (due.getPaidAmount().compareTo(due.getAmount()) >= 0) {
+                    BigDecimal newPaid = paid.add(allocated);
+                    due.setPaidAmount(newPaid);
+                    if (newPaid.add(discount).compareTo(due.getAmount()) >= 0) {
                         due.setStatus("PAID");
-                    } else {
+                    } else if (newPaid.compareTo(BigDecimal.ZERO) > 0) {
                         due.setStatus("PARTIAL");
+                    } else {
+                        due.setStatus("UNPAID");
                     }
                     feeDueRepository.save(due);
                     
@@ -102,6 +107,9 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                     allocations.add(new PaymentResponse.PaymentAllocationResponse(due.getId(), due.getTitle(), allocated));
 
                     remainingToAllocate = remainingToAllocate.subtract(allocated);
+                } else if (paid.add(discount).compareTo(due.getAmount()) >= 0) {
+                    due.setStatus("PAID");
+                    feeDueRepository.save(due);
                 }
             }
             

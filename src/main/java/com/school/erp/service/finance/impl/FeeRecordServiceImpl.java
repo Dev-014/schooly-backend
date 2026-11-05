@@ -106,12 +106,14 @@ public class FeeRecordServiceImpl implements FeeRecordService {
             StudentFeeAggregation agg = aggMap.get(student.getId());
             BigDecimal totalFees = agg != null && agg.getTotalFees() != null ? agg.getTotalFees() : BigDecimal.ZERO;
             BigDecimal amountPaid = agg != null && agg.getAmountPaid() != null ? agg.getAmountPaid() : BigDecimal.ZERO;
-            BigDecimal balance = totalFees.subtract(amountPaid);
+            BigDecimal discount = agg != null && agg.getDiscountAmount() != null ? agg.getDiscountAmount() : BigDecimal.ZERO;
+            BigDecimal settled = amountPaid.add(discount);
+            BigDecimal balance = totalFees.subtract(settled).max(BigDecimal.ZERO);
 
             String derivedStatus = "PENDING";
             if (totalFees.compareTo(BigDecimal.ZERO) > 0 && balance.compareTo(BigDecimal.ZERO) <= 0) {
                 derivedStatus = "PAID";
-            } else if (amountPaid.compareTo(BigDecimal.ZERO) > 0) {
+            } else if (settled.compareTo(BigDecimal.ZERO) > 0) {
                 derivedStatus = "PARTIAL";
             }
 
@@ -125,6 +127,7 @@ public class FeeRecordServiceImpl implements FeeRecordService {
                     null,
                     totalFees,
                     amountPaid,
+                    discount,
                     balance,
                     null,
                     derivedStatus
@@ -175,13 +178,14 @@ public class FeeRecordServiceImpl implements FeeRecordService {
 
         BigDecimal totalExpected = agg != null && agg.getTotalFees() != null ? agg.getTotalFees() : BigDecimal.ZERO;
         BigDecimal totalCollected = agg != null && agg.getAmountPaid() != null ? agg.getAmountPaid() : BigDecimal.ZERO;
-        BigDecimal overdueBalance = totalExpected.subtract(totalCollected);
+        BigDecimal totalDiscount = agg != null && agg.getDiscountAmount() != null ? agg.getDiscountAmount() : BigDecimal.ZERO;
+        BigDecimal overdueBalance = totalExpected.subtract(totalCollected).subtract(totalDiscount).max(BigDecimal.ZERO);
 
         return new FeeStatsDTO(
                 totalExpected,
                 totalCollected,
                 BigDecimal.ZERO,
-                overdueBalance.max(BigDecimal.ZERO),
+                overdueBalance,
                 0L
         );
     }

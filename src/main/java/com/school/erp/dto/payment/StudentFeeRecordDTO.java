@@ -20,6 +20,7 @@ public class StudentFeeRecordDTO {
     
     private BigDecimal totalFees;
     private BigDecimal amountPaid;
+    private BigDecimal discountAmount;
     private BigDecimal balance;
     
     private LocalDate lastPaymentDate;
@@ -28,6 +29,12 @@ public class StudentFeeRecordDTO {
     public StudentFeeRecordDTO(String id, String studentId, String studentName, String admissionNumber,
                                String classGroupName, String photoUrl, BigDecimal totalFees, BigDecimal amountPaid,
                                BigDecimal balance, LocalDate lastPaymentDate, String status) {
-        this(id, studentId, studentName, admissionNumber, classGroupName, null, photoUrl, totalFees, amountPaid, balance, lastPaymentDate, status);
+        this(id, studentId, studentName, admissionNumber, classGroupName, null, photoUrl, totalFees, amountPaid, BigDecimal.ZERO, balance, lastPaymentDate, status);
+    }
+
+    public StudentFeeRecordDTO(String id, String studentId, String studentName, String admissionNumber,
+                               String classGroupName, Long sectionId, String photoUrl, BigDecimal totalFees, BigDecimal amountPaid,
+                               BigDecimal balance, LocalDate lastPaymentDate, String status) {
+        this(id, studentId, studentName, admissionNumber, classGroupName, sectionId, photoUrl, totalFees, amountPaid, BigDecimal.ZERO, balance, lastPaymentDate, status);
     }
 }

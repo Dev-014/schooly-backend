@@ -6,4 +6,5 @@ public interface StudentFeeAggregation {
     Long getStudentId();
     BigDecimal getTotalFees();
     BigDecimal getAmountPaid();
+    BigDecimal getDiscountAmount();
 }

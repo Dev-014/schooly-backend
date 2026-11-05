@@ -130,14 +130,21 @@ public class FeeDueServiceImpl implements FeeDueService {
             categoryName = (due.getTitle() != null && !due.getTitle().isBlank()) ? due.getTitle() : "Tuition Fee";
         }
 
+        BigDecimal paid = due.getPaidAmount() != null ? due.getPaidAmount() : BigDecimal.ZERO;
+        BigDecimal discount = due.getDiscountAmount() != null ? due.getDiscountAmount() : BigDecimal.ZERO;
+        String status = due.getStatus();
+        if (due.getAmount() != null && paid.add(discount).compareTo(due.getAmount()) >= 0) {
+            status = "PAID";
+        }
+
         return new FeeDueResponse(
                 due.getId(),
                 due.getTitle(),
                 due.getAmount(),
-                due.getPaidAmount() != null ? due.getPaidAmount() : BigDecimal.ZERO,
-                due.getDiscountAmount() != null ? due.getDiscountAmount() : BigDecimal.ZERO,
+                paid,
+                discount,
                 due.getDueDate(),
-                due.getStatus(),
+                status,
                 categoryId,
                 categoryName,
                 due.getTermName()

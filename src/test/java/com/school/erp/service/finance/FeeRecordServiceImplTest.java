@@ -171,6 +171,40 @@ class FeeRecordServiceImplTest {
         }
 
         @Test
+        void getStudentFeeRecords_WhenStudentHasDiscount_ReflectsZeroBalanceAndPaidStatus() {
+                AuthenticatedUser adminUser = new AuthenticatedUser(1L, 1L, UserRole.ADMIN);
+                when(authContextService.getCurrentUserOrNull()).thenReturn(adminUser);
+
+                when(authorizationService.getEffectivePermissions(1L, 1L)).thenReturn(List.of(
+                                createRolePermission("fees.search_due_fees.view", "school")));
+
+                Student student = new Student();
+                student.setId(202L);
+                student.setFirstName("Paras");
+                student.setLastName("Patidar");
+
+                when(studentRepository.findBySchoolIdAndSearchAndClassIdAndSectionId(eq(1L), eq(""), eq(null), eq(null), any()))
+                                .thenReturn(new PageImpl<>(List.of(student)));
+
+                StudentFeeAggregation agg = mock(StudentFeeAggregation.class);
+                when(agg.getStudentId()).thenReturn(202L);
+                when(agg.getTotalFees()).thenReturn(new BigDecimal("30000.00"));
+                when(agg.getAmountPaid()).thenReturn(new BigDecimal("29400.00"));
+                when(agg.getDiscountAmount()).thenReturn(new BigDecimal("600.00"));
+                when(feeDueRepository.aggregateFeesByStudentIds(List.of(202L))).thenReturn(List.of(agg));
+
+                Page<StudentFeeRecordDTO> result = feeRecordService.getStudentFeeRecords(1L, null, "", null,
+                                PageRequest.of(0, 50));
+
+                assertThat(result.getContent()).hasSize(1);
+                StudentFeeRecordDTO record = result.getContent().get(0);
+                assertThat(record.getStatus()).isEqualTo("PAID");
+                assertThat(record.getBalance()).isEqualByComparingTo("0.00");
+                assertThat(record.getAmountPaid()).isEqualByComparingTo("29400.00");
+                assertThat(record.getDiscountAmount()).isEqualByComparingTo("600.00");
+        }
+
+        @Test
         void getFeeStats_WhenTeacherHasClassScope_AggregatesOnlyAssignedClasses() {
                 AuthenticatedUser teacherUser = new AuthenticatedUser(200L, 1L, UserRole.TEACHER);
                 when(authContextService.getCurrentUserOrNull()).thenReturn(teacherUser);
