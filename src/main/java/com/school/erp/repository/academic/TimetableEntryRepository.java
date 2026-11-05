@@ -1,6 +1,7 @@
 package com.school.erp.repository.academic;
 
 import com.school.erp.entity.academic.TimetableEntry;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,8 +10,13 @@ import java.util.Optional;
 
 @Repository
 public interface TimetableEntryRepository extends JpaRepository<TimetableEntry, Long> {
+    @EntityGraph(attributePaths = {"school", "schoolClass", "section", "academicYear", "subject", "teacher"})
     List<TimetableEntry> findBySchoolId(Long schoolId);
+
+    @EntityGraph(attributePaths = {"school", "schoolClass", "section", "academicYear", "subject", "teacher"})
     List<TimetableEntry> findBySchoolIdAndAcademicYearId(Long schoolId, Long academicYearId);
+
+    @EntityGraph(attributePaths = {"school", "schoolClass", "section", "academicYear", "subject"})
     List<TimetableEntry> findBySchoolIdAndTeacherId(Long schoolId, Long teacherId);
     List<TimetableEntry> findBySchoolIdAndSchoolClassIdAndAcademicYearId(Long schoolId, Long classId, Long academicYearId);
     List<TimetableEntry> findBySchoolIdAndSchoolClassIdAndSectionIdAndAcademicYearId(Long schoolId, Long classId, Long sectionId, Long academicYearId);

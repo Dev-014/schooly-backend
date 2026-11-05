@@ -22,6 +22,11 @@ public class StaffLeaveRequest {
     private LocalDate endDate;
 
     private String reason;
+    private String status;
+    private String reply;
+    private java.util.UUID attachmentFileId;
+    private String attachmentFileName;
+    private String attachmentUrl;
 
     @JsonProperty("fromDate")
     public void setFromDate(LocalDate fromDate) {

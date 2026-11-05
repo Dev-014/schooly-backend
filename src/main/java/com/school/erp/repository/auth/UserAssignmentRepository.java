@@ -8,6 +8,10 @@ import java.util.List;
 
 @Repository
 public interface UserAssignmentRepository extends JpaRepository<UserAssignment, Long> {
+    List<UserAssignment> findBySchoolIdAndIsActiveTrue(Long schoolId);
+
+    List<UserAssignment> findBySchoolIdAndAssignmentTypeAndIsActiveTrue(Long schoolId, String assignmentType);
+
     List<UserAssignment> findBySchoolIdAndUserIdAndIsActiveTrue(Long schoolId, Long userId);
     
     List<UserAssignment> findBySchoolIdAndUserIdAndAcademicSessionIdAndIsActiveTrue(Long schoolId, Long userId, Long academicSessionId);

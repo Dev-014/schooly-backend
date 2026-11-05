@@ -7,6 +7,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -36,6 +37,7 @@ public class HomeworkAssignmentResponse {
     private BigDecimal maxMarks;
     private String attachmentUrl;
     private String attachmentName;
+    private UUID attachmentFileId;
     private AssignmentStatus status;
     private int totalStudentsCount;
     private int submittedCount;

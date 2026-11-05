@@ -129,6 +129,15 @@ public class StudentLeaveService {
         if (request.status() != null && !request.status().isBlank()) {
             leave.setStatus(request.status());
         }
+        if (request.attachmentFileId() != null) {
+            leave.setAttachmentFileId(request.attachmentFileId());
+        }
+        if (request.attachmentFileName() != null) {
+            leave.setAttachmentFileName(request.attachmentFileName());
+        }
+        if (request.attachmentUrl() != null) {
+            leave.setAttachmentUrl(request.attachmentUrl());
+        }
         
         StudentLeave saved = leaveRepository.save(leave);
 
@@ -207,6 +216,15 @@ public class StudentLeaveService {
         if (request.status() != null && !request.status().isBlank()) {
             leave.setStatus(request.status());
         }
+        if (request.attachmentFileId() != null) {
+            leave.setAttachmentFileId(request.attachmentFileId());
+        }
+        if (request.attachmentFileName() != null) {
+            leave.setAttachmentFileName(request.attachmentFileName());
+        }
+        if (request.attachmentUrl() != null) {
+            leave.setAttachmentUrl(request.attachmentUrl());
+        }
 
         StudentLeave saved = leaveRepository.save(leave);
 
@@ -264,7 +282,10 @@ public class StudentLeaveService {
                 leave.getReply(),
                 leave.getCreatedAt(),
                 classId,
-                sectionId
+                sectionId,
+                leave.getAttachmentFileId(),
+                leave.getAttachmentFileName(),
+                leave.getAttachmentUrl()
         );
     }
 }

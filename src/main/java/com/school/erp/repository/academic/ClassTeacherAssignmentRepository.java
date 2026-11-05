@@ -1,6 +1,7 @@
 package com.school.erp.repository.academic;
 
 import com.school.erp.entity.academic.ClassTeacherAssignment;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +16,8 @@ public interface ClassTeacherAssignmentRepository extends JpaRepository<ClassTea
     Optional<ClassTeacherAssignment> findByIdAndSchoolId(Long id, Long schoolId);
     List<ClassTeacherAssignment> findBySchoolIdAndStatus(Long schoolId, String status);
     List<ClassTeacherAssignment> findByStaffIdAndStatus(Long staffId, String status);
+
+    @EntityGraph(attributePaths = {"school", "schoolClass", "section", "academicYear"})
     List<ClassTeacherAssignment> findBySchoolIdAndStaffIdAndStatus(Long schoolId, Long staffId, String status);
     boolean existsBySchoolIdAndStaffIdAndSchoolClassIdAndSectionIdAndStatus(Long schoolId, Long staffId, Long classId, Long sectionId, String status);
     boolean existsBySchoolIdAndStaffIdAndSchoolClassIdAndSectionIsNullAndStatus(Long schoolId, Long staffId, Long classId, String status);

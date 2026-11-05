@@ -342,6 +342,18 @@ public class AcademicController {
         academicService.deleteTimetableEntry(id, schoolId);
         return ResponseEntity.ok(ApiResponse.success(null, "Timetable entry deleted"));
     }
+
+    @GetMapping("/subject-directory")
+    public ResponseEntity<ApiResponse<List<SubjectDirectoryItemResponse>>> getSubjectDirectory(
+            @RequestParam(required = false) Long schoolId,
+            @RequestParam(required = false) Long academicYearId,
+            @RequestParam(required = false) Long classId
+    ) {
+        return ResponseEntity.ok(ApiResponse.success(
+                academicService.getSubjectDirectory(schoolId, academicYearId, classId),
+                "Subject directory fetched successfully"
+        ));
+    }
 }
 
 

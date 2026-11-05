@@ -9,6 +9,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -54,6 +55,8 @@ public class HomeworkAssignmentRequest {
     private String attachmentUrl;
 
     private String attachmentName;
+
+    private UUID attachmentFileId;
 
     @Builder.Default
     private AssignmentStatus status = AssignmentStatus.PUBLISHED;

@@ -3,6 +3,7 @@ package com.school.erp.service.academic;
 import com.school.erp.dto.academic.*;
 import com.school.erp.entity.academic.*;
 import com.school.erp.entity.auth.User;
+import com.school.erp.entity.auth.UserAssignment;
 import com.school.erp.entity.hr.Staff;
 import com.school.erp.entity.student.Student;
 import com.school.erp.entity.student.StudentSubjectEnrollment;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -983,6 +985,209 @@ public class AcademicService {
                 e.getRoomNumber(),
                 e.getStatus()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<SubjectDirectoryItemResponse> getSubjectDirectory(Long schoolId, Long academicYearId, Long classId) {
+        Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
+        Long effectiveYearId = resolveActiveYear(effectiveSchoolId, academicYearId);
+
+        List<SubjectDirectoryItemResponse> result = new ArrayList<>();
+        java.util.Set<String> processedScheduleKeys = new java.util.HashSet<>();
+        java.util.Set<Long> processedSubjectIds = new java.util.HashSet<>();
+
+        // 1. Live Timetable Entries (Primary Source for Schedule-Aware Subject Offerings)
+        List<TimetableEntry> timetableEntries = effectiveYearId != null
+                ? timetableEntryRepository.findBySchoolIdAndAcademicYearId(effectiveSchoolId, effectiveYearId)
+                : timetableEntryRepository.findBySchoolId(effectiveSchoolId);
+
+        if (timetableEntries.isEmpty()) {
+            timetableEntries = timetableEntryRepository.findBySchoolId(effectiveSchoolId);
+        }
+
+        for (TimetableEntry te : timetableEntries) {
+            Subject sub = te.getSubject();
+            if (sub == null) continue;
+
+            Long cId = te.getSchoolClass() != null ? te.getSchoolClass().getId() : null;
+            if (classId != null && !classId.equals(cId)) {
+                continue;
+            }
+
+            Long sId = te.getSection() != null ? te.getSection().getId() : null;
+            Staff teacher = te.getTeacher();
+            Long teacherId = teacher != null ? teacher.getId() : null;
+
+            // Deduplicate same subject offered in same class/section by same teacher
+            String scheduleKey = sub.getId() + "_" + (cId != null ? cId : 0) + "_" + (sId != null ? sId : 0) + "_" + (teacherId != null ? teacherId : 0);
+            if (!processedScheduleKeys.add(scheduleKey)) {
+                continue;
+            }
+            processedSubjectIds.add(sub.getId());
+
+            String teacherName = null;
+            String teacherEmail = null;
+            String teacherDesignation = null;
+            String teacherDept = null;
+            if (teacher != null) {
+                String fn = teacher.getFirstName() != null ? teacher.getFirstName() : "";
+                String ln = teacher.getLastName() != null ? teacher.getLastName() : "";
+                teacherName = (fn + " " + ln).trim();
+                teacherEmail = teacher.getEmail();
+                teacherDesignation = teacher.getDesignation();
+                teacherDept = teacher.getDepartment();
+            }
+
+            result.add(new SubjectDirectoryItemResponse(
+                    sub.getId(),
+                    sub.getName(),
+                    sub.getCode(),
+                    sub.getType() != null ? sub.getType() : "THEORY",
+                    sub.getCredits(),
+                    sub.getGradeLevel(),
+                    cId,
+                    te.getSchoolClass() != null ? te.getSchoolClass().getName() : null,
+                    sId,
+                    te.getSection() != null ? te.getSection().getName() : null,
+                    te.getAcademicYear() != null ? te.getAcademicYear().getName() : null,
+                    teacherId,
+                    teacherName,
+                    teacherEmail,
+                    teacherDesignation,
+                    teacherDept,
+                    sub.getStatus() != null ? sub.getStatus() : "ACTIVE"
+            ));
+        }
+
+        // 2. HR User Assignments (Secondary Source for subject_teacher assignments)
+        List<UserAssignment> userAssignments = userAssignmentRepository.findBySchoolIdAndAssignmentTypeAndIsActiveTrue(effectiveSchoolId, "subject_teacher");
+        for (UserAssignment ua : userAssignments) {
+            if (ua.getSubjectId() == null) continue;
+            Long cId = ua.getClassId();
+            if (classId != null && !classId.equals(cId)) {
+                continue;
+            }
+            Long sId = ua.getSectionId();
+
+            String lookupPrefix = ua.getSubjectId() + "_" + (cId != null ? cId : 0) + "_" + (sId != null ? sId : 0) + "_";
+            boolean alreadyMapped = processedScheduleKeys.stream().anyMatch(k -> k.startsWith(lookupPrefix));
+            if (alreadyMapped) continue;
+
+            Optional<Subject> subOpt = subjectRepository.findById(ua.getSubjectId());
+            if (subOpt.isEmpty()) continue;
+            Subject sub = subOpt.get();
+
+            Long userId = ua.getUser() != null ? ua.getUser().getId() : null;
+            Optional<Staff> staffOpt = userId != null
+                    ? staffRepository.findBySchoolIdAndUserId(effectiveSchoolId, userId)
+                    : Optional.empty();
+            Staff teacher = staffOpt.orElse(null);
+            Long teacherId = teacher != null ? teacher.getId() : null;
+
+            String scheduleKey = sub.getId() + "_" + (cId != null ? cId : 0) + "_" + (sId != null ? sId : 0) + "_" + (teacherId != null ? teacherId : 0);
+            if (!processedScheduleKeys.add(scheduleKey)) continue;
+            processedSubjectIds.add(sub.getId());
+
+            String className = null;
+            if (cId != null) {
+                className = classRepository.findById(cId).map(SchoolClass::getName).orElse(null);
+            }
+            String sectionName = null;
+            if (sId != null) {
+                sectionName = sectionRepository.findById(sId).map(Section::getName).orElse(null);
+            }
+
+            String teacherName = null;
+            String teacherEmail = null;
+            String teacherDesignation = null;
+            String teacherDept = null;
+            if (teacher != null) {
+                String fn = teacher.getFirstName() != null ? teacher.getFirstName() : "";
+                String ln = teacher.getLastName() != null ? teacher.getLastName() : "";
+                teacherName = (fn + " " + ln).trim();
+                teacherEmail = teacher.getEmail();
+                teacherDesignation = teacher.getDesignation();
+                teacherDept = teacher.getDepartment();
+            }
+
+            result.add(new SubjectDirectoryItemResponse(
+                    sub.getId(),
+                    sub.getName(),
+                    sub.getCode(),
+                    sub.getType() != null ? sub.getType() : "THEORY",
+                    sub.getCredits(),
+                    sub.getGradeLevel(),
+                    cId,
+                    className,
+                    sId,
+                    sectionName,
+                    null,
+                    teacherId,
+                    teacherName,
+                    teacherEmail,
+                    teacherDesignation,
+                    teacherDept,
+                    sub.getStatus() != null ? sub.getStatus() : "ACTIVE"
+            ));
+        }
+
+        // 3. Class Subject Assignments (Level 2 Syllabus if any exist)
+        List<ClassSubjectAssignment> csaList = effectiveYearId != null
+                ? classSubjectAssignmentRepository.findBySchoolIdAndAcademicYearId(effectiveSchoolId, effectiveYearId)
+                : classSubjectAssignmentRepository.findBySchoolId(effectiveSchoolId);
+        for (ClassSubjectAssignment csa : csaList) {
+            Subject sub = csa.getSubject();
+            if (sub == null) continue;
+            Long cId = csa.getSchoolClass() != null ? csa.getSchoolClass().getId() : null;
+            if (classId != null && !classId.equals(cId)) continue;
+            Long sId = csa.getSection() != null ? csa.getSection().getId() : null;
+
+            String lookupPrefix = sub.getId() + "_" + (cId != null ? cId : 0) + "_" + (sId != null ? sId : 0) + "_";
+            boolean alreadyMapped = processedScheduleKeys.stream().anyMatch(k -> k.startsWith(lookupPrefix));
+            if (alreadyMapped) continue;
+
+            processedScheduleKeys.add(lookupPrefix + "0");
+            processedSubjectIds.add(sub.getId());
+
+            result.add(new SubjectDirectoryItemResponse(
+                    sub.getId(),
+                    sub.getName(),
+                    sub.getCode(),
+                    sub.getType() != null ? sub.getType() : "THEORY",
+                    sub.getCredits(),
+                    sub.getGradeLevel(),
+                    cId,
+                    csa.getSchoolClass() != null ? csa.getSchoolClass().getName() : null,
+                    sId,
+                    csa.getSection() != null ? csa.getSection().getName() : null,
+                    csa.getAcademicYear() != null ? csa.getAcademicYear().getName() : null,
+                    null, null, null, null, null,
+                    sub.getStatus() != null ? sub.getStatus() : "ACTIVE"
+            ));
+        }
+
+        // 4. Standalone unassigned subjects (only when no class filter is requested)
+        if (classId == null) {
+            List<Subject> allSchoolSubjects = subjectRepository.findBySchoolId(effectiveSchoolId);
+            for (Subject sub : allSchoolSubjects) {
+                if (!processedSubjectIds.contains(sub.getId())) {
+                    processedSubjectIds.add(sub.getId());
+                    result.add(new SubjectDirectoryItemResponse(
+                            sub.getId(),
+                            sub.getName(),
+                            sub.getCode(),
+                            sub.getType() != null ? sub.getType() : "THEORY",
+                            sub.getCredits(),
+                            sub.getGradeLevel(),
+                            null, null, null, null, null,
+                            null, null, null, null, null,
+                            sub.getStatus() != null ? sub.getStatus() : "ACTIVE"
+                    ));
+                }
+            }
+        }
+
+        return result;
     }
 }
 

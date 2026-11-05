@@ -78,7 +78,11 @@ public class StaffLeaveService {
         leave.setEndDate(request.getEndDate());
         leave.setNumberOfDays(BigDecimal.valueOf(days));
         leave.setReason(request.getReason());
-        leave.setStatus("PENDING");
+        leave.setStatus(request.getStatus() != null ? request.getStatus() : "PENDING");
+        leave.setReply(request.getReply());
+        leave.setAttachmentFileId(request.getAttachmentFileId());
+        leave.setAttachmentFileName(request.getAttachmentFileName());
+        leave.setAttachmentUrl(request.getAttachmentUrl());
 
         StaffLeave saved = staffLeaveRepository.save(leave);
         StaffLeaveDTO dto = mapToDTO(saved);
@@ -110,6 +114,11 @@ public class StaffLeaveService {
 
     @Transactional
     public StaffLeaveDTO approveLeave(Long schoolId, Long leaveId, Long adminStaffId, String status) {
+        return approveLeave(schoolId, leaveId, adminStaffId, status, null);
+    }
+
+    @Transactional
+    public StaffLeaveDTO approveLeave(Long schoolId, Long leaveId, Long adminStaffId, String status, String approverComments) {
         StaffLeave leave = staffLeaveRepository.findById(leaveId)
                 .orElseThrow(() -> new RuntimeException("Leave not found"));
 
@@ -130,6 +139,9 @@ public class StaffLeaveService {
         }
 
         leave.setStatus(status);
+        if (approverComments != null && !approverComments.trim().isEmpty()) {
+            leave.setReply(approverComments.trim());
+        }
         if (approverStaffId != null) {
             leave.setApprovedBy(approverStaffId);
         } else if (com.school.erp.security.AuthContextHolder.get() != null
@@ -229,6 +241,10 @@ public class StaffLeaveService {
         dto.setReason(leave.getReason());
         dto.setStatus(leave.getStatus());
         dto.setApprovedBy(leave.getApprovedBy());
+        dto.setReply(leave.getReply());
+        dto.setAttachmentFileId(leave.getAttachmentFileId());
+        dto.setAttachmentFileName(leave.getAttachmentFileName());
+        dto.setAttachmentUrl(leave.getAttachmentUrl());
         return dto;
     }
 

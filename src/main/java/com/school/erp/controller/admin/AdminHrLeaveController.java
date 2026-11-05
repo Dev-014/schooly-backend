@@ -42,8 +42,14 @@ public class AdminHrLeaveController {
             @RequestParam(value = "schoolId", required = false) Long paramSchoolId,
             @PathVariable Long leaveId,
             @RequestParam(required = false) Long adminStaffId,
-            @RequestParam String status) {
-        return ResponseEntity.ok(leaveService.approveLeave(resolveSchoolId(pathSchoolId, paramSchoolId), leaveId, adminStaffId, status));
+            @RequestParam String status,
+            @RequestParam(required = false) String approverComments,
+            @RequestBody(required = false) java.util.Map<String, Object> body) {
+        String finalComments = approverComments;
+        if (finalComments == null && body != null && body.containsKey("approverComments")) {
+            finalComments = String.valueOf(body.get("approverComments"));
+        }
+        return ResponseEntity.ok(leaveService.approveLeave(resolveSchoolId(pathSchoolId, paramSchoolId), leaveId, adminStaffId, status, finalComments));
     }
 
     @GetMapping

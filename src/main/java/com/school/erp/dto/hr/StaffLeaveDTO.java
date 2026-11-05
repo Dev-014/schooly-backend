@@ -25,6 +25,10 @@ public class StaffLeaveDTO {
     private String reason;
     private String status;
     private Long approvedBy;
+    private String reply;
+    private java.util.UUID attachmentFileId;
+    private String attachmentFileName;
+    private String attachmentUrl;
 
     @JsonProperty("fromDate")
     public LocalDate getFromDate() {

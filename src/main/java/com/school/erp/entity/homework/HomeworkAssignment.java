@@ -13,6 +13,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "homework_assignments")
@@ -79,6 +80,9 @@ public class HomeworkAssignment {
 
     @Column(name = "attachment_name", length = 255)
     private String attachmentName;
+
+    @Column(name = "attachment_file_id")
+    private UUID attachmentFileId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 50)

@@ -118,6 +118,7 @@ public class HrStaffService {
         staff.setNotes(request.notes());
     }
 
+    @Transactional(readOnly = true)
     public List<UserAssignmentResponse> getStaffAssignments(Long schoolId, Long staffId) {
         Staff staff = getStaffById(schoolId, staffId);
         List<UserAssignmentResponse> result = new java.util.ArrayList<>();
@@ -127,19 +128,21 @@ public class HrStaffService {
         List<ClassTeacherAssignment> classTeacherAssignments =
                 classTeacherAssignmentRepository.findBySchoolIdAndStaffIdAndStatus(schoolId, staff.getId(), "ACTIVE");
         for (ClassTeacherAssignment cta : classTeacherAssignments) {
-            String key = "class_teacher_" + cta.getSchoolClass().getId() + "_" + (cta.getSection() != null ? cta.getSection().getId() : "all");
+            Long classId = cta.getSchoolClass() != null ? cta.getSchoolClass().getId() : null;
+            Long sectionId = cta.getSection() != null ? cta.getSection().getId() : null;
+            String key = "class_teacher_" + classId + "_" + (sectionId != null ? sectionId : "all");
             if (seenKeys.add(key)) {
                 result.add(UserAssignmentResponse.builder()
                         .id(cta.getId())
-                        .schoolId(cta.getSchool().getId())
+                        .schoolId(cta.getSchool() != null ? cta.getSchool().getId() : schoolId)
                         .userId(staff.getUserId())
-                        .academicSessionId(cta.getAcademicYear() != null ? cta.getAcademicYear().getId() : null)
-                        .sessionName(cta.getAcademicYear() != null ? cta.getAcademicYear().getName() : null)
+                        .academicSessionId(safeAcademicYearId(cta.getAcademicYear()))
+                        .sessionName(safeAcademicYearName(cta.getAcademicYear()))
                         .assignmentType("class_teacher")
-                        .classId(cta.getSchoolClass().getId())
-                        .className(cta.getSchoolClass().getName())
-                        .sectionId(cta.getSection() != null ? cta.getSection().getId() : null)
-                        .sectionName(cta.getSection() != null ? cta.getSection().getName() : null)
+                        .classId(classId)
+                        .className(safeClassName(cta.getSchoolClass()))
+                        .sectionId(sectionId)
+                        .sectionName(safeSectionName(cta.getSection()))
                         .effectiveFrom(cta.getCreatedAt())
                         .isActive(true)
                         .source("ACADEMIC_CLASS_TEACHER")
@@ -152,24 +155,27 @@ public class HrStaffService {
                 timetableEntryRepository.findBySchoolIdAndTeacherId(schoolId, staff.getId());
         for (TimetableEntry te : timetableEntries) {
             if ("ACTIVE".equalsIgnoreCase(te.getStatus()) && te.getSubject() != null) {
-                String key = "subject_teacher_" + te.getSchoolClass().getId() + "_" +
-                        (te.getSection() != null ? te.getSection().getId() : "all") + "_" +
-                        te.getSubject().getId();
+                Long classId = te.getSchoolClass() != null ? te.getSchoolClass().getId() : null;
+                Long sectionId = te.getSection() != null ? te.getSection().getId() : null;
+                Long subjectId = te.getSubject() != null ? te.getSubject().getId() : null;
+                String key = "subject_teacher_" + classId + "_" +
+                        (sectionId != null ? sectionId : "all") + "_" +
+                        subjectId;
                 if (seenKeys.add(key)) {
                     result.add(UserAssignmentResponse.builder()
                             .id(te.getId())
-                            .schoolId(te.getSchool().getId())
+                            .schoolId(te.getSchool() != null ? te.getSchool().getId() : schoolId)
                             .userId(staff.getUserId())
-                            .academicSessionId(te.getAcademicYear() != null ? te.getAcademicYear().getId() : null)
-                            .sessionName(te.getAcademicYear() != null ? te.getAcademicYear().getName() : null)
+                            .academicSessionId(safeAcademicYearId(te.getAcademicYear()))
+                            .sessionName(safeAcademicYearName(te.getAcademicYear()))
                             .assignmentType("subject_teacher")
-                            .classId(te.getSchoolClass().getId())
-                            .className(te.getSchoolClass().getName())
-                            .sectionId(te.getSection() != null ? te.getSection().getId() : null)
-                            .sectionName(te.getSection() != null ? te.getSection().getName() : null)
-                            .subjectId(te.getSubject().getId())
-                            .subjectName(te.getSubject().getName())
-                            .subjectCode(te.getSubject().getCode())
+                            .classId(classId)
+                            .className(safeClassName(te.getSchoolClass()))
+                            .sectionId(sectionId)
+                            .sectionName(safeSectionName(te.getSection()))
+                            .subjectId(subjectId)
+                            .subjectName(safeSubjectName(te.getSubject()))
+                            .subjectCode(safeSubjectCode(te.getSubject()))
                             .isActive(true)
                             .source("ACADEMIC_TIMETABLE")
                             .build());
@@ -192,6 +198,36 @@ public class HrStaffService {
         }
 
         return result;
+    }
+
+    private Long safeAcademicYearId(com.school.erp.entity.academic.AcademicYear year) {
+        if (year == null) return null;
+        try { return year.getId(); } catch (Exception e) { return null; }
+    }
+
+    private String safeAcademicYearName(com.school.erp.entity.academic.AcademicYear year) {
+        if (year == null) return null;
+        try { return year.getName(); } catch (Exception e) { return null; }
+    }
+
+    private String safeClassName(com.school.erp.entity.academic.SchoolClass schoolClass) {
+        if (schoolClass == null) return null;
+        try { return schoolClass.getName(); } catch (Exception e) { return null; }
+    }
+
+    private String safeSectionName(com.school.erp.entity.academic.Section section) {
+        if (section == null) return null;
+        try { return section.getName(); } catch (Exception e) { return null; }
+    }
+
+    private String safeSubjectName(com.school.erp.entity.academic.Subject subject) {
+        if (subject == null) return null;
+        try { return subject.getName(); } catch (Exception e) { return null; }
+    }
+
+    private String safeSubjectCode(com.school.erp.entity.academic.Subject subject) {
+        if (subject == null) return null;
+        try { return subject.getCode(); } catch (Exception e) { return null; }
     }
 
     @Transactional

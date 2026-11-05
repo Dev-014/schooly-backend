@@ -140,6 +140,7 @@ public class HomeworkService {
                 .maxMarks(request.getMaxMarks() != null ? request.getMaxMarks() : BigDecimal.valueOf(100.00))
                 .attachmentUrl(request.getAttachmentUrl())
                 .attachmentName(request.getAttachmentName())
+                .attachmentFileId(request.getAttachmentFileId())
                 .status(request.getStatus() != null ? request.getStatus() : AssignmentStatus.PUBLISHED)
                 .build();
 
@@ -219,9 +220,32 @@ public class HomeworkService {
         if (request.getMaxMarks() != null) assignment.setMaxMarks(request.getMaxMarks());
         if (request.getAttachmentUrl() != null) assignment.setAttachmentUrl(request.getAttachmentUrl());
         if (request.getAttachmentName() != null) assignment.setAttachmentName(request.getAttachmentName());
+        if (request.getAttachmentFileId() != null) assignment.setAttachmentFileId(request.getAttachmentFileId());
         if (request.getStatus() != null) assignment.setStatus(request.getStatus());
 
         HomeworkAssignment saved = assignmentRepository.save(assignment);
+        return toAssignmentResponse(saved);
+    }
+
+    // ─── Update Assignment Document ──────────────────────────────────────────────
+
+    @Transactional
+    public HomeworkAssignmentResponse updateAssignmentDocument(
+            Long rawSchoolId, Long id, java.util.UUID attachmentFileId, String attachmentName, String attachmentUrl) {
+        Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        HomeworkAssignment assignment = assignmentRepository.findByIdAndSchoolId(id, schoolId)
+                .orElseThrow(() -> new ResourceNotFoundException("Assignment not found with id: " + id));
+
+        assignment.setAttachmentFileId(attachmentFileId);
+        if (attachmentName != null) {
+            assignment.setAttachmentName(attachmentName);
+        }
+        if (attachmentUrl != null) {
+            assignment.setAttachmentUrl(attachmentUrl);
+        }
+
+        HomeworkAssignment saved = assignmentRepository.save(assignment);
+        log.info("Updated document for assignment id={} with attachmentFileId={}", id, attachmentFileId);
         return toAssignmentResponse(saved);
     }
 
@@ -303,6 +327,9 @@ public class HomeworkService {
             submission.setSubmissionText(request.getSubmissionText());
             submission.setAttachmentUrl(request.getAttachmentUrl());
             submission.setAttachmentName(request.getAttachmentName());
+            if (request.getAttachmentFileId() != null) {
+                submission.setAttachmentFileId(request.getAttachmentFileId());
+            }
             submission.setStatus(isLate ? SubmissionStatus.LATE : SubmissionStatus.SUBMITTED);
         } else {
             submission = HomeworkSubmission.builder()
@@ -313,6 +340,7 @@ public class HomeworkService {
                     .submissionText(request.getSubmissionText())
                     .attachmentUrl(request.getAttachmentUrl())
                     .attachmentName(request.getAttachmentName())
+                    .attachmentFileId(request.getAttachmentFileId())
                     .status(isLate ? SubmissionStatus.LATE : SubmissionStatus.SUBMITTED)
                     .build();
         }
@@ -404,8 +432,10 @@ public class HomeworkService {
             submission.setRemarks(request.getRemarks());
         }
 
-        if (request.getStatus() != null) {
+        if (request.getStatus() != null && request.getStatus() != SubmissionStatus.SUBMITTED && request.getStatus() != SubmissionStatus.PENDING) {
             submission.setStatus(request.getStatus());
+        } else if (request.getMarksObtained() != null || submission.getMarksObtained() != null) {
+            submission.setStatus(SubmissionStatus.GRADED);
         } else {
             submission.setStatus(SubmissionStatus.EVALUATED);
         }
@@ -488,7 +518,16 @@ public class HomeworkService {
             HomeworkAssignmentResponse res = toAssignmentResponse(a);
             HomeworkSubmission sub = subMap.get(a.getId());
             if (sub != null) {
-                res.setSubmissionStatus(sub.getStatus().name());
+                boolean isEvaluated = sub.getStatus() == SubmissionStatus.EVALUATED
+                        || sub.getStatus() == SubmissionStatus.GRADED
+                        || sub.getMarksObtained() != null
+                        || sub.getEvaluatedAt() != null;
+
+                String displayStatus = (isEvaluated && (sub.getStatus() == SubmissionStatus.SUBMITTED || sub.getStatus() == SubmissionStatus.PENDING))
+                        ? SubmissionStatus.GRADED.name()
+                        : sub.getStatus().name();
+
+                res.setSubmissionStatus(displayStatus);
                 res.setMarksObtained(sub.getMarksObtained());
                 res.setRemarks(sub.getRemarks());
                 res.setEvaluatedAt(sub.getEvaluatedAt());
@@ -681,6 +720,7 @@ public class HomeworkService {
                 .maxMarks(a.getMaxMarks())
                 .attachmentUrl(a.getAttachmentUrl())
                 .attachmentName(a.getAttachmentName())
+                .attachmentFileId(a.getAttachmentFileId())
                 .status(a.getStatus())
                 .totalStudentsCount(totalStudents)
                 .submittedCount(submittedCount)
@@ -716,6 +756,12 @@ public class HomeworkService {
                     + " " + (s.getEvaluatedBy().getLastName() != null ? s.getEvaluatedBy().getLastName() : "")).trim();
         }
 
+        SubmissionStatus effectiveStatus = s.getStatus();
+        if ((effectiveStatus == SubmissionStatus.SUBMITTED || effectiveStatus == SubmissionStatus.PENDING)
+                && (s.getMarksObtained() != null || s.getEvaluatedAt() != null)) {
+            effectiveStatus = SubmissionStatus.GRADED;
+        }
+
         return HomeworkSubmissionResponse.builder()
                 .id(s.getId())
                 .schoolId(s.getSchool() != null ? s.getSchool().getId() : null)
@@ -732,7 +778,8 @@ public class HomeworkService {
                 .submissionText(s.getSubmissionText())
                 .attachmentUrl(s.getAttachmentUrl())
                 .attachmentName(s.getAttachmentName())
-                .status(s.getStatus())
+                .attachmentFileId(s.getAttachmentFileId())
+                .status(effectiveStatus)
                 .marksObtained(s.getMarksObtained())
                 .maxMarks(s.getAssignment() != null ? s.getAssignment().getMaxMarks() : null)
                 .remarks(s.getRemarks())

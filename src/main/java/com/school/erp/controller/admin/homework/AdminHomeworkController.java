@@ -94,6 +94,21 @@ public class AdminHomeworkController {
                 "Assignment updated successfully"));
     }
 
+    // ─── Update Assignment Document / Worksheet ───────────────────────────────────
+
+    @PutMapping("/{id}/document")
+    @PermissionRequired("homework.assignment.edit")
+    public ResponseEntity<ApiResponse<HomeworkAssignmentResponse>> updateAssignmentDocument(
+            @RequestParam(required = false) Long schoolId,
+            @PathVariable Long id,
+            @RequestBody HomeworkDocUpdateRequest request) {
+
+        return ResponseEntity.ok(ApiResponse.success(
+                homeworkService.updateAssignmentDocument(
+                        schoolId, id, request.getAttachmentFileId(), request.getAttachmentName(), request.getAttachmentUrl()),
+                "Homework document updated successfully"));
+    }
+
     // ─── Delete Assignment ───────────────────────────────────────────────────────
 
     @DeleteMapping("/{id}")

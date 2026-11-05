@@ -74,6 +74,7 @@ Thumbs.db
 ### Local Environment Configs ###
 .env
 .env.local
+.env.example
 .env.*.local
 *.local.properties
 application-local.properties

@@ -144,7 +144,7 @@ class AdminHrLeaveControllerTest {
 
         sampleDto.setStatus("APPROVED");
         sampleDto.setApprovedBy(99L);
-        when(leaveService.approveLeave(eq(1000L), eq(1L), any(), eq("APPROVED"))).thenReturn(sampleDto);
+        when(leaveService.approveLeave(eq(1000L), eq(1L), any(), eq("APPROVED"), any())).thenReturn(sampleDto);
 
         mockMvc.perform(put("/api/v1/admin/schools/1000/hr/leaves/1/approve")
                         .param("status", "APPROVED")
@@ -175,7 +175,7 @@ class AdminHrLeaveControllerTest {
 
         sampleDto.setStatus("APPROVED");
         sampleDto.setApprovedBy(99L);
-        when(leaveService.approveLeave(eq(1000L), eq(1L), any(), eq("APPROVED"))).thenReturn(sampleDto);
+        when(leaveService.approveLeave(eq(1000L), eq(1L), any(), eq("APPROVED"), any())).thenReturn(sampleDto);
 
         mockMvc.perform(put("/api/v1/admin/schools/1000/hr/leaves/1/approve")
                         .param("status", "APPROVED")

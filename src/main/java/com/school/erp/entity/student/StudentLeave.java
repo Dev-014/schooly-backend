@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "student_leaves")
@@ -50,6 +51,15 @@ public class StudentLeave {
 
     @Column(name = "reply")
     private String reply;
+
+    @Column(name = "attachment_file_id")
+    private UUID attachmentFileId;
+
+    @Column(name = "attachment_file_name")
+    private String attachmentFileName;
+
+    @Column(name = "attachment_url")
+    private String attachmentUrl;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, insertable = false, updatable = false)

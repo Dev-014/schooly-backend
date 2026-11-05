@@ -47,4 +47,16 @@ public class StaffLeave {
 
     @Column(name = "approved_by")
     private Long approvedBy;
+
+    @Column(name = "reply")
+    private String reply;
+
+    @Column(name = "attachment_file_id")
+    private java.util.UUID attachmentFileId;
+
+    @Column(name = "attachment_file_name")
+    private String attachmentFileName;
+
+    @Column(name = "attachment_url")
+    private String attachmentUrl;
 }
