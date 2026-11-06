@@ -35,7 +35,7 @@ public class MockStorageProvider implements ObjectStorageProvider {
             long maxSizeBytes,
             Duration expiration
     ) {
-        String uploadUrl = String.format("https://%s.s3.mock.local/%s?upload-token=%d", bucket, key, System.currentTimeMillis());
+        String uploadUrl = String.format("/api/v1/files/mock-s3-upload/%s?upload-token=%d", key.replace("/", "_"), System.currentTimeMillis());
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", contentType);
         headers.put("x-amz-server-side-encryption", "AES256");
@@ -59,8 +59,8 @@ public class MockStorageProvider implements ObjectStorageProvider {
             boolean isInline,
             Duration expiration
     ) {
-        return String.format("https://%s.s3.mock.local/%s?disposition=%s&file=%s&expires=%d",
-                bucket, key, isInline ? "inline" : "attachment", dispositionFileName, System.currentTimeMillis() + expiration.toMillis());
+        return String.format("/api/v1/files/mock-s3-download/%s?disposition=%s&file=%s&expires=%d",
+                key.replace('/', '_'), isInline ? "inline" : "attachment", dispositionFileName, System.currentTimeMillis() + expiration.toMillis());
     }
 
     @Override

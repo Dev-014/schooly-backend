@@ -42,14 +42,29 @@ public class AdminHrLeaveController {
             @RequestParam(value = "schoolId", required = false) Long paramSchoolId,
             @PathVariable Long leaveId,
             @RequestParam(required = false) Long adminStaffId,
-            @RequestParam String status,
+            @RequestParam(required = false) String status,
             @RequestParam(required = false) String approverComments,
             @RequestBody(required = false) java.util.Map<String, Object> body) {
+        String finalStatus = status;
+        if ((finalStatus == null || finalStatus.isBlank()) && body != null && body.containsKey("status")) {
+            finalStatus = String.valueOf(body.get("status"));
+        }
+        if (finalStatus == null || finalStatus.isBlank()) {
+            finalStatus = "APPROVED";
+        }
+
+        Long finalAdminStaffId = adminStaffId;
+        if (finalAdminStaffId == null && body != null && body.containsKey("adminStaffId")) {
+            try {
+                finalAdminStaffId = Long.valueOf(String.valueOf(body.get("adminStaffId")));
+            } catch (Exception ignored) {}
+        }
+
         String finalComments = approverComments;
         if (finalComments == null && body != null && body.containsKey("approverComments")) {
             finalComments = String.valueOf(body.get("approverComments"));
         }
-        return ResponseEntity.ok(leaveService.approveLeave(resolveSchoolId(pathSchoolId, paramSchoolId), leaveId, adminStaffId, status, finalComments));
+        return ResponseEntity.ok(leaveService.approveLeave(resolveSchoolId(pathSchoolId, paramSchoolId), leaveId, finalAdminStaffId, finalStatus, finalComments));
     }
 
     @GetMapping

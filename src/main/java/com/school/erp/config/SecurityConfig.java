@@ -42,6 +42,8 @@ public class SecurityConfig {
                     "/import/**", "/api/v1/import/**",
                     "/api/online-admissions/**",
                     "/api/v1/cms/**", "/api/cms/**",
+                    "/api/v1/files/mock-s3-upload/**",
+                    "/api/v1/files/mock-s3-download/**",
                     "/health",
                     "/v3/api-docs", "/v3/api-docs/**",
                     "/swagger-ui", "/swagger-ui/**", "/swagger-ui.html"

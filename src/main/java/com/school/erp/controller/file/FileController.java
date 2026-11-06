@@ -137,4 +137,28 @@ public class FileController {
         fileManagementService.initializeSchoolBucketFolders(targetSchoolId);
         return ResponseEntity.ok(ApiResponse.success("Standard use-case folders initialized successfully", "Folders created"));
     }
+
+    @RequestMapping(value = "/mock-s3-upload/**", method = {RequestMethod.PUT, RequestMethod.POST})
+    @Operation(summary = "Mock S3 upload endpoint for local development without real AWS credentials")
+    public ResponseEntity<Void> mockS3Upload() {
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/mock-s3-download/**")
+    @Operation(summary = "Mock S3 download endpoint for local development without real AWS credentials")
+    public ResponseEntity<byte[]> mockS3Download(
+            @RequestParam(defaultValue = "inline") String disposition,
+            @RequestParam(defaultValue = "document.pdf") String file
+    ) {
+        byte[] samplePdf = "%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>\nendobj\n4 0 obj\n<< /Length 44 >>\nstream\nBT /F1 24 Tf 100 700 Td (Schooly Document Preview) ET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000214 00000 n \ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n309\n%%EOF".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(
+                "inline".equalsIgnoreCase(disposition)
+                        ? org.springframework.http.ContentDisposition.inline().filename(file).build()
+                        : org.springframework.http.ContentDisposition.attachment().filename(file).build()
+        );
+        return new ResponseEntity<>(samplePdf, headers, org.springframework.http.HttpStatus.OK);
+    }
 }

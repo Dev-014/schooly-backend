@@ -105,6 +105,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return true;
         }
 
+        // Mock S3 presigned upload & download endpoints emulate AWS S3 presigned URLs without Bearer header
+        if (requestUri.startsWith("/api/v1/files/mock-s3-upload") || requestUri.startsWith("/api/v1/files/mock-s3-download")) {
+            return true;
+        }
+
         return requestUri.equals("/health") ||
                requestUri.startsWith("/auth/") ||
                requestUri.startsWith("/api/auth/") ||

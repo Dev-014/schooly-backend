@@ -41,16 +41,27 @@ public class StorageConfig {
             try {
                 Region region = Region.of(awsRegion);
 
+                boolean hasExplicitCredentials = StringUtils.hasText(accessKeyId) && StringUtils.hasText(secretAccessKey)
+                        && !accessKeyId.contains("PASTE_") && !secretAccessKey.contains("PASTE_")
+                        && !accessKeyId.contains("your_aws_") && !secretAccessKey.contains("your_aws_")
+                        && !accessKeyId.equalsIgnoreCase("mock") && !accessKeyId.equalsIgnoreCase("dummy");
+
                 AwsCredentialsProvider credentialsProvider;
-                if (StringUtils.hasText(accessKeyId) && StringUtils.hasText(secretAccessKey)
-                        && !accessKeyId.contains("PASTE_") && !secretAccessKey.contains("PASTE_")) {
+                if (hasExplicitCredentials) {
                     log.info("Loaded explicit AWS S3 static credentials from configuration");
                     credentialsProvider = StaticCredentialsProvider.create(
                             AwsBasicCredentials.create(accessKeyId.trim(), secretAccessKey.trim())
                     );
                 } else {
-                    log.info("Using AWS DefaultCredentialsProvider chain (IAM role, ECS Task role, or environment)");
-                    credentialsProvider = DefaultCredentialsProvider.create();
+                    log.info("AWS S3 static credentials not configured or placeholder detected; evaluating ambient credentials or falling back to MockStorageProvider");
+                    try {
+                        AwsCredentialsProvider ambientProvider = DefaultCredentialsProvider.create();
+                        ambientProvider.resolveCredentials();
+                        credentialsProvider = ambientProvider;
+                    } catch (Exception envEx) {
+                        log.info("No ambient AWS credentials found, using MockStorageProvider for development");
+                        return new MockStorageProvider();
+                    }
                 }
 
                 S3Client s3Client = S3Client.builder()

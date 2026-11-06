@@ -48,8 +48,8 @@ public class FileSecurityService {
     }
 
     public void validateEntityScope(FileEntityType entityType, Long entityId, AuthenticatedUser currentUser, Long schoolId) {
-        if (currentUser.role() == UserRole.SUPER_ADMIN || currentUser.role() == UserRole.ADMIN || currentUser.role() == UserRole.STAFF) {
-            return; // Admins and staff have tenant-wide or classroom authorization
+        if (currentUser.role() == UserRole.SUPER_ADMIN || currentUser.role() == UserRole.ADMIN || currentUser.role() == UserRole.STAFF || currentUser.role() == UserRole.TEACHER) {
+            return; // Admins, staff, and teachers have tenant-wide or classroom authorization
         }
 
         if (entityType == FileEntityType.STUDENT) {

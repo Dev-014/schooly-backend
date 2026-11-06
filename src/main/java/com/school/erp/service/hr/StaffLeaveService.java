@@ -126,6 +126,10 @@ public class StaffLeaveService {
             throw new RuntimeException("Leave doesn't belong to this school");
         }
         
+        if (adminStaffId != null && leave.getStaff() != null && adminStaffId.equals(leave.getStaff().getId())) {
+            throw new IllegalArgumentException("Staff cannot approve their own leave request");
+        }
+
         Long approverStaffId = adminStaffId;
         if (approverStaffId == null && com.school.erp.security.AuthContextHolder.get() != null
                 && com.school.erp.security.AuthContextHolder.get().userId() != null) {
@@ -148,7 +152,7 @@ public class StaffLeaveService {
                 && com.school.erp.security.AuthContextHolder.get().userId() != null) {
             leave.setApprovedBy(com.school.erp.security.AuthContextHolder.get().userId());
         } else {
-            leave.setApprovedBy(1L);
+            leave.setApprovedBy(null);
         }
 
         // Update Leave Balance if APPROVED
@@ -166,7 +170,8 @@ public class StaffLeaveService {
                         return b;
                     });
             
-            balance.setUsedLeaves(balance.getUsedLeaves().add(leave.getNumberOfDays()));
+            BigDecimal days = leave.getNumberOfDays() != null ? leave.getNumberOfDays() : BigDecimal.ONE;
+            balance.setUsedLeaves(balance.getUsedLeaves().add(days));
             balance.setRemainingLeaves(balance.getTotalLeaves().subtract(balance.getUsedLeaves()));
             leaveBalanceRepository.save(balance);
         }

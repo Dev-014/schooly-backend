@@ -254,4 +254,38 @@ class StaffLeaveServiceTest {
                 () -> leaveService.approveLeave(1000L, 50L, 2L, "APPROVED"));
         assertTrue(ex.getMessage().contains("Staff cannot approve their own leave request"));
     }
+
+    @Test
+    void testApproveLeave_AdminUserWithoutStaffRecordSucceeds() {
+        AuthContextHolder.set(new AuthenticatedUser(11L, 1000L, UserRole.ADMIN));
+
+        StaffLeave leave = new StaffLeave();
+        leave.setId(51L);
+        leave.setSchool(school);
+        leave.setStaff(staff); // staff id is 2L
+        leave.setLeaveTypeId(1L);
+        leave.setNumberOfDays(BigDecimal.valueOf(2));
+
+        StaffLeaveBalance balance = new StaffLeaveBalance();
+        balance.setId(1L);
+        balance.setSchool(school);
+        balance.setStaff(staff);
+        balance.setLeaveTypeId(1L);
+        balance.setTotalLeaves(BigDecimal.valueOf(12));
+        balance.setUsedLeaves(BigDecimal.ZERO);
+        balance.setRemainingLeaves(BigDecimal.valueOf(12));
+
+        when(staffLeaveRepository.findById(51L)).thenReturn(Optional.of(leave));
+        when(staffRepository.findByUserId(11L)).thenReturn(Optional.empty()); // Admin user is not in staff table
+        when(leaveBalanceRepository.findByStaffIdAndLeaveTypeId(2L, 1L)).thenReturn(Optional.of(balance));
+        when(staffLeaveRepository.save(any(StaffLeave.class))).thenReturn(leave);
+        when(leaveTypeRepository.findById(1L)).thenReturn(Optional.of(leaveType));
+
+        StaffLeaveDTO result = leaveService.approveLeave(1000L, 51L, null, "APPROVED", "Approved chill and take care");
+
+        assertNotNull(result);
+        assertEquals("APPROVED", result.getStatus());
+        assertEquals("Approved chill and take care", result.getReply());
+        assertEquals(11L, leave.getApprovedBy()); // Set to admin user ID without error
+    }
 }

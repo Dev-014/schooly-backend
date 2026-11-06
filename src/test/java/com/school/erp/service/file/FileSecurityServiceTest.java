@@ -178,6 +178,17 @@ class FileSecurityServiceTest {
                 FileEntityType.STUDENT, 999L, parentUser, 1000L));
         assertTrue(ex.getMessage().contains("parent is not linked to this student"));
     }
+
+    @Test
+    @DisplayName("Should allow Teacher role tenant-wide or classroom authorization for file entity scopes")
+    void testValidateEntityScope_TeacherAllowed() {
+        AuthenticatedUser teacherUser = new AuthenticatedUser(13L, 1000L, UserRole.TEACHER);
+
+        assertDoesNotThrow(() -> securityService.validateEntityScope(
+                FileEntityType.STAFF, 2L, teacherUser, 1000L));
+        assertDoesNotThrow(() -> securityService.validateEntityScope(
+                FileEntityType.STUDENT, 10L, teacherUser, 1000L));
+    }
 }
 
 
