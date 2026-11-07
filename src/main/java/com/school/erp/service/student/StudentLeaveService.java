@@ -160,7 +160,7 @@ public class StudentLeaveService {
                     NotificationPriority.HIGH,
                     title,
                     message,
-                    "/students/leaves",
+                    "/app/leave?tab=student",
                     "Review Leave",
                     "STUDENT_LEAVE",
                     String.valueOf(saved.getId()),
@@ -173,7 +173,7 @@ public class StudentLeaveService {
                     NotificationPriority.MEDIUM,
                     title,
                     message,
-                    "/students/leaves",
+                    "/app/leave?tab=student",
                     "Review Leave",
                     "STUDENT_LEAVE",
                     String.valueOf(saved.getId()),
@@ -239,7 +239,7 @@ public class StudentLeaveService {
                     "Leave request for " + saved.getStudent().getName() + " (" + saved.getFromDate() + " to " + saved.getToDate()
                             + ") has been marked as " + saved.getStatus()
                             + (saved.getReply() != null && !saved.getReply().isBlank() ? ". Remark: " + saved.getReply() : "."),
-                    "/students/leaves",
+                    "/app/leave?tab=student",
                     "View Leave Status",
                     "STUDENT_LEAVE",
                     String.valueOf(saved.getId()),
