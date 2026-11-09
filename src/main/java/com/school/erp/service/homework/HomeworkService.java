@@ -534,6 +534,11 @@ public class HomeworkService {
                 if (sub.getEvaluatedBy() != null) {
                     res.setEvaluatorName(sub.getEvaluatedBy().getFirstName() + " " + sub.getEvaluatedBy().getLastName());
                 }
+                res.setSubmissionText(sub.getSubmissionText());
+                res.setSubmissionAttachmentUrl(sub.getAttachmentUrl());
+                res.setSubmissionAttachmentName(sub.getAttachmentName());
+                res.setSubmissionAttachmentFileId(sub.getAttachmentFileId());
+                res.setSubmittedAt(sub.getSubmissionDate());
             } else {
                 res.setSubmissionStatus("PENDING");
             }

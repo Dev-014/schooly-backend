@@ -51,6 +51,11 @@ public class HomeworkAssignmentResponse {
     private String remarks;
     private String evaluatorName;
     private LocalDateTime evaluatedAt;
+    private String submissionText;
+    private String submissionAttachmentUrl;
+    private String submissionAttachmentName;
+    private UUID submissionAttachmentFileId;
+    private LocalDateTime submittedAt;
 
     public LocalDate getAssignmentDate() {
         return assignedDate;
