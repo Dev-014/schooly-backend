@@ -29,6 +29,7 @@ public record StudentRequest(
         String nationality,
         String previousSchool,
         String address,
+        String permanentAddress,
         String photoUrl,
         String guardianName,
         String guardianRelation,

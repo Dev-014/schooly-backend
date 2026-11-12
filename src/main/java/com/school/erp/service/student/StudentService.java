@@ -345,6 +345,7 @@ public class StudentService {
         student.setNationality(request.nationality());
         student.setPreviousSchool(request.previousSchool());
         student.setAddress(request.address());
+        student.setPermanentAddress(request.permanentAddress() != null ? request.permanentAddress() : request.address());
         student.setPhotoUrl(request.photoUrl());
         student.setGuardianName(request.guardianName());
         student.setGuardianRelation(request.guardianRelation());
@@ -425,7 +426,7 @@ public class StudentService {
         );
     }
 
-    private void linkParentAccount(Student student, Long schoolId) {
+    public void linkParentAccount(Student student, Long schoolId) {
         if (student.getGuardianPhone() == null || student.getGuardianPhone().isBlank()) {
             return;
         }
@@ -462,7 +463,15 @@ public class StudentService {
             roleSyncService.syncUserSchoolRole(usr);
         }
 
-        // 3. Link Student and Parent
+        // 3. Unlink any previous parent if phone changed
+        List<StudentParent> existingLinks = studentParentRepository.findByIdStudentId(student.getId());
+        for (StudentParent sp : existingLinks) {
+            if (sp.getParentUser() != null && !sp.getParentUser().getId().equals(user.getId())) {
+                studentParentRepository.delete(sp);
+            }
+        }
+
+        // 4. Link Student and Parent
         boolean isLinked = studentParentRepository.findByIdParentUserIdAndStudentId(user.getId(), student.getId()).isPresent();
         if (!isLinked) {
             StudentParent link = new StudentParent();
