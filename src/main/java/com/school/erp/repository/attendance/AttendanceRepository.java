@@ -11,6 +11,8 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     List<Attendance> findBySchoolIdAndStudentId(Long schoolId, Long studentId);
 
+    List<Attendance> findByStudentId(Long studentId);
+
     long countBySchoolIdAndAttendanceDateAndStatus(Long schoolId, java.time.LocalDate attendanceDate, String status);
 
     @org.springframework.data.jpa.repository.Query("SELECT a.status, COUNT(a) FROM Attendance a " +

@@ -17,6 +17,10 @@ public interface LibraryMemberRepository extends JpaRepository<LibraryMember, Lo
 
     Optional<LibraryMember> findBySchoolIdAndCardNumber(Long schoolId, String cardNumber);
 
+    Optional<LibraryMember> findBySchoolIdAndAdmissionNumber(Long schoolId, String admissionNumber);
+
+    Optional<LibraryMember> findByAdmissionNumber(String admissionNumber);
+
     @Query("SELECT m FROM LibraryMember m WHERE m.school.id = :schoolId " +
             "AND (:search IS NULL OR LOWER(m.fullName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
             "     OR LOWER(m.cardNumber) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +

@@ -4,9 +4,13 @@ import com.school.erp.dto.payment.FeeDueResponse;
 import com.school.erp.dto.student.StudentProfileResponse;
 import com.school.erp.dto.student.UpdateStudentProfileRequest;
 import com.school.erp.entity.academic.Section;
+import com.school.erp.entity.attendance.Attendance;
 import com.school.erp.entity.student.Student;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.academic.SectionRepository;
+import com.school.erp.repository.attendance.AttendanceRepository;
+import com.school.erp.repository.library.LibraryCirculationRepository;
+import com.school.erp.repository.library.LibraryMemberRepository;
 import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.service.finance.FeeDueService;
 import com.school.erp.service.student.StudentService;
@@ -15,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +33,9 @@ public class StudentProfileService {
     private final SectionRepository sectionRepository;
     private final FeeDueService feeDueService;
     private final StudentService studentService;
+    private final AttendanceRepository attendanceRepository;
+    private final LibraryCirculationRepository circulationRepository;
+    private final LibraryMemberRepository memberRepository;
 
     public Student resolveStudent(Long studentId, Long schoolId, Long userId) {
         if (studentId != null) {
@@ -135,7 +144,6 @@ public class StudentProfileService {
         String houseName = student.getHouse() != null ? student.getHouse().getName() :
                 (student.getStudentHouseName() != null ? student.getStudentHouseName() : "Indigo House (Blue)");
 
-        BigDecimal outstandingFees = BigDecimal.valueOf(12400.00);
         BigDecimal outstandingFees = BigDecimal.ZERO;
         try {
             if (schoolId != null) {
@@ -152,27 +160,58 @@ public class StudentProfileService {
             outstandingFees = BigDecimal.ZERO;
         }
 
-        BigDecimal attendancePercentage = BigDecimal.valueOf(94.8);
         BigDecimal attendancePercentage = BigDecimal.ZERO;
+        try {
+            Long targetSchoolId = schoolId != null ? schoolId : (student.getSchool() != null ? student.getSchool().getId() : null);
+            List<Attendance> attendances = targetSchoolId != null
+                    ? attendanceRepository.findBySchoolIdAndStudentId(targetSchoolId, student.getId())
+                    : attendanceRepository.findByStudentId(student.getId());
+            if (attendances != null && !attendances.isEmpty()) {
+                long total = attendances.size();
+                long present = attendances.stream()
+                        .filter(a -> a.getStatus() != null && (
+                                "PRESENT".equalsIgnoreCase(a.getStatus()) ||
+                                "LATE".equalsIgnoreCase(a.getStatus()) ||
+                                "HALF_DAY".equalsIgnoreCase(a.getStatus())
+                        ))
+                        .count();
+                attendancePercentage = BigDecimal.valueOf((present * 100.0) / total)
+                        .setScale(1, RoundingMode.HALF_UP);
+            }
+        } catch (Exception ignored) {
+            attendancePercentage = BigDecimal.ZERO;
+        }
+
         Integer booksIssuedCount = 0;
+        try {
+            Long targetSchoolId = schoolId != null ? schoolId : (student.getSchool() != null ? student.getSchool().getId() : null);
+            long count = circulationRepository.countActiveIssuedForStudent(
+                    targetSchoolId,
+                    student.getId(),
+                    student.getAdmissionNo()
+            );
+            booksIssuedCount = (int) count;
+            if (booksIssuedCount == 0 && student.getAdmissionNo() != null) {
+                var memberOpt = targetSchoolId != null
+                        ? memberRepository.findBySchoolIdAndAdmissionNumber(targetSchoolId, student.getAdmissionNo().trim())
+                        : memberRepository.findByAdmissionNumber(student.getAdmissionNo().trim());
+                if (memberOpt.isPresent() && memberOpt.get().getActiveIssuedCount() != null) {
+                    booksIssuedCount = memberOpt.get().getActiveIssuedCount();
+                }
+            }
+        } catch (Exception ignored) {
+            booksIssuedCount = 0;
+        }
 
         String fatherName = student.getFatherName() != null ? student.getFatherName() :
-                (student.getGuardianName() != null ? student.getGuardianName() : "Mr. Rajesh Sharma");
                 ("father".equalsIgnoreCase(student.getGuardianRelation()) ? student.getGuardianName() : null);
         String fatherPhone = student.getFatherPhone() != null ? student.getFatherPhone() :
-                (student.getGuardianPhone() != null ? student.getGuardianPhone() : "+91 98765 43210");
                 ("father".equalsIgnoreCase(student.getGuardianRelation()) ? student.getGuardianPhone() : null);
         String fatherEmail = student.getFatherEmail() != null ? student.getFatherEmail() :
-                (student.getGuardianEmail() != null ? student.getGuardianEmail() : "rajesh.sharma@example.com");
                 ("father".equalsIgnoreCase(student.getGuardianRelation()) ? student.getGuardianEmail() : null);
         String fatherOccupation = student.getFatherOccupation() != null ? student.getFatherOccupation() :
-                (student.getGuardianOccupation() != null ? student.getGuardianOccupation() : "Senior Architect");
                 ("father".equalsIgnoreCase(student.getGuardianRelation()) ? student.getGuardianOccupation() : null);
 
-        String motherName = student.getMotherName() != null ? student.getMotherName() : "Mrs. Sunita Sharma";
-        String motherPhone = student.getMotherPhone() != null ? student.getMotherPhone() : "+91 98765 43211";
-        String motherEmail = student.getMotherEmail() != null ? student.getMotherEmail() : "sunita.sharma@example.com";
-        String motherOccupation = student.getMotherOccupation() != null ? student.getMotherOccupation() : "Senior Professor";
         String motherName = student.getMotherName() != null ? student.getMotherName() :
                 ("mother".equalsIgnoreCase(student.getGuardianRelation()) ? student.getGuardianName() : null);
         String motherPhone = student.getMotherPhone() != null ? student.getMotherPhone() :
@@ -182,11 +221,6 @@ public class StudentProfileService {
         String motherOccupation = student.getMotherOccupation() != null ? student.getMotherOccupation() :
                 ("mother".equalsIgnoreCase(student.getGuardianRelation()) ? student.getGuardianOccupation() : null);
 
-        String bankName = student.getBankName() != null ? student.getBankName() : "State Bank of India";
-        String bankAccountNo = student.getBankAccountNo() != null ? student.getBankAccountNo() : "XXXX XXXX 8902";
-        String bankIfsc = student.getBankIfsc() != null ? student.getBankIfsc() : "SBIN0001234";
-        String merit = student.getAcademicMerit() != null ? student.getAcademicMerit() :
-                "Siddharth is currently in the top 5% of his class for Academic Excellence.";
         String bankName = student.getBankName();
         String bankAccountNo = student.getBankAccountNo();
         String bankIfsc = student.getBankIfsc();
@@ -196,7 +230,6 @@ public class StudentProfileService {
         if (name == null || name.isBlank()) {
             name = ((student.getFirstName() != null ? student.getFirstName() : "") + " " +
                     (student.getLastName() != null ? student.getLastName() : "")).trim();
-            if (name.isBlank()) name = "Student " + student.getAdmissionNo();
             if (name.isBlank()) name = "Student " + (student.getAdmissionNo() != null ? student.getAdmissionNo() : "");
         }
 
@@ -205,10 +238,8 @@ public class StudentProfileService {
                 student.getUserId(),
                 name,
                 student.getAdmissionNo(),
-                student.getRollNumber() != null ? student.getRollNumber() : "14",
                 student.getRollNumber(),
                 student.getStatus() != null ? student.getStatus() : "ACTIVE",
-                student.getAdmissionDate() != null ? student.getAdmissionDate() : LocalDate.of(2021, 8, 15),
                 student.getAdmissionDate(),
                 schoolId,
                 schoolName,
@@ -220,29 +251,15 @@ public class StudentProfileService {
                 student.getFirstName() != null ? student.getFirstName() : name,
                 student.getLastName() != null ? student.getLastName() : "",
                 student.getGender() != null ? student.getGender() : "Male",
-                student.getDateOfBirth() != null ? student.getDateOfBirth() : LocalDate.of(2007, 5, 22),
-                student.getBloodGroup() != null ? student.getBloodGroup() : "B Positive (B+)",
-                student.getReligion() != null ? student.getReligion() : "Hinduism",
-                student.getCaste() != null ? student.getCaste() : "General",
                 student.getDateOfBirth(),
                 student.getBloodGroup(),
                 student.getReligion(),
                 student.getCaste(),
                 student.getNationality() != null ? student.getNationality() : "Indian",
-                student.getPreviousSchool() != null ? student.getPreviousSchool() : "Delhi Public School",
-                student.getAddress() != null ? student.getAddress() : "B-402, High-End Apartments, Road No. 4, Sector 15, Dwarka, New Delhi - 110075",
-                student.getPermanentAddress() != null ? student.getPermanentAddress() : "Same as current address",
                 student.getPreviousSchool(),
                 student.getAddress(),
                 student.getPermanentAddress() != null ? student.getPermanentAddress() : student.getAddress(),
                 student.getPhotoUrl(),
-                student.getPhone() != null ? student.getPhone() : (student.getGuardianPhone() != null ? student.getGuardianPhone() : "+91 98765 43210"),
-                student.getEmail() != null ? student.getEmail() : (student.getGuardianEmail() != null ? student.getGuardianEmail() : "siddharth.s@school.edu"),
-                student.getGuardianName() != null ? student.getGuardianName() : "Mr. Rajesh Sharma",
-                student.getGuardianRelation() != null ? student.getGuardianRelation() : "Father",
-                student.getGuardianPhone() != null ? student.getGuardianPhone() : "+91 98765 43210",
-                student.getGuardianEmail() != null ? student.getGuardianEmail() : "rajesh.sharma@example.com",
-                student.getGuardianOccupation() != null ? student.getGuardianOccupation() : "Senior Architect",
                 student.getPhone() != null ? student.getPhone() : student.getGuardianPhone(),
                 student.getEmail() != null ? student.getEmail() : student.getGuardianEmail(),
                 student.getGuardianName(),
@@ -258,10 +275,8 @@ public class StudentProfileService {
                 motherPhone,
                 motherEmail,
                 motherOccupation,
-                student.getCategory() != null ? student.getCategory().getId() : 1L,
                 student.getCategory() != null ? student.getCategory().getId() : null,
                 categoryName,
-                student.getHouse() != null ? student.getHouse().getId() : 1L,
                 student.getHouse() != null ? student.getHouse().getId() : null,
                 houseName,
                 student.getFamily() != null ? student.getFamily().getId() : null,
@@ -271,7 +286,6 @@ public class StudentProfileService {
                 merit,
                 attendancePercentage,
                 outstandingFees,
-                3
                 booksIssuedCount
         );
     }

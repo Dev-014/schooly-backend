@@ -24,7 +24,8 @@ public interface LibraryCirculationRepository extends JpaRepository<LibraryCircu
             "     OR LOWER(c.book.isbn) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) " +
             "AND (:status IS NULL OR LOWER(c.status) = LOWER(CAST(:status AS string))) " +
             "AND (:memberId IS NULL OR c.member.id = :memberId) " +
-            "AND (:studentId IS NULL OR (c.member.student IS NOT NULL AND c.member.student.id = :studentId)) " +
+            "AND (:studentId IS NULL OR (c.member.student IS NOT NULL AND c.member.student.id = :studentId) " +
+            "     OR (c.member.admissionNumber IS NOT NULL AND c.member.admissionNumber IN (SELECT s.admissionNo FROM Student s WHERE s.id = :studentId))) " +
             "AND (:staffId IS NULL OR (c.member.staff IS NOT NULL AND c.member.staff.id = :staffId)) " +
             "AND (:bookId IS NULL OR c.book.id = :bookId) " +
             "ORDER BY c.issueDate DESC, c.createdAt DESC")
@@ -37,6 +38,17 @@ public interface LibraryCirculationRepository extends JpaRepository<LibraryCircu
             @Param("staffId") Long staffId,
             @Param("bookId") Long bookId,
             Pageable pageable
+    );
+
+    @Query("SELECT COUNT(c) FROM LibraryCirculation c WHERE " +
+            "(:schoolId IS NULL OR c.school.id = :schoolId) AND " +
+            "((c.member.student IS NOT NULL AND c.member.student.id = :studentId) " +
+            " OR (c.member.admissionNumber IS NOT NULL AND :admissionNo IS NOT NULL AND c.member.admissionNumber = :admissionNo)) AND " +
+            "LOWER(c.status) IN ('issued', 'overdue') AND c.returnDate IS NULL")
+    long countActiveIssuedForStudent(
+            @Param("schoolId") Long schoolId,
+            @Param("studentId") Long studentId,
+            @Param("admissionNo") String admissionNo
     );
 
     long countBySchoolId(Long schoolId);

@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +47,25 @@ public class SchoolLibraryService {
 
     @Autowired(required = false)
     private NotificationService notificationService;
+
+    @jakarta.annotation.PostConstruct
+    public void linkExistingStudentMembers() {
+        try {
+            java.util.List<LibraryMember> unlinked = memberRepository.findAll().stream()
+                    .filter(m -> m.getStudent() == null && m.getAdmissionNumber() != null && !m.getAdmissionNumber().isBlank())
+                    .toList();
+            for (LibraryMember m : unlinked) {
+                Long sid = m.getSchool() != null ? m.getSchool().getId() : null;
+                Optional<Student> studentOpt = sid != null
+                        ? studentRepository.findBySchoolIdAndAdmissionNo(sid, m.getAdmissionNumber().trim())
+                        : studentRepository.findAllByAdmissionNo(m.getAdmissionNumber().trim()).stream().findFirst();
+                studentOpt.ifPresent(s -> {
+                    m.setStudent(s);
+                    memberRepository.save(m);
+                });
+            }
+        } catch (Exception ignored) {}
+    }
 
     // ─── Books ───────────────────────────────────────────────────────────────
 
@@ -576,6 +596,17 @@ public class SchoolLibraryService {
     }
 
     private LibraryCirculationResponse mapCirculationToResponse(LibraryCirculation c) {
+        Long resolvedStudentId = null;
+        if (c.getMember() != null) {
+            if (c.getMember().getStudent() != null) {
+                resolvedStudentId = c.getMember().getStudent().getId();
+            } else if (c.getMember().getAdmissionNumber() != null && c.getSchool() != null) {
+                resolvedStudentId = studentRepository.findBySchoolIdAndAdmissionNo(c.getSchool().getId(), c.getMember().getAdmissionNumber().trim())
+                        .map(Student::getId)
+                        .orElse(null);
+            }
+        }
+
         return LibraryCirculationResponse.builder()
                 .id(c.getId())
                 .schoolId(c.getSchool().getId())
@@ -586,7 +617,7 @@ public class SchoolLibraryService {
                 .author(c.getBook().getAuthor())
                 .coverImageUrl(c.getBook().getCoverImageUrl())
                 .memberId(c.getMember().getId())
-                .studentId(c.getMember() != null && c.getMember().getStudent() != null ? c.getMember().getStudent().getId() : null)
+                .studentId(resolvedStudentId)
                 .staffId(c.getMember() != null && c.getMember().getStaff() != null ? c.getMember().getStaff().getId() : null)
                 .memberName(c.getMember().getFullName())
                 .memberCardNumber(c.getMember().getCardNumber())
