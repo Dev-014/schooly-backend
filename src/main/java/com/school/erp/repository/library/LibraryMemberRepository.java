@@ -19,6 +19,10 @@ public interface LibraryMemberRepository extends JpaRepository<LibraryMember, Lo
 
     Optional<LibraryMember> findBySchoolIdAndAdmissionNumber(Long schoolId, String admissionNumber);
 
+    Optional<LibraryMember> findBySchoolIdAndStudentId(Long schoolId, Long studentId);
+
+    Optional<LibraryMember> findBySchoolIdAndStaffId(Long schoolId, Long staffId);
+
     Optional<LibraryMember> findByAdmissionNumber(String admissionNumber);
 
     @Query("SELECT m FROM LibraryMember m WHERE m.school.id = :schoolId " +

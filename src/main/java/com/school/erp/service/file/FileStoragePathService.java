@@ -26,6 +26,8 @@ public class FileStoragePathService {
             case EXAM_REPORT_CARD -> String.format("schools/%d/examinations/report-cards/%d/", schoolId, safeEntityId);
             case STAFF -> String.format("schools/%d/staff/%d/%s/", schoolId, safeEntityId, categorySubfolder);
             case SCHOOL -> String.format("schools/%d/school/branding/", schoolId);
+            case INCOME -> String.format("schools/%d/finance/incomes/%d/%s/", schoolId, safeEntityId, categorySubfolder);
+            case EXPENSE -> String.format("schools/%d/finance/expenses/%d/%s/", schoolId, safeEntityId, categorySubfolder);
             case GENERAL -> String.format("schools/%d/general/%s/", schoolId, categorySubfolder);
         };
     }
@@ -51,6 +53,8 @@ public class FileStoragePathService {
                 String.format("schools/%d/homework/assignments/", schoolId),
                 String.format("schools/%d/homework/submissions/", schoolId),
                 String.format("schools/%d/staff/", schoolId),
+                String.format("schools/%d/finance/incomes/", schoolId),
+                String.format("schools/%d/finance/expenses/", schoolId),
                 String.format("schools/%d/finance/invoices/", schoolId),
                 String.format("schools/%d/finance/receipts/", schoolId),
                 String.format("schools/%d/school/branding/", schoolId),

@@ -101,4 +101,54 @@ class FileValidationServiceTest {
                 () -> validationService.validateUploadRequest(1L, request));
         assertTrue(ex.getMessage().contains("quota exceeded"));
     }
+
+    @Test
+    @DisplayName("Should allow accounting PDFs up to the 10 MB limit")
+    void testValidateUploadRequest_AccountingPdfWithinLimit() {
+        FileUploadInitRequest request = new FileUploadInitRequest(
+                "receipt.pdf",
+                "application/pdf",
+                10L * 1024 * 1024,
+                FileEntityType.INCOME,
+                25L,
+                FileCategory.OTHER
+        );
+        when(fileMetadataRepository.calculateTotalUsedBytesBySchoolId(1L)).thenReturn(10L * 1024 * 1024);
+
+        assertDoesNotThrow(() -> validationService.validateUploadRequest(1L, request));
+    }
+
+    @Test
+    @DisplayName("Should reject accounting documents with mismatched file types")
+    void testValidateUploadRequest_AccountingMimeTypeMismatch() {
+        FileUploadInitRequest request = new FileUploadInitRequest(
+                "receipt.pdf",
+                "image/jpeg",
+                1024L,
+                FileEntityType.EXPENSE,
+                25L,
+                FileCategory.OTHER
+        );
+
+        BadRequestException ex = assertThrows(BadRequestException.class,
+                () -> validationService.validateUploadRequest(1L, request));
+        assertTrue(ex.getMessage().contains("must be PDF, JPG, JPEG, or PNG"));
+    }
+
+    @Test
+    @DisplayName("Should reject accounting documents larger than 10 MB")
+    void testValidateUploadRequest_AccountingSizeLimitExceeded() {
+        FileUploadInitRequest request = new FileUploadInitRequest(
+                "receipt.pdf",
+                "application/pdf",
+                10L * 1024 * 1024 + 1,
+                FileEntityType.INCOME,
+                25L,
+                FileCategory.OTHER
+        );
+
+        BadRequestException ex = assertThrows(BadRequestException.class,
+                () -> validationService.validateUploadRequest(1L, request));
+        assertTrue(ex.getMessage().contains("10 MB or smaller"));
+    }
 }

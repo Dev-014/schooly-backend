@@ -1,6 +1,7 @@
 package com.school.erp.entity.accounting;
 
 import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.academic.AcademicYear;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,10 @@ public class Income {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "income_head_id", nullable = false)
     private IncomeHead incomeHead;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "academic_year_id")
+    private AcademicYear academicYear;
 
     @Column(name = "account_type", nullable = false)
     private String accountType;

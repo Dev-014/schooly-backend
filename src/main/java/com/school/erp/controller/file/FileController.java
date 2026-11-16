@@ -9,18 +9,26 @@ import com.school.erp.enums.file.FileStatus;
 import com.school.erp.security.PermissionRequired;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.service.file.FileManagementService;
+import com.school.erp.storage.ObjectStorageProvider;
+import com.school.erp.storage.StorageObjectMetadata;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.InputStream;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/files")
 @RequiredArgsConstructor
@@ -29,6 +37,7 @@ public class FileController {
 
     private final FileManagementService fileManagementService;
     private final AuthContextService authContextService;
+    private final ObjectStorageProvider objectStorageProvider;
 
     @PostMapping("/upload-init")
     @PermissionRequired("files.file.upload")
@@ -40,6 +49,99 @@ public class FileController {
         String clientIp = servletRequest.getRemoteAddr();
         FileUploadInitResponse response = fileManagementService.initiateUpload(request, clientIp);
         return ResponseEntity.ok(ApiResponse.success(response, "Upload initiated successfully"));
+    }
+
+    @RequestMapping(value = {"/mock-s3-upload", "/mock-s3-upload/**"}, method = {RequestMethod.PUT, RequestMethod.POST})
+    @Operation(summary = "Mock S3 upload endpoint for local development without real AWS credentials")
+    public ResponseEntity<Void> mockS3Upload(
+            @RequestParam(required = false) String bucket,
+            @RequestParam(required = false) String key,
+            HttpServletRequest request
+    ) throws Exception {
+        byte[] content = request.getInputStream().readAllBytes();
+        String contentType = request.getContentType();
+
+        if (!StringUtils.hasText(key)) {
+            String uri = request.getRequestURI();
+            String prefix = "/api/v1/files/mock-s3-upload/";
+            if (uri.contains(prefix)) {
+                key = uri.substring(uri.indexOf(prefix) + prefix.length());
+                key = URLDecoder.decode(key, StandardCharsets.UTF_8).replace("_", "/");
+            }
+        }
+        if (!StringUtils.hasText(bucket)) {
+            bucket = "schooly-local-files";
+        }
+
+        if (StringUtils.hasText(key)) {
+            objectStorageProvider.putObject(bucket, key, content, contentType);
+            log.info("Mock S3 uploaded successfully: bucket={}, key={}, size={} bytes, contentType={}",
+                    bucket, key, content.length, contentType);
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = {"/mock-s3-download", "/mock-s3-download/**"})
+    @Operation(summary = "Mock S3 download endpoint for local development without real AWS credentials")
+    public ResponseEntity<byte[]> mockS3Download(
+            @RequestParam(required = false) String bucket,
+            @RequestParam(required = false) String key,
+            @RequestParam(defaultValue = "inline") String disposition,
+            @RequestParam(required = false) String file,
+            HttpServletRequest request
+    ) {
+        if (!StringUtils.hasText(key)) {
+            String uri = request.getRequestURI();
+            String prefix = "/api/v1/files/mock-s3-download/";
+            if (uri.contains(prefix)) {
+                key = uri.substring(uri.indexOf(prefix) + prefix.length());
+                key = URLDecoder.decode(key, StandardCharsets.UTF_8).replace("_", "/");
+            }
+        }
+        if (!StringUtils.hasText(bucket)) {
+            bucket = "schooly-local-files";
+        }
+        if (!StringUtils.hasText(file)) {
+            file = (key != null && key.contains("/")) ? key.substring(key.lastIndexOf('/') + 1) : "document";
+        }
+
+        try {
+            if (StringUtils.hasText(key) && objectStorageProvider.doesObjectExist(bucket, key)) {
+                StorageObjectMetadata metadata = objectStorageProvider.getObjectMetadata(bucket, key);
+                byte[] bytes;
+                try (InputStream is = objectStorageProvider.getObjectInputStream(bucket, key)) {
+                    bytes = is.readAllBytes();
+                }
+
+                org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+                String contentType = metadata.contentType();
+                if (!StringUtils.hasText(contentType) || "application/octet-stream".equals(contentType)) {
+                    contentType = org.springframework.http.MediaTypeFactory.getMediaType(file)
+                            .map(org.springframework.http.MediaType::toString)
+                            .orElse("application/octet-stream");
+                }
+                headers.set(org.springframework.http.HttpHeaders.CONTENT_TYPE, contentType);
+                headers.setContentDisposition(
+                        "inline".equalsIgnoreCase(disposition)
+                                ? org.springframework.http.ContentDisposition.inline().filename(file).build()
+                                : org.springframework.http.ContentDisposition.attachment().filename(file).build()
+                );
+                return new ResponseEntity<>(bytes, headers, org.springframework.http.HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            log.error("Failed to serve mock file download for key {}: {}", key, e.getMessage());
+        }
+
+        byte[] samplePdf = "%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>\nendobj\n4 0 obj\n<< /Length 44 >>\nstream\nBT /F1 24 Tf 100 700 Td (Schooly Document Preview) ET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000214 00000 n \ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n309\n%%EOF".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(
+                "inline".equalsIgnoreCase(disposition)
+                        ? org.springframework.http.ContentDisposition.inline().filename(file).build()
+                        : org.springframework.http.ContentDisposition.attachment().filename(file).build()
+        );
+        return new ResponseEntity<>(samplePdf, headers, org.springframework.http.HttpStatus.OK);
     }
 
     @PostMapping("/{fileId}/complete")
@@ -136,29 +238,5 @@ public class FileController {
         }
         fileManagementService.initializeSchoolBucketFolders(targetSchoolId);
         return ResponseEntity.ok(ApiResponse.success("Standard use-case folders initialized successfully", "Folders created"));
-    }
-
-    @RequestMapping(value = "/mock-s3-upload/**", method = {RequestMethod.PUT, RequestMethod.POST})
-    @Operation(summary = "Mock S3 upload endpoint for local development without real AWS credentials")
-    public ResponseEntity<Void> mockS3Upload() {
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/mock-s3-download/**")
-    @Operation(summary = "Mock S3 download endpoint for local development without real AWS credentials")
-    public ResponseEntity<byte[]> mockS3Download(
-            @RequestParam(defaultValue = "inline") String disposition,
-            @RequestParam(defaultValue = "document.pdf") String file
-    ) {
-        byte[] samplePdf = "%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>\nendobj\n4 0 obj\n<< /Length 44 >>\nstream\nBT /F1 24 Tf 100 700 Td (Schooly Document Preview) ET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000214 00000 n \ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n309\n%%EOF".getBytes(java.nio.charset.StandardCharsets.UTF_8);
-
-        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-        headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
-        headers.setContentDisposition(
-                "inline".equalsIgnoreCase(disposition)
-                        ? org.springframework.http.ContentDisposition.inline().filename(file).build()
-                        : org.springframework.http.ContentDisposition.attachment().filename(file).build()
-        );
-        return new ResponseEntity<>(samplePdf, headers, org.springframework.http.HttpStatus.OK);
     }
 }

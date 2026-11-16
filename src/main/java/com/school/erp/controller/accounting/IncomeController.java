@@ -4,6 +4,8 @@ import com.school.erp.dto.accounting.IncomeHeadRequest;
 import com.school.erp.dto.accounting.IncomeHeadResponse;
 import com.school.erp.dto.accounting.IncomeRequest;
 import com.school.erp.dto.accounting.IncomeResponse;
+import com.school.erp.dto.accounting.AccountingSearchFilter;
+import com.school.erp.dto.accounting.AccountingSummaryResponse;
 import com.school.erp.service.accounting.IncomeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -53,8 +55,14 @@ public class IncomeController {
 
     @GetMapping
     @PermissionRequired("income.transaction.view")
-    public ResponseEntity<List<IncomeResponse>> getAllIncomes() {
-        return ResponseEntity.ok(incomeService.getAllIncomes());
+    public ResponseEntity<List<IncomeResponse>> getAllIncomes(@Valid @ModelAttribute AccountingSearchFilter filter) {
+        return ResponseEntity.ok(incomeService.getAllIncomes(filter));
+    }
+
+    @GetMapping("/summary")
+    @PermissionRequired("income.transaction.view")
+    public ResponseEntity<AccountingSummaryResponse> getIncomeSummary(@Valid @ModelAttribute AccountingSearchFilter filter) {
+        return ResponseEntity.ok(incomeService.getSummary(filter));
     }
 
     @PostMapping

@@ -11,6 +11,9 @@ import java.time.LocalDate;
 public class ExpenseRequest {
     @NotNull(message = "Expense head ID is required")
     private Long expenseHeadId;
+
+    private Long academicYearId;
+    private Boolean clearAcademicYear;
     
     @NotBlank(message = "Account type is required")
     private String accountType;

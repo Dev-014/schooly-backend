@@ -23,6 +23,8 @@ public interface ObjectStorageProvider {
 
     boolean doesObjectExist(String bucket, String key);
 
+    void putObject(String bucket, String key, byte[] content, String contentType);
+
     StorageObjectMetadata getObjectMetadata(String bucket, String key);
 
     InputStream getObjectInputStream(String bucket, String key);

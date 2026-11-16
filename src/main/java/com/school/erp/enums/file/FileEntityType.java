@@ -7,6 +7,8 @@ public enum FileEntityType {
     EXAM_REPORT_CARD,
     STAFF,
     SCHOOL,
+    INCOME,
+    EXPENSE,
     GENERAL
 }
 

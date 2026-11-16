@@ -10,6 +10,8 @@ import com.school.erp.enums.file.FileEntityType;
 import com.school.erp.enums.file.FileStatus;
 import com.school.erp.exception.ForbiddenException;
 import com.school.erp.exception.ResourceNotFoundException;
+import com.school.erp.repository.accounting.ExpenseRepository;
+import com.school.erp.repository.accounting.IncomeRepository;
 import com.school.erp.repository.file.FileAttachmentRepository;
 import com.school.erp.repository.student.StudentParentRepository;
 import com.school.erp.repository.student.StudentRepository;
@@ -40,6 +42,12 @@ class FileSecurityServiceTest {
 
     @Mock
     private StudentParentRepository studentParentRepository;
+
+    @Mock
+    private IncomeRepository incomeRepository;
+
+    @Mock
+    private ExpenseRepository expenseRepository;
 
     @InjectMocks
     private FileSecurityService securityService;
@@ -188,6 +196,35 @@ class FileSecurityServiceTest {
                 FileEntityType.STAFF, 2L, teacherUser, 1000L));
         assertDoesNotThrow(() -> securityService.validateEntityScope(
                 FileEntityType.STUDENT, 10L, teacherUser, 1000L));
+    }
+
+    @Test
+    @DisplayName("Should allow an administrator to access an existing accounting record attachment")
+    void testValidateEntityScope_AccountingAdministratorAllowed() {
+        when(incomeRepository.existsByIdAndSchool_Id(25L, 1L)).thenReturn(true);
+        AuthenticatedUser adminUser = new AuthenticatedUser(1L, 1L, UserRole.ADMIN);
+
+        assertDoesNotThrow(() -> securityService.validateEntityScope(
+                FileEntityType.INCOME, 25L, adminUser, 1L));
+    }
+
+    @Test
+    @DisplayName("Should block non-administrators from accounting record attachments")
+    void testValidateEntityScope_AccountingTeacherBlocked() {
+        AuthenticatedUser teacherUser = new AuthenticatedUser(13L, 1L, UserRole.TEACHER);
+
+        assertThrows(ForbiddenException.class, () -> securityService.validateEntityScope(
+                FileEntityType.EXPENSE, 25L, teacherUser, 1L));
+    }
+
+    @Test
+    @DisplayName("Should not expose accounting attachments when their transaction does not exist in the school")
+    void testValidateEntityScope_AccountingRecordNotFound() {
+        when(expenseRepository.existsByIdAndSchool_Id(25L, 1L)).thenReturn(false);
+        AuthenticatedUser adminUser = new AuthenticatedUser(1L, 1L, UserRole.ADMIN);
+
+        assertThrows(ResourceNotFoundException.class, () -> securityService.validateEntityScope(
+                FileEntityType.EXPENSE, 25L, adminUser, 1L));
     }
 }
 

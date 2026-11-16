@@ -233,7 +233,7 @@ public class FileManagementService {
 
         fileSecurityService.validateAccess(file, currentUser);
 
-        if (file.getStatus() != FileStatus.ACTIVE) {
+        if (file.getStatus() == FileStatus.DELETED || file.getStatus() == FileStatus.REJECTED || file.getStatus() == FileStatus.FAILED) {
             throw new ForbiddenException("File cannot be accessed because its status is: " + file.getStatus());
         }
 
@@ -312,9 +312,10 @@ public class FileManagementService {
                     : fileAttachmentRepository.findBySchoolIdAndEntityTypeAndEntityIdOrderByDisplayOrderAscCreatedAtDesc(
                             schoolId, request.entityType(), request.entityId());
 
-            FileStatus targetStatus = request.status() != null ? request.status() : FileStatus.ACTIVE;
+            FileStatus targetStatus = request.status();
             List<FileResponseDto> dtos = attachments.stream()
-                    .filter(att -> att.getFile().getDeletedAt() == null && att.getFile().getStatus() == targetStatus)
+                    .filter(att -> att.getFile().getDeletedAt() == null &&
+                            (targetStatus != null ? att.getFile().getStatus() == targetStatus : (att.getFile().getStatus() != FileStatus.DELETED && att.getFile().getStatus() != FileStatus.REJECTED && att.getFile().getStatus() != FileStatus.FAILED)))
                     .map(att -> toResponseDto(att.getFile(), att))
                     .toList();
 

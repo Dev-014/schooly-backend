@@ -46,35 +46,27 @@ public class StorageConfig {
                         && !accessKeyId.contains("your_aws_") && !secretAccessKey.contains("your_aws_")
                         && !accessKeyId.equalsIgnoreCase("mock") && !accessKeyId.equalsIgnoreCase("dummy");
 
-                AwsCredentialsProvider credentialsProvider;
                 if (hasExplicitCredentials) {
                     log.info("Loaded explicit AWS S3 static credentials from configuration");
-                    credentialsProvider = StaticCredentialsProvider.create(
+                    AwsCredentialsProvider credentialsProvider = StaticCredentialsProvider.create(
                             AwsBasicCredentials.create(accessKeyId.trim(), secretAccessKey.trim())
                     );
+
+                    S3Client s3Client = S3Client.builder()
+                            .region(region)
+                            .credentialsProvider(credentialsProvider)
+                            .build();
+
+                    S3Presigner s3Presigner = S3Presigner.builder()
+                            .region(region)
+                            .credentialsProvider(credentialsProvider)
+                            .build();
+
+                    return new AmazonS3StorageProvider(s3Client, s3Presigner);
                 } else {
-                    log.info("AWS S3 static credentials not configured or placeholder detected; evaluating ambient credentials or falling back to MockStorageProvider");
-                    try {
-                        AwsCredentialsProvider ambientProvider = DefaultCredentialsProvider.create();
-                        ambientProvider.resolveCredentials();
-                        credentialsProvider = ambientProvider;
-                    } catch (Exception envEx) {
-                        log.info("No ambient AWS credentials found, using MockStorageProvider for development");
-                        return new MockStorageProvider();
-                    }
+                    log.info("AWS S3 static credentials not configured; using MockStorageProvider with local file persistence for development");
+                    return new MockStorageProvider();
                 }
-
-                S3Client s3Client = S3Client.builder()
-                        .region(region)
-                        .credentialsProvider(credentialsProvider)
-                        .build();
-
-                S3Presigner s3Presigner = S3Presigner.builder()
-                        .region(region)
-                        .credentialsProvider(credentialsProvider)
-                        .build();
-
-                return new AmazonS3StorageProvider(s3Client, s3Presigner);
             } catch (Exception e) {
                 log.warn("Failed to initialize AWS S3 client ({}), falling back to MockStorageProvider", e.getMessage());
                 return new MockStorageProvider();

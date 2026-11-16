@@ -10,6 +10,7 @@ import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.student.Student;
 import com.school.erp.entity.hr.Staff;
 import com.school.erp.exception.BadRequestException;
+import com.school.erp.exception.ConflictException;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.library.LibraryBookRepository;
 import com.school.erp.repository.library.LibraryCirculationRepository;
@@ -196,25 +197,71 @@ public class SchoolLibraryService {
         School school = schoolRepository.findById(schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("School not found with id: " + schoolId));
 
+        if (request == null) {
+            throw new BadRequestException("Library member registration payload is required.");
+        }
+
+        String normalizedType = request.getMemberType() != null && !request.getMemberType().isBlank()
+                ? request.getMemberType().trim().toUpperCase() : "STUDENT";
+
+        if (request.getStudentId() != null && request.getStaffId() != null) {
+            throw new BadRequestException("A library member cannot be linked to both a student and a staff record.");
+        }
+
+        if (request.getCardNumber() != null && !request.getCardNumber().isBlank()) {
+            memberRepository.findBySchoolIdAndCardNumber(schoolId, request.getCardNumber().trim())
+                    .ifPresent(existing -> {
+                        throw new ConflictException("Library card number '" + request.getCardNumber().trim() + "' is already assigned to another member.");
+                    });
+        }
+
+        if (request.getStudentId() != null) {
+            memberRepository.findBySchoolIdAndStudentId(schoolId, request.getStudentId())
+                    .ifPresent(existing -> {
+                        throw new ConflictException("Student is already registered as a library member.");
+                    });
+        }
+
+        if (request.getStaffId() != null) {
+            memberRepository.findBySchoolIdAndStaffId(schoolId, request.getStaffId())
+                    .ifPresent(existing -> {
+                        throw new ConflictException("Staff member is already registered as a library member.");
+                    });
+        }
+
+        if (request.getAdmissionNumber() != null && !request.getAdmissionNumber().isBlank()) {
+            memberRepository.findBySchoolIdAndAdmissionNumber(schoolId, request.getAdmissionNumber().trim())
+                    .ifPresent(existing -> {
+                        throw new ConflictException("Admission number '" + request.getAdmissionNumber().trim() + "' is already registered in the library.");
+                    });
+        }
+
         LibraryMember member = new LibraryMember();
         member.setSchool(school);
-        member.setMemberType(request.getMemberType() != null ? request.getMemberType() : "STUDENT");
-        member.setCardNumber(request.getCardNumber());
-        member.setFullName(request.getFullName());
+        member.setMemberType(normalizedType);
+        member.setCardNumber(request.getCardNumber().trim());
+        member.setFullName(request.getFullName().trim());
         member.setEmail(request.getEmail());
         member.setPhone(request.getPhone());
         member.setClassSection(request.getClassSection());
-        member.setAdmissionNumber(request.getAdmissionNumber());
-        member.setMaxBooksAllowed(request.getMaxBooksAllowed() != null ? request.getMaxBooksAllowed() : 3);
+        member.setAdmissionNumber(request.getAdmissionNumber() != null ? request.getAdmissionNumber().trim() : null);
+        member.setMaxBooksAllowed(request.getMaxBooksAllowed() != null ? request.getMaxBooksAllowed() : ("STAFF".equals(normalizedType) ? 5 : 3));
         member.setActiveIssuedCount(0);
         member.setStatus(request.getStatus() != null && !request.getStatus().isBlank() ? request.getStatus() : "Active");
 
         if (request.getStudentId() != null) {
             Student student = studentRepository.findById(request.getStudentId()).orElse(null);
+            if (student == null) {
+                throw new BadRequestException("Student not found with id: " + request.getStudentId());
+            }
             member.setStudent(student);
+            member.setAdmissionNumber(student.getAdmissionNo() != null ? student.getAdmissionNo() : member.getAdmissionNumber());
         }
         if (request.getStaffId() != null) {
             Staff staff = staffRepository.findById(request.getStaffId()).orElse(null);
+            if (staff == null) {
+                throw new BadRequestException("Staff not found with id: " + request.getStaffId());
+            }
             member.setStaff(staff);
         }
 
@@ -328,6 +375,17 @@ public class SchoolLibraryService {
         School school = schoolRepository.findById(schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("School not found with id: " + schoolId));
 
+        if (request == null) {
+            throw new BadRequestException("Issue request is required.");
+        }
+
+        LocalDate issueDate = request.getIssueDate() != null ? request.getIssueDate() : LocalDate.now();
+        LocalDate dueDate = request.getDueDate() != null ? request.getDueDate() : issueDate.plusDays(14);
+
+        if (dueDate.isBefore(issueDate)) {
+            throw new BadRequestException("Due date cannot be earlier than the issue date.");
+        }
+
         LibraryBook book = bookRepository.findByIdAndSchoolId(request.getBookId(), schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + request.getBookId()));
 
@@ -351,8 +409,8 @@ public class SchoolLibraryService {
         circ.setSchool(school);
         circ.setBook(book);
         circ.setMember(member);
-        circ.setIssueDate(request.getIssueDate() != null ? request.getIssueDate() : LocalDate.now());
-        circ.setDueDate(request.getDueDate());
+        circ.setIssueDate(issueDate);
+        circ.setDueDate(dueDate);
         circ.setStatus("Issued");
         circ.setIssuedBy(request.getIssuedBy());
         circ.setRemarks(request.getRemarks());
@@ -427,6 +485,15 @@ public class SchoolLibraryService {
         }
 
         LocalDate returnDate = request != null && request.getReturnDate() != null ? request.getReturnDate() : LocalDate.now();
+        LocalDate issueDate = circ.getIssueDate() != null ? circ.getIssueDate() : returnDate;
+
+        if (returnDate.isBefore(issueDate)) {
+            throw new BadRequestException("Return date cannot be earlier than the issue date.");
+        }
+        if (circ.getDueDate() != null && returnDate.isBefore(circ.getDueDate())) {
+            // returning before the due date is valid; do not mutate the due date field
+        }
+
         circ.setReturnDate(returnDate);
         circ.setStatus("Returned");
 

@@ -17,7 +17,14 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "library_members")
+@Table(
+        name = "library_members",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_library_members_school_card", columnNames = {"school_id", "card_number"}),
+                @UniqueConstraint(name = "uk_library_members_school_student", columnNames = {"school_id", "student_id"}),
+                @UniqueConstraint(name = "uk_library_members_school_staff", columnNames = {"school_id", "staff_id"})
+        }
+)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class LibraryMember {
 

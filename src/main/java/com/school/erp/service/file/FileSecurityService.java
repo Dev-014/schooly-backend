@@ -8,6 +8,8 @@ import com.school.erp.enums.file.FileEntityType;
 import com.school.erp.enums.file.FileStatus;
 import com.school.erp.exception.ForbiddenException;
 import com.school.erp.exception.ResourceNotFoundException;
+import com.school.erp.repository.accounting.ExpenseRepository;
+import com.school.erp.repository.accounting.IncomeRepository;
 import com.school.erp.repository.file.FileAttachmentRepository;
 import com.school.erp.repository.student.StudentParentRepository;
 import com.school.erp.repository.student.StudentRepository;
@@ -26,6 +28,8 @@ public class FileSecurityService {
     private final FileAttachmentRepository fileAttachmentRepository;
     private final StudentRepository studentRepository;
     private final StudentParentRepository studentParentRepository;
+    private final IncomeRepository incomeRepository;
+    private final ExpenseRepository expenseRepository;
 
     public void validateAccess(FileMetadata file, AuthenticatedUser currentUser) {
         if (file.getDeletedAt() != null || file.getStatus() == FileStatus.DELETED) {
@@ -48,6 +52,19 @@ public class FileSecurityService {
     }
 
     public void validateEntityScope(FileEntityType entityType, Long entityId, AuthenticatedUser currentUser, Long schoolId) {
+        if (entityType == FileEntityType.INCOME || entityType == FileEntityType.EXPENSE) {
+            if (currentUser.role() != UserRole.ADMIN && currentUser.role() != UserRole.SUPER_ADMIN) {
+                throw new ForbiddenException("Only school administrators can access accounting documents");
+            }
+            boolean entityExists = entityType == FileEntityType.INCOME
+                    ? incomeRepository.existsByIdAndSchool_Id(entityId, schoolId)
+                    : expenseRepository.existsByIdAndSchool_Id(entityId, schoolId);
+            if (!entityExists) {
+                throw new ResourceNotFoundException("Accounting record not found");
+            }
+            return;
+        }
+
         if (currentUser.role() == UserRole.SUPER_ADMIN || currentUser.role() == UserRole.ADMIN || currentUser.role() == UserRole.STAFF || currentUser.role() == UserRole.TEACHER) {
             return; // Admins, staff, and teachers have tenant-wide or classroom authorization
         }

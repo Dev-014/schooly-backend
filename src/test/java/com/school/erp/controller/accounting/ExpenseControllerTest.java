@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.school.erp.dto.accounting.ExpenseHeadRequest;
 import com.school.erp.dto.accounting.ExpenseHeadResponse;
 import com.school.erp.dto.accounting.ExpenseResponse;
+import com.school.erp.dto.accounting.AccountingSearchFilter;
+import com.school.erp.dto.accounting.AccountingSummaryResponse;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
 import com.school.erp.service.accounting.ExpenseService;
@@ -24,7 +26,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -89,7 +93,7 @@ class ExpenseControllerTest {
         expense.setVendorName("Stationery Hub");
         expense.setDate(LocalDate.of(2026, 10, 12));
 
-        when(expenseService.getAllExpenses()).thenReturn(List.of(expense));
+        when(expenseService.getAllExpenses(any(AccountingSearchFilter.class))).thenReturn(List.of(expense));
 
         mockMvc.perform(get("/api/v1/expenses")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -97,6 +101,33 @@ class ExpenseControllerTest {
                 .andExpect(jsonPath("$[0].id").value(20L))
                 .andExpect(jsonPath("$[0].vendorName").value("Stationery Hub"))
                 .andExpect(jsonPath("$[0].amount").value(450.00));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/expenses/summary should return a payment breakdown")
+    void getExpenseSummary_ShouldReturnBreakdown() throws Exception {
+        when(expenseService.getSummary(any(AccountingSearchFilter.class)))
+                .thenReturn(new AccountingSummaryResponse(
+                        new BigDecimal("150.00"),
+                        new BigDecimal("50.00"),
+                        new BigDecimal("60.00"),
+                        new BigDecimal("40.00")));
+
+        mockMvc.perform(get("/api/v1/expenses/summary")
+                        .param("month", "10")
+                        .param("year", "2026")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.total").value(150.00))
+                .andExpect(jsonPath("$.cash").value(50.00))
+                .andExpect(jsonPath("$.bank").value(60.00))
+                .andExpect(jsonPath("$.online").value(40.00));
+
+        org.mockito.ArgumentCaptor<AccountingSearchFilter> filterCaptor =
+                org.mockito.ArgumentCaptor.forClass(AccountingSearchFilter.class);
+        verify(expenseService).getSummary(filterCaptor.capture());
+        assertEquals(10, filterCaptor.getValue().getMonth());
+        assertEquals(2026, filterCaptor.getValue().getYear());
     }
 
     @Test

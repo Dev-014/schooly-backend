@@ -4,6 +4,7 @@ import com.school.erp.entity.file.FileAttachment;
 import com.school.erp.enums.file.FileCategory;
 import com.school.erp.enums.file.FileEntityType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,6 +19,10 @@ public interface FileAttachmentRepository extends JpaRepository<FileAttachment, 
 
     List<FileAttachment> findBySchoolIdAndEntityTypeAndEntityIdAndCategoryOrderByDisplayOrderAsc(
             Long schoolId, FileEntityType entityType, Long entityId, FileCategory category);
+
+    @EntityGraph(attributePaths = "file")
+    List<FileAttachment> findBySchoolIdAndEntityTypeAndEntityIdInOrderByDisplayOrderAscCreatedAtDesc(
+            Long schoolId, FileEntityType entityType, List<Long> entityIds);
 
     Optional<FileAttachment> findByFileId(UUID fileId);
 

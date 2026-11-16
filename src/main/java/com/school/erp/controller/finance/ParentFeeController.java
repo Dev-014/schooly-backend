@@ -1,16 +1,13 @@
 package com.school.erp.controller.finance;
 
 import com.school.erp.api.ApiResponse;
-import com.school.erp.dto.parent.ParentChildResponse;
 import com.school.erp.dto.payment.FeeDueResponse;
 import com.school.erp.dto.payment.PaymentResponse;
 import com.school.erp.dto.student.StudentFeeSummaryResponse;
 import com.school.erp.security.AuthContextHolder;
 import com.school.erp.security.AuthenticatedUser;
-import com.school.erp.security.PermissionRequired;
 import com.school.erp.service.finance.FeeDueService;
 import com.school.erp.service.finance.FeePaymentService;
-import com.school.erp.service.student.ParentService;
 import com.school.erp.repository.student.StudentParentRepository;
 import com.school.erp.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -32,10 +30,7 @@ public class ParentFeeController {
 
     private final FeeDueService feeDueService;
     private final FeePaymentService feePaymentService;
-    private final ParentService parentService;
     private final StudentParentRepository studentParentRepository;
-
-
 
     @GetMapping("/summary")
     public ResponseEntity<ApiResponse<StudentFeeSummaryResponse>> getChildFeeSummary(@RequestParam Long studentId) {
@@ -44,9 +39,18 @@ public class ParentFeeController {
 
         List<FeeDueResponse> dues = feeDueService.getStudentDues(studentId, resolvedSchoolId, null);
 
-        BigDecimal totalFee = dues.stream().map(FeeDueResponse::amount).reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal totalPaid = dues.stream().map(FeeDueResponse::paidAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal totalDiscount = dues.stream().map(FeeDueResponse::discountAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalFee = dues.stream()
+                .map(FeeDueResponse::amount)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalPaid = dues.stream()
+                .map(FeeDueResponse::paidAmount)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalDiscount = dues.stream()
+                .map(FeeDueResponse::discountAmount)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal pending = totalFee.subtract(totalPaid).subtract(totalDiscount).max(BigDecimal.ZERO);
 
@@ -62,9 +66,10 @@ public class ParentFeeController {
 
         Optional<String> nextDueDate = dues.stream()
                 .filter(d -> !"PAID".equalsIgnoreCase(d.status()))
-                .sorted(Comparator.comparing(FeeDueResponse::dueDate))
-                .map(d -> d.dueDate().toString())
-                .findFirst();
+                .map(FeeDueResponse::dueDate)
+                .filter(Objects::nonNull)
+                .min(Comparator.naturalOrder())
+                .map(Object::toString);
 
         StudentFeeSummaryResponse summary = new StudentFeeSummaryResponse(
                 totalFee, totalPaid, pending, overallStatus, nextDueDate.orElse(null)

@@ -11,6 +11,9 @@ import java.time.LocalDate;
 public class IncomeRequest {
     @NotNull(message = "Income head ID is required")
     private Long incomeHeadId;
+
+    private Long academicYearId;
+    private Boolean clearAcademicYear;
     
     @NotBlank(message = "Account type is required")
     private String accountType;

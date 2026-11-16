@@ -31,7 +31,7 @@ public class AdminLibraryController {
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "100") int size) {
 
         Page<LibraryBookResponse> result = libraryService.filterBooks(
                 schoolId, search, category, status, PageRequest.of(page, size));
@@ -92,7 +92,7 @@ public class AdminLibraryController {
             @RequestParam(required = false) String memberType,
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "100") int size) {
 
         Page<LibraryMemberResponse> result = libraryService.filterMembers(
                 schoolId, search, memberType, status, PageRequest.of(page, size));
@@ -156,7 +156,7 @@ public class AdminLibraryController {
             @RequestParam(required = false) Long staffId,
             @RequestParam(required = false) Long bookId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "100") int size) {
 
         Page<LibraryCirculationResponse> result = libraryService.filterCirculations(
                 schoolId, search, status, memberId, studentId, staffId, bookId, PageRequest.of(page, size));

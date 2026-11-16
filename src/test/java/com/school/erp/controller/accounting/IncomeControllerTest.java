@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.school.erp.dto.accounting.IncomeHeadRequest;
 import com.school.erp.dto.accounting.IncomeHeadResponse;
 import com.school.erp.dto.accounting.IncomeResponse;
+import com.school.erp.dto.accounting.AccountingSearchFilter;
+import com.school.erp.dto.accounting.AccountingSummaryResponse;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.JwtAuthenticationFilter;
 import com.school.erp.service.accounting.IncomeService;
@@ -22,7 +24,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -87,14 +91,44 @@ class IncomeControllerTest {
         income.setIncomeFrom("John Doe");
         income.setDate(LocalDate.of(2026, 10, 12));
 
-        when(incomeService.getAllIncomes()).thenReturn(List.of(income));
+        when(incomeService.getAllIncomes(any(AccountingSearchFilter.class))).thenReturn(List.of(income));
 
         mockMvc.perform(get("/api/v1/income")
+                        .param("academicYearId", "2")
+                        .param("month", "10")
+                        .param("year", "2026")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(10L))
                 .andExpect(jsonPath("$[0].incomeFrom").value("John Doe"))
                 .andExpect(jsonPath("$[0].amount").value(1500.00));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/income/summary should return reconciled totals and bind month filters")
+    void getIncomeSummary_ShouldReturnTotalsForMonth() throws Exception {
+        when(incomeService.getSummary(any(AccountingSearchFilter.class)))
+                .thenReturn(new AccountingSummaryResponse(
+                        new BigDecimal("150.00"),
+                        new BigDecimal("50.00"),
+                        new BigDecimal("60.00"),
+                        new BigDecimal("40.00")));
+
+        mockMvc.perform(get("/api/v1/income/summary")
+                        .param("month", "10")
+                        .param("year", "2026")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.total").value(150.00))
+                .andExpect(jsonPath("$.cash").value(50.00))
+                .andExpect(jsonPath("$.bank").value(60.00))
+                .andExpect(jsonPath("$.online").value(40.00));
+
+        org.mockito.ArgumentCaptor<AccountingSearchFilter> filterCaptor =
+                org.mockito.ArgumentCaptor.forClass(AccountingSearchFilter.class);
+        verify(incomeService).getSummary(filterCaptor.capture());
+        assertEquals(10, filterCaptor.getValue().getMonth());
+        assertEquals(2026, filterCaptor.getValue().getYear());
     }
 
     @Test

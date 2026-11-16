@@ -2,6 +2,7 @@ package com.school.erp.service.file;
 
 import com.school.erp.dto.file.FileUploadInitRequest;
 import com.school.erp.enums.file.FileCategory;
+import com.school.erp.enums.file.FileEntityType;
 import com.school.erp.exception.BadRequestException;
 import com.school.erp.repository.file.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,13 @@ public class FileValidationService {
             Map.entry(FileCategory.STAFF_CERTIFICATE, 10L * 1024 * 1024),          // 10 MB
             Map.entry(FileCategory.OTHER, 20L * 1024 * 1024)                       // 20 MB
     );
+    private static final long ACCOUNTING_MAX_SIZE_BYTES = 10L * 1024 * 1024;
+    private static final Map<String, String> ACCOUNTING_MIME_TYPES = Map.of(
+            "pdf", "application/pdf",
+            "jpg", "image/jpeg",
+            "jpeg", "image/jpeg",
+            "png", "image/png"
+    );
 
     public String extractExtension(String fileName) {
         if (fileName == null || !fileName.contains(".")) {
@@ -56,6 +64,16 @@ public class FileValidationService {
 
     public void validateUploadRequest(Long schoolId, FileUploadInitRequest request) {
         String extension = extractExtension(request.fileName());
+
+        if (request.entityType() == FileEntityType.INCOME || request.entityType() == FileEntityType.EXPENSE) {
+            String expectedMimeType = ACCOUNTING_MIME_TYPES.get(extension);
+            if (expectedMimeType == null || !expectedMimeType.equalsIgnoreCase(request.contentType())) {
+                throw new BadRequestException("Accounting documents must be PDF, JPG, JPEG, or PNG files");
+            }
+            if (request.fileSize() > ACCOUNTING_MAX_SIZE_BYTES) {
+                throw new BadRequestException("Accounting documents must be 10 MB or smaller");
+            }
+        }
 
         // Validate Category Max Size
         long maxAllowedBytes = CATEGORY_SIZE_LIMITS.getOrDefault(request.category(), 20L * 1024 * 1024);

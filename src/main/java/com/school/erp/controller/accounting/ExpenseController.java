@@ -4,6 +4,8 @@ import com.school.erp.dto.accounting.ExpenseHeadRequest;
 import com.school.erp.dto.accounting.ExpenseHeadResponse;
 import com.school.erp.dto.accounting.ExpenseRequest;
 import com.school.erp.dto.accounting.ExpenseResponse;
+import com.school.erp.dto.accounting.AccountingSearchFilter;
+import com.school.erp.dto.accounting.AccountingSummaryResponse;
 import com.school.erp.service.accounting.ExpenseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -53,8 +55,14 @@ public class ExpenseController {
 
     @GetMapping
     @PermissionRequired("expense.transaction.view")
-    public ResponseEntity<List<ExpenseResponse>> getAllExpenses() {
-        return ResponseEntity.ok(expenseService.getAllExpenses());
+    public ResponseEntity<List<ExpenseResponse>> getAllExpenses(@Valid @ModelAttribute AccountingSearchFilter filter) {
+        return ResponseEntity.ok(expenseService.getAllExpenses(filter));
+    }
+
+    @GetMapping("/summary")
+    @PermissionRequired("expense.transaction.view")
+    public ResponseEntity<AccountingSummaryResponse> getExpenseSummary(@Valid @ModelAttribute AccountingSearchFilter filter) {
+        return ResponseEntity.ok(expenseService.getSummary(filter));
     }
 
     @PostMapping

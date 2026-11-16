@@ -22,7 +22,13 @@ public interface LibraryCirculationRepository extends JpaRepository<LibraryCircu
             "     OR LOWER(c.member.fullName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
             "     OR LOWER(c.member.cardNumber) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
             "     OR LOWER(c.book.isbn) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) " +
-            "AND (:status IS NULL OR LOWER(c.status) = LOWER(CAST(:status AS string))) " +
+            "AND (" +
+            "     :status IS NULL " +
+            "     OR (LOWER(CAST(:status AS string)) = 'overdue' AND (LOWER(c.status) = 'overdue' OR (LOWER(c.status) = 'issued' AND c.dueDate < CURRENT_DATE AND c.returnDate IS NULL))) " +
+            "     OR (LOWER(CAST(:status AS string)) = 'issued' AND (LOWER(c.status) = 'issued' AND (c.dueDate >= CURRENT_DATE OR c.dueDate IS NULL) AND c.returnDate IS NULL)) " +
+            "     OR (LOWER(CAST(:status AS string)) = 'returned' AND (LOWER(c.status) = 'returned' OR c.returnDate IS NOT NULL)) " +
+            "     OR (LOWER(CAST(:status AS string)) NOT IN ('overdue', 'issued', 'returned') AND LOWER(c.status) = LOWER(CAST(:status AS string)))" +
+            ") " +
             "AND (:memberId IS NULL OR c.member.id = :memberId) " +
             "AND (:studentId IS NULL OR (c.member.student IS NOT NULL AND c.member.student.id = :studentId) " +
             "     OR (c.member.admissionNumber IS NOT NULL AND c.member.admissionNumber IN (SELECT s.admissionNo FROM Student s WHERE s.id = :studentId))) " +

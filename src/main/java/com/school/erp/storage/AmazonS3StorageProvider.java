@@ -106,6 +106,19 @@ public class AmazonS3StorageProvider implements ObjectStorageProvider {
     }
 
     @Override
+    public void putObject(String bucket, String key, byte[] content, String contentType) {
+        s3Client.putObject(
+                PutObjectRequest.builder()
+                        .bucket(bucket)
+                        .key(key)
+                        .contentType(contentType != null ? contentType : "application/octet-stream")
+                        .serverSideEncryption(ServerSideEncryption.AES256)
+                        .build(),
+                RequestBody.fromBytes(content)
+        );
+    }
+
+    @Override
     public StorageObjectMetadata getObjectMetadata(String bucket, String key) {
         HeadObjectResponse response = s3Client.headObject(HeadObjectRequest.builder().bucket(bucket).key(key).build());
         return new StorageObjectMetadata(

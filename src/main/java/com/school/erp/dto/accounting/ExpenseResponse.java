@@ -3,12 +3,15 @@ package com.school.erp.dto.accounting;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 public class ExpenseResponse {
     private Long id;
+    private Long academicYearId;
+    private String academicYearName;
     private ExpenseHeadResponse expenseHead;
     private String accountType;
     private String accountName;
@@ -18,6 +21,7 @@ public class ExpenseResponse {
     private LocalDate date;
     private String paymentMode;
     private String documentUrl;
+    private List<AccountingDocumentResponse> documents;
     private String description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
