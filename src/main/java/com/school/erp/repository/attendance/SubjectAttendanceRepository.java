@@ -18,12 +18,39 @@ public interface SubjectAttendanceRepository extends JpaRepository<SubjectAttend
     List<SubjectAttendance> findBySchoolIdAndStudentId(Long schoolId, Long studentId);
 
     @EntityGraph(attributePaths = {"subject", "schoolClass", "section", "student"})
+    List<SubjectAttendance> findBySchoolIdAndStudentIdAndSubjectId(Long schoolId, Long studentId, Long subjectId);
+
+    @EntityGraph(attributePaths = {"subject", "schoolClass", "section", "student"})
     List<SubjectAttendance> findBySchoolIdAndSchoolClassIdAndSubjectIdAndAttendanceDate(
             Long schoolId, Long classId, Long subjectId, LocalDate attendanceDate);
 
     @EntityGraph(attributePaths = {"subject", "schoolClass", "section", "student"})
     List<SubjectAttendance> findBySchoolIdAndSchoolClassIdAndSectionIdAndSubjectIdAndAttendanceDate(
             Long schoolId, Long classId, Long sectionId, Long subjectId, LocalDate attendanceDate);
+
+    @EntityGraph(attributePaths = {"subject", "schoolClass", "section", "student"})
+    List<SubjectAttendance> findBySchoolIdAndSchoolClassIdAndSubjectIdAndAttendanceDateBetween(
+            Long schoolId, Long classId, Long subjectId, LocalDate startDate, LocalDate endDate);
+
+    @EntityGraph(attributePaths = {"subject", "schoolClass", "section", "student"})
+    List<SubjectAttendance> findBySchoolIdAndSchoolClassIdAndSectionIdAndSubjectIdAndAttendanceDateBetween(
+            Long schoolId, Long classId, Long sectionId, Long subjectId, LocalDate startDate, LocalDate endDate);
+
+    @EntityGraph(attributePaths = {"subject", "schoolClass", "section", "student"})
+    List<SubjectAttendance> findBySchoolIdAndSchoolClassIdAndAttendanceDateBetween(
+            Long schoolId, Long classId, LocalDate startDate, LocalDate endDate);
+
+    @EntityGraph(attributePaths = {"subject", "schoolClass", "section", "student"})
+    List<SubjectAttendance> findBySchoolIdAndSchoolClassIdAndSectionIdAndAttendanceDateBetween(
+            Long schoolId, Long classId, Long sectionId, LocalDate startDate, LocalDate endDate);
+
+    @EntityGraph(attributePaths = {"subject", "schoolClass", "section", "student"})
+    List<SubjectAttendance> findBySchoolIdAndStudentIdAndAttendanceDateBetween(
+            Long schoolId, Long studentId, LocalDate startDate, LocalDate endDate);
+
+    @EntityGraph(attributePaths = {"subject", "schoolClass", "section", "student"})
+    List<SubjectAttendance> findBySchoolIdAndStudentIdAndSubjectIdAndAttendanceDateBetween(
+            Long schoolId, Long studentId, Long subjectId, LocalDate startDate, LocalDate endDate);
 
 
     Optional<SubjectAttendance> findBySchoolIdAndStudentIdAndSubjectIdAndAttendanceDateAndTimetableEntryId(

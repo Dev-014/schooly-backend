@@ -193,4 +193,25 @@ class StudentLeaveControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }
+    @Test
+    void deleteLeave_parentWithViewPermission_reachesOwnershipChecks() throws Exception {
+        com.school.erp.security.AuthContextHolder.set(
+                new com.school.erp.security.AuthenticatedUser(15L, 1L, com.school.erp.entity.auth.UserRole.PARENT));
+        when(authorizationService.hasPermission(1L, 15L, "leave_management.student_leaves.view")).thenReturn(true);
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/student-leaves/10")
+                        .param("schoolId", "1"))
+                .andExpect(status().isOk());
+        org.mockito.Mockito.verify(leaveService).deleteLeave(10L, 1L);
+    }
+
+    @Test
+    void deleteLeave_withoutLeavePermission_isForbidden() throws Exception {
+        com.school.erp.security.AuthContextHolder.set(
+                new com.school.erp.security.AuthenticatedUser(15L, 1L, com.school.erp.entity.auth.UserRole.PARENT));
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/student-leaves/10")
+                        .param("schoolId", "1"))
+                .andExpect(status().isForbidden());
+        org.mockito.Mockito.verify(leaveService, org.mockito.Mockito.never()).deleteLeave(any(), any());
+    }
+
 }

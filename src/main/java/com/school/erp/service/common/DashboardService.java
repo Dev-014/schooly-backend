@@ -75,9 +75,17 @@ public class DashboardService {
 
         long studentPresent = attendanceRepository.countBySchoolIdAndAttendanceDateAndStatus(
                 effectiveSchoolId, today, "PRESENT"
+        ) + attendanceRepository.countBySchoolIdAndAttendanceDateAndStatus(
+                effectiveSchoolId, today, "LATE"
+        ) + attendanceRepository.countBySchoolIdAndAttendanceDateAndStatus(
+                effectiveSchoolId, today, "HALF_DAY"
         );
         long staffPresent = staffAttendanceRepository.countBySchoolIdAndAttendanceDateAndStatus(
                 effectiveSchoolId, today, "PRESENT"
+        ) + staffAttendanceRepository.countBySchoolIdAndAttendanceDateAndStatus(
+                effectiveSchoolId, today, "LATE"
+        ) + staffAttendanceRepository.countBySchoolIdAndAttendanceDateAndStatus(
+                effectiveSchoolId, today, "HALF_DAY"
         );
 
         BigDecimal monthlyCollection = paymentRepository.sumAmountBySchoolAndMonthAndYear(

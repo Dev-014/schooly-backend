@@ -582,10 +582,18 @@ public class AuthService {
         RoleArchetype personaArchetype = targetMapping.getRole() != null ? targetMapping.getRole().getArchetype() : RoleArchetype.STAFF;
         PersonaDto persona = new PersonaDto(roleId, roleId, personaArchetype);
 
+        Long studentId = null;
+        if (targetRole == UserRole.STUDENT) {
+            List<Student> students = studentRepository.findByUserId(authUser.userId());
+            if (!students.isEmpty()) {
+                studentId = students.get(0).getId();
+            }
+        }
+
         return new AuthTokenResponse(
                 authUser.userId(),
                 authUser.schoolId(),
-                null,   // not a student login
+                studentId,
                 targetMapping.getUser().getName() != null ? targetMapping.getUser().getName() : "",
                 roleId,
                 newAccessToken,

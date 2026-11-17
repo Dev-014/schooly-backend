@@ -1,6 +1,7 @@
 package com.school.erp.service.student;
 
 import com.school.erp.dto.academic.ClassTeacherAssignmentResponse;
+import com.school.erp.dto.academic.ClassSubjectAssignmentResponse;
 import com.school.erp.dto.student.StudentLeaveRequest;
 import com.school.erp.dto.student.StudentLeaveResponse;
 import com.school.erp.entity.auth.UserRole;
@@ -14,6 +15,8 @@ import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.student.StudentLeaveRepository;
 import com.school.erp.repository.student.StudentRepository;
+import com.school.erp.repository.student.StudentParentRepository;
+import com.school.erp.service.auth.AuthorizationService;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.security.AuthenticatedUser;
 import com.school.erp.service.academic.AcademicService;
@@ -35,6 +38,8 @@ public class StudentLeaveService {
     private final SchoolRepository schoolRepository;
     private final AuthContextService authContextService;
     private final AcademicService academicService;
+    private final StudentParentRepository studentParentRepository;
+    private final AuthorizationService authorizationService;
 
     @Autowired(required = false)
     private NotificationService notificationService;
@@ -44,13 +49,17 @@ public class StudentLeaveService {
             StudentRepository studentRepository,
             SchoolRepository schoolRepository,
             AuthContextService authContextService,
-            AcademicService academicService
+            AcademicService academicService,
+            StudentParentRepository studentParentRepository,
+            AuthorizationService authorizationService
     ) {
         this.leaveRepository = leaveRepository;
         this.studentRepository = studentRepository;
         this.schoolRepository = schoolRepository;
         this.authContextService = authContextService;
         this.academicService = academicService;
+        this.studentParentRepository = studentParentRepository;
+        this.authorizationService = authorizationService;
     }
 
     public List<StudentLeaveResponse> getAllLeaves(Long schoolId, Long studentId) {
@@ -64,8 +73,10 @@ public class StudentLeaveService {
 
         AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
         if (currentUser != null && currentUser.role() == UserRole.TEACHER) {
-            List<ClassTeacherAssignmentResponse> assignments =
+            List<ClassTeacherAssignmentResponse> classAssignments =
                     academicService.getMyClassTeacherAssignments(effectiveSchoolId);
+            List<ClassSubjectAssignmentResponse> subjectAssignments =
+                    academicService.getMySubjectTeacherAssignments(effectiveSchoolId);
             leaves = leaves.stream()
                     .filter(leave -> {
                         if (leave.getStudent() == null || leave.getStudent().getSchoolClass() == null) {
@@ -73,9 +84,13 @@ public class StudentLeaveService {
                         }
                         Long classId = leave.getStudent().getSchoolClass().getId();
                         Long sectionId = leave.getStudent().getSectionId();
-                        return assignments.stream().anyMatch(a ->
+                        boolean matchClassTeacher = classAssignments.stream().anyMatch(a ->
                                 a.classId().equals(classId) && (a.sectionId() == null || a.sectionId().equals(sectionId))
                         );
+                        boolean matchSubjectTeacher = subjectAssignments.stream().anyMatch(a ->
+                                a.classId().equals(classId) && (a.sectionId() == null || a.sectionId().equals(sectionId))
+                        );
+                        return matchClassTeacher || matchSubjectTeacher;
                     })
                     .toList();
         }
@@ -104,13 +119,19 @@ public class StudentLeaveService {
 
         AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
         if (currentUser != null && currentUser.role() == UserRole.TEACHER) {
-            List<ClassTeacherAssignmentResponse> assignments =
+            List<ClassTeacherAssignmentResponse> classAssignments =
                     academicService.getMyClassTeacherAssignments(effectiveSchoolId);
+            List<ClassSubjectAssignmentResponse> subjectAssignments =
+                    academicService.getMySubjectTeacherAssignments(effectiveSchoolId);
             Long classId = student.getSchoolClass() != null ? student.getSchoolClass().getId() : null;
             Long sectionId = student.getSectionId();
 
-            boolean isAssigned = classId != null && assignments.stream().anyMatch(a ->
-                    a.classId().equals(classId) && (a.sectionId() == null || a.sectionId().equals(sectionId))
+            boolean isAssigned = classId != null && (
+                    classAssignments.stream().anyMatch(a ->
+                            a.classId().equals(classId) && (a.sectionId() == null || a.sectionId().equals(sectionId))
+                    ) || subjectAssignments.stream().anyMatch(a ->
+                            a.classId().equals(classId) && (a.sectionId() == null || a.sectionId().equals(sectionId))
+                    )
             );
             if (!isAssigned) {
                 throw new ForbiddenException("Teachers can only apply leaves for students in their assigned class and section");
@@ -259,6 +280,21 @@ public class StudentLeaveService {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
         StudentLeave leave = leaveRepository.findByIdAndSchoolId(id, effectiveSchoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Leave not found"));
+        AuthenticatedUser currentUser = authContextService.requireCurrentUser();
+        if (currentUser.role() == UserRole.STUDENT || currentUser.role() == UserRole.PARENT) {
+            Student student = leave.getStudent();
+            boolean ownsRequest = student != null && (currentUser.role() == UserRole.STUDENT
+                    ? currentUser.userId().equals(student.getUserId())
+                    : studentParentRepository.findByIdParentUserIdAndStudentId(
+                            currentUser.userId(), student.getId()).isPresent());
+            if (!ownsRequest || !"PENDING".equalsIgnoreCase(leave.getStatus())) {
+                throw new ForbiddenException("Only your own pending leave requests can be cancelled");
+            }
+        } else if (currentUser.role() != UserRole.SUPER_ADMIN
+                && !authorizationService.hasPermission(effectiveSchoolId, currentUser.userId(),
+                        "leave_management.student_leaves.edit")) {
+            throw new ForbiddenException("Missing permission to delete student leave requests");
+        }
         leaveRepository.delete(leave);
     }
 

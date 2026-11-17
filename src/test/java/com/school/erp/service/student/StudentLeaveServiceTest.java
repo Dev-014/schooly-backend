@@ -1,6 +1,7 @@
 package com.school.erp.service.student;
 
 import com.school.erp.dto.academic.ClassTeacherAssignmentResponse;
+import com.school.erp.dto.academic.ClassSubjectAssignmentResponse;
 import com.school.erp.dto.student.StudentLeaveRequest;
 import com.school.erp.dto.student.StudentLeaveResponse;
 import com.school.erp.entity.academic.SchoolClass;
@@ -11,6 +12,9 @@ import com.school.erp.entity.superadmin.School;
 import com.school.erp.exception.ForbiddenException;
 import com.school.erp.repository.student.StudentLeaveRepository;
 import com.school.erp.repository.student.StudentRepository;
+import com.school.erp.repository.student.StudentParentRepository;
+import com.school.erp.entity.student.StudentParent;
+import com.school.erp.service.auth.AuthorizationService;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.security.AuthContextHolder;
 import com.school.erp.security.AuthContextService;
@@ -49,6 +53,12 @@ class StudentLeaveServiceTest {
 
     @Mock
     private AcademicService academicService;
+
+    @Mock
+    private StudentParentRepository studentParentRepository;
+
+    @Mock
+    private AuthorizationService authorizationService;
 
     @InjectMocks
     private StudentLeaveService leaveService;
@@ -133,6 +143,27 @@ class StudentLeaveServiceTest {
         assertEquals(1, result.size());
         assertEquals("Atul Yadav", result.get(0).studentName());
         assertEquals(10L, result.get(0).classId());
+    }
+
+    @Test
+    void getAllLeaves_asTeacher_includesLeavesForAssignedSubject() {
+        AuthenticatedUser teacherUser = new AuthenticatedUser(50L, 1L, UserRole.TEACHER);
+        when(authContextService.resolveSchoolId(1L)).thenReturn(1L);
+        when(authContextService.getCurrentUserOrNull()).thenReturn(teacherUser);
+        when(leaveRepository.findBySchoolId(1L)).thenReturn(List.of(leave10, leave7));
+
+        // Teacher has no class teacher assignment, but is subject teacher for Grade 7 Section 1
+        when(academicService.getMyClassTeacherAssignments(1L)).thenReturn(List.of());
+        ClassSubjectAssignmentResponse subjectAssignment = new ClassSubjectAssignmentResponse(
+                1L, 1L, 7L, "Grade 7", 1L, "Section A", 101L, "Physics", "PHY-101", 1L, "2025-26", "THEORY", "ACTIVE"
+        );
+        when(academicService.getMySubjectTeacherAssignments(1L)).thenReturn(List.of(subjectAssignment));
+
+        List<StudentLeaveResponse> result = leaveService.getAllLeaves(1L, null);
+
+        assertEquals(1, result.size());
+        assertEquals("Rahul Sharma", result.get(0).studentName());
+        assertEquals(7L, result.get(0).classId());
     }
 
     @Test
@@ -226,5 +257,75 @@ class StudentLeaveServiceTest {
 
         assertThrows(ForbiddenException.class, () -> leaveService.createLeave(req));
     }
+    @Test
+    void deleteLeave_parentCanCancelLinkedChildPendingRequest() {
+        when(authContextService.resolveSchoolId(1L)).thenReturn(1L);
+        when(authContextService.requireCurrentUser()).thenReturn(new AuthenticatedUser(50L, 1L, UserRole.PARENT));
+        when(leaveRepository.findByIdAndSchoolId(1L, 1L)).thenReturn(Optional.of(leave10));
+        when(studentParentRepository.findByIdParentUserIdAndStudentId(50L, 100L)).thenReturn(Optional.of(new StudentParent()));
+        leaveService.deleteLeave(1L, 1L);
+        verify(leaveRepository).delete(leave10);
+    }
+
+    @Test
+    void deleteLeave_parentCannotCancelUnrelatedChildRequest() {
+        when(authContextService.resolveSchoolId(1L)).thenReturn(1L);
+        when(authContextService.requireCurrentUser()).thenReturn(new AuthenticatedUser(50L, 1L, UserRole.PARENT));
+        when(leaveRepository.findByIdAndSchoolId(1L, 1L)).thenReturn(Optional.of(leave10));
+        when(studentParentRepository.findByIdParentUserIdAndStudentId(50L, 100L)).thenReturn(Optional.empty());
+        assertThrows(ForbiddenException.class, () -> leaveService.deleteLeave(1L, 1L));
+        verify(leaveRepository, never()).delete(any());
+    }
+
+    @Test
+    void deleteLeave_parentCannotCancelReviewedRequest() {
+        leave10.setStatus("APPROVED");
+        when(authContextService.resolveSchoolId(1L)).thenReturn(1L);
+        when(authContextService.requireCurrentUser()).thenReturn(new AuthenticatedUser(50L, 1L, UserRole.PARENT));
+        when(leaveRepository.findByIdAndSchoolId(1L, 1L)).thenReturn(Optional.of(leave10));
+        when(studentParentRepository.findByIdParentUserIdAndStudentId(50L, 100L)).thenReturn(Optional.of(new StudentParent()));
+        assertThrows(ForbiddenException.class, () -> leaveService.deleteLeave(1L, 1L));
+        verify(leaveRepository, never()).delete(any());
+    }
+
+    @Test
+    void deleteLeave_studentCanCancelOwnPendingRequest() {
+        student10.setUserId(50L);
+        when(authContextService.resolveSchoolId(1L)).thenReturn(1L);
+        when(authContextService.requireCurrentUser()).thenReturn(new AuthenticatedUser(50L, 1L, UserRole.STUDENT));
+        when(leaveRepository.findByIdAndSchoolId(1L, 1L)).thenReturn(Optional.of(leave10));
+        leaveService.deleteLeave(1L, 1L);
+        verify(leaveRepository).delete(leave10);
+    }
+
+    @Test
+    void deleteLeave_staffWithOnlyViewCannotDelete() {
+        when(authContextService.resolveSchoolId(1L)).thenReturn(1L);
+        when(authContextService.requireCurrentUser()).thenReturn(new AuthenticatedUser(50L, 1L, UserRole.TEACHER));
+        when(leaveRepository.findByIdAndSchoolId(1L, 1L)).thenReturn(Optional.of(leave10));
+        assertThrows(ForbiddenException.class, () -> leaveService.deleteLeave(1L, 1L));
+        verify(leaveRepository, never()).delete(any());
+    }
+
+    @Test
+    void deleteLeave_studentCannotCancelAnotherStudentRequest() {
+        student10.setUserId(99L);
+        when(authContextService.resolveSchoolId(1L)).thenReturn(1L);
+        when(authContextService.requireCurrentUser()).thenReturn(new AuthenticatedUser(50L, 1L, UserRole.STUDENT));
+        when(leaveRepository.findByIdAndSchoolId(1L, 1L)).thenReturn(Optional.of(leave10));
+        assertThrows(ForbiddenException.class, () -> leaveService.deleteLeave(1L, 1L));
+        verify(leaveRepository, never()).delete(any());
+    }
+
+    @Test
+    void deleteLeave_staffWithEditCanDelete() {
+        when(authContextService.resolveSchoolId(1L)).thenReturn(1L);
+        when(authContextService.requireCurrentUser()).thenReturn(new AuthenticatedUser(50L, 1L, UserRole.ADMIN));
+        when(leaveRepository.findByIdAndSchoolId(1L, 1L)).thenReturn(Optional.of(leave10));
+        when(authorizationService.hasPermission(1L, 50L, "leave_management.student_leaves.edit")).thenReturn(true);
+        leaveService.deleteLeave(1L, 1L);
+        verify(leaveRepository).delete(leave10);
+    }
+
 }
 

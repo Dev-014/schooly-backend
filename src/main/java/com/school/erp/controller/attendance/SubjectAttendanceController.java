@@ -26,15 +26,24 @@ public class SubjectAttendanceController {
     }
 
     @GetMapping
-    @com.school.erp.security.PermissionRequired("attendance.subject_attendance.view")
+    @com.school.erp.security.PermissionRequired({"attendance.subject_attendance.view", "attendance.attendance_my_records.view", "attendance.attendance_record.view", "attendance.student_attendance.view"})
     public ResponseEntity<ApiResponse<List<SubjectAttendanceResponse>>> getSubjectAttendance(
             @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) Long classId,
             @RequestParam(required = false) Long sectionId,
             @RequestParam(required = false) Long subjectId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate attendanceDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(required = false) Long studentId
     ) {
+        if (startDate != null && endDate != null) {
+            return ResponseEntity.ok(ApiResponse.success(
+                    subjectAttendanceService.getSubjectAttendanceByRange(schoolId, classId, sectionId, subjectId, startDate, endDate, studentId),
+                    "Subject attendance fetched successfully"
+            ));
+        }
+
         if (classId != null && subjectId != null && attendanceDate != null) {
             return ResponseEntity.ok(ApiResponse.success(
                     subjectAttendanceService.getSubjectAttendanceByPeriod(schoolId, classId, sectionId, subjectId, attendanceDate),
@@ -43,12 +52,13 @@ public class SubjectAttendanceController {
         }
 
         return ResponseEntity.ok(ApiResponse.success(
-                subjectAttendanceService.getStudentSubjectAttendance(schoolId, studentId),
+                subjectAttendanceService.getStudentSubjectAttendance(schoolId, studentId, subjectId),
                 "Student subject attendance fetched successfully"
         ));
     }
 
     @GetMapping("/summary")
+    @com.school.erp.security.PermissionRequired({"attendance.subject_attendance.view", "attendance.attendance_my_records.view", "attendance.attendance_record.view", "attendance.student_attendance.view"})
     public ResponseEntity<ApiResponse<List<StudentSubjectAttendanceSummaryDTO>>> getStudentSubjectSummary(
             @RequestParam(required = false) Long schoolId,
             @RequestParam(required = false) Long studentId

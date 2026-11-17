@@ -47,7 +47,7 @@ public class StudentLeaveController {
     }
 
     @DeleteMapping("/{id}")
-    @PermissionRequired("leave_management.student_leaves.edit")
+    @PermissionRequired({"leave_management.student_leaves.edit", "leave_management.student_leaves.view"})
     public ResponseEntity<ApiResponse<Void>> deleteLeave(
             @PathVariable Long id,
             @RequestParam(required = false) Long schoolId

@@ -228,12 +228,16 @@
       "supportedScopes": [
         "class",
         "section",
-        "school"
+        "school",
+        "own",
+        "linked"
       ],
       "sensitive": false,
       "status": "active",
       "audience": [
-        "staff"
+        "staff",
+        "student",
+        "parent"
       ]
     },
     {

@@ -72,7 +72,7 @@ class SubjectAttendanceControllerTest {
                 5L, "Mathematics", "MATH-10", 12L, LocalDate.of(2026, 9, 11),
                 "PRESENT", "Good work"
         );
-        when(subjectAttendanceService.getStudentSubjectAttendance(4L, 10L)).thenReturn(List.of(resp));
+        when(subjectAttendanceService.getStudentSubjectAttendance(4L, 10L, null)).thenReturn(List.of(resp));
 
         mockMvc.perform(get("/api/attendance/subjects")
                         .param("schoolId", "4")
@@ -82,6 +82,27 @@ class SubjectAttendanceControllerTest {
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data[0].id").value(1L))
                 .andExpect(jsonPath("$.data[0].subjectName").value("Mathematics"))
+                .andExpect(jsonPath("$.data[0].status").value("PRESENT"));
+    }
+
+    @Test
+    void getSubjectAttendance_ForStudentAndSubject_ShouldReturnList() throws Exception {
+        SubjectAttendanceResponse resp = new SubjectAttendanceResponse(
+                1L, 4L, 10L, "John Doe", 2L, "Grade 10", 3L, "Section A",
+                7L, "Physics", "PHY-10", 12L, LocalDate.of(2026, 9, 11),
+                "PRESENT", "Lab session"
+        );
+        when(subjectAttendanceService.getStudentSubjectAttendance(4L, 10L, 7L)).thenReturn(List.of(resp));
+
+        mockMvc.perform(get("/api/attendance/subjects")
+                        .param("schoolId", "4")
+                        .param("studentId", "10")
+                        .param("subjectId", "7")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data[0].id").value(1L))
+                .andExpect(jsonPath("$.data[0].subjectName").value("Physics"))
                 .andExpect(jsonPath("$.data[0].status").value("PRESENT"));
     }
 
@@ -102,6 +123,31 @@ class SubjectAttendanceControllerTest {
                         .param("sectionId", "3")
                         .param("subjectId", "5")
                         .param("attendanceDate", "2026-09-11")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data[0].subjectName").value("Mathematics"));
+    }
+
+    @Test
+    void getSubjectAttendance_ForDateRange_ShouldReturnList() throws Exception {
+        LocalDate start = LocalDate.of(2026, 9, 1);
+        LocalDate end = LocalDate.of(2026, 9, 30);
+        SubjectAttendanceResponse resp = new SubjectAttendanceResponse(
+                1L, 4L, 10L, "John Doe", 2L, "Grade 10", 3L, "Section A",
+                5L, "Mathematics", "MATH-10", 12L, LocalDate.of(2026, 9, 5),
+                "PRESENT", null
+        );
+        when(subjectAttendanceService.getSubjectAttendanceByRange(4L, 2L, 3L, 5L, start, end, null))
+                .thenReturn(List.of(resp));
+
+        mockMvc.perform(get("/api/attendance/subjects")
+                        .param("schoolId", "4")
+                        .param("classId", "2")
+                        .param("sectionId", "3")
+                        .param("subjectId", "5")
+                        .param("startDate", "2026-09-01")
+                        .param("endDate", "2026-09-30")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))

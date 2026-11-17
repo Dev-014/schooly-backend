@@ -99,7 +99,62 @@ public class SubjectAttendanceService {
         return records.stream().map(this::toResponse).toList();
     }
 
+    public List<SubjectAttendanceResponse> getSubjectAttendanceByRange(
+            Long schoolId, Long classId, Long sectionId, Long subjectId, LocalDate startDate, LocalDate endDate, Long studentId
+    ) {
+        Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
+        List<SubjectAttendance> records;
+
+        if (studentId != null) {
+            if (subjectId != null) {
+                records = subjectAttendanceRepository.findBySchoolIdAndStudentIdAndSubjectIdAndAttendanceDateBetween(
+                        effectiveSchoolId, studentId, subjectId, startDate, endDate);
+            } else {
+                records = subjectAttendanceRepository.findBySchoolIdAndStudentIdAndAttendanceDateBetween(
+                        effectiveSchoolId, studentId, startDate, endDate);
+            }
+        } else if (classId != null) {
+            if (subjectId != null) {
+                records = (sectionId != null)
+                        ? subjectAttendanceRepository.findBySchoolIdAndSchoolClassIdAndSectionIdAndSubjectIdAndAttendanceDateBetween(
+                        effectiveSchoolId, classId, sectionId, subjectId, startDate, endDate)
+                        : subjectAttendanceRepository.findBySchoolIdAndSchoolClassIdAndSubjectIdAndAttendanceDateBetween(
+                        effectiveSchoolId, classId, subjectId, startDate, endDate);
+            } else {
+                records = (sectionId != null)
+                        ? subjectAttendanceRepository.findBySchoolIdAndSchoolClassIdAndSectionIdAndAttendanceDateBetween(
+                        effectiveSchoolId, classId, sectionId, startDate, endDate)
+                        : subjectAttendanceRepository.findBySchoolIdAndSchoolClassIdAndAttendanceDateBetween(
+                        effectiveSchoolId, classId, startDate, endDate);
+            }
+        } else {
+            AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+            Long resolvedStudentId = null;
+            if (currentUser != null && currentUser.userId() != null) {
+                List<Student> students = studentRepository.findByUserId(currentUser.userId());
+                if (!students.isEmpty()) {
+                    resolvedStudentId = students.get(0).getId();
+                }
+            }
+            if (resolvedStudentId != null) {
+                records = (subjectId != null)
+                        ? subjectAttendanceRepository.findBySchoolIdAndStudentIdAndSubjectIdAndAttendanceDateBetween(
+                        effectiveSchoolId, resolvedStudentId, subjectId, startDate, endDate)
+                        : subjectAttendanceRepository.findBySchoolIdAndStudentIdAndAttendanceDateBetween(
+                        effectiveSchoolId, resolvedStudentId, startDate, endDate);
+            } else {
+                records = List.of();
+            }
+        }
+
+        return records.stream().map(this::toResponse).toList();
+    }
+
     public List<SubjectAttendanceResponse> getStudentSubjectAttendance(Long schoolId, Long studentId) {
+        return getStudentSubjectAttendance(schoolId, studentId, null);
+    }
+
+    public List<SubjectAttendanceResponse> getStudentSubjectAttendance(Long schoolId, Long studentId, Long subjectId) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
         Long resolvedStudentId = studentId;
 
@@ -117,7 +172,11 @@ public class SubjectAttendanceService {
             return List.of();
         }
 
-        return subjectAttendanceRepository.findBySchoolIdAndStudentId(effectiveSchoolId, resolvedStudentId)
+        List<SubjectAttendance> records = (subjectId != null)
+                ? subjectAttendanceRepository.findBySchoolIdAndStudentIdAndSubjectId(effectiveSchoolId, resolvedStudentId, subjectId)
+                : subjectAttendanceRepository.findBySchoolIdAndStudentId(effectiveSchoolId, resolvedStudentId);
+
+        return records
                 .stream()
                 .map(this::toResponse)
                 .toList();

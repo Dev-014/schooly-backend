@@ -23,13 +23,26 @@ public class AttendanceController {
     }
 
     @GetMapping
-    @com.school.erp.security.PermissionRequired({"attendance.attendance_record.view", "attendance.attendance_my_records.view"})
+    @com.school.erp.security.PermissionRequired({
+            "attendance.attendance_record.view",
+            "attendance.attendance_my_records.view",
+            "attendance.attendance_register.view",
+            "attendance.student_attendance.view",
+            "attendance.subject_attendance.view"
+    })
     public ResponseEntity<ApiResponse<List<AttendanceResponse>>> getAttendance(
             @RequestParam(required = false) Long schoolId,
-            @RequestParam(required = false) Long studentId
+            @RequestParam(required = false) Long studentId,
+            @RequestParam(required = false) Long classId,
+            @RequestParam(required = false) Long sectionId,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate startDate,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate endDate
     ) {
+        List<AttendanceResponse> data = (classId == null && sectionId == null && startDate == null && endDate == null)
+                ? attendanceService.getAttendance(schoolId, studentId)
+                : attendanceService.getAttendance(schoolId, studentId, classId, sectionId, startDate, endDate);
         return ResponseEntity.ok(ApiResponse.success(
-                attendanceService.getAttendance(schoolId, studentId),
+                data,
                 "Attendance fetched successfully"
         ));
     }

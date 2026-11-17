@@ -62,9 +62,20 @@ public class AttendanceService {
     }
 
     public List<AttendanceResponse> getAttendance(Long schoolId, Long studentId) {
+        return getAttendance(schoolId, studentId, null, null, null, null);
+    }
+
+    public List<AttendanceResponse> getAttendance(
+            Long schoolId,
+            Long studentId,
+            Long classId,
+            Long sectionId,
+            java.time.LocalDate startDate,
+            java.time.LocalDate endDate
+    ) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
         Long resolvedStudentId = studentId;
-        if (resolvedStudentId == null) {
+        if (resolvedStudentId == null && classId == null) {
             com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
             if (currentUser != null && currentUser.userId() != null) {
                 List<Student> students = studentRepository.findByUserId(currentUser.userId());
@@ -73,9 +84,34 @@ public class AttendanceService {
                 }
             }
         }
-        List<Attendance> records = resolvedStudentId == null
-                ? attendanceRepository.findBySchoolId(effectiveSchoolId)
-                : attendanceRepository.findBySchoolIdAndStudentId(effectiveSchoolId, resolvedStudentId);
+
+        List<Attendance> records;
+        if (classId != null) {
+            List<Student> students = (sectionId != null)
+                    ? studentRepository.findBySchoolIdAndSchoolClassIdAndSectionId(effectiveSchoolId, classId, sectionId)
+                    : studentRepository.findBySchoolIdAndSchoolClassId(effectiveSchoolId, classId);
+            List<Long> studentIds = students.stream().map(Student::getId).toList();
+            if (studentIds.isEmpty()) return List.of();
+            if (startDate != null && endDate != null) {
+                records = attendanceRepository.findBySchoolIdAndAttendanceDateBetweenAndStudentIdIn(effectiveSchoolId, startDate, endDate, studentIds);
+            } else if (startDate != null) {
+                records = attendanceRepository.findBySchoolIdAndAttendanceDateAndStudentIdIn(effectiveSchoolId, startDate, studentIds);
+            } else {
+                records = attendanceRepository.findBySchoolIdAndAttendanceDateAndStudentIdIn(effectiveSchoolId, java.time.LocalDate.now(), studentIds);
+            }
+        } else if (resolvedStudentId != null) {
+            if (startDate != null && endDate != null) {
+                records = attendanceRepository.findBySchoolIdAndStudentIdAndAttendanceDateBetween(effectiveSchoolId, resolvedStudentId, startDate, endDate);
+            } else {
+                records = attendanceRepository.findBySchoolIdAndStudentId(effectiveSchoolId, resolvedStudentId);
+            }
+        } else {
+            if (startDate != null && endDate != null) {
+                records = attendanceRepository.findBySchoolIdAndAttendanceDateBetween(effectiveSchoolId, startDate, endDate);
+            } else {
+                records = attendanceRepository.findBySchoolId(effectiveSchoolId);
+            }
+        }
         return records.stream().map(this::toResponse).toList();
     }
 

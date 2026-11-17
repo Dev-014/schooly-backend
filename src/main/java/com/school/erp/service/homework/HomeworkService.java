@@ -165,7 +165,7 @@ public class HomeworkService {
                     saved.getTitle() + " has been assigned for " + schoolClass.getName()
                             + (section != null ? " (" + section.getName() + ")" : "")
                             + ", due on " + saved.getDueDate() + ".",
-                    "/homework",
+                    "/app/homework-management",
                     "HOMEWORK",
                     saved.getId(),
                     meta
@@ -479,7 +479,7 @@ public class HomeworkService {
                     "Your assignment \"" + saved.getAssignment().getTitle() + "\" was reviewed!" + marksPart + remarkPart,
                     "Homework Evaluated for " + formatStudentName(saved.getStudent()) + ": " + subjectName,
                     formatStudentName(saved.getStudent()) + "'s assignment \"" + saved.getAssignment().getTitle() + "\" was reviewed." + marksPart + remarkPart,
-                    "/homework",
+                    "/app/homework-management",
                     "HOMEWORK_SUBMISSION",
                     saved.getId(),
                     meta

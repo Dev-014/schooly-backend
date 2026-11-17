@@ -488,10 +488,22 @@ public class NotificationServiceImpl implements NotificationService {
             List<Notification> toSave = new ArrayList<>();
 
             if (includeStudents) {
-                Set<Long> studentUserIds = students.stream()
-                        .map(Student::getUserId)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet());
+                Set<Long> studentUserIds = new LinkedHashSet<>();
+                for (Student s : students) {
+                    Long uid = s.getUserId();
+                    if (uid == null && s.getAdmissionNo() != null && !s.getAdmissionNo().isBlank()) {
+                        userRepository.findByPhone(s.getAdmissionNo().trim()).ifPresent(u -> {
+                            studentUserIds.add(u.getId());
+                            try {
+                                s.setUserId(u.getId());
+                                studentRepository.save(s);
+                            } catch (Exception ignored) {
+                            }
+                        });
+                    } else if (uid != null) {
+                        studentUserIds.add(uid);
+                    }
+                }
                 for (Long uid : studentUserIds) {
                     toSave.add(buildNotification(schoolId, uid, "STUDENT", notificationType, category, prio,
                             title, message, actor, actionUrl, entityType, entityId, metadata));

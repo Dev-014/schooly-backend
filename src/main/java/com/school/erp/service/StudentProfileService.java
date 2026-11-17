@@ -6,11 +6,13 @@ import com.school.erp.dto.student.UpdateStudentProfileRequest;
 import com.school.erp.entity.academic.Section;
 import com.school.erp.entity.attendance.Attendance;
 import com.school.erp.entity.student.Student;
+import com.school.erp.entity.student.StudentParent;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.academic.SectionRepository;
 import com.school.erp.repository.attendance.AttendanceRepository;
 import com.school.erp.repository.library.LibraryCirculationRepository;
 import com.school.erp.repository.library.LibraryMemberRepository;
+import com.school.erp.repository.student.StudentParentRepository;
 import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.service.finance.FeeDueService;
 import com.school.erp.service.student.StudentService;
@@ -36,6 +38,7 @@ public class StudentProfileService {
     private final AttendanceRepository attendanceRepository;
     private final LibraryCirculationRepository circulationRepository;
     private final LibraryMemberRepository memberRepository;
+    private final StudentParentRepository studentParentRepository;
 
     public Student resolveStudent(Long studentId, Long schoolId, Long userId) {
         if (studentId != null) {
@@ -47,12 +50,27 @@ public class StudentProfileService {
                         .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + studentId));
             }
         }
-        if (userId != null && schoolId != null) {
-            Optional<Student> studentOpt = studentRepository.findByUserId(userId).stream()
-                    .filter(s -> s.getSchool() != null && s.getSchool().getId().equals(schoolId))
-                    .findFirst();
-            if (studentOpt.isPresent()) {
-                return studentOpt.get();
+        if (userId != null) {
+            if (schoolId != null) {
+                Optional<Student> studentOpt = studentRepository.findByUserId(userId).stream()
+                        .filter(s -> s.getSchool() != null && s.getSchool().getId().equals(schoolId))
+                        .findFirst();
+                if (studentOpt.isPresent()) {
+                    return studentOpt.get();
+                }
+                List<StudentParent> parents = studentParentRepository.findByIdParentUserIdAndStudentSchoolId(userId, schoolId);
+                if (!parents.isEmpty() && parents.get(0).getStudent() != null) {
+                    return parents.get(0).getStudent();
+                }
+            } else {
+                Optional<Student> studentOpt = studentRepository.findByUserId(userId).stream().findFirst();
+                if (studentOpt.isPresent()) {
+                    return studentOpt.get();
+                }
+                List<StudentParent> parents = studentParentRepository.findByIdParentUserId(userId);
+                if (!parents.isEmpty() && parents.get(0).getStudent() != null) {
+                    return parents.get(0).getStudent();
+                }
             }
         }
         if (schoolId != null) {
