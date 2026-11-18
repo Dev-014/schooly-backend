@@ -118,5 +118,24 @@ class StudentProfileServiceTest {
         assertEquals(34L, result.getId());
         assertEquals("Palak", result.getFirstName());
     }
+
+    @Test
+    void resolveStudent_whenParentPassesUnlinkedStudentId_returnsParentsLinkedChild() {
+        Long parentUserId = 81L;
+        Long schoolId = 1003L;
+        Long staleUnlinkedStudentId = 33L; // Kratik Barodia in 10-B
+
+        StudentParent studentParent = mock(StudentParent.class);
+        when(studentParent.getStudent()).thenReturn(palak);
+        when(studentParentRepository.findByIdParentUserIdAndStudentSchoolId(parentUserId, schoolId))
+                .thenReturn(List.of(studentParent));
+
+        Student result = studentProfileService.resolveStudent(staleUnlinkedStudentId, schoolId, parentUserId);
+
+        assertNotNull(result);
+        assertEquals(34L, result.getId());
+        assertEquals("Palak", result.getFirstName());
+        assertEquals(37L, result.getSectionId());
+    }
 }
 

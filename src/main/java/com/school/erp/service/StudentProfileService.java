@@ -41,16 +41,7 @@ public class StudentProfileService {
     private final StudentParentRepository studentParentRepository;
 
     public Student resolveStudent(Long studentId, Long schoolId, Long userId) {
-        if (studentId != null) {
-            if (schoolId != null) {
-                return studentRepository.findByIdAndSchoolId(studentId, schoolId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + studentId));
-            } else {
-                return studentRepository.findById(studentId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + studentId));
-            }
-        }
-        if (userId != null) {
+        if (userId != null && studentId == null) {
             if (schoolId != null) {
                 Optional<Student> studentOpt = studentRepository.findByUserId(userId).stream()
                         .filter(s -> s.getSchool() != null && s.getSchool().getId().equals(schoolId))
@@ -58,20 +49,76 @@ public class StudentProfileService {
                 if (studentOpt.isPresent()) {
                     return studentOpt.get();
                 }
-                List<StudentParent> parents = studentParentRepository.findByIdParentUserIdAndStudentSchoolId(userId, schoolId);
-                if (!parents.isEmpty() && parents.get(0).getStudent() != null) {
-                    return parents.get(0).getStudent();
+            } else {
+                Optional<Student> studentOpt = studentRepository.findByUserId(userId).stream().findFirst();
+                if (studentOpt.isPresent()) {
+                    return studentOpt.get();
+                }
+            }
+        }
+        if (userId != null) {
+            List<StudentParent> parents = (schoolId != null)
+                    ? studentParentRepository.findByIdParentUserIdAndStudentSchoolId(userId, schoolId)
+                    : studentParentRepository.findByIdParentUserId(userId);
+            if ((parents == null || parents.isEmpty()) && schoolId != null) {
+                parents = studentParentRepository.findByIdParentUserId(userId);
+            }
+            if (parents != null && !parents.isEmpty()) {
+                if (studentId != null) {
+                    Optional<Student> requestedChild = parents.stream()
+                            .map(StudentParent::getStudent)
+                            .filter(s -> s != null && s.getId().equals(studentId))
+                            .findFirst();
+                    if (requestedChild.isPresent()) {
+                        return requestedChild.get();
+                    }
+                }
+                Optional<Student> primaryChild = parents.stream()
+                        .map(StudentParent::getStudent)
+                        .filter(java.util.Objects::nonNull)
+                        .sorted(java.util.Comparator.comparing(Student::getId))
+                        .findFirst();
+                if (primaryChild.isPresent()) {
+                    return primaryChild.get();
+                }
+            }
+        }
+        if (studentId != null) {
+            if (schoolId != null) {
+                Optional<Student> byIdAndSchool = studentRepository.findByIdAndSchoolId(studentId, schoolId);
+                if (byIdAndSchool.isPresent()) {
+                    return byIdAndSchool.get();
+                }
+                if (userId == null) {
+                    throw new ResourceNotFoundException("Student not found with id: " + studentId);
+                }
+            } else {
+                Optional<Student> byId = studentRepository.findById(studentId);
+                if (byId.isPresent()) {
+                    return byId.get();
+                }
+                if (userId == null) {
+                    throw new ResourceNotFoundException("Student not found with id: " + studentId);
+                }
+            }
+        }
+        if (userId != null && studentId != null) {
+            if (schoolId != null) {
+                Optional<Student> studentOpt = studentRepository.findByUserId(userId).stream()
+                        .filter(s -> s.getSchool() != null && s.getSchool().getId().equals(schoolId))
+                        .findFirst();
+                if (studentOpt.isPresent()) {
+                    return studentOpt.get();
                 }
             } else {
                 Optional<Student> studentOpt = studentRepository.findByUserId(userId).stream().findFirst();
                 if (studentOpt.isPresent()) {
                     return studentOpt.get();
                 }
-                List<StudentParent> parents = studentParentRepository.findByIdParentUserId(userId);
-                if (!parents.isEmpty() && parents.get(0).getStudent() != null) {
-                    return parents.get(0).getStudent();
-                }
             }
+        }
+        if (studentId != null) {
+            throw new ResourceNotFoundException("Student not found with id: " + studentId);
         }
         if (schoolId != null) {
             Optional<Student> studentOpt = studentRepository.findBySchoolId(schoolId).stream().findFirst();

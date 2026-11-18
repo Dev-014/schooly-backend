@@ -47,6 +47,7 @@ class AcademicServiceTimetableTest {
     @Mock private AuthContextService authContextService;
     @Mock private EntitlementService entitlementService;
     @Mock private ClassTeacherAssignmentRepository assignmentRepository;
+    @Mock private ClassSubjectAssignmentRepository classSubjectAssignmentRepository;
     @Mock private UserAssignmentRepository userAssignmentRepository;
 
     @InjectMocks
@@ -155,5 +156,50 @@ class AcademicServiceTimetableTest {
         academicService.deleteTimetableEntry(1L, 1L);
 
         verify(timetableEntryRepository).delete(entry);
+    }
+
+    @Test
+    void assignSubjectsToClass_WhenNoSectionProvided_ShouldPropagateToAllClassSections() {
+        com.school.erp.entity.academic.Section secA = new com.school.erp.entity.academic.Section();
+        secA.setId(10L);
+        secA.setName("A");
+        secA.setSchoolClass(schoolClass);
+
+        com.school.erp.entity.academic.Section secB = new com.school.erp.entity.academic.Section();
+        secB.setId(11L);
+        secB.setName("B");
+        secB.setSchoolClass(schoolClass);
+
+        com.school.erp.entity.academic.Subject math = new com.school.erp.entity.academic.Subject();
+        math.setId(100L);
+        math.setName("Mathematics");
+        math.setCode("MAT-101");
+
+        when(authContextService.resolveSchoolId(1L)).thenReturn(1L);
+        when(schoolRepository.findById(1L)).thenReturn(Optional.of(school));
+        when(classRepository.findByIdAndSchoolId(1L, 1L)).thenReturn(Optional.of(schoolClass));
+        when(academicYearRepository.findByIdAndSchoolId(1L, 1L)).thenReturn(Optional.of(academicYear));
+        when(sectionRepository.findBySchoolIdAndSchoolClassId(1L, 1L)).thenReturn(List.of(secA, secB));
+        when(classSubjectAssignmentRepository.findBySchoolIdAndSchoolClassIdAndAcademicYearId(1L, 1L, 1L))
+                .thenReturn(List.of());
+        when(subjectRepository.findByIdAndSchoolId(100L, 1L)).thenReturn(Optional.of(math));
+        when(classSubjectAssignmentRepository.findBySchoolIdAndSchoolClassIdAndSectionIdAndSubjectIdAndAcademicYearId(
+                eq(1L), eq(1L), anyLong(), eq(100L), eq(1L))).thenReturn(Optional.empty());
+
+        when(classSubjectAssignmentRepository.save(any())).thenAnswer(inv -> {
+            com.school.erp.entity.academic.ClassSubjectAssignment csa = inv.getArgument(0);
+            csa.setId(csa.getSection() != null ? csa.getSection().getId() : 1L);
+            return csa;
+        });
+
+        com.school.erp.dto.academic.ClassSubjectAssignmentRequest req =
+                new com.school.erp.dto.academic.ClassSubjectAssignmentRequest(
+                        1L, 1L, null, 1L,
+                        List.of(new com.school.erp.dto.academic.ClassSubjectAssignmentRequest.SubjectEntry(100L, "CORE"))
+                );
+
+        var responses = academicService.assignSubjectsToClass(req);
+        assertEquals(2, responses.size());
+        verify(classSubjectAssignmentRepository, times(2)).save(any());
     }
 }

@@ -337,7 +337,7 @@ public class AcademicService {
             if (activeYear != null) {
                 list = assignmentRepository.findBySchoolIdAndAcademicYearId(effectiveSchoolId, activeYear.getId());
             } else {
-                list = List.of();
+                list = assignmentRepository.findBySchoolIdAndStatus(effectiveSchoolId, "ACTIVE");
             }
         }
         return list.stream().map(this::toAssignmentResponse).toList();
@@ -507,6 +507,16 @@ public class AcademicService {
                     assignmentRepository.saveAndFlush(existing);
                 });
 
+        // Also deactivate any previous active assignment for this staff member in this school
+        // so that if a teacher is reassigned to another class-section, they are unassigned from their previous class
+        List<ClassTeacherAssignment> existingForStaff = assignmentRepository.findBySchoolIdAndStaffIdAndStatus(effectiveSchoolId, staff.getId(), "ACTIVE");
+        if (existingForStaff != null) {
+            for (ClassTeacherAssignment existingStaffAssignment : existingForStaff) {
+                existingStaffAssignment.setStatus("INACTIVE");
+                assignmentRepository.saveAndFlush(existingStaffAssignment);
+            }
+        }
+
         ClassTeacherAssignment assignment = new ClassTeacherAssignment();
         assignment.setSchool(school);
         assignment.setStaff(staff);
@@ -629,9 +639,21 @@ public class AcademicService {
         if (sectionId != null) {
             list = classSubjectAssignmentRepository.findBySchoolIdAndSchoolClassIdAndSectionIdAndAcademicYearId(
                     effectiveSchoolId, classId, sectionId, effectiveYearId);
+            if (list.isEmpty() && classId != null) {
+                // Fallback to class-level (section == null) assignments if section has no explicit records yet
+                list = classSubjectAssignmentRepository.findBySchoolIdAndSchoolClassIdAndSectionIdAndAcademicYearId(
+                        effectiveSchoolId, classId, null, effectiveYearId);
+            }
         } else if (classId != null) {
-            list = classSubjectAssignmentRepository.findBySchoolIdAndSchoolClassIdAndAcademicYearId(
+            List<ClassSubjectAssignment> rawList = classSubjectAssignmentRepository.findBySchoolIdAndSchoolClassIdAndAcademicYearId(
                     effectiveSchoolId, classId, effectiveYearId);
+            java.util.Map<Long, ClassSubjectAssignment> uniqueBySubject = new java.util.LinkedHashMap<>();
+            for (ClassSubjectAssignment csa : rawList) {
+                if (csa.getSubject() != null) {
+                    uniqueBySubject.putIfAbsent(csa.getSubject().getId(), csa);
+                }
+            }
+            list = new java.util.ArrayList<>(uniqueBySubject.values());
         } else {
             list = classSubjectAssignmentRepository.findBySchoolIdAndAcademicYearId(effectiveSchoolId, effectiveYearId);
         }
@@ -647,34 +669,92 @@ public class AcademicService {
         School school = getSchool(effectiveSchoolId);
         SchoolClass schoolClass = classRepository.findByIdAndSchoolId(request.classId(), effectiveSchoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Class not found"));
-        Section section = request.sectionId() != null
+        Section explicitSection = request.sectionId() != null
                 ? sectionRepository.findByIdAndSchoolId(request.sectionId(), effectiveSchoolId)
                         .orElseThrow(() -> new ResourceNotFoundException("Section not found"))
                 : null;
         AcademicYear year = academicYearRepository.findByIdAndSchoolId(request.academicYearId(), effectiveSchoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Academic year not found"));
 
-        return request.subjects().stream().map(entry -> {
-            Subject subject = subjectRepository.findByIdAndSchoolId(entry.subjectId(), effectiveSchoolId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Subject not found: " + entry.subjectId()));
+        java.util.Set<Long> requestedSubjectIds = request.subjects().stream()
+                .map(ClassSubjectAssignmentRequest.SubjectEntry::subjectId)
+                .collect(java.util.stream.Collectors.toSet());
 
-            // Upsert: find existing or create new
-            Long sectionId = section != null ? section.getId() : null;
-            ClassSubjectAssignment csa = classSubjectAssignmentRepository
-                    .findBySchoolIdAndSchoolClassIdAndSectionIdAndSubjectIdAndAcademicYearId(
-                            effectiveSchoolId, schoolClass.getId(), sectionId, subject.getId(), year.getId())
-                    .orElse(new ClassSubjectAssignment());
+        if (explicitSection != null) {
+            // Section-specific assignment: remove unchecked subjects only for this section
+            List<ClassSubjectAssignment> existing = classSubjectAssignmentRepository
+                    .findBySchoolIdAndSchoolClassIdAndSectionIdAndAcademicYearId(
+                            effectiveSchoolId, schoolClass.getId(), explicitSection.getId(), year.getId());
+            for (ClassSubjectAssignment csa : existing) {
+                if (csa.getSubject() != null && !requestedSubjectIds.contains(csa.getSubject().getId())) {
+                    classSubjectAssignmentRepository.delete(csa);
+                }
+            }
 
-            csa.setSchool(school);
-            csa.setSchoolClass(schoolClass);
-            csa.setSection(section);
-            csa.setSubject(subject);
-            csa.setAcademicYear(year);
-            csa.setSubjectType(entry.subjectType() != null ? entry.subjectType() : "CORE");
-            csa.setStatus("ACTIVE");
+            return request.subjects().stream().map(entry -> {
+                Subject subject = subjectRepository.findByIdAndSchoolId(entry.subjectId(), effectiveSchoolId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Subject not found: " + entry.subjectId()));
+                return toClassSubjectAssignmentResponse(
+                        upsertClassSubjectAssignment(school, schoolClass, explicitSection, subject, year, entry.subjectType())
+                );
+            }).toList();
+        } else {
+            // Class-wide propagation: apply to all sections of this class (and class-level if no sections exist)
+            List<Section> classSections = sectionRepository.findBySchoolIdAndSchoolClassId(effectiveSchoolId, schoolClass.getId());
 
-            return toClassSubjectAssignmentResponse(classSubjectAssignmentRepository.save(csa));
-        }).toList();
+            // Remove unchecked subjects across the class for this academic year
+            List<ClassSubjectAssignment> existingAll = classSubjectAssignmentRepository
+                    .findBySchoolIdAndSchoolClassIdAndAcademicYearId(effectiveSchoolId, schoolClass.getId(), year.getId());
+            for (ClassSubjectAssignment csa : existingAll) {
+                if (csa.getSubject() != null && !requestedSubjectIds.contains(csa.getSubject().getId())) {
+                    classSubjectAssignmentRepository.delete(csa);
+                }
+            }
+
+            List<ClassSubjectAssignmentResponse> responses = new java.util.ArrayList<>();
+            for (var entry : request.subjects()) {
+                Subject subject = subjectRepository.findByIdAndSchoolId(entry.subjectId(), effectiveSchoolId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Subject not found: " + entry.subjectId()));
+
+                if (classSections.isEmpty()) {
+                    ClassSubjectAssignment saved = upsertClassSubjectAssignment(
+                            school, schoolClass, null, subject, year, entry.subjectType());
+                    responses.add(toClassSubjectAssignmentResponse(saved));
+                } else {
+                    for (Section sec : classSections) {
+                        ClassSubjectAssignment saved = upsertClassSubjectAssignment(
+                                school, schoolClass, sec, subject, year, entry.subjectType());
+                        responses.add(toClassSubjectAssignmentResponse(saved));
+                    }
+                }
+            }
+            return responses;
+        }
+    }
+
+    private ClassSubjectAssignment upsertClassSubjectAssignment(
+            School school,
+            SchoolClass schoolClass,
+            Section section,
+            Subject subject,
+            AcademicYear year,
+            String subjectType
+    ) {
+        Long sectionId = section != null ? section.getId() : null;
+        ClassSubjectAssignment csa = classSubjectAssignmentRepository
+                .findBySchoolIdAndSchoolClassIdAndSectionIdAndSubjectIdAndAcademicYearId(
+                        school.getId(), schoolClass.getId(), sectionId, subject.getId(), year.getId())
+                .orElse(new ClassSubjectAssignment());
+
+        csa.setSchool(school);
+        csa.setSchoolClass(schoolClass);
+        csa.setSection(section);
+        csa.setSubject(subject);
+        csa.setAcademicYear(year);
+        csa.setSubjectType(subjectType != null ? subjectType : "CORE");
+        csa.setStatus("ACTIVE");
+
+        return classSubjectAssignmentRepository.save(csa);
     }
 
     @Transactional
