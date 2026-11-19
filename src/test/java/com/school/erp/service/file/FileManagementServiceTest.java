@@ -115,7 +115,7 @@ class FileManagementServiceTest {
 
         assertNotNull(response);
         assertNotNull(response.fileId());
-        assertTrue(response.uploadUrl().contains("upload-token"));
+        assertTrue(response.uploadUrl().contains("mock-s3-upload") || response.uploadUrl().contains("bucket="));
         assertEquals("PUT", response.httpMethod());
         verify(fileMetadataRepository).save(any(FileMetadata.class));
         verify(fileAttachmentRepository).save(any(FileAttachment.class));

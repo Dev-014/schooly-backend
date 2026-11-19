@@ -60,6 +60,9 @@ class FileControllerTest {
     @MockitoBean
     private com.school.erp.security.AuthContextService authContextService;
 
+    @MockitoBean
+    private com.school.erp.storage.ObjectStorageProvider objectStorageProvider;
+
     private ObjectMapper objectMapper;
 
     @BeforeEach
