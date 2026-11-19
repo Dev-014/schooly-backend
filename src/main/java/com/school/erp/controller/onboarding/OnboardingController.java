@@ -14,10 +14,14 @@ public class OnboardingController {
 
     private final OnboardingService onboardingService;
     private final OnboardingDraftService draftService;
+    private final com.school.erp.service.superadmin.SchoolSubscriptionService subscriptionService;
 
-    public OnboardingController(OnboardingService onboardingService, OnboardingDraftService draftService) {
+    public OnboardingController(OnboardingService onboardingService,
+                                OnboardingDraftService draftService,
+                                com.school.erp.service.superadmin.SchoolSubscriptionService subscriptionService) {
         this.onboardingService = onboardingService;
         this.draftService = draftService;
+        this.subscriptionService = subscriptionService;
     }
 
     @PostMapping("/register")
@@ -67,6 +71,24 @@ public class OnboardingController {
         return ResponseEntity.ok(ApiResponse.success(
                 draftService.activateSchool(schoolId),
                 "School activated successfully"
+        ));
+    }
+
+    @PostMapping("/subscription/create-order")
+    public ResponseEntity<ApiResponse<com.school.erp.dto.payment.GatewayOrderResponse>> createSubscriptionOrder(
+            @Valid @RequestBody com.school.erp.dto.superadmin.SubscriptionOrderCreateRequest request) {
+        return ResponseEntity.ok(ApiResponse.success(
+                subscriptionService.createSubscriptionOrder(request),
+                "Subscription order created successfully"
+        ));
+    }
+
+    @PostMapping("/subscription/verify")
+    public ResponseEntity<ApiResponse<com.school.erp.dto.payment.GatewayVerificationResponse>> verifySubscriptionPayment(
+            @Valid @RequestBody com.school.erp.dto.superadmin.SubscriptionPaymentVerifyRequest request) {
+        return ResponseEntity.ok(ApiResponse.success(
+                subscriptionService.verifySubscriptionPayment(request),
+                "Subscription payment verified successfully"
         ));
     }
 }

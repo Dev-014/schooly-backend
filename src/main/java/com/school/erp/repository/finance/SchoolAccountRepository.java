@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface SchoolAccountRepository extends JpaRepository<SchoolAccount, Long> {
     List<SchoolAccount> findBySchoolId(Long schoolId);
+    java.util.Optional<SchoolAccount> findFirstBySchoolIdAndIsActiveTrue(Long schoolId);
+    java.util.Optional<SchoolAccount> findByRazorpayAccountId(String razorpayAccountId);
 }
