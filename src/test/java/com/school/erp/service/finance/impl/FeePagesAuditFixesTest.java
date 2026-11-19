@@ -140,7 +140,11 @@ class FeePagesAuditFixesTest {
                 feeDueRepository,
                 feePaymentAllocationRepository,
                 studentRepository,
-                schoolRepository
+                schoolRepository,
+                sectionRepository,
+                null,
+                null,
+                null
         );
         ReflectionTestUtils.setField(service, "sectionRepository", sectionRepository);
 

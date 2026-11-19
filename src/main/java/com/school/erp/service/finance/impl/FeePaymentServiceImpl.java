@@ -59,6 +59,15 @@ public class FeePaymentServiceImpl implements FeePaymentService {
             FeeDueRepository feeDueRepository,
             FeePaymentAllocationRepository feePaymentAllocationRepository,
             StudentRepository studentRepository,
+            SchoolRepository schoolRepository) {
+        this(paymentRepository, feeDueRepository, feePaymentAllocationRepository, studentRepository, schoolRepository, null, null, null, null);
+    }
+
+    public FeePaymentServiceImpl(
+            PaymentRepository paymentRepository,
+            FeeDueRepository feeDueRepository,
+            FeePaymentAllocationRepository feePaymentAllocationRepository,
+            StudentRepository studentRepository,
             SchoolRepository schoolRepository,
             SectionRepository sectionRepository,
             SchoolAccountRepository schoolAccountRepository,
