@@ -29,6 +29,14 @@ public class School {
     @Column(name = "contact_email")
     private String contactEmail;
 
+    public String getEmail() {
+        return this.contactEmail;
+    }
+
+    public void setEmail(String email) {
+        this.contactEmail = email;
+    }
+
     @Column(name = "contact_phone")
     private String contactPhone;
 

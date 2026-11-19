@@ -37,6 +37,14 @@ public class SchoolModuleAccess {
     @Column(name = "enabled")
     private Boolean enabled = true;
 
+    public void setIsEnabled(Boolean isEnabled) {
+        this.enabled = isEnabled;
+    }
+
+    public Boolean getIsEnabled() {
+        return this.enabled;
+    }
+
     @CreationTimestamp
     @Column(name = "enabled_at", insertable = false, updatable = false)
     private LocalDateTime enabledAt;

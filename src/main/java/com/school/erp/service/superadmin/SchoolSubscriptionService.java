@@ -182,7 +182,7 @@ public class SchoolSubscriptionService {
                             a.setModule(mod);
                             return a;
                         });
-                access.setIsEnabled(true);
+                access.setEnabled(true);
                 moduleAccessRepository.save(access);
             }
             log.info("Provisioned {} plan modules for school {}", sub.getPlan().getModules().size(), sub.getSchool().getId());
