@@ -173,19 +173,19 @@ public class SchoolSubscriptionService {
         }
 
         // Auto-provision entitlements/modules from plan
+        final School targetSchool = sub.getSchool();
         if (sub.getPlan() != null && sub.getPlan().getModules() != null) {
             for (PlatformModule mod : sub.getPlan().getModules()) {
-                SchoolModuleAccess access = moduleAccessRepository.findBySchoolIdAndModuleId(sub.getSchool().getId(), mod.getId())
-                        .orElseGet(() -> {
-                            SchoolModuleAccess a = new SchoolModuleAccess();
-                            a.setSchool(sub.getSchool());
-                            a.setModule(mod);
-                            return a;
-                        });
+                SchoolModuleAccess access = moduleAccessRepository
+                        .findBySchoolIdAndModuleId(targetSchool.getId(), mod.getId())
+                        .orElse(null);
+                if (access == null) {
+                    access = new SchoolModuleAccess(targetSchool, mod);
+                }
                 access.setEnabled(true);
                 moduleAccessRepository.save(access);
             }
-            log.info("Provisioned {} plan modules for school {}", sub.getPlan().getModules().size(), sub.getSchool().getId());
+            log.info("Provisioned {} plan modules for school {}", sub.getPlan().getModules().size(), targetSchool.getId());
         }
 
         return new GatewayVerificationResponse(
