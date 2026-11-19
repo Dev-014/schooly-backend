@@ -591,6 +591,11 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                 : feePaymentAllocationRepository.findByPaymentIdIn(paymentIds).stream()
                 .collect(Collectors.groupingBy(a -> a.getPayment().getId()));
 
+        Map<Long, String> sectionNameMap = sectionRepository != null
+                ? sectionRepository.findBySchoolId(schoolId).stream()
+                .collect(Collectors.toMap(Section::getId, Section::getName, (a, b) -> a))
+                : Collections.emptyMap();
+
         return payments.map(payment -> {
             List<PaymentResponse.PaymentAllocationResponse> allocations = allocMap
                     .getOrDefault(payment.getId(), Collections.emptyList())
@@ -613,6 +618,18 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                 }
             }
 
+            String classDisplay = "";
+            if (student != null && student.getSchoolClass() != null) {
+                classDisplay = student.getSchoolClass().getName();
+                if (student.getSectionId() != null) {
+                    String sec = sectionNameMap.get(student.getSectionId());
+                    if (sec != null && !sec.isBlank()) {
+                        String cleanSec = sec.replaceFirst("(?i)^section\\s+", "").trim();
+                        classDisplay = classDisplay + " - Section " + cleanSec;
+                    }
+                }
+            }
+
             return new PaymentResponse(
                     payment.getId(),
                     payment.getSchool().getId(),
@@ -622,7 +639,7 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                     payment.getStatus(),
                     payment.getReceiptNumber(),
                     studentName,
-                    (student != null && student.getSchoolClass() != null) ? student.getSchoolClass().getName() : "",
+                    classDisplay,
                     payment.getPaymentDate(),
                     payment.getCreatedAt(),
                     allocations,
@@ -636,6 +653,11 @@ public class FeePaymentServiceImpl implements FeePaymentService {
     @Override
     public Page<PaymentResponse> getPaymentsByStudent(Long studentId, Long schoolId, Pageable pageable) {
         Page<Payment> payments = paymentRepository.findBySchoolIdAndStudentId(schoolId, studentId, pageable);
+
+        Map<Long, String> sectionNameMap = sectionRepository != null
+                ? sectionRepository.findBySchoolId(schoolId).stream()
+                .collect(Collectors.toMap(Section::getId, Section::getName, (a, b) -> a))
+                : Collections.emptyMap();
 
         return payments.map(payment -> {
             List<PaymentResponse.PaymentAllocationResponse> allocations = feePaymentAllocationRepository.findByPaymentId(payment.getId())
@@ -658,6 +680,18 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                 }
             }
 
+            String classDisplay = "";
+            if (student != null && student.getSchoolClass() != null) {
+                classDisplay = student.getSchoolClass().getName();
+                if (student.getSectionId() != null) {
+                    String sec = sectionNameMap.get(student.getSectionId());
+                    if (sec != null && !sec.isBlank()) {
+                        String cleanSec = sec.replaceFirst("(?i)^section\\s+", "").trim();
+                        classDisplay = classDisplay + " - Section " + cleanSec;
+                    }
+                }
+            }
+
             return new PaymentResponse(
                     payment.getId(),
                     payment.getSchool().getId(),
@@ -667,7 +701,7 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                     payment.getStatus(),
                     payment.getReceiptNumber(),
                     studentName,
-                    (student != null && student.getSchoolClass() != null) ? student.getSchoolClass().getName() : "",
+                    classDisplay,
                     payment.getPaymentDate(),
                     payment.getCreatedAt(),
                     allocations,
