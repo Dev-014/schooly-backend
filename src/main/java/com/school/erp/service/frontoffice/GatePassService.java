@@ -92,8 +92,18 @@ public class GatePassService {
         gatePass.setPassDate(request.getPassDate() != null ? request.getPassDate() : LocalDate.now());
         gatePass.setExitTime(request.getExitTime() != null ? request.getExitTime() : LocalTime.now());
         gatePass.setExpectedReturnTime(request.getExpectedReturnTime());
+        gatePass.setExpectedReturnDate(request.getExpectedReturnDate());
+        gatePass.setActualReturnDate(request.getActualReturnDate());
+        gatePass.setActualReturnTime(request.getActualReturnTime());
+        gatePass.setIsOverride(Boolean.TRUE.equals(request.getIsOverride()));
+        gatePass.setAuthorizationOverrideReason(request.getAuthorizationOverrideReason());
+        gatePass.setAuthorizedByRole(request.getAuthorizedByRole());
         gatePass.setApprovedBy(request.getApprovedBy());
-        gatePass.setStatus(request.getStatus() != null ? request.getStatus().toUpperCase() : "APPROVED");
+        if (Boolean.TRUE.equals(request.getIsOverride())) {
+            gatePass.setStatus("AUTHORIZED_OVERRIDE");
+        } else {
+            gatePass.setStatus(request.getStatus() != null ? request.getStatus().toUpperCase() : "APPROVED");
+        }
 
         if (request.getStudentId() != null) {
             Student student = studentRepository.findById(request.getStudentId()).orElse(null);
@@ -168,6 +178,19 @@ public class GatePassService {
     }
 
     @Transactional
+    public GatePassResponse recordReturn(Long rawSchoolId, Long id) {
+        final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
+        GatePass gatePass = gatePassRepository.findByIdAndSchoolId(id, schoolId)
+                .orElseThrow(() -> new ResourceNotFoundException("Gate pass not found with id: " + id));
+
+        gatePass.setActualReturnDate(LocalDate.now());
+        gatePass.setActualReturnTime(LocalTime.now());
+        gatePass.setStatus("RETURNED");
+        GatePass updated = gatePassRepository.save(gatePass);
+        return mapToResponse(updated);
+    }
+
+    @Transactional
     public GatePassResponse updateStatus(Long rawSchoolId, Long id, String status) {
         final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
         
@@ -216,6 +239,12 @@ public class GatePassService {
                 .passDate(g.getPassDate())
                 .exitTime(g.getExitTime())
                 .expectedReturnTime(g.getExpectedReturnTime())
+                .expectedReturnDate(g.getExpectedReturnDate())
+                .actualReturnDate(g.getActualReturnDate())
+                .actualReturnTime(g.getActualReturnTime())
+                .isOverride(g.getIsOverride())
+                .authorizationOverrideReason(g.getAuthorizationOverrideReason())
+                .authorizedByRole(g.getAuthorizedByRole())
                 .approvedBy(g.getApprovedBy())
                 .approvedByStaffId(g.getApprovedByStaff() != null ? g.getApprovedByStaff().getId() : null)
                 .status(g.getStatus())

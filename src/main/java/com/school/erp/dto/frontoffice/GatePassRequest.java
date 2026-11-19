@@ -41,6 +41,18 @@ public class GatePassRequest {
 
     private LocalTime expectedReturnTime;
 
+    private LocalDate expectedReturnDate;
+
+    private LocalDate actualReturnDate;
+
+    private LocalTime actualReturnTime;
+
+    private Boolean isOverride;
+
+    private String authorizationOverrideReason;
+
+    private String authorizedByRole;
+
     @NotBlank(message = "Approved by is required")
     private String approvedBy;
 

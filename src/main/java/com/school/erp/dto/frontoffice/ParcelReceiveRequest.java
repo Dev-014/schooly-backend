@@ -2,6 +2,7 @@ package com.school.erp.dto.frontoffice;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class ParcelReceiveRequest {
     @NotBlank(message = "Sender name is required")
     private String senderName;
 
+    @Pattern(regexp = "^$|^\\d{10}$", message = "Contact number must be exactly 10 digits")
     private String contactNumber;
 
     private String recipientName;

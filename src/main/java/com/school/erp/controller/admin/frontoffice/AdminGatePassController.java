@@ -76,6 +76,16 @@ public class AdminGatePassController {
                 "Gate pass status updated successfully"));
     }
 
+    @PutMapping("/{id}/return")
+    @PermissionRequired("front_office.gate_pass.view")
+    public ResponseEntity<ApiResponse<GatePassResponse>> recordReturn(
+            @RequestParam(required = false) Long schoolId,
+            @PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(
+                gatePassService.recordReturn(schoolId, id),
+                "Gate pass return recorded successfully"));
+    }
+
     @GetMapping("/stats")
     @PermissionRequired("front_office.gate_pass.view")
     public ResponseEntity<ApiResponse<GatePassStatsResponse>> getStats(

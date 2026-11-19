@@ -27,6 +27,12 @@ public class GatePassResponse {
     private LocalDate passDate;
     private LocalTime exitTime;
     private LocalTime expectedReturnTime;
+    private LocalDate expectedReturnDate;
+    private LocalDate actualReturnDate;
+    private LocalTime actualReturnTime;
+    private Boolean isOverride;
+    private String authorizationOverrideReason;
+    private String authorizedByRole;
     private String approvedBy;
     private Long approvedByStaffId;
     private String status;

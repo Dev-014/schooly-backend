@@ -153,6 +153,10 @@ public class VisitorLogService {
         VisitorLog visitor = visitorLogRepository.findByIdAndSchoolId(id, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Visitor log not found with id: " + id));
 
+        if (visitor.getTimeOut() != null || "CHECKED_OUT".equalsIgnoreCase(visitor.getStatus())) {
+            throw new BadRequestException("Cannot edit visitor record after checkout has been completed.");
+        }
+
         visitor.setVisitorName(request.getVisitorName());
         visitor.setPurpose(request.getPurpose());
         visitor.setMeetingWith(request.getMeetingWith());
