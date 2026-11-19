@@ -8,6 +8,7 @@ import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.hr.Staff;
 import com.school.erp.entity.frontoffice.VisitorLog;
+import com.school.erp.exception.BadRequestException;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.service.notification.NotificationService;
