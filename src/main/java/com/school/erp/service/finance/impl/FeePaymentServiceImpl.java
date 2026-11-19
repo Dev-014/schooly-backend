@@ -9,6 +9,8 @@ import com.school.erp.entity.notification.NotificationPriority;
 import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.student.Student;
+import com.school.erp.entity.academic.Section;
+import com.school.erp.repository.academic.SectionRepository;
 import com.school.erp.repository.finance.FeeDueRepository;
 import com.school.erp.repository.finance.FeePaymentAllocationRepository;
 import com.school.erp.repository.finance.PaymentRepository;
@@ -21,10 +23,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -40,6 +44,9 @@ public class FeePaymentServiceImpl implements FeePaymentService {
 
     @Autowired(required = false)
     private NotificationService notificationService;
+
+    @Autowired(required = false)
+    private SectionRepository sectionRepository;
 
     public FeePaymentServiceImpl(PaymentRepository paymentRepository, FeeDueRepository feeDueRepository, FeePaymentAllocationRepository feePaymentAllocationRepository, StudentRepository studentRepository, SchoolRepository schoolRepository) {
         this.paymentRepository = paymentRepository;
@@ -173,22 +180,59 @@ public class FeePaymentServiceImpl implements FeePaymentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<PaymentResponse> getPaymentsBySchool(Long schoolId, String search, Pageable pageable) {
         Page<Payment> payments;
         if (search != null && !search.trim().isEmpty()) {
-            payments = paymentRepository.findBySchoolIdAndSearch(schoolId, search, pageable);
+            payments = paymentRepository.findBySchoolIdAndSearch(schoolId, search.trim(), pageable);
         } else {
-            payments = paymentRepository.findBySchoolId(schoolId, pageable);
+            payments = paymentRepository.findBySchoolIdOrderByCreatedAtDescIdDesc(schoolId, pageable);
         }
 
+        List<Long> paymentIds = payments.getContent().stream().map(Payment::getId).toList();
+        Map<Long, List<FeePaymentAllocation>> allocMap = paymentIds.isEmpty()
+                ? Collections.emptyMap()
+                : feePaymentAllocationRepository.findByPaymentIdIn(paymentIds).stream()
+                        .collect(Collectors.groupingBy(a -> a.getPayment().getId()));
+
+        Map<Long, String> sectionNameMap = sectionRepository != null
+                ? sectionRepository.findBySchoolId(schoolId).stream()
+                        .collect(Collectors.toMap(Section::getId, Section::getName, (a, b) -> a))
+                : Collections.emptyMap();
+
         return payments.map(payment -> {
-            List<PaymentResponse.PaymentAllocationResponse> allocations = feePaymentAllocationRepository.findByPaymentId(payment.getId())
+            List<PaymentResponse.PaymentAllocationResponse> allocations = allocMap
+                .getOrDefault(payment.getId(), Collections.emptyList())
                 .stream()
                 .map(alloc -> new PaymentResponse.PaymentAllocationResponse(
                     alloc.getFeeDue().getId(),
                     alloc.getFeeDue().getTitle(),
                     alloc.getAllocatedAmount()
                 )).toList();
+
+            Student student = payment.getStudent();
+            String studentName = "";
+            if (student != null) {
+                if (student.getFirstName() != null) {
+                    studentName = student.getFirstName() + (student.getLastName() != null && !student.getLastName().isBlank() ? " " + student.getLastName() : "");
+                } else if (student.getName() != null && !student.getName().isBlank()) {
+                    studentName = student.getName();
+                } else {
+                    studentName = "Student " + (student.getAdmissionNo() != null ? student.getAdmissionNo() : student.getId());
+                }
+            }
+
+            String classDisplay = "";
+            if (student != null && student.getSchoolClass() != null) {
+                classDisplay = student.getSchoolClass().getName();
+                if (student.getSectionId() != null) {
+                    String sec = sectionNameMap.get(student.getSectionId());
+                    if (sec != null && !sec.isBlank()) {
+                        String cleanSec = sec.replaceFirst("(?i)^section\\s+", "").trim();
+                        classDisplay = classDisplay + " - Section " + cleanSec;
+                    }
+                }
+            }
 
             return new PaymentResponse(
                 payment.getId(),
@@ -198,8 +242,8 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                 payment.getTransactionId(),
                 payment.getStatus(),
                 payment.getReceiptNumber(),
-                payment.getStudent().getFirstName() + " " + (payment.getStudent().getLastName() != null ? payment.getStudent().getLastName() : ""),
-                payment.getStudent().getSchoolClass() != null ? payment.getStudent().getSchoolClass().getName() : "",
+                studentName,
+                classDisplay,
                 payment.getPaymentDate(),
                 payment.getCreatedAt(),
                 allocations

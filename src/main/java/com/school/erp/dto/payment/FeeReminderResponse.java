@@ -13,6 +13,9 @@ public class FeeReminderResponse {
     private Long studentId;
     private String studentName;
     private String parentName;
+    private String className;
+    private String sectionName;
+    private String sentBy;
     private BigDecimal feeAmount;
     private String method;
     private String status;

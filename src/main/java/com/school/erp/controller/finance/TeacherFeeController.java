@@ -33,7 +33,7 @@ public class TeacherFeeController {
     }
 
     @PostMapping("/reminders")
-    @PermissionRequired("fees.my_class_fees.send_reminder")
+    @PermissionRequired({"fees.my_class_fees.send_reminder", "fees.demand_notices.view"})
     public ResponseEntity<ApiResponse<Void>> sendReminders(
             @RequestParam Long schoolId,
             @Valid @RequestBody SendFeeReminderRequest request) {

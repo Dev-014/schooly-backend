@@ -52,7 +52,7 @@ public class FeeDueController {
                         request.amount(), 
                         request.title(), 
                         request.dueDate()
-                ), "Ad-Hoc fee assigned successfully")
+                ), "Additional fee assigned successfully")
         );
     }
     @PostMapping("/generate")

@@ -126,8 +126,17 @@ public class FeeDueServiceImpl implements FeeDueService {
             }
         }
 
-        if (categoryName == null || categoryName.isBlank() || "Unknown".equalsIgnoreCase(categoryName)) {
-            categoryName = (due.getTitle() != null && !due.getTitle().isBlank()) ? due.getTitle() : "Tuition Fee";
+        String termName = due.getTermName();
+        if (due.getCollectionPlanItem() != null && due.getCollectionPlanItem().getLabel() != null && !due.getCollectionPlanItem().getLabel().isBlank()) {
+            termName = due.getCollectionPlanItem().getLabel();
+        } else if (Boolean.TRUE.equals(due.getIsAdHoc()) || "Ad-Hoc".equalsIgnoreCase(termName) || "AdHoc".equalsIgnoreCase(termName)) {
+            termName = "Additional Fee";
+        } else if (termName == null || termName.isBlank() || (categoryName != null && termName.equalsIgnoreCase(categoryName))) {
+            termName = "Annual";
+        }
+
+        if (categoryName == null || categoryName.isBlank() || "Unknown".equalsIgnoreCase(categoryName) || (termName != null && categoryName.equalsIgnoreCase(termName))) {
+            categoryName = "Tuition Fee";
         }
 
         BigDecimal paid = due.getPaidAmount() != null ? due.getPaidAmount() : BigDecimal.ZERO;
@@ -147,7 +156,7 @@ public class FeeDueServiceImpl implements FeeDueService {
                 status,
                 categoryId,
                 categoryName,
-                due.getTermName()
+                termName
         );
     }
 
@@ -279,7 +288,7 @@ public class FeeDueServiceImpl implements FeeDueService {
                 due.setIsAdHoc(false);
                 due.setTitle(exItem.getFeeCategory().getName());
                 due.setAmount(exItem.getAmount());
-                due.setTermName(exItem.getFeeCategory().getName());
+                due.setTermName("Annual");
                 due.setDueDate(LocalDate.now().plusDays(30));
                 due.setStatus("UNPAID");
                 newDues.add(due);
@@ -338,7 +347,7 @@ public class FeeDueServiceImpl implements FeeDueService {
                 due.setIsAdHoc(false);
                 due.setTitle(item.getFeeCategory().getName());
                 due.setAmount(item.getAmount());
-                due.setTermName(item.getFeeCategory().getName());
+                due.setTermName("Annual");
                 due.setDueDate(LocalDate.now().plusDays(30));
                 due.setStatus("UNPAID");
                 newDues.add(due);
@@ -477,11 +486,11 @@ public class FeeDueServiceImpl implements FeeDueService {
         due.setSchool(school);
         due.setFeeCategory(category);
         due.setAmount(amount);
-        due.setTitle(title != null && !title.trim().isEmpty() ? title : category.getName() + " (Ad-Hoc)");
+        due.setTitle(title != null && !title.trim().isEmpty() ? title : category.getName() + " (Additional Fee)");
         due.setDueDate(dueDate);
         due.setStatus("UNPAID");
         due.setIsAdHoc(true);
-        due.setTermName("Ad-Hoc");
+        due.setTermName("Additional Fee");
 
         due = feeDueRepository.save(due);
 

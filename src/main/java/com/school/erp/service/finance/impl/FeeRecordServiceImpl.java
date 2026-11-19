@@ -3,9 +3,11 @@ package com.school.erp.service.finance.impl;
 import com.school.erp.dto.payment.FeeStatsDTO;
 import com.school.erp.dto.payment.StudentFeeRecordDTO;
 import com.school.erp.dto.payment.TeacherClassResponse;
+import com.school.erp.entity.academic.Section;
 import com.school.erp.entity.auth.RolePermission;
 import com.school.erp.entity.auth.UserRole;
 import com.school.erp.entity.student.Student;
+import com.school.erp.repository.academic.SectionRepository;
 import com.school.erp.repository.finance.FeeDueRepository;
 import com.school.erp.repository.finance.StudentFeeAggregation;
 import com.school.erp.repository.student.StudentRepository;
@@ -14,6 +16,7 @@ import com.school.erp.security.AuthenticatedUser;
 import com.school.erp.service.auth.AuthorizationService;
 import com.school.erp.service.finance.FeeRecordService;
 import com.school.erp.service.finance.TeacherFeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,9 +24,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +42,9 @@ public class FeeRecordServiceImpl implements FeeRecordService {
     private final AuthContextService authContextService;
     private final AuthorizationService authorizationService;
     private final TeacherFeeService teacherFeeService;
+
+    @Autowired(required = false)
+    private SectionRepository sectionRepository;
 
     public FeeRecordServiceImpl(
             StudentRepository studentRepository,
@@ -102,6 +112,14 @@ public class FeeRecordServiceImpl implements FeeRecordService {
         Map<Long, StudentFeeAggregation> aggMap = aggregations.stream()
                 .collect(Collectors.toMap(StudentFeeAggregation::getStudentId, a -> a));
 
+        List<Long> overdueList = feeDueRepository.findOverdueStudentIds(studentIds, LocalDate.now());
+        Set<Long> overdueStudentIds = overdueList != null ? new HashSet<>(overdueList) : Collections.emptySet();
+
+        Map<Long, String> sectionNameMap = sectionRepository != null
+                ? sectionRepository.findBySchoolId(effectiveSchoolId).stream()
+                        .collect(Collectors.toMap(Section::getId, Section::getName, (a, b) -> a))
+                : Collections.emptyMap();
+
         return students.map(student -> {
             StudentFeeAggregation agg = aggMap.get(student.getId());
             BigDecimal totalFees = agg != null && agg.getTotalFees() != null ? agg.getTotalFees() : BigDecimal.ZERO;
@@ -113,17 +131,22 @@ public class FeeRecordServiceImpl implements FeeRecordService {
             String derivedStatus = "PENDING";
             if (totalFees.compareTo(BigDecimal.ZERO) > 0 && balance.compareTo(BigDecimal.ZERO) <= 0) {
                 derivedStatus = "PAID";
+            } else if (balance.compareTo(BigDecimal.ZERO) > 0 && overdueStudentIds.contains(student.getId())) {
+                derivedStatus = "OVERDUE";
             } else if (settled.compareTo(BigDecimal.ZERO) > 0) {
                 derivedStatus = "PARTIAL";
             }
 
+            String sectionName = student.getSectionId() != null ? sectionNameMap.get(student.getSectionId()) : null;
+
             return new StudentFeeRecordDTO(
                     String.valueOf(student.getId()),
                     String.valueOf(student.getId()),
-                    student.getFirstName() + " " + student.getLastName(),
+                    student.getFirstName() + (student.getLastName() != null && !student.getLastName().isBlank() ? " " + student.getLastName() : ""),
                     student.getAdmissionNo(),
                     student.getSchoolClass() != null ? student.getSchoolClass().getName() : "-",
                     student.getSectionId(),
+                    sectionName,
                     null,
                     totalFees,
                     amountPaid,

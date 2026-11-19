@@ -16,6 +16,7 @@ public class StudentFeeRecordDTO {
     private String admissionNumber;
     private String classGroupName;
     private Long sectionId;
+    private String sectionName;
     private String photoUrl;
     
     private BigDecimal totalFees;
@@ -29,12 +30,18 @@ public class StudentFeeRecordDTO {
     public StudentFeeRecordDTO(String id, String studentId, String studentName, String admissionNumber,
                                String classGroupName, String photoUrl, BigDecimal totalFees, BigDecimal amountPaid,
                                BigDecimal balance, LocalDate lastPaymentDate, String status) {
-        this(id, studentId, studentName, admissionNumber, classGroupName, null, photoUrl, totalFees, amountPaid, BigDecimal.ZERO, balance, lastPaymentDate, status);
+        this(id, studentId, studentName, admissionNumber, classGroupName, null, null, photoUrl, totalFees, amountPaid, BigDecimal.ZERO, balance, lastPaymentDate, status);
     }
 
     public StudentFeeRecordDTO(String id, String studentId, String studentName, String admissionNumber,
                                String classGroupName, Long sectionId, String photoUrl, BigDecimal totalFees, BigDecimal amountPaid,
                                BigDecimal balance, LocalDate lastPaymentDate, String status) {
-        this(id, studentId, studentName, admissionNumber, classGroupName, sectionId, photoUrl, totalFees, amountPaid, BigDecimal.ZERO, balance, lastPaymentDate, status);
+        this(id, studentId, studentName, admissionNumber, classGroupName, sectionId, null, photoUrl, totalFees, amountPaid, BigDecimal.ZERO, balance, lastPaymentDate, status);
+    }
+
+    public StudentFeeRecordDTO(String id, String studentId, String studentName, String admissionNumber,
+                               String classGroupName, Long sectionId, String photoUrl, BigDecimal totalFees, BigDecimal amountPaid,
+                               BigDecimal discountAmount, BigDecimal balance, LocalDate lastPaymentDate, String status) {
+        this(id, studentId, studentName, admissionNumber, classGroupName, sectionId, null, photoUrl, totalFees, amountPaid, discountAmount, balance, lastPaymentDate, status);
     }
 }
