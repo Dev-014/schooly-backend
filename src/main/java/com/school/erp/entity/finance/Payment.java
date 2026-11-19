@@ -62,6 +62,36 @@ public class Payment {
     @Column(name = "payment_date")
     private LocalDate paymentDate;
 
+    @Column(name = "gateway_order_id")
+    private String gatewayOrderId;
+
+    @Column(name = "gateway_payment_id")
+    private String gatewayPaymentId;
+
+    @Column(name = "gateway_signature")
+    private String gatewaySignature;
+
+    @Column(name = "verification_status")
+    private String verificationStatus = "APPROVED"; // APPROVED, PENDING_VERIFICATION, REJECTED
+
+    @Column(name = "verification_note", columnDefinition = "TEXT")
+    private String verificationNote;
+
+    @Column(name = "verified_by")
+    private Long verifiedBy;
+
+    @Column(name = "verified_at")
+    private LocalDateTime verifiedAt;
+
+    @Column(name = "failure_reason", columnDefinition = "TEXT")
+    private String failureReason;
+
+    @Column(name = "currency")
+    private String currency = "INR";
+
+    @Column(name = "receipt_file_id")
+    private java.util.UUID receiptFileId;
+
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FeePaymentAllocation> allocations = new ArrayList<>();
 }

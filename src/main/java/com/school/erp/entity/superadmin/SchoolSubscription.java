@@ -41,6 +41,21 @@ public class SchoolSubscription {
     @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalAmount = BigDecimal.ZERO;
 
+    @Column(name = "base_amount", precision = 10, scale = 2)
+    private BigDecimal baseAmount = BigDecimal.ZERO;
+
+    @Column(name = "gst_rate", precision = 5, scale = 2)
+    private BigDecimal gstRate = new BigDecimal("18.00");
+
+    @Column(name = "gst_amount", precision = 10, scale = 2)
+    private BigDecimal gstAmount = BigDecimal.ZERO;
+
+    @Column(name = "gateway_order_id")
+    private String gatewayOrderId;
+
+    @Column(name = "gateway_payment_id")
+    private String gatewayPaymentId;
+
     @Column(name = "amount_paid", nullable = false, precision = 10, scale = 2)
     private BigDecimal amountPaid = BigDecimal.ZERO;
 
