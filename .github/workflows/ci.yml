@@ -1,0 +1,92 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - main
+      - ayush_dev
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  pull_request:
+    branches:
+      - main
+      - ayush_dev
+
+jobs:
+  test:
+    name: Unit & Integration Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: schooly_test
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Grant execute permission for Maven Wrapper
+        run: chmod +x mvnw
+
+      - name: Run Maven Tests
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/schooly_test
+          SPRING_DATASOURCE_USERNAME: test_user
+          SPRING_DATASOURCE_PASSWORD: test_password
+          SPRING_JPA_HIBERNATE_DDL_AUTO: update
+          SPRING_FLYWAY_ENABLED: 'true'
+          SPRING_FLYWAY_BASELINE_ON_MIGRATE: 'true'
+          SPRING_FLYWAY_VALIDATE_ON_MIGRATE: 'false'
+          APP_JWT_SECRET: ci-temporary-secret-minimum-32-chars-for-test
+          APP_STORAGE_PROVIDER: local
+          RAZORPAY_ENABLED: 'false'
+        run: ./mvnw clean test -B
+
+      - name: Publish Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-test-reports
+          path: target/surefire-reports/
+          retention-days: 7
+
+  docker-verify:
+    name: Docker Build Verification
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: actions/setup-buildx-action@v3
+
+      - name: Build Docker image (dry run test)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: schooly-backend:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
