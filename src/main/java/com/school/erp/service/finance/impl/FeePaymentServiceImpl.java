@@ -63,6 +63,7 @@ public class FeePaymentServiceImpl implements FeePaymentService {
         this(paymentRepository, feeDueRepository, feePaymentAllocationRepository, studentRepository, schoolRepository, null, null, null, null);
     }
 
+    @Autowired
     public FeePaymentServiceImpl(
             PaymentRepository paymentRepository,
             FeeDueRepository feeDueRepository,
