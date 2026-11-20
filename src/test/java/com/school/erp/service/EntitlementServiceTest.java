@@ -111,4 +111,30 @@ class EntitlementServiceTest {
         });
         assertTrue(exception.getMessage().contains("Access Denied (403)"));
     }
+
+    @Test
+    void shouldIncludeDisabledSubModulesFromSchoolModuleAccess() {
+        when(schoolRepo.findById(101L)).thenReturn(Optional.of(testSchool));
+        when(planRepo.findByCode("BASIC")).thenReturn(Optional.of(basicPlan));
+        when(overrideRepo.findBySchoolId(101L)).thenReturn(Collections.emptyList());
+
+        PlatformModule studentsModule = new PlatformModule();
+        studentsModule.setId(6L);
+        studentsModule.setCode("STUDENTS");
+        com.school.erp.entity.superadmin.SchoolModuleAccess access =
+                new com.school.erp.entity.superadmin.SchoolModuleAccess(testSchool, studentsModule);
+        access.setEnabled(true);
+        access.setDisabledSubModulesList(Arrays.asList("online-admission", "student-referral"));
+
+        when(moduleAccessRepo.findBySchoolId(101L)).thenReturn(Collections.singletonList(access));
+
+        EntitlementEvaluationDto result = entitlementService.evaluateEntitlements(101L);
+
+        assertTrue(result.getEnabledModules().contains("STUDENTS"));
+        assertNotNull(result.getDisabledSubModules());
+        assertEquals(
+                Arrays.asList("online-admission", "student-referral"),
+                result.getDisabledSubModules().get("STUDENTS")
+        );
+    }
 }

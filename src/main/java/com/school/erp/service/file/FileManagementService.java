@@ -2,11 +2,13 @@ package com.school.erp.service.file;
 
 import com.school.erp.dto.file.*;
 import com.school.erp.entity.auth.User;
+import com.school.erp.entity.auth.UserRole;
 import com.school.erp.entity.file.FileAttachment;
 import com.school.erp.entity.file.FileMetadata;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.enums.file.FileAuditAction;
 import com.school.erp.enums.file.FileCategory;
+import com.school.erp.enums.file.FileEntityType;
 import com.school.erp.enums.file.FileStatus;
 import com.school.erp.exception.BadRequestException;
 import com.school.erp.exception.ForbiddenException;
@@ -66,7 +68,12 @@ public class FileManagementService {
     @Transactional
     public FileUploadInitResponse initiateUpload(FileUploadInitRequest request, String ipAddress) {
         AuthenticatedUser currentUser = authContextService.requireCurrentUser();
-        Long schoolId = authContextService.resolveSchoolId(currentUser.schoolId());
+        Long targetSchoolId = (currentUser.role() == UserRole.SUPER_ADMIN
+                && request.entityType() == FileEntityType.SCHOOL
+                && request.entityId() != null)
+                ? request.entityId()
+                : currentUser.schoolId();
+        Long schoolId = authContextService.resolveSchoolId(targetSchoolId);
 
         fileValidationService.validateUploadRequest(schoolId, request);
         fileSecurityService.validateEntityScope(request.entityType(), request.entityId(), currentUser, schoolId);
@@ -302,7 +309,40 @@ public class FileManagementService {
     @Transactional(readOnly = true)
     public Page<FileResponseDto> listFiles(FileFilterRequest request) {
         AuthenticatedUser currentUser = authContextService.requireCurrentUser();
-        Long schoolId = authContextService.resolveSchoolId(currentUser.schoolId());
+        Long targetSchoolId = (currentUser.role() == UserRole.SUPER_ADMIN
+                && request.entityType() == FileEntityType.SCHOOL
+                && request.entityId() != null)
+                ? request.entityId()
+                : currentUser.schoolId();
+        Long schoolId = authContextService.resolveSchoolId(targetSchoolId);
+
+        if (currentUser.role() == UserRole.SUPER_ADMIN
+                && request.entityType() == FileEntityType.SCHOOL
+                && request.entityId() == null) {
+            List<FileAttachment> allSchoolAttachments = fileAttachmentRepository.findByEntityTypeOrderByCreatedAtDesc(FileEntityType.SCHOOL);
+            FileStatus targetStatus = request.status();
+            List<FileResponseDto> dtos = allSchoolAttachments.stream()
+                    .filter(att -> att.getFile() != null && att.getFile().getDeletedAt() == null)
+                    .filter(att -> request.category() == null || att.getCategory() == request.category())
+                    .filter(att -> targetStatus != null
+                            ? att.getFile().getStatus() == targetStatus
+                            : (att.getFile().getStatus() != FileStatus.DELETED
+                                && att.getFile().getStatus() != FileStatus.REJECTED
+                                && att.getFile().getStatus() != FileStatus.FAILED))
+                    .map(att -> toResponseDto(att.getFile(), att))
+                    .toList();
+
+            int page = request.page() != null && request.page() >= 0 ? request.page() : 0;
+            int size = request.size() != null && request.size() > 0 ? request.size() : 50;
+            int start = Math.min(page * size, dtos.size());
+            int end = Math.min(start + size, dtos.size());
+
+            return new org.springframework.data.domain.PageImpl<>(
+                    dtos.subList(start, end),
+                    PageRequest.of(page, size),
+                    dtos.size()
+            );
+        }
 
         if (request.entityType() != null && request.entityId() != null) {
             fileSecurityService.validateEntityScope(request.entityType(), request.entityId(), currentUser, schoolId);

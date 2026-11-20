@@ -146,7 +146,6 @@ class FeePagesAuditFixesTest {
                 null,
                 null
         );
-        ReflectionTestUtils.setField(service, "sectionRepository", sectionRepository);
 
         School school = new School();
         school.setId(1000L);

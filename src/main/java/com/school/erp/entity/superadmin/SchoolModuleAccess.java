@@ -52,4 +52,38 @@ public class SchoolModuleAccess {
     @UpdateTimestamp
     @Column(name = "updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
+
+    public java.util.List<String> getDisabledSubModulesList() {
+        if (disabledSubModules == null || disabledSubModules.trim().isEmpty()) {
+            return new java.util.ArrayList<>();
+        }
+        String cleaned = disabledSubModules.trim();
+        if (cleaned.startsWith("[") && cleaned.endsWith("]")) {
+            cleaned = cleaned.substring(1, cleaned.length() - 1).trim();
+            if (cleaned.isEmpty()) {
+                return new java.util.ArrayList<>();
+            }
+            return java.util.Arrays.stream(cleaned.split(","))
+                    .map(s -> s.trim().replaceAll("^\"|\"$", "").replaceAll("^'|'$", ""))
+                    .filter(s -> !s.isEmpty())
+                    .collect(java.util.stream.Collectors.toList());
+        }
+        return java.util.Arrays.stream(cleaned.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    public void setDisabledSubModulesList(java.util.List<String> subs) {
+        if (subs == null || subs.isEmpty()) {
+            this.disabledSubModules = "[]";
+        } else {
+            java.util.List<String> quoted = subs.stream()
+                    .filter(s -> s != null && !s.trim().isEmpty())
+                    .map(s -> "\"" + s.trim().replace("\"", "\\\"") + "\"")
+                    .distinct()
+                    .collect(java.util.stream.Collectors.toList());
+            this.disabledSubModules = "[" + String.join(", ", quoted) + "]";
+        }
+    }
 }

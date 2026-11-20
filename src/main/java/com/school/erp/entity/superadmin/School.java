@@ -58,6 +58,12 @@ public class School {
     @Column(name = "pincode")
     private String pincode;
 
+    @Column(name = "logo_url", columnDefinition = "TEXT")
+    private String logoUrl;
+
+    @Column(name = "banner_url", columnDefinition = "TEXT")
+    private String bannerUrl;
+
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     @Column(name = "metadata", columnDefinition = "jsonb")
     private java.util.Map<String, Object> metadata = new java.util.HashMap<>();

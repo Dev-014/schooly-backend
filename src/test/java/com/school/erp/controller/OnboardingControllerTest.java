@@ -43,6 +43,9 @@ class OnboardingControllerTest {
     @MockitoBean
     private OnboardingDraftService draftService;
 
+    @MockitoBean
+    private com.school.erp.service.superadmin.SchoolSubscriptionService subscriptionService;
+
     @Test
     void register_shouldReturnOnboardingResponse() throws Exception {
         OnboardingRegisterResponse response = new OnboardingRegisterResponse(

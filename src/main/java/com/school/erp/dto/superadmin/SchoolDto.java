@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 @Data
@@ -16,13 +17,20 @@ public class SchoolDto {
     private String name;
     private String code;
     private String address;
+    private String city;
+    private String state;
+    private String logoUrl;
+    private String boardType;
     private String contactEmail;
     private String contactPhone;
+    private String portalLoginPhone;
     private String status;
     private String subdomain;
     private String domain;
     private String plan;
+    private String planCode;
     private Integer studentCount;
+    private Integer billedStudentCount;
     private Integer staffCount;
     private Integer modulesCount;
     private String healthStatus;
@@ -30,6 +38,10 @@ public class SchoolDto {
     private String createdAt;
     private Map<String, Object> metadata;
     private Double monthlyAmount;
+    private BigDecimal totalAmount;
+    private BigDecimal amountPaid;
+    private BigDecimal remainingAmount;
+    private String paymentStatus;
     private String renewalDate;
 
     // Backward compatible constructor for existing calls
