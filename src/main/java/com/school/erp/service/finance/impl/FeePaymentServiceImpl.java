@@ -582,6 +582,15 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                 : feePaymentAllocationRepository.findByPaymentIdIn(paymentIds).stream()
                 .collect(Collectors.groupingBy(a -> a.getPayment().getId()));
 
+        Map<Long, String> sectionNames = (sectionRepository != null && !payments.isEmpty())
+                ? sectionRepository.findBySchoolId(schoolId).stream()
+                .filter(s -> s.getId() != null && s.getName() != null)
+                .collect(Collectors.toMap(
+                        com.school.erp.entity.academic.Section::getId,
+                        com.school.erp.entity.academic.Section::getName,
+                        (a, b) -> a))
+                : Collections.emptyMap();
+
         return payments.map(payment -> {
             List<PaymentResponse.PaymentAllocationResponse> allocations = allocMap
                     .getOrDefault(payment.getId(), Collections.emptyList())
@@ -604,6 +613,16 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                 }
             }
 
+            String classLabel = (student != null && student.getSchoolClass() != null && student.getSchoolClass().getName() != null)
+                    ? student.getSchoolClass().getName()
+                    : "";
+            if (!classLabel.isBlank() && student.getSectionId() != null) {
+                String secName = sectionNames.get(student.getSectionId());
+                if (secName != null && !secName.isBlank()) {
+                    classLabel = classLabel + " - Section " + secName;
+                }
+            }
+
             return new PaymentResponse(
                     payment.getId(),
                     payment.getSchool().getId(),
@@ -613,7 +632,7 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                     payment.getStatus(),
                     payment.getReceiptNumber(),
                     studentName,
-                    (student != null && student.getSchoolClass() != null) ? student.getSchoolClass().getName() : "",
+                    classLabel,
                     payment.getPaymentDate(),
                     payment.getCreatedAt(),
                     allocations,

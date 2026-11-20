@@ -192,7 +192,7 @@ public class RazorpayGatewayService {
             JSONObject accountRequest = new JSONObject();
             accountRequest.put("type", "route");
             accountRequest.put("name", account.getAccountHolderName() != null ? account.getAccountHolderName() : school.getName());
-            accountRequest.put("email", school.getEmail() != null ? school.getEmail() : "admin@school.com");
+            accountRequest.put("email", school.getContactEmail() != null ? school.getContactEmail() : "admin@school.com");
             accountRequest.put("tnc_accepted", true);
 
             JSONObject profile = new JSONObject();
@@ -200,7 +200,7 @@ public class RazorpayGatewayService {
             accountRequest.put("profile", profile);
 
             // Razorpay accounts API (Route linked account)
-            com.razorpay.Account razorpayAccount = client.accounts.create(accountRequest);
+            com.razorpay.Account razorpayAccount = client.account.create(accountRequest);
             return razorpayAccount.get("id");
         } catch (RazorpayException e) {
             log.error("Failed to create Razorpay Route Linked Account for school {}: {}", school.getId(), e.getMessage(), e);
