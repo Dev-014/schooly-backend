@@ -24,6 +24,9 @@ public interface FileAttachmentRepository extends JpaRepository<FileAttachment, 
     List<FileAttachment> findBySchoolIdAndEntityTypeAndEntityIdInOrderByDisplayOrderAscCreatedAtDesc(
             Long schoolId, FileEntityType entityType, List<Long> entityIds);
 
+    @EntityGraph(attributePaths = "file")
+    List<FileAttachment> findByEntityTypeOrderByCreatedAtDesc(FileEntityType entityType);
+
     Optional<FileAttachment> findByFileId(UUID fileId);
 
     List<FileAttachment> findAllByFileId(UUID fileId);

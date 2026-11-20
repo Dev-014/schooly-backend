@@ -89,8 +89,9 @@ public class EntitlementService {
             }
         }
 
-        // Tier 2: Explicit Super Admin Toggles (SchoolModuleAccess)
+        // Tier 2: Explicit Super Admin Toggles (SchoolModuleAccess) & Submodule Restrictions
         List<SchoolModuleAccess> accessList = moduleAccessRepository.findBySchoolId(schoolId);
+        Map<String, List<String>> disabledSubModules = new HashMap<>();
         for (SchoolModuleAccess access : accessList) {
             if (access.getModule() != null) {
                 String code = access.getModule().getCode();
@@ -98,6 +99,10 @@ public class EntitlementService {
                     enabledModules.add(code);
                 } else {
                     enabledModules.remove(code);
+                }
+                List<String> disabledSubs = access.getDisabledSubModulesList();
+                if (!disabledSubs.isEmpty()) {
+                    disabledSubModules.put(code, disabledSubs);
                 }
             }
         }
@@ -109,7 +114,8 @@ public class EntitlementService {
                 enabledModules,
                 activeOverrides,
                 isTrialActive,
-                now
+                now,
+                disabledSubModules
         );
     }
 

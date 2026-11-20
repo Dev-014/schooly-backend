@@ -41,6 +41,16 @@ public class FileValidationService {
             Map.entry(FileCategory.STAFF_ID, 5L * 1024 * 1024),                    // 5 MB
             Map.entry(FileCategory.STAFF_RESUME, 10L * 1024 * 1024),               // 10 MB
             Map.entry(FileCategory.STAFF_CERTIFICATE, 10L * 1024 * 1024),          // 10 MB
+            Map.entry(FileCategory.SCHOOL_RECOGNITION_CERTIFICATE, 10L * 1024 * 1024),
+            Map.entry(FileCategory.SCHOOL_AFFILIATION_CERTIFICATE, 10L * 1024 * 1024),
+            Map.entry(FileCategory.SCHOOL_REGISTRATION_CERTIFICATE, 10L * 1024 * 1024),
+            Map.entry(FileCategory.SCHOOL_PAN_CARD, 10L * 1024 * 1024),
+            Map.entry(FileCategory.SCHOOL_UDISE_REGISTRATION, 10L * 1024 * 1024),
+            Map.entry(FileCategory.SCHOOL_AUTHORISATION_LETTER, 10L * 1024 * 1024),
+            Map.entry(FileCategory.SCHOOL_SERVICE_AGREEMENT, 10L * 1024 * 1024),
+            Map.entry(FileCategory.SCHOOL_DPA, 10L * 1024 * 1024),
+            Map.entry(FileCategory.SCHOOL_LOGO, 5L * 1024 * 1024),
+            Map.entry(FileCategory.SCHOOL_BANNER, 10L * 1024 * 1024),
             Map.entry(FileCategory.OTHER, 20L * 1024 * 1024)                       // 20 MB
     );
     private static final long ACCOUNTING_MAX_SIZE_BYTES = 10L * 1024 * 1024;

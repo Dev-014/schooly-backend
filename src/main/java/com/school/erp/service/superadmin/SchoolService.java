@@ -95,6 +95,23 @@ public class SchoolService {
         school.setStatus(request.status());
     }
 
+    public java.util.Map<String, Object> getSchoolBranding(Long id) {
+        School school = findSchool(id);
+        java.util.Map<String, Object> branding = new java.util.LinkedHashMap<>();
+        branding.put("schoolId", school.getId());
+        branding.put("name", school.getName());
+        branding.put("code", school.getCode());
+        branding.put("logoUrl", school.getLogoUrl());
+        branding.put("bannerUrl", school.getBannerUrl());
+        branding.put("city", school.getCity());
+        branding.put("state", school.getState());
+        branding.put("subdomain", school.getSubdomain());
+        if (school.getMetadata() != null && school.getMetadata().get("schoolWebsite") != null) {
+            branding.put("website", school.getMetadata().get("schoolWebsite"));
+        }
+        return branding;
+    }
+
     private SchoolResponse toResponse(School school) {
         return new SchoolResponse(
                 school.getId(),
@@ -104,7 +121,13 @@ public class SchoolService {
                 school.getContactPhone(),
                 school.getAddress(),
                 school.getStatus(),
-                school.getCreatedAt()
+                school.getCreatedAt(),
+                school.getCity(),
+                school.getState(),
+                school.getPincode(),
+                school.getSubdomain(),
+                school.getLogoUrl(),
+                school.getBannerUrl()
         );
     }
 }

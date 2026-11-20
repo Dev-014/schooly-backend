@@ -25,7 +25,9 @@ public class FileStoragePathService {
             case HOMEWORK_SUBMISSION -> String.format("schools/%d/homework/submissions/%d/", schoolId, safeEntityId);
             case EXAM_REPORT_CARD -> String.format("schools/%d/examinations/report-cards/%d/", schoolId, safeEntityId);
             case STAFF -> String.format("schools/%d/staff/%d/%s/", schoolId, safeEntityId, categorySubfolder);
-            case SCHOOL -> String.format("schools/%d/school/branding/", schoolId);
+            case SCHOOL -> isInstitutionalSchoolDocument(category)
+                    ? String.format("schools/%d/school/documents/%s/", schoolId, categorySubfolder)
+                    : String.format("schools/%d/school/branding/", schoolId);
             case INCOME -> String.format("schools/%d/finance/incomes/%d/%s/", schoolId, safeEntityId, categorySubfolder);
             case EXPENSE -> String.format("schools/%d/finance/expenses/%d/%s/", schoolId, safeEntityId, categorySubfolder);
             case GENERAL -> String.format("schools/%d/general/%s/", schoolId, categorySubfolder);
@@ -80,7 +82,34 @@ public class FileStoragePathService {
             case STAFF_ID -> "identity";
             case STAFF_RESUME -> "resumes";
             case STAFF_CERTIFICATE -> "certificates";
+            case SCHOOL_RECOGNITION_CERTIFICATE -> "recognition-certificates";
+            case SCHOOL_AFFILIATION_CERTIFICATE -> "affiliation-certificates";
+            case SCHOOL_REGISTRATION_CERTIFICATE -> "registration-certificates";
+            case SCHOOL_PAN_CARD -> "pan-cards";
+            case SCHOOL_UDISE_REGISTRATION -> "udise-registration";
+            case SCHOOL_AUTHORISATION_LETTER -> "authorisation-letters";
+            case SCHOOL_SERVICE_AGREEMENT -> "service-agreements";
+            case SCHOOL_DPA -> "data-processing-agreements";
+            case SCHOOL_LOGO -> "logo";
+            case SCHOOL_BANNER -> "banner";
             case OTHER -> "documents";
+        };
+    }
+
+    private boolean isInstitutionalSchoolDocument(FileCategory category) {
+        if (category == null) {
+            return false;
+        }
+        return switch (category) {
+            case SCHOOL_RECOGNITION_CERTIFICATE,
+                 SCHOOL_AFFILIATION_CERTIFICATE,
+                 SCHOOL_REGISTRATION_CERTIFICATE,
+                 SCHOOL_PAN_CARD,
+                 SCHOOL_UDISE_REGISTRATION,
+                 SCHOOL_AUTHORISATION_LETTER,
+                 SCHOOL_SERVICE_AGREEMENT,
+                 SCHOOL_DPA -> true;
+            default -> false;
         };
     }
 }
