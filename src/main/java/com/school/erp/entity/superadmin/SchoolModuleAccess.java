@@ -37,6 +37,9 @@ public class SchoolModuleAccess {
     @Column(name = "enabled")
     private Boolean enabled = true;
 
+    @Column(name = "disabled_sub_modules", columnDefinition = "TEXT")
+    private String disabledSubModules;
+
     public void setIsEnabled(Boolean isEnabled) {
         this.enabled = isEnabled;
     }

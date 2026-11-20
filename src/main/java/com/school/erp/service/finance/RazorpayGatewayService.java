@@ -193,15 +193,12 @@ public class RazorpayGatewayService {
             accountRequest.put("type", "route");
             accountRequest.put("name", account.getAccountHolderName() != null ? account.getAccountHolderName() : school.getName());
             accountRequest.put("email", school.getContactEmail() != null ? school.getContactEmail() : "admin@school.com");
-            accountRequest.put("email", school.getContactEmail() != null ? school.getContactEmail() : "admin@school.com");
             accountRequest.put("tnc_accepted", true);
 
             JSONObject profile = new JSONObject();
             profile.put("category", "educational_institutions");
             accountRequest.put("profile", profile);
 
-            // Razorpay accounts API (Route linked account)
-            com.razorpay.Account razorpayAccount = client.account.create(accountRequest);
             // Razorpay accounts API (Route linked account via client.account)
             com.razorpay.Account razorpayAccount = client.account.create(accountRequest);
             return razorpayAccount.get("id");
