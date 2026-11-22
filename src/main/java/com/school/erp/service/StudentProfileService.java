@@ -1,6 +1,7 @@
 package com.school.erp.service;
 
 import com.school.erp.dto.payment.FeeDueResponse;
+import com.school.erp.dto.student.StudentBirthdayResponse;
 import com.school.erp.dto.student.StudentProfileResponse;
 import com.school.erp.dto.student.UpdateStudentProfileRequest;
 import com.school.erp.entity.academic.Section;
@@ -353,5 +354,61 @@ public class StudentProfileService {
                 outstandingFees,
                 booksIssuedCount
         );
+    }
+
+    public List<StudentBirthdayResponse> getTodayBirthdays(Long schoolId, Long userId) {
+        Long targetSchoolId = schoolId;
+        if (targetSchoolId == null && userId != null) {
+            Optional<Student> studentOpt = studentRepository.findByUserId(userId).stream().findFirst();
+            if (studentOpt.isPresent() && studentOpt.get().getSchool() != null) {
+                targetSchoolId = studentOpt.get().getSchool().getId();
+            }
+        }
+        if (targetSchoolId == null) {
+            targetSchoolId = 1L;
+        }
+
+        LocalDate today = LocalDate.now();
+        int currentMonth = today.getMonthValue();
+        int currentDay = today.getDayOfMonth();
+
+        List<Student> students = studentRepository.findBySchoolId(targetSchoolId);
+        if (students == null || students.isEmpty()) {
+            return java.util.Collections.emptyList();
+        }
+
+        return students.stream()
+                .filter(s -> s.getDateOfBirth() != null)
+                .filter(s -> s.getDateOfBirth().getMonthValue() == currentMonth
+                        && s.getDateOfBirth().getDayOfMonth() == currentDay)
+                .map(s -> {
+                    String className = s.getSchoolClass() != null ? s.getSchoolClass().getName() : "";
+                    String sectionName = null;
+                    if (s.getSectionId() != null) {
+                        sectionName = sectionRepository.findById(s.getSectionId())
+                                .map(Section::getName)
+                                .orElse(null);
+                    }
+                    String fullName = s.getName();
+                    if (fullName == null || fullName.isBlank()) {
+                        fullName = ((s.getFirstName() != null ? s.getFirstName() : "") + " " +
+                                (s.getLastName() != null ? s.getLastName() : "")).trim();
+                    }
+                    if (fullName.isEmpty()) {
+                        fullName = "Student #" + s.getId();
+                    }
+                    boolean isSelf = (userId != null && userId.equals(s.getUserId()));
+                    return new StudentBirthdayResponse(
+                            s.getId(),
+                            fullName,
+                            className,
+                            sectionName,
+                            s.getRollNumber(),
+                            s.getPhotoUrl(),
+                            s.getDateOfBirth(),
+                            isSelf
+                    );
+                })
+                .toList();
     }
 }

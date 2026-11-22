@@ -1,6 +1,7 @@
 package com.school.erp.controller;
 
 import com.school.erp.api.ApiResponse;
+import com.school.erp.dto.student.StudentBirthdayResponse;
 import com.school.erp.dto.student.StudentProfileResponse;
 import com.school.erp.dto.student.UpdateStudentProfileRequest;
 import com.school.erp.security.AuthContextHolder;
@@ -43,5 +44,17 @@ public class StudentProfileController {
 
         StudentProfileResponse response = studentProfileService.updateProfile(studentId, effectiveSchoolId, effectiveUserId, request);
         return ResponseEntity.ok(ApiResponse.success(response, "Student profile updated successfully"));
+    }
+
+    @GetMapping("/birthdays/today")
+    public ResponseEntity<ApiResponse<java.util.List<StudentBirthdayResponse>>> getTodayBirthdays(
+            @RequestParam(required = false) Long schoolId
+    ) {
+        AuthenticatedUser authUser = AuthContextHolder.get();
+        Long effectiveUserId = authUser != null ? authUser.userId() : null;
+        Long effectiveSchoolId = schoolId != null ? schoolId : (authUser != null ? authUser.schoolId() : 1L);
+
+        java.util.List<StudentBirthdayResponse> birthdays = studentProfileService.getTodayBirthdays(effectiveSchoolId, effectiveUserId);
+        return ResponseEntity.ok(ApiResponse.success(birthdays, "Today's student birthdays fetched successfully"));
     }
 }

@@ -76,8 +76,15 @@ public class StudentExamController {
 
         // Staff / Admin impersonation or viewing
         if (requestedStudentId != null) {
-            return studentRepository.findById(requestedStudentId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+            java.util.Optional<Student> studentOpt = studentRepository.findById(requestedStudentId);
+            if (studentOpt.isPresent()) {
+                return studentOpt.get();
+            }
+            List<Student> byUserId = studentRepository.findByUserId(requestedStudentId);
+            if (!byUserId.isEmpty()) {
+                return byUserId.get(0);
+            }
+            throw new ResourceNotFoundException("Student not found with id: " + requestedStudentId);
         }
 
         throw new IllegalArgumentException("studentId parameter is required for staff or admin roles");

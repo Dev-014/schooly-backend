@@ -125,7 +125,7 @@ public class DashboardService {
         return new DashboardKpiResponse(
                 monthlyCollection,
                 monthlyExpense,
-                monthlyExpense.multiply(BigDecimal.valueOf(1.05)).setScale(2, java.math.RoundingMode.HALF_UP),
+                monthlyExpense,
                 newAdmissions,
                 staffPresent,
                 staffTotal,
@@ -278,23 +278,54 @@ public class DashboardService {
     public List<DashboardBreakdownResponse.StudentBirthdayItem> getStudentBirthdays(Long schoolId) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
         LocalDate today = LocalDate.now();
-        List<Student> students = studentRepository.findStudentsWithBirthdayToday(
-                effectiveSchoolId, today.getMonthValue(), today.getDayOfMonth()
-        );
+        int month = today.getMonthValue();
+        int day = today.getDayOfMonth();
 
         List<DashboardBreakdownResponse.StudentBirthdayItem> items = new ArrayList<>();
+
+        // 1. Students with birthday today
+        List<Student> students = studentRepository.findStudentsWithBirthdayToday(effectiveSchoolId, month, day);
+        if (students == null || students.isEmpty()) {
+            List<Student> allStudents = studentRepository.findBySchoolId(effectiveSchoolId);
+            if (allStudents != null && !allStudents.isEmpty()) {
+                students = allStudents.stream()
+                        .filter(s -> s.getDateOfBirth() != null &&
+                                s.getDateOfBirth().getMonthValue() == month &&
+                                s.getDateOfBirth().getDayOfMonth() == day)
+                        .toList();
+            }
+        }
         if (students != null) {
             for (Student s : students) {
                 String name = (s.getFirstName() != null ? s.getFirstName() + " " : "") +
                         (s.getLastName() != null ? s.getLastName() : "");
                 if (name.isBlank() && s.getName() != null) name = s.getName();
-                String className = s.getSchoolClass() != null ? s.getSchoolClass().getName() : "";
+                String className = s.getSchoolClass() != null ? s.getSchoolClass().getName() : "Student";
                 String dob = s.getDateOfBirth() != null ? s.getDateOfBirth().toString() : "";
                 items.add(new DashboardBreakdownResponse.StudentBirthdayItem(
                         s.getId(), name.trim(), className, dob
                 ));
             }
         }
+
+        // 2. Staff with birthday today
+        List<com.school.erp.entity.hr.Staff> staffMembers = staffRepository.findBySchoolId(effectiveSchoolId);
+        if (staffMembers != null) {
+            for (com.school.erp.entity.hr.Staff st : staffMembers) {
+                if (st.getDateOfBirth() != null &&
+                        st.getDateOfBirth().getMonthValue() == month &&
+                        st.getDateOfBirth().getDayOfMonth() == day) {
+                    String name = (st.getFirstName() != null ? st.getFirstName() + " " : "") +
+                            (st.getLastName() != null ? st.getLastName() : "");
+                    String deptRole = (st.getDesignation() != null && !st.getDesignation().isBlank()) ? st.getDesignation() : "Staff";
+                    String dob = st.getDateOfBirth().toString();
+                    items.add(new DashboardBreakdownResponse.StudentBirthdayItem(
+                            st.getId(), name.trim(), deptRole, dob
+                    ));
+                }
+            }
+        }
+
         return items;
     }
 

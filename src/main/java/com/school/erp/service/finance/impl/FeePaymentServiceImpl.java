@@ -41,6 +41,9 @@ public class FeePaymentServiceImpl implements FeePaymentService {
     @Autowired(required = false)
     private NotificationService notificationService;
 
+    @Autowired(required = false)
+    private com.school.erp.repository.student.StudentParentRepository studentParentRepository;
+
     public FeePaymentServiceImpl(PaymentRepository paymentRepository, FeeDueRepository feeDueRepository, FeePaymentAllocationRepository feePaymentAllocationRepository, StudentRepository studentRepository, SchoolRepository schoolRepository) {
         this.paymentRepository = paymentRepository;
         this.feeDueRepository = feeDueRepository;
@@ -51,8 +54,27 @@ public class FeePaymentServiceImpl implements FeePaymentService {
 
     @Override
     public PaymentResponse processPayment(FeePaymentRequest request) {
+        com.school.erp.security.AuthenticatedUser currentUser = com.school.erp.security.AuthContextHolder.get();
+        if (currentUser != null && currentUser.role() == com.school.erp.entity.auth.UserRole.PARENT && studentParentRepository != null) {
+            boolean isAllowed = studentParentRepository.existsById(
+                    new com.school.erp.entity.student.StudentParentId(request.getStudentId(), currentUser.userId())
+            );
+            if (!isAllowed) {
+                throw new com.school.erp.exception.UnauthorizedException("You do not have permission to pay fees for this student");
+            }
+        }
+
         School school = schoolRepository.findById(request.getSchoolId()).orElseThrow(() -> new RuntimeException("School not found"));
         Student student = studentRepository.findById(request.getStudentId()).orElseThrow(() -> new RuntimeException("Student not found"));
+
+        if (request.getFeeDueIds() != null && !request.getFeeDueIds().isEmpty()) {
+            List<FeeDue> dues = feeDueRepository.findAllById(request.getFeeDueIds());
+            for (FeeDue due : dues) {
+                if (due.getStudent() != null && !due.getStudent().getId().equals(student.getId())) {
+                    throw new com.school.erp.exception.BadRequestException("Fee due with id " + due.getId() + " does not belong to the selected student");
+                }
+            }
+        }
 
         Payment payment = new Payment();
         payment.setSchool(school);

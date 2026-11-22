@@ -39,6 +39,9 @@ public class AttendanceService {
     @Autowired(required = false)
     private NotificationService notificationService;
 
+    @Autowired(required = false)
+    private com.school.erp.repository.student.StudentParentRepository studentParentRepository;
+
     public AttendanceService(
             AttendanceRepository attendanceRepository,
             SchoolRepository schoolRepository,
@@ -75,8 +78,31 @@ public class AttendanceService {
     ) {
         Long effectiveSchoolId = authContextService.resolveSchoolId(schoolId);
         Long resolvedStudentId = studentId;
-        if (resolvedStudentId == null && classId == null) {
-            com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+        if (resolvedStudentId != null) {
+            if (!studentRepository.existsById(resolvedStudentId)) {
+                List<Student> students = studentRepository.findByUserId(resolvedStudentId);
+                if (!students.isEmpty()) {
+                    resolvedStudentId = students.get(0).getId();
+                }
+            }
+        }
+
+        com.school.erp.security.AuthenticatedUser currentUser = authContextService.getCurrentUserOrNull();
+        if (currentUser != null && currentUser.role() == com.school.erp.entity.auth.UserRole.PARENT && studentParentRepository != null) {
+            List<com.school.erp.entity.student.StudentParent> relations = studentParentRepository.findByIdParentUserId(currentUser.userId());
+            if (relations.isEmpty()) {
+                throw new ResourceNotFoundException("No children linked to parent profile");
+            }
+            if (resolvedStudentId != null) {
+                Long targetId = resolvedStudentId;
+                boolean allowed = relations.stream().anyMatch(sp -> sp.getStudent() != null && sp.getStudent().getId().equals(targetId));
+                if (!allowed) {
+                    throw new com.school.erp.exception.UnauthorizedException("You do not have access to this student's records");
+                }
+            } else {
+                resolvedStudentId = relations.get(0).getStudent().getId();
+            }
+        } else if (resolvedStudentId == null && classId == null) {
             if (currentUser != null && currentUser.userId() != null) {
                 List<Student> students = studentRepository.findByUserId(currentUser.userId());
                 if (!students.isEmpty()) {
