@@ -73,5 +73,22 @@ class FileStoragePathServiceTest {
         assertTrue(folders.contains("schools/5/school/branding/"));
         assertTrue(folders.contains("schools/5/general/"));
     }
+
+    @Test
+    @DisplayName("Should generate dedicated folder paths for institutional school onboarding documents")
+    void testResolveFolderPath_SchoolOnboardingDocuments() {
+        assertEquals(
+                "schools/9/school/documents/recognition-certificates/",
+                pathService.resolveFolderPath(9L, FileEntityType.SCHOOL, 9L, FileCategory.SCHOOL_RECOGNITION_CERTIFICATE)
+        );
+        assertEquals(
+                "schools/9/school/documents/service-agreements/",
+                pathService.resolveFolderPath(9L, FileEntityType.SCHOOL, 9L, FileCategory.SCHOOL_SERVICE_AGREEMENT)
+        );
+        assertEquals(
+                "schools/9/school/branding/",
+                pathService.resolveFolderPath(9L, FileEntityType.SCHOOL, 9L, FileCategory.OTHER)
+        );
+    }
 }
 

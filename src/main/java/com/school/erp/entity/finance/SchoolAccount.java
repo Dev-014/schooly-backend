@@ -29,6 +29,27 @@ public class SchoolAccount {
     @Column(name = "is_active")
     private Boolean isActive = true;
 
+    @Column(name = "bank_account_number")
+    private String bankAccountNumber;
+
+    @Column(name = "ifsc_code")
+    private String ifscCode;
+
+    @Column(name = "bank_name")
+    private String bankName;
+
+    @Column(name = "branch_name")
+    private String branchName;
+
+    @Column(name = "account_holder_name")
+    private String accountHolderName;
+
+    @Column(name = "razorpay_account_id")
+    private String razorpayAccountId;
+
+    @Column(name = "route_kyc_status")
+    private String routeKycStatus = "PENDING"; // PENDING, ACTIVATED, UNDER_REVIEW, SUSPENDED
+
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 

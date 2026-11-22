@@ -115,7 +115,7 @@ class FileManagementServiceTest {
 
         assertNotNull(response);
         assertNotNull(response.fileId());
-        assertTrue(response.uploadUrl().contains("mock-s3-upload") || response.uploadUrl().contains("upload-token"));
+        assertTrue(response.uploadUrl().contains("mock-s3-upload") || response.uploadUrl().contains("bucket=") || response.uploadUrl().contains("upload-token"));
         assertEquals("PUT", response.httpMethod());
         verify(fileMetadataRepository).save(any(FileMetadata.class));
         verify(fileAttachmentRepository).save(any(FileAttachment.class));
@@ -196,6 +196,75 @@ class FileManagementServiceTest {
         assertNotNull(file.getDeletedAt());
         verify(fileAttachmentRepository).deleteByFileId(fileId);
         verify(fileMetadataRepository).save(file);
+    }
+
+    @Test
+    @DisplayName("Should resolve target schoolId from entityId when SUPER_ADMIN uploads institutional school document")
+    void testInitiateUpload_SuperAdminSchoolDocument_UsesEntityIdAsSchoolId() {
+        AuthenticatedUser superAdmin = new AuthenticatedUser(1L, null, UserRole.SUPER_ADMIN);
+        School targetSchool = new School();
+        targetSchool.setId(42L);
+
+        FileUploadInitRequest request = new FileUploadInitRequest(
+                "dpa_signed.pdf",
+                "application/pdf",
+                4096L,
+                FileEntityType.SCHOOL,
+                42L,
+                FileCategory.SCHOOL_DPA
+        );
+
+        when(authContextService.requireCurrentUser()).thenReturn(superAdmin);
+        when(authContextService.resolveSchoolId(42L)).thenReturn(42L);
+        when(fileValidationService.extractExtension("dpa_signed.pdf")).thenReturn("pdf");
+        when(schoolRepository.getReferenceById(42L)).thenReturn(targetSchool);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        FileUploadInitResponse response = fileManagementService.initiateUpload(request, "127.0.0.1");
+
+        assertNotNull(response);
+        assertTrue(response.storageKey().startsWith("schools/42/school/documents/data-processing-agreements/"));
+        verify(authContextService).resolveSchoolId(42L);
+    }
+
+    @Test
+    @DisplayName("Should list all active SCHOOL documents across schools for SUPER_ADMIN when entityId is null")
+    void testListFiles_SuperAdminAllSchoolDocuments() {
+        AuthenticatedUser superAdmin = new AuthenticatedUser(1L, null, UserRole.SUPER_ADMIN);
+        School targetSchool = new School();
+        targetSchool.setId(42L);
+
+        FileMetadata meta = FileMetadata.builder()
+                .id(UUID.randomUUID())
+                .school(targetSchool)
+                .originalFileName("pan_card.pdf")
+                .mimeType("application/pdf")
+                .fileExtension("pdf")
+                .fileSizeBytes(2048L)
+                .status(FileStatus.ACTIVE)
+                .storageKey("schools/42/school/documents/pan-cards/file.pdf")
+                .build();
+        FileAttachment att = FileAttachment.builder()
+                .id(1L)
+                .school(targetSchool)
+                .file(meta)
+                .entityType(FileEntityType.SCHOOL)
+                .entityId(42L)
+                .category(FileCategory.SCHOOL_PAN_CARD)
+                .build();
+
+        when(authContextService.requireCurrentUser()).thenReturn(superAdmin);
+        when(authContextService.resolveSchoolId(null)).thenReturn(1L);
+        when(fileAttachmentRepository.findByEntityTypeOrderByCreatedAtDesc(FileEntityType.SCHOOL))
+                .thenReturn(java.util.List.of(att));
+
+        var page = fileManagementService.listFiles(new FileFilterRequest(
+                FileEntityType.SCHOOL, null, null, null, 0, 20
+        ));
+
+        assertEquals(1, page.getTotalElements());
+        assertEquals(42L, page.getContent().get(0).schoolId());
+        assertEquals(FileCategory.SCHOOL_PAN_CARD, page.getContent().get(0).category());
     }
 }
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/schools")
+@RequestMapping({"/api/schools", "/api/v1/schools"})
 public class SchoolController {
 
     private final SchoolService schoolService;
@@ -34,6 +34,14 @@ public class SchoolController {
         return ResponseEntity.ok(ApiResponse.success(
                 schoolService.getSchoolById(id),
                 "School fetched successfully"
+        ));
+    }
+
+    @GetMapping("/{id}/branding")
+    public ResponseEntity<ApiResponse<java.util.Map<String, Object>>> getSchoolBranding(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(
+                schoolService.getSchoolBranding(id),
+                "School branding fetched successfully"
         ));
     }
 

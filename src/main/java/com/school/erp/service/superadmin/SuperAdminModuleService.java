@@ -37,16 +37,20 @@ public class SuperAdminModuleService {
 
     @Transactional(readOnly = true)
     public List<ModuleDto> getModulesForSchool(Long schoolId) {
-        School school = schoolRepo.findById(schoolId)
+        schoolRepo.findById(schoolId)
                 .orElseThrow(() -> new com.school.erp.exception.ResourceNotFoundException("School not found for id " + schoolId));
         
         List<SchoolModuleAccess> accessList = accessRepo.findBySchoolId(schoolId);
         
         return moduleRepo.findAll().stream()
                 .map(m -> {
-                    boolean enabled = accessList.stream()
-                            .anyMatch(a -> a.getModule().getId().equals(m.getId()) && Boolean.TRUE.equals(a.getEnabled()));
-                    return toDto(m, enabled);
+                    SchoolModuleAccess matched = accessList.stream()
+                            .filter(a -> a.getModule().getId().equals(m.getId()))
+                            .findFirst()
+                            .orElse(null);
+                    boolean enabled = matched != null && Boolean.TRUE.equals(matched.getEnabled());
+                    List<String> disabledSubs = matched != null ? matched.getDisabledSubModulesList() : java.util.Collections.emptyList();
+                    return toDto(m, enabled, disabledSubs);
                 })
                 .collect(Collectors.toList());
     }
@@ -96,7 +100,24 @@ public class SuperAdminModuleService {
         accessRepo.save(access);
     }
 
+    @Transactional
+    @org.springframework.cache.annotation.CacheEvict(value = com.school.erp.config.CacheConfig.CACHE_ENTITLEMENTS, key = "#schoolId")
+    public void updateSubModulesForSchool(Long schoolId, String moduleCode, List<String> disabledSubModules) {
+        School school = schoolRepo.findById(schoolId)
+                .orElseThrow(() -> new com.school.erp.exception.ResourceNotFoundException("School not found for id " + schoolId));
+        PlatformModule module = moduleRepo.findByCode(moduleCode)
+                .orElseThrow(() -> new com.school.erp.exception.ResourceNotFoundException("Module not found for code " + moduleCode));
+        SchoolModuleAccess access = accessRepo.findBySchoolAndModule(school, module)
+                .orElseGet(() -> new SchoolModuleAccess(school, module));
+        access.setDisabledSubModulesList(disabledSubModules);
+        accessRepo.save(access);
+    }
+
     private ModuleDto toDto(PlatformModule module, Boolean enabledForTenant) {
+        return toDto(module, enabledForTenant, null);
+    }
+
+    private ModuleDto toDto(PlatformModule module, Boolean enabledForTenant, List<String> disabledSubModulesForTenant) {
         return new ModuleDto(
                 module.getId(),
                 module.getCode(),
@@ -108,7 +129,8 @@ public class SuperAdminModuleService {
                 module.getAddOnPrice(),
                 module.getTargetRolesList(),
                 module.getSubModulesList(),
-                enabledForTenant
+                enabledForTenant,
+                disabledSubModulesForTenant
         );
     }
 }

@@ -20,15 +20,19 @@ import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.repository.academic.SchoolClassRepository;
 import com.school.erp.repository.academic.SectionRepository;
 import com.school.erp.repository.auth.UserAssignmentRepository;
+import com.school.erp.entity.auth.RolePermission;
 import com.school.erp.entity.auth.UserAssignment;
+import com.school.erp.entity.auth.UserRole;
 import com.school.erp.entity.academic.SchoolClass;
 import com.school.erp.entity.academic.Section;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.security.AuthenticatedUser;
+import com.school.erp.service.auth.AuthorizationService;
 import com.school.erp.service.finance.TeacherFeeService;
 import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -57,6 +61,28 @@ public class TeacherFeeServiceImpl implements TeacherFeeService {
 
     @Autowired(required = false)
     private NotificationService notificationService;
+
+    @Autowired(required = false)
+    @Lazy
+    private AuthorizationService authorizationService;
+
+    private boolean hasSchoolReminderScope(Long schoolId, AuthenticatedUser currentUser) {
+        if (currentUser == null) return false;
+        if (currentUser.role() == UserRole.SUPER_ADMIN
+                || currentUser.role() == UserRole.ADMIN) {
+            return true;
+        }
+        if (authorizationService == null) return false;
+        try {
+            List<RolePermission> effective = authorizationService.getEffectivePermissions(schoolId, currentUser.userId());
+            return effective.stream().anyMatch(rp ->
+                    "fees.reminder_history.view".equals(rp.getPermission().getPermissionKey())
+                            && "school".equalsIgnoreCase(rp.getScopeType())
+            );
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -121,9 +147,14 @@ public class TeacherFeeServiceImpl implements TeacherFeeService {
                     .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
 
             List<com.school.erp.entity.finance.FeeDue> dues = feeDueRepository.findByStudentIdAndSchoolIdAndStatusInOrderByDueDateAsc(
-                    studentId, schoolId, List.of("UNPAID", "PARTIALLY_PAID", "OVERDUE"));
+                    studentId, schoolId, List.of("PENDING", "UNPAID", "PARTIAL", "PARTIALLY_PAID", "OVERDUE"));
             BigDecimal totalPending = dues.stream()
-                    .map(d -> d.getAmount().subtract(d.getPaidAmount() != null ? d.getPaidAmount() : BigDecimal.ZERO))
+                    .map(d -> {
+                        BigDecimal amt = d.getAmount() != null ? d.getAmount() : BigDecimal.ZERO;
+                        BigDecimal paid = d.getPaidAmount() != null ? d.getPaidAmount() : BigDecimal.ZERO;
+                        BigDecimal disc = d.getDiscountAmount() != null ? d.getDiscountAmount() : BigDecimal.ZERO;
+                        return amt.subtract(paid).subtract(disc).max(BigDecimal.ZERO);
+                    })
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
             
             FeeReminder reminder = new FeeReminder();
@@ -166,16 +197,22 @@ public class TeacherFeeServiceImpl implements TeacherFeeService {
         Staff staff = staffRepository.findByUserId(currentUser.userId())
                 .orElse(null);
 
+        boolean schoolScope = hasSchoolReminderScope(schoolId, currentUser);
         Page<FeeReminder> reminders;
-        if (staff != null) {
-            reminders = feeReminderRepository.findBySchoolIdAndStaffId(schoolId, staff.getId(), pageable);
+        if (schoolScope || staff == null) {
+            reminders = feeReminderRepository.findBySchoolIdOrderBySentAtDesc(schoolId, pageable);
         } else {
-            reminders = feeReminderRepository.findBySchoolId(schoolId, pageable);
+            reminders = feeReminderRepository.findBySchoolIdAndStaffIdOrderBySentAtDesc(schoolId, staff.getId(), pageable);
         }
+
+        Map<Long, String> sectionNameMap = sectionRepository.findBySchoolId(schoolId).stream()
+                .collect(Collectors.toMap(Section::getId, Section::getName, (a, b) -> a));
 
         return reminders.map(r -> {
             Student student = r.getStudent();
             String studentName = "";
+            String className = null;
+            String sectionName = null;
             if (student != null) {
                 if (student.getFirstName() != null) {
                     studentName = student.getFirstName() + (student.getLastName() != null && !student.getLastName().isBlank() ? " " + student.getLastName() : "");
@@ -184,6 +221,21 @@ public class TeacherFeeServiceImpl implements TeacherFeeService {
                 } else {
                     studentName = "Student " + (student.getAdmissionNo() != null ? student.getAdmissionNo() : student.getId());
                 }
+                if (student.getSchoolClass() != null) {
+                    className = student.getSchoolClass().getName();
+                }
+                if (student.getSectionId() != null) {
+                    sectionName = sectionNameMap.get(student.getSectionId());
+                }
+            }
+
+            String sentBy = "School Admin";
+            if (r.getStaff() != null) {
+                String staffName = ((r.getStaff().getFirstName() != null ? r.getStaff().getFirstName() : "") + " " +
+                        (r.getStaff().getLastName() != null ? r.getStaff().getLastName() : "")).trim();
+                if (!staffName.isBlank()) {
+                    sentBy = staffName;
+                }
             }
 
             return FeeReminderResponse.builder()
@@ -191,6 +243,9 @@ public class TeacherFeeServiceImpl implements TeacherFeeService {
                 .studentId(student != null ? student.getId() : null)
                 .studentName(studentName)
                 .parentName(student != null && student.getGuardianName() != null ? student.getGuardianName() : "Guardian")
+                .className(className)
+                .sectionName(sectionName)
+                .sentBy(sentBy)
                 .feeAmount(r.getFeeAmount())
                 .method(r.getMethod())
                 .status(r.getStatus())

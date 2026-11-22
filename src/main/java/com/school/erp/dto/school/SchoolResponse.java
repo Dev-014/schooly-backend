@@ -10,6 +10,12 @@ public record SchoolResponse(
         String contactPhone,
         String address,
         String status,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        String city,
+        String state,
+        String pincode,
+        String subdomain,
+        String logoUrl,
+        String bannerUrl
 ) {
 }

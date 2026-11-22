@@ -47,4 +47,13 @@ public class SuperAdminModuleController {
         moduleService.toggleModuleForSchool(schoolId, moduleCode, enabled);
         return ResponseEntity.ok(ApiResponse.success(null, "Module toggle applied"));
     }
+
+    @PutMapping("/school/{schoolId}/sub-modules")
+    public ResponseEntity<ApiResponse<Void>> updateSubModulesForSchool(
+            @PathVariable Long schoolId,
+            @RequestParam String moduleCode,
+            @RequestBody(required = false) List<String> disabledSubModules) {
+        moduleService.updateSubModulesForSchool(schoolId, moduleCode, disabledSubModules);
+        return ResponseEntity.ok(ApiResponse.success(null, "Submodule configuration updated"));
+    }
 }

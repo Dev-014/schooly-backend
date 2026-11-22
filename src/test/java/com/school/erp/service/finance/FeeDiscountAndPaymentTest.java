@@ -83,7 +83,11 @@ public class FeeDiscountAndPaymentTest {
                 feeDueRepository,
                 feePaymentAllocationRepository,
                 studentRepository,
-                schoolRepository
+                schoolRepository,
+                null,
+                null,
+                null,
+                null
         );
 
         testSchool = new School();

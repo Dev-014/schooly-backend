@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,4 +21,17 @@ public class EntitlementEvaluationDto {
     private Map<String, String> activeOverrides; // moduleCode -> overrideType
     private boolean isTrialActive;
     private LocalDateTime evaluatedAt;
+    private Map<String, List<String>> disabledSubModules = new HashMap<>();
+
+    public EntitlementEvaluationDto(
+            Long schoolId,
+            String activePlanCode,
+            String activePlanName,
+            Set<String> enabledModules,
+            Map<String, String> activeOverrides,
+            boolean isTrialActive,
+            LocalDateTime evaluatedAt
+    ) {
+        this(schoolId, activePlanCode, activePlanName, enabledModules, activeOverrides, isTrialActive, evaluatedAt, new HashMap<>());
+    }
 }

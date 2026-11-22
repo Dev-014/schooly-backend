@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface FeeReminderRepository extends JpaRepository<FeeReminder, Long> {
     Page<FeeReminder> findBySchoolId(Long schoolId, Pageable pageable);
     Page<FeeReminder> findBySchoolIdAndStaffId(Long schoolId, Long staffId, Pageable pageable);
+    Page<FeeReminder> findBySchoolIdOrderBySentAtDesc(Long schoolId, Pageable pageable);
+    Page<FeeReminder> findBySchoolIdAndStaffIdOrderBySentAtDesc(Long schoolId, Long staffId, Pageable pageable);
 }

@@ -129,7 +129,7 @@ public class SuperAdminDashboardService {
                 .map(s -> {
                     String plan = s.getMetadata() != null && s.getMetadata().get("plan") != null ? s.getMetadata().get("plan").toString() : "Professional";
                     String health = "Active".equalsIgnoreCase(s.getStatus()) ? "Healthy" : ("Trial".equalsIgnoreCase(s.getStatus()) ? "Warning" : "Critical");
-                    String step = s.getMetadata() != null && s.getMetadata().get("onboardingStep") != null ? s.getMetadata().get("onboardingStep").toString() : "Step 8: Activated";
+                    String step = s.getMetadata() != null && s.getMetadata().get("onboardingStep") != null ? s.getMetadata().get("onboardingStep").toString() : "Step 6: Activated";
                     return PipelineSchoolDto.builder()
                             .id(s.getId())
                             .name(s.getName())

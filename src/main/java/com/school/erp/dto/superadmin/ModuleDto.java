@@ -24,6 +24,23 @@ public class ModuleDto {
     private List<String> targetRoles;
     private List<String> subModules;
     private Boolean enabledForTenant;
+    private List<String> disabledSubModulesForTenant;
+
+    public ModuleDto(
+            Long id,
+            String code,
+            String name,
+            String description,
+            Boolean isDefault,
+            String status,
+            String category,
+            BigDecimal addOnPrice,
+            List<String> targetRoles,
+            List<String> subModules,
+            Boolean enabledForTenant
+    ) {
+        this(id, code, name, description, isDefault, status, category, addOnPrice, targetRoles, subModules, enabledForTenant, null);
+    }
 
     @JsonProperty("isDefault")
     public boolean isDefault() {

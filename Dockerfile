@@ -27,5 +27,6 @@ EXPOSE 8080
 # Environment variables with sensible defaults
 ENV SPRING_PROFILES_ACTIVE=prod
 ENV SERVER_PORT=8080
+ENV JAVA_TOOL_OPTIONS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=55.0 -XX:InitialRAMPercentage=25.0 -XX:+UseSerialGC -Xss256k -XX:ReservedCodeCacheSize=48m"
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

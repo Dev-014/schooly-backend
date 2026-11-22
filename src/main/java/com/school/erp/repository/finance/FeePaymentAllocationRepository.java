@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface FeePaymentAllocationRepository extends JpaRepository<FeePaymentAllocation, Long> {
     List<FeePaymentAllocation> findByPaymentId(Long paymentId);
+    List<FeePaymentAllocation> findByPaymentIdIn(List<Long> paymentIds);
     List<FeePaymentAllocation> findByFeeDueId(Long feeDueId);
 }
