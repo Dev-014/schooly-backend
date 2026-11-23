@@ -59,6 +59,16 @@ public class FeePaymentServiceImpl implements FeePaymentService {
             FeeDueRepository feeDueRepository,
             FeePaymentAllocationRepository feePaymentAllocationRepository,
             StudentRepository studentRepository,
+            SchoolRepository schoolRepository) {
+        this(paymentRepository, feeDueRepository, feePaymentAllocationRepository, studentRepository, schoolRepository, null, null, null, null);
+    }
+
+    @Autowired
+    public FeePaymentServiceImpl(
+            PaymentRepository paymentRepository,
+            FeeDueRepository feeDueRepository,
+            FeePaymentAllocationRepository feePaymentAllocationRepository,
+            StudentRepository studentRepository,
             SchoolRepository schoolRepository,
             SectionRepository sectionRepository,
             SchoolAccountRepository schoolAccountRepository,
@@ -582,13 +592,9 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                 : feePaymentAllocationRepository.findByPaymentIdIn(paymentIds).stream()
                 .collect(Collectors.groupingBy(a -> a.getPayment().getId()));
 
-        Map<Long, String> sectionNames = (sectionRepository != null && !payments.isEmpty())
+        Map<Long, String> sectionNameMap = sectionRepository != null
                 ? sectionRepository.findBySchoolId(schoolId).stream()
-                .filter(s -> s.getId() != null && s.getName() != null)
-                .collect(Collectors.toMap(
-                        com.school.erp.entity.academic.Section::getId,
-                        com.school.erp.entity.academic.Section::getName,
-                        (a, b) -> a))
+                .collect(Collectors.toMap(Section::getId, Section::getName, (a, b) -> a))
                 : Collections.emptyMap();
 
         return payments.map(payment -> {
@@ -613,13 +619,15 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                 }
             }
 
-            String classLabel = (student != null && student.getSchoolClass() != null && student.getSchoolClass().getName() != null)
-                    ? student.getSchoolClass().getName()
-                    : "";
-            if (!classLabel.isBlank() && student.getSectionId() != null) {
-                String secName = sectionNames.get(student.getSectionId());
-                if (secName != null && !secName.isBlank()) {
-                    classLabel = classLabel + " - Section " + secName;
+            String classDisplay = "";
+            if (student != null && student.getSchoolClass() != null) {
+                classDisplay = student.getSchoolClass().getName();
+                if (student.getSectionId() != null) {
+                    String sec = sectionNameMap.get(student.getSectionId());
+                    if (sec != null && !sec.isBlank()) {
+                        String cleanSec = sec.replaceFirst("(?i)^section\\s+", "").trim();
+                        classDisplay = classDisplay + " - Section " + cleanSec;
+                    }
                 }
             }
 
@@ -632,7 +640,7 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                     payment.getStatus(),
                     payment.getReceiptNumber(),
                     studentName,
-                    classLabel,
+                    classDisplay,
                     payment.getPaymentDate(),
                     payment.getCreatedAt(),
                     allocations,
@@ -646,6 +654,11 @@ public class FeePaymentServiceImpl implements FeePaymentService {
     @Override
     public Page<PaymentResponse> getPaymentsByStudent(Long studentId, Long schoolId, Pageable pageable) {
         Page<Payment> payments = paymentRepository.findBySchoolIdAndStudentId(schoolId, studentId, pageable);
+
+        Map<Long, String> sectionNameMap = sectionRepository != null
+                ? sectionRepository.findBySchoolId(schoolId).stream()
+                .collect(Collectors.toMap(Section::getId, Section::getName, (a, b) -> a))
+                : Collections.emptyMap();
 
         return payments.map(payment -> {
             List<PaymentResponse.PaymentAllocationResponse> allocations = feePaymentAllocationRepository.findByPaymentId(payment.getId())
@@ -668,6 +681,18 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                 }
             }
 
+            String classDisplay = "";
+            if (student != null && student.getSchoolClass() != null) {
+                classDisplay = student.getSchoolClass().getName();
+                if (student.getSectionId() != null) {
+                    String sec = sectionNameMap.get(student.getSectionId());
+                    if (sec != null && !sec.isBlank()) {
+                        String cleanSec = sec.replaceFirst("(?i)^section\\s+", "").trim();
+                        classDisplay = classDisplay + " - Section " + cleanSec;
+                    }
+                }
+            }
+
             return new PaymentResponse(
                     payment.getId(),
                     payment.getSchool().getId(),
@@ -677,7 +702,7 @@ public class FeePaymentServiceImpl implements FeePaymentService {
                     payment.getStatus(),
                     payment.getReceiptNumber(),
                     studentName,
-                    (student != null && student.getSchoolClass() != null) ? student.getSchoolClass().getName() : "",
+                    classDisplay,
                     payment.getPaymentDate(),
                     payment.getCreatedAt(),
                     allocations,

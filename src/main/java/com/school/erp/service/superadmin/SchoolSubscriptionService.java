@@ -173,16 +173,15 @@ public class SchoolSubscriptionService {
         }
 
         // Auto-provision entitlements/modules from plan
+        final School targetSchool = sub.getSchool();
         if (sub.getPlan() != null && sub.getPlan().getModules() != null) {
-            final School targetSchool = sub.getSchool();
             for (PlatformModule mod : sub.getPlan().getModules()) {
-                SchoolModuleAccess access = moduleAccessRepository.findBySchoolIdAndModuleId(targetSchool.getId(), mod.getId())
-                        .orElseGet(() -> {
-                            SchoolModuleAccess a = new SchoolModuleAccess();
-                            a.setSchool(targetSchool);
-                            a.setModule(mod);
-                            return a;
-                        });
+                SchoolModuleAccess access = moduleAccessRepository
+                        .findBySchoolIdAndModuleId(targetSchool.getId(), mod.getId())
+                        .orElse(null);
+                if (access == null) {
+                    access = new SchoolModuleAccess(targetSchool, mod);
+                }
                 access.setEnabled(true);
                 moduleAccessRepository.save(access);
             }

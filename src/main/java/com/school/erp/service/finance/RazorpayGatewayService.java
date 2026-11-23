@@ -199,7 +199,7 @@ public class RazorpayGatewayService {
             profile.put("category", "educational_institutions");
             accountRequest.put("profile", profile);
 
-            // Razorpay accounts API (Route linked account)
+            // Razorpay accounts API (Route linked account via client.account)
             com.razorpay.Account razorpayAccount = client.account.create(accountRequest);
             return razorpayAccount.get("id");
         } catch (RazorpayException e) {

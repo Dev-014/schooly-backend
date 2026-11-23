@@ -40,6 +40,14 @@ public class SchoolModuleAccess {
     @Column(name = "disabled_sub_modules", columnDefinition = "TEXT")
     private String disabledSubModules;
 
+    public void setIsEnabled(Boolean isEnabled) {
+        this.enabled = isEnabled;
+    }
+
+    public Boolean getIsEnabled() {
+        return this.enabled;
+    }
+
     @CreationTimestamp
     @Column(name = "enabled_at", insertable = false, updatable = false)
     private LocalDateTime enabledAt;
