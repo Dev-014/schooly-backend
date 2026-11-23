@@ -66,6 +66,24 @@ public class GatePass {
     @Column(name = "expected_return_time")
     private LocalTime expectedReturnTime;
 
+    @Column(name = "expected_return_date")
+    private LocalDate expectedReturnDate;
+
+    @Column(name = "actual_return_date")
+    private LocalDate actualReturnDate;
+
+    @Column(name = "actual_return_time")
+    private LocalTime actualReturnTime;
+
+    @Column(name = "is_override")
+    private Boolean isOverride = false;
+
+    @Column(name = "authorization_override_reason", columnDefinition = "TEXT")
+    private String authorizationOverrideReason;
+
+    @Column(name = "authorized_by_role", length = 50)
+    private String authorizedByRole;
+
     @Column(name = "approved_by", nullable = false)
     private String approvedBy;
 

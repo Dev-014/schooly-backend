@@ -1,6 +1,7 @@
 package com.school.erp.dto.frontoffice;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,7 @@ public class ComplaintRequest {
     @NotBlank(message = "Complainant name is required")
     private String complainantName;
 
+    @Pattern(regexp = "^$|^\\d{10}$", message = "Mobile number must be exactly 10 digits")
     private String mobileNumber;
 
     @NotBlank(message = "Complaint type is required")

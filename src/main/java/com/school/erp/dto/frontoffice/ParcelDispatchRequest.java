@@ -2,6 +2,7 @@ package com.school.erp.dto.frontoffice;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class ParcelDispatchRequest {
     @NotBlank(message = "Delivery address is required")
     private String deliveryAddress;
 
+    @Pattern(regexp = "^$|^\\d{10}$", message = "Phone number must be exactly 10 digits")
     private String phoneNumber;
 
     @NotNull(message = "Dispatch date is required")
