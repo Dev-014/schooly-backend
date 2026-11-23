@@ -27,6 +27,7 @@ public class AdminComplaintController {
         @PermissionRequired("front_office.complaints.view")
         public ResponseEntity<ApiResponse<List<ComplaintResponse>>> getComplaints(
                         @RequestParam(required = false) Long schoolId,
+                        @RequestParam(required = false) String category,
                         @RequestParam(required = false) String search,
                         @RequestParam(required = false) String complaintType,
                         @RequestParam(required = false) String status,
@@ -35,7 +36,7 @@ public class AdminComplaintController {
                         @RequestParam(defaultValue = "10") int size) {
 
                 Page<ComplaintResponse> result = complaintService.filterComplaints(
-                                schoolId, search, complaintType, status, scope, PageRequest.of(page, size));
+                                schoolId, category, search, complaintType, status, scope, PageRequest.of(page, size));
 
                 return ResponseEntity.ok(ApiResponse.success(
                                 result.getContent(),

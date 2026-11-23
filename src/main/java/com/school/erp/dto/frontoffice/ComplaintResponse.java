@@ -19,6 +19,12 @@ public class ComplaintResponse {
     private String complaintCode;
     private String complainantName;
     private String mobileNumber;
+    private String complaintCategory;
+    private Long targetStudentId;
+    private String targetStudentName;
+    private Long targetStaffId;
+    private String targetStaffName;
+    private String locationOrAsset;
     private String complaintType;
     private String description;
     private String assignedBy;

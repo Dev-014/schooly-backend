@@ -17,10 +17,12 @@ public interface SchoolComplaintRepository extends JpaRepository<SchoolComplaint
         Optional<SchoolComplaint> findByIdAndSchoolId(Long id, Long schoolId);
 
         @Query("SELECT c FROM SchoolComplaint c WHERE c.school.id = :schoolId " +
+                        "AND (:category IS NULL OR LOWER(c.complaintCategory) = LOWER(CAST(:category AS string))) " +
                         "AND (:search IS NULL OR LOWER(c.complainantName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) "
                         +
                         "     OR LOWER(c.mobileNumber) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
                         "     OR LOWER(c.description) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+                        "     OR (c.locationOrAsset IS NOT NULL AND LOWER(c.locationOrAsset) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) " +
                         "     OR (c.complaintCode IS NOT NULL AND LOWER(c.complaintCode) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')))) "
                         +
                         "AND (:complaintType IS NULL OR LOWER(c.complaintType) = LOWER(CAST(:complaintType AS string))) "
@@ -30,11 +32,22 @@ public interface SchoolComplaintRepository extends JpaRepository<SchoolComplaint
                         "ORDER BY c.complaintDate DESC, c.createdAt DESC")
         Page<SchoolComplaint> filterComplaints(
                         @Param("schoolId") Long schoolId,
+                        @Param("category") String category,
                         @Param("search") String search,
                         @Param("complaintType") String complaintType,
                         @Param("status") String status,
                         @Param("userId") Long userId,
                         Pageable pageable);
+
+        default Page<SchoolComplaint> filterComplaints(
+                        Long schoolId,
+                        String search,
+                        String complaintType,
+                        String status,
+                        Long userId,
+                        Pageable pageable) {
+                return filterComplaints(schoolId, null, search, complaintType, status, userId, pageable);
+        }
 
         long countBySchoolId(Long schoolId);
 

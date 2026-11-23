@@ -21,6 +21,14 @@ public class ComplaintRequest {
     @Pattern(regexp = "^$|^\\d{10}$", message = "Mobile number must be exactly 10 digits")
     private String mobileNumber;
 
+    private String complaintCategory;
+
+    private Long targetStudentId;
+
+    private Long targetStaffId;
+
+    private String locationOrAsset;
+
     @NotBlank(message = "Complaint type is required")
     private String complaintType;
 

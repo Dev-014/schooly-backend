@@ -35,6 +35,18 @@ public class SchoolComplaint {
     @Column(name = "mobile_number", length = 50)
     private String mobileNumber;
 
+    @Column(name = "complaint_category", length = 50)
+    private String complaintCategory = "STUDENT";
+
+    @Column(name = "target_student_id")
+    private Long targetStudentId;
+
+    @Column(name = "target_staff_id")
+    private Long targetStaffId;
+
+    @Column(name = "location_or_asset", length = 150)
+    private String locationOrAsset;
+
     @Column(name = "complaint_type", nullable = false, length = 100)
     private String complaintType;
 

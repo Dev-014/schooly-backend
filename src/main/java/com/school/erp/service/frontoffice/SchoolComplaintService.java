@@ -7,9 +7,13 @@ import com.school.erp.entity.frontoffice.SchoolComplaint;
 import com.school.erp.entity.notification.NotificationPriority;
 import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.entity.superadmin.School;
+import com.school.erp.entity.student.Student;
+import com.school.erp.entity.hr.Staff;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.frontoffice.SchoolComplaintRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.student.StudentRepository;
+import com.school.erp.repository.hr.StaffRepository;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +34,14 @@ public class SchoolComplaintService {
     private final AuthContextService authContextService;
     private final SchoolComplaintRepository schoolComplaintRepository;
     private final SchoolRepository schoolRepository;
-
-    @Autowired(required = false)
-    private NotificationService notificationService;
+    private final StudentRepository studentRepository;
+    private final StaffRepository staffRepository;
+    private final NotificationService notificationService;
 
     @Transactional(readOnly = true)
     public Page<ComplaintResponse> filterComplaints(
             Long rawSchoolId,
+            String category,
             String search,
             String complaintType,
             String status,
@@ -44,6 +49,9 @@ public class SchoolComplaintService {
             Pageable pageable) {
         final Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
+        String cleanCategory = (category != null && !category.isBlank() && !category.equalsIgnoreCase("all"))
+                ? category.trim()
+                : null;
         String cleanSearch = (search != null && !search.isBlank()) ? search.trim() : null;
         String cleanType = (complaintType != null && !complaintType.isBlank() && !complaintType.equalsIgnoreCase("all"))
                 ? complaintType.trim()
@@ -60,8 +68,19 @@ public class SchoolComplaintService {
         }
 
         Page<SchoolComplaint> page = schoolComplaintRepository.filterComplaints(
-                schoolId, cleanSearch, cleanType, cleanStatus, filterUserId, pageable);
+                schoolId, cleanCategory, cleanSearch, cleanType, cleanStatus, filterUserId, pageable);
         return page.map(this::mapToResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ComplaintResponse> filterComplaints(
+            Long rawSchoolId,
+            String search,
+            String complaintType,
+            String status,
+            String scope,
+            Pageable pageable) {
+        return filterComplaints(rawSchoolId, null, search, complaintType, status, scope, pageable);
     }
 
     @Transactional(readOnly = true)
@@ -90,6 +109,16 @@ public class SchoolComplaintService {
         complaint.setSchool(school);
         complaint.setComplainantName(request.getComplainantName());
         complaint.setMobileNumber(request.getMobileNumber());
+
+        String category = request.getComplaintCategory();
+        if (category == null || category.isBlank()) {
+            category = "STUDENT";
+        }
+        complaint.setComplaintCategory(category.toUpperCase().trim());
+        complaint.setTargetStudentId(request.getTargetStudentId());
+        complaint.setTargetStaffId(request.getTargetStaffId());
+        complaint.setLocationOrAsset(request.getLocationOrAsset());
+
         complaint.setComplaintType(request.getComplaintType());
         complaint.setDescription(request.getDescription());
         complaint.setAssignedBy(request.getAssignedBy());
@@ -116,12 +145,78 @@ public class SchoolComplaintService {
         }
 
         if (notificationService != null) {
+            // Category-specific dispatch
+            if ("STUDENT".equalsIgnoreCase(saved.getComplaintCategory()) && saved.getTargetStudentId() != null) {
+                java.util.Optional<Student> studentOpt = studentRepository.findByIdAndSchoolId(saved.getTargetStudentId(), schoolId);
+                if (studentOpt.isPresent()) {
+                    Student student = studentOpt.get();
+                    String sName = (student.getFirstName() + " " + (student.getLastName() != null ? student.getLastName() : "")).trim();
+                    notificationService.notifyStudentAndParents(
+                            schoolId,
+                            student,
+                            NotificationType.COMPLAINT_FILED,
+                            NotificationPriority.HIGH,
+                            "Student Disciplinary Notice: " + saved.getComplaintType(),
+                            "A disciplinary notice has been recorded regarding " + sName + ": " + (saved.getDescription() != null ? saved.getDescription() : "Incident reported."),
+                            "/student/complaints",
+                            "View Details",
+                            "SCHOOL_COMPLAINT",
+                            String.valueOf(saved.getId()),
+                            Map.of(
+                                    "complaintId", saved.getId(),
+                                    "studentId", student.getId(),
+                                    "category", "STUDENT"
+                            )
+                    );
+                }
+            } else if ("STAFF".equalsIgnoreCase(saved.getComplaintCategory()) && saved.getTargetStaffId() != null) {
+                java.util.Optional<Staff> staffOpt = staffRepository.findByIdAndSchoolId(saved.getTargetStaffId(), schoolId);
+                if (staffOpt.isPresent()) {
+                    Staff staff = staffOpt.get();
+                    notificationService.notifyStaffMember(
+                            schoolId,
+                            staff,
+                            NotificationType.COMPLAINT_FILED,
+                            NotificationPriority.HIGH,
+                            "Staff Notice / Warning: " + saved.getComplaintType(),
+                            "A staff conduct notice/warning has been issued: " + (saved.getDescription() != null ? saved.getDescription() : "Please review the details.")
+                                    + (saved.getActionTaken() != null ? " | Action: " + saved.getActionTaken() : ""),
+                            "/staff/notices",
+                            "SCHOOL_COMPLAINT",
+                            saved.getId(),
+                            Map.of(
+                                    "complaintId", saved.getId(),
+                                    "staffId", staff.getId(),
+                                    "category", "STAFF"
+                            )
+                    );
+                }
+            } else if ("INVENTORY".equalsIgnoreCase(saved.getComplaintCategory())) {
+                notificationService.notifySchoolAdmins(
+                        schoolId,
+                        NotificationType.SUPPORT_TICKET_CREATED,
+                        NotificationPriority.HIGH,
+                        "Maintenance Ticket Raised: " + (saved.getLocationOrAsset() != null ? saved.getLocationOrAsset() : saved.getComplaintType()),
+                        "Issue reported at " + (saved.getLocationOrAsset() != null ? saved.getLocationOrAsset() : "facility") + ": "
+                                + (saved.getDescription() != null ? saved.getDescription() : "Needs repair"),
+                        "/front-office/complaints",
+                        "View Ticket",
+                        "SCHOOL_COMPLAINT",
+                        String.valueOf(saved.getId()),
+                        Map.of(
+                                "complaintId", saved.getId(),
+                                "category", "INVENTORY"
+                        )
+                );
+            }
+
+            // Also record admin notification
             notificationService.notifySchoolAdmins(
                     schoolId,
                     NotificationType.COMPLAINT_FILED,
                     NotificationPriority.HIGH,
-                    "New Complaint Filed (" + saved.getComplaintType() + ")",
-                    saved.getComplainantName() + " filed a " + saved.getComplaintType() + " complaint: \""
+                    "New " + saved.getComplaintCategory() + " Complaint (" + saved.getComplaintType() + ")",
+                    saved.getComplainantName() + " filed a " + saved.getComplaintCategory() + " complaint: \""
                             + saved.getDescription() + "\"",
                     "/front-office/complaints",
                     "Review Complaint",
@@ -130,6 +225,7 @@ public class SchoolComplaintService {
                     Map.of(
                             "complaintId", saved.getId(),
                             "complainantName", saved.getComplainantName(),
+                            "category", saved.getComplaintCategory(),
                             "complaintType", saved.getComplaintType()));
         }
 
@@ -158,6 +254,18 @@ public class SchoolComplaintService {
                 complaint.setComplainantName(request.getComplainantName());
             }
             complaint.setMobileNumber(request.getMobileNumber());
+            if (request.getComplaintCategory() != null && !request.getComplaintCategory().isBlank()) {
+                complaint.setComplaintCategory(request.getComplaintCategory().toUpperCase().trim());
+            }
+            if (request.getTargetStudentId() != null) {
+                complaint.setTargetStudentId(request.getTargetStudentId());
+            }
+            if (request.getTargetStaffId() != null) {
+                complaint.setTargetStaffId(request.getTargetStaffId());
+            }
+            if (request.getLocationOrAsset() != null) {
+                complaint.setLocationOrAsset(request.getLocationOrAsset());
+            }
             if (request.getComplaintType() != null && !request.getComplaintType().isBlank()) {
                 complaint.setComplaintType(request.getComplaintType());
             }
@@ -262,6 +370,24 @@ public class SchoolComplaintService {
         boolean isOwn = currentUser != null && c.getCreatedByUserId() != null
                 && c.getCreatedByUserId().equals(currentUser.userId());
 
+        String targetStudentName = null;
+        if (c.getTargetStudentId() != null && studentRepository != null) {
+            try {
+                targetStudentName = studentRepository.findByIdAndSchoolId(c.getTargetStudentId(), c.getSchool().getId())
+                        .map(s -> (s.getFirstName() + (s.getLastName() != null ? " " + s.getLastName() : "")).trim())
+                        .orElse(null);
+            } catch (Exception ignored) {}
+        }
+
+        String targetStaffName = null;
+        if (c.getTargetStaffId() != null && staffRepository != null) {
+            try {
+                targetStaffName = staffRepository.findByIdAndSchoolId(c.getTargetStaffId(), c.getSchool().getId())
+                        .map(s -> (s.getFirstName() + (s.getLastName() != null ? " " + s.getLastName() : "")).trim())
+                        .orElse(null);
+            } catch (Exception ignored) {}
+        }
+
         return ComplaintResponse.builder()
                 .id(c.getId())
                 .schoolId(c.getSchool().getId())
@@ -269,6 +395,12 @@ public class SchoolComplaintService {
                         c.getComplaintCode() != null ? c.getComplaintCode() : String.format("CMP-%05d", c.getId()))
                 .complainantName(c.getComplainantName())
                 .mobileNumber(c.getMobileNumber())
+                .complaintCategory(c.getComplaintCategory() != null ? c.getComplaintCategory() : "STUDENT")
+                .targetStudentId(c.getTargetStudentId())
+                .targetStudentName(targetStudentName)
+                .targetStaffId(c.getTargetStaffId())
+                .targetStaffName(targetStaffName)
+                .locationOrAsset(c.getLocationOrAsset())
                 .complaintType(c.getComplaintType())
                 .description(c.getDescription())
                 .assignedBy(c.getAssignedBy())

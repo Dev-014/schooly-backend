@@ -77,7 +77,7 @@ class AdminComplaintControllerTest {
                                 .build();
 
                 Page<ComplaintResponse> page = new PageImpl<>(List.of(response));
-                when(complaintService.filterComplaints(any(), any(), any(), any(), any(), any(Pageable.class)))
+                when(complaintService.filterComplaints(any(), any(), any(), any(), any(), any(), any(Pageable.class)))
                                 .thenReturn(page);
 
                 mockMvc.perform(get("/api/v1/admin/front-office/complaints")
