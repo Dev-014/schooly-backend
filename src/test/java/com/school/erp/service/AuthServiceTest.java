@@ -61,6 +61,32 @@ class AuthServiceTest {
     }
 
     @Test
+    void verifyOtp_parentWithOneChild_returnsChildOnceWithoutStudentSelection() {
+        User user = new User();
+        user.setId(1L);
+        user.setPhone("9999999999");
+        user.setName("Parent Name");
+        var student = new com.school.erp.entity.student.Student();
+        student.setId(5L);
+        student.setName("Student Name");
+        student.setFatherName("Parent Name");
+        var link = new com.school.erp.entity.student.StudentParent();
+        link.setStudent(student);
+        link.setRelation("Father");
+        when(userRepository.findByPhone(user.getPhone())).thenReturn(Optional.of(user));
+        when(userRoleMappingRepository.findByUserIdAndIsActiveTrue(user.getId())).thenReturn(List.of());
+        when(studentParentRepository.findByIdParentUserId(user.getId())).thenReturn(List.of(link));
+
+        var response = authService.verifyOtp(new OtpVerifyRequest(user.getPhone(), "1111"), null);
+
+        assertEquals(1, response.students().size());
+        assertEquals(5L, response.students().get(0).id());
+        assertEquals("Parent Name", response.students().get(0).parentName());
+        assertEquals("Father", response.students().get(0).relation());
+        assertFalse(response.requiresStudentSelection());
+    }
+
+    @Test
     void verifyOtp_withDummyOtp1111AndSingleSchool_shouldGenerateTokensAndReturnNoSchoolSelection() {
         User user = new User();
         user.setId(1L);

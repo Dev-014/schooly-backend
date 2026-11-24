@@ -113,6 +113,16 @@ public class JwtUtil {
         return roleStr != null ? UserRole.valueOf(roleStr) : null;
     }
 
+    public Long parseRefreshTokenSchoolId(String token) {
+        Map<String, Object> claims = parseClaims(token);
+        String tokenType = (String) claims.get("tokenType");
+        if (!"REFRESH".equals(tokenType)) {
+            throw new IllegalArgumentException("Invalid refresh token");
+        }
+        Object schoolIdObj = claims.get("schoolId");
+        return schoolIdObj != null ? ((Number) schoolIdObj).longValue() : null;
+    }
+
     private String buildToken(Map<String, Object> claims, long expirationMs) {
         try {
             Instant now = Instant.now();

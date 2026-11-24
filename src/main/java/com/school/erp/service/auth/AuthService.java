@@ -170,13 +170,11 @@ public class AuthService {
         }
 
         String primaryRole = determinePrimaryRole(roleNames);
-        List<UserSchoolResponse> schools = userRoles.stream()
+        List<UserSchoolResponse> schools = new ArrayList<>(userRoles.stream()
                 .filter(r -> r.getSchoolId() != null)
                 .map(this::toSchoolResponse)
                 .distinct()
-                .toList();
-
-        boolean requiresSchoolSelection = schools.size() > 1 && !roleNames.contains("SUPER_ADMIN");
+                .toList());
 
         List<StudentSummaryDto> students = new ArrayList<>();
         boolean requiresStudentSelection = false;
@@ -202,6 +200,13 @@ public class AuthService {
                             ? s.getGuardianRelation().trim()
                             : (sp.getRelation() != null && !sp.getRelation().isBlank() ? sp.getRelation().trim() : "Guardian");
                     students.add(new StudentSummaryDto(s.getId(), s.getName(), s.getAdmissionNo(), className, schoolId, schoolName, parentName, relation));
+
+                    if (s.getSchool() != null) {
+                        ensureUserRoleMapping(user, s.getSchool().getId(), "role_parent_global");
+                        if (schools.stream().noneMatch(sch -> sch.schoolId().equals(s.getSchool().getId()))) {
+                            schools.add(toSchoolResponse(s.getSchool(), "PARENT", true));
+                        }
+                    }
                 }
             }
             if (students.size() > 1) {
@@ -214,11 +219,20 @@ public class AuthService {
                 Long schoolId = s.getSchool() != null ? s.getSchool().getId() : null;
                 String schoolName = s.getSchool() != null ? s.getSchool().getName() : "Greenwood Academy";
                 students.add(new StudentSummaryDto(s.getId(), s.getName(), s.getAdmissionNo(), className, schoolId, schoolName));
+
+                if (s.getSchool() != null) {
+                    ensureUserRoleMapping(user, s.getSchool().getId(), "role_student_global");
+                    if (schools.stream().noneMatch(sch -> sch.schoolId().equals(s.getSchool().getId()))) {
+                        schools.add(toSchoolResponse(s.getSchool(), "STUDENT", true));
+                    }
+                }
             }
             if (students.size() > 1) {
                 requiresStudentSelection = true;
             }
         }
+
+        boolean requiresSchoolSelection = schools.size() > 1 && !roleNames.contains("SUPER_ADMIN");
 
         String accessToken = null;
         String refreshToken = null;
@@ -226,7 +240,11 @@ public class AuthService {
 
         if (!requiresSchoolSelection) {
             targetSchoolId = !schools.isEmpty() ? schools.get(0).schoolId() : null;
-            UserRole targetRole = userRoles.isEmpty() ? UserRole.STUDENT : extractRoleEnum(userRoles.get(0));
+            if (targetSchoolId == null && !students.isEmpty()) {
+                targetSchoolId = students.get(0).schoolId();
+            }
+
+            UserRole targetRole = parseRole(primaryRole);
             for (UserRoleMapping usr : userRoles) {
                 if (extractRoleEnum(usr).name().equals(primaryRole)) {
                     targetRole = extractRoleEnum(usr);
@@ -239,7 +257,7 @@ public class AuthService {
 
             AuthSession authSession = new AuthSession();
             authSession.setUser(user);
-            if (!schools.isEmpty() && targetSchoolId != null) {
+            if (targetSchoolId != null) {
                 School school = schoolRepository.findById(targetSchoolId).orElse(null);
                 if (school != null) {
                     if ("SUSPENDED".equalsIgnoreCase(school.getStatus())) {
@@ -261,8 +279,33 @@ public class AuthService {
                     .stream()
                     .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
                     .toList();
+            if (permissions.isEmpty()) {
+                if ("PARENT".equalsIgnoreCase(primaryRole)) {
+                    permissions = rolePermissionRepository.findBySchoolIdAndRoleId(null, "role_parent_global")
+                            .stream()
+                            .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
+                            .toList();
+                } else if ("STUDENT".equalsIgnoreCase(primaryRole)) {
+                    permissions = rolePermissionRepository.findBySchoolIdAndRoleId(null, "role_student_global")
+                            .stream()
+                            .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
+                            .toList();
+                }
+            }
         } else {
-            permissions = List.of();
+            if ("PARENT".equalsIgnoreCase(primaryRole)) {
+                permissions = rolePermissionRepository.findBySchoolIdAndRoleId(null, "role_parent_global")
+                        .stream()
+                        .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
+                        .toList();
+            } else if ("STUDENT".equalsIgnoreCase(primaryRole)) {
+                permissions = rolePermissionRepository.findBySchoolIdAndRoleId(null, "role_student_global")
+                        .stream()
+                        .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
+                        .toList();
+            } else {
+                permissions = List.of();
+            }
         }
 
         RoleArchetype personaArchetype = switch (primaryRole.toUpperCase()) {
@@ -285,7 +328,7 @@ public class AuthService {
         return new LoginVerifyResponse(
                 user.getId(),
                 user.getPhone(),
-                resolvedUserName,
+                user.getName(),
                 user.getEmail(),
                 primaryRole,
                 roleNames,
@@ -517,46 +560,151 @@ public class AuthService {
 
         // Extract original role from refresh token
         UserRole tokenRole = jwtUtil.parseRefreshTokenRole(refreshToken);
+        if (tokenRole == null) {
+            tokenRole = UserRole.STUDENT;
+        }
 
-        List<UserRoleMapping> activeRoles = userRoleMappingRepository
-                .findBySchoolIdAndUserIdAndIsActiveTrue(school.getId(), user.getId());
+        // 1. Resolve school if missing from session
+        if (school == null) {
+            Long claimedSchoolId = jwtUtil.parseRefreshTokenSchoolId(refreshToken);
+            if (claimedSchoolId != null) {
+                school = schoolRepository.findById(claimedSchoolId).orElse(null);
+            }
+        }
 
-        UserRoleMapping userSchoolRole = activeRoles.stream()
-                .filter(m -> extractRoleEnum(m) == tokenRole)
-                .findFirst()
-                .orElseGet(() -> activeRoles.stream().findFirst()
-                        .orElseThrow(() -> new UnauthorizedException("User no longer has active access to this school")));
+        if (school == null) {
+            List<UserRoleMapping> activeUserMappings = userRoleMappingRepository.findByUserIdAndIsActiveTrue(user.getId());
+            if (!activeUserMappings.isEmpty() && activeUserMappings.get(0).getSchoolId() != null) {
+                school = schoolRepository.findById(activeUserMappings.get(0).getSchoolId()).orElse(null);
+            }
+        }
+
+        List<Student> studentRecords = studentRepository.findByUserId(user.getId());
+        List<StudentParent> parentRecords = studentParentRepository.findByIdParentUserId(user.getId());
+
+        // Auto-correct role if token was defaulted to STUDENT but user is actually only a PARENT
+        if (tokenRole == UserRole.STUDENT && studentRecords.isEmpty() && !parentRecords.isEmpty()) {
+            tokenRole = UserRole.PARENT;
+        }
+
+        if (school == null) {
+            if (!studentRecords.isEmpty() && studentRecords.get(0).getSchool() != null) {
+                school = studentRecords.get(0).getSchool();
+            } else if (!parentRecords.isEmpty() && parentRecords.get(0).getStudent() != null && parentRecords.get(0).getStudent().getSchool() != null) {
+                school = parentRecords.get(0).getStudent().getSchool();
+            }
+        }
+
+        if (school != null && session.getSchool() == null) {
+            session.setSchool(school);
+        }
+
+        Long targetSchoolId = school != null ? school.getId() : null;
+
+        // Ensure role mappings exist for parent or student
+        if (targetSchoolId != null) {
+            if (tokenRole == UserRole.PARENT) {
+                ensureUserRoleMapping(user, targetSchoolId, "role_parent_global");
+            } else if (tokenRole == UserRole.STUDENT) {
+                ensureUserRoleMapping(user, targetSchoolId, "role_student_global");
+            }
+        }
+
+        String roleName = tokenRole.name();
+        RoleArchetype personaArchetype;
+        Long studentId = null;
+        List<PermissionContextDto> permissions;
+
+        if (tokenRole == UserRole.SUPER_ADMIN) {
+            personaArchetype = RoleArchetype.SUPER_ADMIN;
+            permissions = List.of(new PermissionContextDto("ALL", "GLOBAL"));
+        } else if (tokenRole == UserRole.STUDENT) {
+            personaArchetype = RoleArchetype.STUDENT;
+            if (!studentRecords.isEmpty()) {
+                studentId = studentRecords.get(0).getId();
+            }
+            if (targetSchoolId != null) {
+                permissions = authorizationService.getEffectivePermissions(targetSchoolId, user.getId())
+                        .stream()
+                        .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
+                        .toList();
+            } else {
+                permissions = List.of();
+            }
+            if (permissions.isEmpty()) {
+                permissions = rolePermissionRepository.findBySchoolIdAndRoleId(null, "role_student_global")
+                        .stream()
+                        .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
+                        .toList();
+            }
+        } else if (tokenRole == UserRole.PARENT) {
+            personaArchetype = RoleArchetype.PARENT;
+            if (!parentRecords.isEmpty() && parentRecords.get(0).getStudent() != null) {
+                studentId = parentRecords.get(0).getStudent().getId();
+            }
+            if (targetSchoolId != null) {
+                permissions = authorizationService.getEffectivePermissions(targetSchoolId, user.getId())
+                        .stream()
+                        .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
+                        .toList();
+            } else {
+                permissions = List.of();
+            }
+            if (permissions.isEmpty()) {
+                permissions = rolePermissionRepository.findBySchoolIdAndRoleId(null, "role_parent_global")
+                        .stream()
+                        .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
+                        .toList();
+            }
+        } else {
+            List<UserRoleMapping> activeRoles = targetSchoolId != null
+                    ? userRoleMappingRepository.findBySchoolIdAndUserIdAndIsActiveTrue(targetSchoolId, user.getId())
+                    : userRoleMappingRepository.findByUserIdAndIsActiveTrue(user.getId());
+
+            final UserRole finalTokenRole = tokenRole;
+            UserRoleMapping userSchoolRole = activeRoles.stream()
+                    .filter(m -> extractRoleEnum(m) == finalTokenRole)
+                    .findFirst()
+                    .orElseGet(() -> activeRoles.stream().findFirst()
+                            .orElseThrow(() -> new UnauthorizedException("User no longer has active access to this school")));
+
+            UserRole effectiveRole = extractRoleEnum(userSchoolRole);
+            roleName = effectiveRole.name();
+            tokenRole = effectiveRole;
+            personaArchetype = userSchoolRole.getRole() != null ? userSchoolRole.getRole().getArchetype() : RoleArchetype.STAFF;
+
+            if (targetSchoolId != null) {
+                permissions = authorizationService.getEffectivePermissions(targetSchoolId, user.getId())
+                        .stream()
+                        .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
+                        .toList();
+            } else {
+                permissions = List.of();
+            }
+        }
 
         // Generate new tokens
-        String newAccessToken = jwtUtil.generateAccessToken(user.getId(), school.getId(), extractRoleEnum(userSchoolRole));
-        String newRefreshToken = jwtUtil.generateRefreshToken(user.getId(), school.getId(), extractRoleEnum(userSchoolRole));
+        String newAccessToken = jwtUtil.generateAccessToken(user.getId(), targetSchoolId, tokenRole);
+        String newRefreshToken = jwtUtil.generateRefreshToken(user.getId(), targetSchoolId, tokenRole);
 
         // Update session
         session.setAccessToken(newAccessToken);
         session.setRefreshToken(newRefreshToken);
         authSessionRepository.save(session);
 
-        List<PermissionContextDto> permissions;
-        if ("SUPER_ADMIN".equalsIgnoreCase(extractRoleEnum(userSchoolRole).name()) || "SUPERADMIN".equalsIgnoreCase(extractRoleEnum(userSchoolRole).name())) {
-            permissions = List.of(new PermissionContextDto("ALL", "GLOBAL"));
-        } else {
-            permissions = authorizationService.getEffectivePermissions(school.getId(), user.getId())
-                    .stream()
-                    .map(rp -> new PermissionContextDto(rp.getPermission().getPermissionKey(), rp.getScopeType()))
-                    .toList();
-        }
+        PersonaDto persona = new PersonaDto(roleName, roleName, personaArchetype);
 
         return new AuthTokenResponse(
                 user.getId(),
-                school.getId(),
-                null,   // not a student login
+                targetSchoolId,
+                studentId,
                 user.getName() != null ? user.getName() : "",
-                extractRoleEnum(userSchoolRole).name(),
+                roleName,
                 newAccessToken,
                 newRefreshToken,
                 permissions,
-                List.of(new PersonaDto(extractRoleEnum(userSchoolRole).name(), extractRoleEnum(userSchoolRole).name(), RoleArchetype.STAFF)),
-                new PersonaDto(extractRoleEnum(userSchoolRole).name(), extractRoleEnum(userSchoolRole).name(), RoleArchetype.STAFF)
+                List.of(persona),
+                persona
         );
     }
 
@@ -608,6 +756,11 @@ public class AuthService {
             List<Student> students = studentRepository.findByUserId(authUser.userId());
             if (!students.isEmpty()) {
                 studentId = students.get(0).getId();
+            }
+        } else if (targetRole == UserRole.PARENT) {
+            List<StudentParent> parents = studentParentRepository.findByIdParentUserId(authUser.userId());
+            if (!parents.isEmpty() && parents.get(0).getStudent() != null) {
+                studentId = parents.get(0).getStudent().getId();
             }
         }
 
@@ -696,6 +849,33 @@ public class AuthService {
                 mapping.isActive() ? "ACTIVE" : "INACTIVE",
                 school.getStatus()
         );
+    }
+
+    private UserSchoolResponse toSchoolResponse(School school, String roleName, boolean isActive) {
+        return new UserSchoolResponse(
+                school.getId(),
+                school.getName(),
+                school.getCode(),
+                roleName,
+                isActive ? "ACTIVE" : "INACTIVE",
+                school.getStatus()
+        );
+    }
+
+    private void ensureUserRoleMapping(User user, Long schoolId, String roleId) {
+        if (schoolId == null || user == null || roleId == null) return;
+        boolean exists = userRoleMappingRepository.findBySchoolIdAndUserIdAndIsActiveTrue(schoolId, user.getId())
+                .stream().anyMatch(m -> roleId.equalsIgnoreCase(m.getRole().getId()));
+        if (!exists) {
+            com.school.erp.entity.auth.Role roleEntity = new com.school.erp.entity.auth.Role();
+            roleEntity.setId(roleId);
+            UserRoleMapping newMapping = new UserRoleMapping();
+            newMapping.setSchoolId(schoolId);
+            newMapping.setUser(user);
+            newMapping.setRole(roleEntity);
+            newMapping.setActive(true);
+            userRoleMappingRepository.save(newMapping);
+        }
     }
 
 
