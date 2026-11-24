@@ -8,8 +8,21 @@ public record StudentSummaryDto(
         String admissionNo,
         String className,
         Long schoolId,
-        String schoolName
+        String schoolName,
+        String parentName,
+        String relation
 ) {
+    public StudentSummaryDto(
+            Long id,
+            String name,
+            String admissionNo,
+            String className,
+            Long schoolId,
+            String schoolName
+    ) {
+        this(id, name, admissionNo, className, schoolId, schoolName, null, null);
+    }
+
     @JsonProperty("studentId")
     public Long getStudentId() {
         return id;

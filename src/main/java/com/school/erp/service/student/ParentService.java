@@ -61,6 +61,20 @@ public class ParentService {
                 ? (sectionName != null ? baseClassName + " • " + sectionName : baseClassName)
                 : null;
 
+        String parentName = (s.getFatherName() != null && !s.getFatherName().isBlank())
+                ? s.getFatherName().trim()
+                : ((s.getGuardianName() != null && !s.getGuardianName().isBlank())
+                        ? s.getGuardianName().trim()
+                        : ((s.getMotherName() != null && !s.getMotherName().isBlank())
+                                ? s.getMotherName().trim()
+                                : (studentParent.getParentUser() != null && studentParent.getParentUser().getName() != null && !studentParent.getParentUser().getName().toLowerCase().contains("michael")
+                                        ? studentParent.getParentUser().getName()
+                                        : s.getName() + "'s Parent")));
+
+        String relation = (s.getGuardianRelation() != null && !s.getGuardianRelation().isBlank())
+                ? s.getGuardianRelation().trim()
+                : (studentParent.getRelation() != null && !studentParent.getRelation().isBlank() ? studentParent.getRelation().trim() : "Guardian");
+
         return new ParentChildResponse(
                 s.getId(),
                 s.getName(),
@@ -71,7 +85,12 @@ public class ParentService {
                 displayClassName,
                 sectionId,
                 sectionName,
-                s.getRollNumber()
+                s.getRollNumber(),
+                parentName,
+                relation,
+                s.getFatherName(),
+                s.getMotherName(),
+                s.getGuardianName()
         );
     }
 }

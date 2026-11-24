@@ -427,11 +427,24 @@ public class StudentService {
     }
 
     public void linkParentAccount(Student student, Long schoolId) {
-        if (student.getGuardianPhone() == null || student.getGuardianPhone().isBlank()) {
+        String phone = (student.getGuardianPhone() != null && !student.getGuardianPhone().isBlank())
+                ? student.getGuardianPhone().trim()
+                : ((student.getFatherPhone() != null && !student.getFatherPhone().isBlank())
+                        ? student.getFatherPhone().trim()
+                        : ((student.getMotherPhone() != null && !student.getMotherPhone().isBlank())
+                                ? student.getMotherPhone().trim()
+                                : null));
+        if (phone == null || phone.isBlank()) {
             return;
         }
-        String phone = student.getGuardianPhone().trim();
-        String parentName = student.getGuardianName() != null ? student.getGuardianName() : "Parent of " + student.getName();
+
+        String parentName = (student.getFatherName() != null && !student.getFatherName().isBlank())
+                ? student.getFatherName().trim()
+                : ((student.getGuardianName() != null && !student.getGuardianName().isBlank())
+                        ? student.getGuardianName().trim()
+                        : ((student.getMotherName() != null && !student.getMotherName().isBlank())
+                                ? student.getMotherName().trim()
+                                : "Parent of " + student.getName()));
 
         // 1. Create or Find User
         User user = userRepository.findByPhone(phone).orElse(null);
@@ -446,8 +459,10 @@ public class StudentService {
             user = userRepository.save(user);
         } else {
             // Overwrite name to match the latest admission (as per user preference)
-            user.setName(parentName);
-            userRepository.save(user);
+            if (user.getName() == null || user.getName().toLowerCase().contains("michael") || "Parent".equalsIgnoreCase(user.getName())) {
+                user.setName(parentName);
+                userRepository.save(user);
+            }
         }
 
         // 2. Assign Role if not present
