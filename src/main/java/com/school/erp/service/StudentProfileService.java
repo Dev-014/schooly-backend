@@ -40,6 +40,10 @@ public class StudentProfileService {
     private final LibraryCirculationRepository circulationRepository;
     private final LibraryMemberRepository memberRepository;
     private final StudentParentRepository studentParentRepository;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private com.school.erp.repository.auth.UserRepository userRepository;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private com.school.erp.repository.auth.UserAssignmentRepository userAssignmentRepository;
 
     public Student resolveStudent(Long studentId, Long schoolId, Long userId) {
         if (userId != null && studentId == null) {
@@ -83,6 +87,20 @@ public class StudentProfileService {
                     return primaryChild.get();
                 }
             }
+
+            // Check UserAssignment if student mapping exists
+            if (userAssignmentRepository != null && schoolId != null) {
+                List<com.school.erp.entity.auth.UserAssignment> assignments =
+                        userAssignmentRepository.findBySchoolIdAndUserIdAndIsActiveTrue(schoolId, userId);
+                for (com.school.erp.entity.auth.UserAssignment ua : assignments) {
+                    if (ua.getStudentId() != null) {
+                        Optional<Student> fromUa = studentRepository.findById(ua.getStudentId());
+                        if (fromUa.isPresent()) {
+                            return fromUa.get();
+                        }
+                    }
+                }
+            }
         }
         if (studentId != null) {
             if (schoolId != null) {
@@ -90,20 +108,14 @@ public class StudentProfileService {
                 if (byIdAndSchool.isPresent()) {
                     return byIdAndSchool.get();
                 }
-                if (userId == null) {
-                    throw new ResourceNotFoundException("Student not found with id: " + studentId);
-                }
             } else {
                 Optional<Student> byId = studentRepository.findById(studentId);
                 if (byId.isPresent()) {
                     return byId.get();
                 }
-                if (userId == null) {
-                    throw new ResourceNotFoundException("Student not found with id: " + studentId);
-                }
             }
         }
-        if (userId != null && studentId != null) {
+        if (userId != null) {
             if (schoolId != null) {
                 Optional<Student> studentOpt = studentRepository.findByUserId(userId).stream()
                         .filter(s -> s.getSchool() != null && s.getSchool().getId().equals(schoolId))
@@ -115,6 +127,49 @@ public class StudentProfileService {
                 Optional<Student> studentOpt = studentRepository.findByUserId(userId).stream().findFirst();
                 if (studentOpt.isPresent()) {
                     return studentOpt.get();
+                }
+            }
+
+            // Attempt match by user phone, email, or name
+            if (userRepository != null) {
+                Optional<com.school.erp.entity.auth.User> userOpt = userRepository.findById(userId);
+                if (userOpt.isPresent()) {
+                    com.school.erp.entity.auth.User u = userOpt.get();
+                    String phone = u.getPhone();
+                    String email = u.getEmail();
+                    String name = u.getName();
+                    List<Student> candidates = (schoolId != null)
+                            ? studentRepository.findBySchoolId(schoolId)
+                            : studentRepository.findAll();
+                    if (phone != null && !phone.isBlank()) {
+                        String cleanPhone = phone.replaceAll("[^0-9]", "");
+                        if (!cleanPhone.isEmpty()) {
+                            Optional<Student> phoneMatch = candidates.stream()
+                                    .filter(s -> (s.getPhone() != null && s.getPhone().replaceAll("[^0-9]", "").contains(cleanPhone)) ||
+                                            (s.getGuardianPhone() != null && s.getGuardianPhone().replaceAll("[^0-9]", "").contains(cleanPhone)))
+                                    .findFirst();
+                            if (phoneMatch.isPresent()) {
+                                return phoneMatch.get();
+                            }
+                        }
+                    }
+                    if (email != null && !email.isBlank()) {
+                        Optional<Student> emailMatch = candidates.stream()
+                                .filter(s -> email.equalsIgnoreCase(s.getEmail()))
+                                .findFirst();
+                        if (emailMatch.isPresent()) {
+                            return emailMatch.get();
+                        }
+                    }
+                    if (name != null && !name.isBlank()) {
+                        Optional<Student> nameMatch = candidates.stream()
+                                .filter(s -> name.equalsIgnoreCase(s.getName()) ||
+                                        (s.getFirstName() != null && name.equalsIgnoreCase((s.getFirstName() + " " + (s.getLastName() != null ? s.getLastName() : "")).trim())))
+                                .findFirst();
+                        if (nameMatch.isPresent()) {
+                            return nameMatch.get();
+                        }
+                    }
                 }
             }
         }
