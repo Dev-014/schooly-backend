@@ -62,6 +62,35 @@ public interface ExamMarkRepository extends JpaRepository<ExamMark, Long> {
             @Param("subjectId") Long subjectId,
             Pageable pageable);
 
+    @Query(value = "SELECT m FROM ExamMark m " +
+           "JOIN FETCH m.student s " +
+           "JOIN FETCH m.schoolClass c " +
+           "LEFT JOIN FETCH m.section sec " +
+           "JOIN FETCH m.subject sub " +
+           "JOIN FETCH m.examSetup setup " +
+           "LEFT JOIN FETCH m.examSubjectConfig esc " +
+           "WHERE m.school.id = :schoolId " +
+           "AND (:examSetupId IS NULL OR m.examSetup.id = :examSetupId) " +
+           "AND (:classId IS NULL OR m.schoolClass.id = :classId) " +
+           "AND (:sectionId IS NULL OR m.section.id = :sectionId) " +
+           "AND (:subjectId IS NULL OR m.subject.id = :subjectId) " +
+           "AND m.student.id IN :studentIds " +
+           "ORDER BY s.rollNumber ASC, s.name ASC",
+           countQuery = "SELECT COUNT(m) FROM ExamMark m WHERE m.school.id = :schoolId " +
+           "AND (:examSetupId IS NULL OR m.examSetup.id = :examSetupId) " +
+           "AND (:classId IS NULL OR m.schoolClass.id = :classId) " +
+           "AND (:sectionId IS NULL OR m.section.id = :sectionId) " +
+           "AND (:subjectId IS NULL OR m.subject.id = :subjectId) " +
+           "AND m.student.id IN :studentIds")
+    Page<ExamMark> filterMarksForStudents(
+            @Param("schoolId") Long schoolId,
+            @Param("examSetupId") Long examSetupId,
+            @Param("classId") Long classId,
+            @Param("sectionId") Long sectionId,
+            @Param("subjectId") Long subjectId,
+            @Param("studentIds") List<Long> studentIds,
+            Pageable pageable);
+
     List<ExamMark> findBySchoolIdAndExamSetupIdAndSubjectId(Long schoolId, Long examSetupId, Long subjectId);
 
     @Query("SELECT m FROM ExamMark m " +

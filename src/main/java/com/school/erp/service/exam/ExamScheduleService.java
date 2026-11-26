@@ -8,6 +8,7 @@ import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.academic.SchoolClass;
 import com.school.erp.entity.academic.Section;
 import com.school.erp.entity.academic.Subject;
+import com.school.erp.entity.exam.ExamApplicability;
 import com.school.erp.entity.exam.ExamSchedule;
 import com.school.erp.entity.exam.ExamSetup;
 import com.school.erp.entity.notification.NotificationPriority;
@@ -18,6 +19,7 @@ import com.school.erp.repository.academic.SchoolClassRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.academic.SectionRepository;
 import com.school.erp.repository.academic.SubjectRepository;
+import com.school.erp.repository.exam.ExamApplicabilityRepository;
 import com.school.erp.repository.exam.ExamScheduleRepository;
 import com.school.erp.repository.exam.ExamSetupRepository;
 import com.school.erp.repository.exam.ExamSubjectConfigRepository;
@@ -31,6 +33,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +55,9 @@ public class ExamScheduleService {
     @Autowired(required = false)
     private NotificationService notificationService;
 
+    @Autowired(required = false)
+    private ExamApplicabilityRepository examApplicabilityRepository;
+
     @Transactional(readOnly = true)
     public Page<ExamScheduleResponse> filterSchedules(
             Long rawSchoolId,
@@ -62,6 +68,19 @@ public class ExamScheduleService {
             Pageable pageable) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
         String cleanSearch = (search != null && !search.isBlank()) ? search.trim() : null;
+
+        if (examSetupId != null && classId != null && examApplicabilityRepository != null) {
+            List<ExamApplicability> applicabilities = examApplicabilityRepository
+                    .findBySchoolIdAndExamSetupId(schoolId, examSetupId);
+            if (applicabilities != null && !applicabilities.isEmpty()) {
+                boolean classAllowed = applicabilities.stream()
+                        .anyMatch(a -> a.getSchoolClass() != null
+                                && a.getSchoolClass().getId().equals(classId));
+                if (!classAllowed) {
+                    return Page.empty(pageable);
+                }
+            }
+        }
 
         Page<ExamSchedule> page = examScheduleRepository.filterSchedules(
                 schoolId, examSetupId, classId, sectionId, cleanSearch, pageable);
@@ -98,9 +117,20 @@ public class ExamScheduleService {
             section = sectionRepository.findById(request.getSectionId()).orElse(null);
         }
 
+        validateExamApplicability(schoolId, setup, schoolClass, section);
+
         Subject subject = resolveSubject(schoolId, request);
 
-        ExamSchedule schedule = new ExamSchedule();
+        Long secIdForLookup = section != null ? section.getId() : null;
+        List<ExamSchedule> existingMatches = examScheduleRepository.findMatchingSchedules(
+                schoolId, setup.getId(), schoolClass.getId(), secIdForLookup, subject.getId());
+        ExamSchedule schedule = !existingMatches.isEmpty()
+                ? existingMatches.get(0)
+                : examScheduleRepository
+                        .findBySchoolIdAndExamSetupIdAndSchoolClassIdAndSectionIdAndSubjectId(
+                                schoolId, setup.getId(), schoolClass.getId(), secIdForLookup, subject.getId())
+                        .orElseGet(ExamSchedule::new);
+
         schedule.setSchool(school);
         schedule.setExamSetup(setup);
         schedule.setSchoolClass(schoolClass);
@@ -110,9 +140,18 @@ public class ExamScheduleService {
         schedule.setStartTime(request.getStartTime());
         schedule.setEndTime(request.getEndTime());
         schedule.setRoomNumber(request.getRoomNumber());
-        
-        ExamSubjectConfig config = examSubjectConfigRepository.findBySchoolIdAndExamSetupIdAndSubjectId(schoolId, setup.getId(), subject.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Subject config not found for this exam"));
+
+        ExamSubjectConfig config = examSubjectConfigRepository
+                .findBySchoolIdAndExamSetupIdAndSubjectId(schoolId, setup.getId(), subject.getId())
+                .orElseGet(() -> {
+                    ExamSubjectConfig newCfg = new ExamSubjectConfig();
+                    newCfg.setSchool(school);
+                    newCfg.setExamSetup(setup);
+                    newCfg.setSubject(subject);
+                    newCfg.setMaxMarks(request.getFullMarks() != null ? request.getFullMarks() : new BigDecimal("100.00"));
+                    newCfg.setPassingMarks(request.getPassingMarks() != null ? request.getPassingMarks() : new BigDecimal("35.00"));
+                    return examSubjectConfigRepository.save(newCfg);
+                });
         schedule.setExamSubjectConfig(config);
 
         schedule.setInstructions(request.getInstructions());
@@ -192,9 +231,30 @@ public class ExamScheduleService {
             schedule.setSection(section);
         }
 
+        validateExamApplicability(
+                schoolId,
+                schedule.getExamSetup(),
+                schedule.getSchoolClass(),
+                schedule.getSection());
+
         if (request.getSubjectId() != null || (request.getSubjectCode() != null && !request.getSubjectCode().isBlank()) || (request.getSubjectName() != null && !request.getSubjectName().isBlank())) {
             Subject subject = resolveSubject(schoolId, request);
             schedule.setSubject(subject);
+        }
+
+        // Prevent uq_exam_schedule_entry collision if another row already holds this (examSetup, class, section, subject)
+        Long targetSecId = schedule.getSection() != null ? schedule.getSection().getId() : null;
+        List<ExamSchedule> conflicting = examScheduleRepository.findMatchingSchedules(
+                schoolId,
+                schedule.getExamSetup().getId(),
+                schedule.getSchoolClass().getId(),
+                targetSecId,
+                schedule.getSubject().getId());
+        for (ExamSchedule conflict : conflicting) {
+            if (conflict.getId() != null && !conflict.getId().equals(schedule.getId())) {
+                schedule = conflict;
+                break;
+            }
         }
 
         schedule.setExamDate(request.getExamDate());
@@ -203,8 +263,20 @@ public class ExamScheduleService {
         schedule.setRoomNumber(request.getRoomNumber());
         
         if (request.getSubjectId() != null || request.getExamSetupId() != null) {
-            ExamSubjectConfig config = examSubjectConfigRepository.findBySchoolIdAndExamSetupIdAndSubjectId(schoolId, schedule.getExamSetup().getId(), schedule.getSubject().getId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Subject config not found for this exam"));
+            School activeSchool = schedule.getSchool();
+            ExamSetup activeSetup = schedule.getExamSetup();
+            Subject activeSubject = schedule.getSubject();
+            ExamSubjectConfig config = examSubjectConfigRepository
+                    .findBySchoolIdAndExamSetupIdAndSubjectId(schoolId, activeSetup.getId(), activeSubject.getId())
+                    .orElseGet(() -> {
+                        ExamSubjectConfig newCfg = new ExamSubjectConfig();
+                        newCfg.setSchool(activeSchool);
+                        newCfg.setExamSetup(activeSetup);
+                        newCfg.setSubject(activeSubject);
+                        newCfg.setMaxMarks(request.getFullMarks() != null ? request.getFullMarks() : new BigDecimal("100.00"));
+                        newCfg.setPassingMarks(request.getPassingMarks() != null ? request.getPassingMarks() : new BigDecimal("35.00"));
+                        return examSubjectConfigRepository.save(newCfg);
+                    });
             schedule.setExamSubjectConfig(config);
         }
 
@@ -268,6 +340,46 @@ public class ExamScheduleService {
                 .createdAt(s.getCreatedAt())
                 .updatedAt(s.getUpdatedAt())
                 .build();
+    }
+
+    private void validateExamApplicability(
+            Long schoolId,
+            ExamSetup setup,
+            SchoolClass schoolClass,
+            Section section) {
+        if (examApplicabilityRepository == null || setup == null || schoolClass == null) {
+            return;
+        }
+        List<ExamApplicability> applicabilities = examApplicabilityRepository
+                .findBySchoolIdAndExamSetupId(schoolId, setup.getId());
+        if (applicabilities == null || applicabilities.isEmpty()) {
+            return;
+        }
+        boolean classAllowed = applicabilities.stream()
+                .anyMatch(a -> a.getSchoolClass() != null
+                        && a.getSchoolClass().getId().equals(schoolClass.getId()));
+        if (!classAllowed) {
+            throw new BadRequestException("Examination '" + setup.getName()
+                    + "' is not configured for class '" + schoolClass.getName()
+                    + "'. Please select a configured class or update Exam Setup.");
+        }
+        if (section != null) {
+            List<ExamApplicability> classApps = applicabilities.stream()
+                    .filter(a -> a.getSchoolClass() != null
+                            && a.getSchoolClass().getId().equals(schoolClass.getId()))
+                    .toList();
+            boolean hasSpecificSections = classApps.stream().anyMatch(a -> a.getSection() != null);
+            if (hasSpecificSections) {
+                boolean sectionAllowed = classApps.stream()
+                        .anyMatch(a -> a.getSection() != null
+                                && a.getSection().getId().equals(section.getId()));
+                if (!sectionAllowed) {
+                    throw new BadRequestException("Examination '" + setup.getName()
+                            + "' is not configured for section '" + section.getName()
+                            + "' in class '" + schoolClass.getName() + "'.");
+                }
+            }
+        }
     }
 
     private Subject resolveSubject(Long schoolId, ExamScheduleRequest request) {

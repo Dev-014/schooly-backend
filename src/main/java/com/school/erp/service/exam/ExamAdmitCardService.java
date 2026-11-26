@@ -117,10 +117,15 @@ public class ExamAdmitCardService {
         Optional<ExamAdmitCard> admitCardOpt = examAdmitCardRepository
                 .findBySchoolIdAndExamSetupIdAndStudentId(schoolId, examSetupId, studentId);
 
-        // Retrieve schedules for student's class
+        // Retrieve schedules for student's class & section
         List<ExamSchedule> schedules = examScheduleRepository
                 .findBySchoolIdAndExamSetupIdAndSchoolClassIdOrderByExamDateAscStartTimeAsc(
-                        schoolId, examSetupId, student.getSchoolClass().getId());
+                        schoolId, examSetupId, student.getSchoolClass().getId())
+                .stream()
+                .filter(s -> s.getSection() == null
+                        || student.getSectionId() == null
+                        || s.getSection().getId().equals(student.getSectionId()))
+                .collect(Collectors.toList());
 
         List<AdmitCardPreviewResponse.AdmitCardScheduleItem> scheduleItems = schedules.stream()
                 .map(s -> AdmitCardPreviewResponse.AdmitCardScheduleItem.builder()
@@ -418,6 +423,27 @@ public class ExamAdmitCardService {
                 card.setCardNumber("AC-" + schoolId + "-" + setup.getId() + "-" + identifier);
                 card.setStatus("PENDING");
                 examAdmitCardRepository.save(card);
+            } else {
+                ExamAdmitCard card = existing.get();
+                boolean changed = false;
+                if (card.getSchoolClass() == null || !card.getSchoolClass().getId().equals(student.getSchoolClass().getId())) {
+                    card.setSchoolClass(student.getSchoolClass());
+                    changed = true;
+                }
+                Long cardSecId = card.getSection() != null ? card.getSection().getId() : null;
+                if (!java.util.Objects.equals(cardSecId, student.getSectionId())) {
+                    card.setSection(student.getSectionId() != null
+                            ? sectionRepository.findById(student.getSectionId()).orElse(null)
+                            : null);
+                    changed = true;
+                }
+                if (student.getRollNumber() != null && !student.getRollNumber().equals(card.getRollNumber())) {
+                    card.setRollNumber(student.getRollNumber());
+                    changed = true;
+                }
+                if (changed) {
+                    examAdmitCardRepository.save(card);
+                }
             }
         }
     }

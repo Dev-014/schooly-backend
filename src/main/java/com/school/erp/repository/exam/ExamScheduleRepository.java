@@ -51,6 +51,18 @@ public interface ExamScheduleRepository extends JpaRepository<ExamSchedule, Long
 
     Optional<ExamSchedule> findBySchoolIdAndExamSetupIdAndSchoolClassIdAndSectionIdAndSubjectId(
             Long schoolId, Long examSetupId, Long classId, Long sectionId, Long subjectId);
+
+    @Query("SELECT s FROM ExamSchedule s WHERE s.school.id = :schoolId " +
+           "AND s.examSetup.id = :examSetupId " +
+           "AND s.schoolClass.id = :classId " +
+           "AND s.subject.id = :subjectId " +
+           "AND ((:sectionId IS NULL AND s.section IS NULL) OR s.section.id = :sectionId)")
+    List<ExamSchedule> findMatchingSchedules(
+            @Param("schoolId") Long schoolId,
+            @Param("examSetupId") Long examSetupId,
+            @Param("classId") Long classId,
+            @Param("sectionId") Long sectionId,
+            @Param("subjectId") Long subjectId);
             
     @Query("SELECT s FROM ExamSchedule s WHERE s.school.id = :schoolId " +
            "AND (:termId IS NULL OR s.examSetup.term.id = :termId) " +

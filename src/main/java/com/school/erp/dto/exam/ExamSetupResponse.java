@@ -23,6 +23,9 @@ public class ExamSetupResponse {
     private String internalNote;
     private String status;
     private Long scheduleCount;
+    private Integer classCount;
+    private Integer subjectCount;
+    private Integer studentCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

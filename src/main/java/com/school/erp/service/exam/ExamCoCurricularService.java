@@ -20,7 +20,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -95,11 +97,28 @@ public class ExamCoCurricularService {
             grade.setHealthWellnessGrade(request.getHealthWellnessGrade().toUpperCase());
         }
 
-        boolean allDone = !"PENDING".equalsIgnoreCase(grade.getPhysicalEducationGrade()) &&
+        Map<Long, String> dynamicMap = parseSubjectGradesJson(grade.getSubjectGradesJson());
+        if (request.getSubjectGrades() != null) {
+            request.getSubjectGrades().forEach((subId, val) -> {
+                if (subId != null && val != null && !val.isBlank()) {
+                    dynamicMap.put(subId, val.trim().toUpperCase());
+                }
+            });
+        }
+        if (request.getSubjectId() != null && request.getGrade() != null && !request.getGrade().isBlank()) {
+            dynamicMap.put(request.getSubjectId(), request.getGrade().trim().toUpperCase());
+        }
+        if (!dynamicMap.isEmpty()) {
+            grade.setSubjectGradesJson(serializeSubjectGradesJson(dynamicMap));
+        }
+
+        boolean allDynamicDone = !dynamicMap.isEmpty() && dynamicMap.values().stream()
+                .noneMatch("PENDING"::equalsIgnoreCase);
+        boolean allLegacyDone = !"PENDING".equalsIgnoreCase(grade.getPhysicalEducationGrade()) &&
                           !"PENDING".equalsIgnoreCase(grade.getVisualArtsGrade()) &&
                           !"PENDING".equalsIgnoreCase(grade.getPerformingArtsGrade()) &&
                           !"PENDING".equalsIgnoreCase(grade.getHealthWellnessGrade());
-        grade.setStatus(allDone ? "COMPLETED" : "PENDING");
+        grade.setStatus((allDynamicDone || allLegacyDone) ? "COMPLETED" : "PENDING");
 
         ExamCoCurricularGrade saved = coCurricularRepository.save(grade);
         return mapToResponse(saved);
@@ -194,11 +213,49 @@ public class ExamCoCurricularService {
                 .sectionName(sectionName)
                 .termId(g.getTerm().getId())
                 .termName(g.getTerm().getName())
+                .subjectGrades(parseSubjectGradesJson(g.getSubjectGradesJson()))
                 .physicalEducationGrade(g.getPhysicalEducationGrade())
                 .visualArtsGrade(g.getVisualArtsGrade())
                 .performingArtsGrade(g.getPerformingArtsGrade())
                 .healthWellnessGrade(g.getHealthWellnessGrade())
                 .status(g.getStatus())
                 .build();
+    }
+
+    private Map<Long, String> parseSubjectGradesJson(String raw) {
+        Map<Long, String> map = new LinkedHashMap<>();
+        if (raw == null || raw.isBlank()) return map;
+        String clean = raw.trim();
+        if (clean.startsWith("{") && clean.endsWith("}")) {
+            clean = clean.substring(1, clean.length() - 1).trim();
+        }
+        if (clean.isEmpty()) return map;
+        for (String pair : clean.split(",")) {
+            String[] kv = pair.split(":");
+            if (kv.length == 2) {
+                try {
+                    Long k = Long.parseLong(kv[0].replace("\"", "").trim());
+                    String v = kv[1].replace("\"", "").trim();
+                    if (!v.isEmpty()) {
+                        map.put(k, v);
+                    }
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+        return map;
+    }
+
+    private String serializeSubjectGradesJson(Map<Long, String> map) {
+        if (map == null || map.isEmpty()) return "{}";
+        StringBuilder sb = new StringBuilder("{");
+        boolean first = true;
+        for (Map.Entry<Long, String> entry : map.entrySet()) {
+            if (!first) sb.append(",");
+            sb.append("\"").append(entry.getKey()).append("\":\"").append(entry.getValue()).append("\"");
+            first = false;
+        }
+        sb.append("}");
+        return sb.toString();
     }
 }

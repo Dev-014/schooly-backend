@@ -3,6 +3,8 @@ package com.school.erp.dto.exam;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Map;
+
 @Data
 @Builder
 public class CoCurricularItemResponse {
@@ -17,6 +19,7 @@ public class CoCurricularItemResponse {
     private String sectionName;
     private Long termId;
     private String termName;
+    private Map<Long, String> subjectGrades;
     private String physicalEducationGrade;
     private String visualArtsGrade;
     private String performingArtsGrade;

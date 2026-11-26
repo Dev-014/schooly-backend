@@ -56,6 +56,9 @@ public class ExamCoCurricularGrade {
     @Column(name = "health_wellness_grade", length = 10)
     private String healthWellnessGrade = "PENDING";
 
+    @Column(name = "subject_grades_json", columnDefinition = "TEXT")
+    private String subjectGradesJson;
+
     @Column(name = "status", nullable = false, length = 20)
     private String status = "PENDING";
 

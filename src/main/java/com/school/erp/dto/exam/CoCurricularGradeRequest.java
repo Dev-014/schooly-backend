@@ -3,6 +3,8 @@ package com.school.erp.dto.exam;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.Map;
+
 @Data
 public class CoCurricularGradeRequest {
 
@@ -15,6 +17,12 @@ public class CoCurricularGradeRequest {
     private Long classId;
 
     private Long sectionId;
+
+    private Long subjectId;
+
+    private String grade;
+
+    private Map<Long, String> subjectGrades;
 
     private String physicalEducationGrade;
 

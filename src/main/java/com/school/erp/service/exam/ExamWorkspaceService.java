@@ -16,18 +16,25 @@ import org.springframework.transaction.annotation.Transactional;
 import com.school.erp.dto.exam.workspace.ExamSubjectBulkAddRequest;
 import com.school.erp.dto.exam.workspace.ExamSubjectConfigUpdateRequest;
 import com.school.erp.dto.exam.workspace.ExamApplicabilitySyncRequest;
+import com.school.erp.entity.academic.ClassSubjectAssignment;
 import com.school.erp.entity.academic.Subject;
 import com.school.erp.entity.academic.SchoolClass;
 import com.school.erp.entity.academic.Section;
 import com.school.erp.entity.student.Student;
+import com.school.erp.entity.student.StudentSubjectEnrollment;
+import com.school.erp.repository.academic.ClassSubjectAssignmentRepository;
 import com.school.erp.repository.academic.SubjectRepository;
 import com.school.erp.repository.academic.SchoolClassRepository;
 import com.school.erp.repository.academic.SectionRepository;
 import com.school.erp.repository.student.StudentRepository;
+import com.school.erp.repository.student.StudentSubjectEnrollmentRepository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +51,8 @@ public class ExamWorkspaceService {
     private final SchoolClassRepository schoolClassRepository;
     private final SectionRepository sectionRepository;
     private final StudentRepository studentRepository;
+    private final ClassSubjectAssignmentRepository classSubjectAssignmentRepository;
+    private final StudentSubjectEnrollmentRepository studentSubjectEnrollmentRepository;
 
 
     @Transactional(readOnly = true)
@@ -55,6 +64,12 @@ public class ExamWorkspaceService {
         int subjectCount = examSubjectConfigRepository.findBySchoolIdAndExamSetupId(schoolId, examSetupId).size();
         int classCount = examApplicabilityRepository.countBySchoolIdAndExamSetupId(schoolId, examSetupId);
         int scheduleCount = examScheduleRepository.countBySchoolIdAndExamSetupId(schoolId, examSetupId);
+        int studentCount = (int) examStudentEligibilityRepository.findBySchoolIdAndExamSetupId(schoolId, examSetupId)
+                .stream()
+                .filter(e -> !"EXEMPTED".equalsIgnoreCase(e.getStatus()))
+                .map(e -> e.getStudent().getId())
+                .distinct()
+                .count();
 
         return ExamWorkspaceOverviewResponse.builder()
                 .id(setup.getId())
@@ -66,26 +81,70 @@ public class ExamWorkspaceService {
                 .evaluationType(setup.getEvaluationType())
                 .subjectCount(subjectCount)
                 .classCount(classCount)
-                .studentCount(0) // We can calculate this by counting unique students in student eligibility
+                .studentCount(studentCount)
                 .scheduleCount(scheduleCount)
                 .build();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ExamSubjectConfigDto> getSubjects(Long rawSchoolId, Long examSetupId) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
-        return examSubjectConfigRepository.findBySchoolIdAndExamSetupId(schoolId, examSetupId).stream()
-                .map(c -> ExamSubjectConfigDto.builder()
-                        .id(c.getId())
-                        .subjectId(c.getSubject().getId())
-                        .subjectName(c.getSubject().getName())
-                        .subjectCode(c.getSubject().getCode())
-                        .maxMarks(c.getMaxMarks())
-                        .passingMarks(c.getPassingMarks())
-                        .theoryMarks(c.getTheoryMarks())
-                        .practicalMarks(c.getPracticalMarks())
-                        .internalMarks(c.getInternalMarks())
-                        .build())
+        List<ExamApplicability> applicabilities = examApplicabilityRepository.findBySchoolIdAndExamSetupId(schoolId, examSetupId);
+        List<ExamSubjectConfig> configs = examSubjectConfigRepository.findBySchoolIdAndExamSetupId(schoolId, examSetupId);
+
+        // If classes/sections are already selected but subject configs haven't been synced yet,
+        // automatically populate from class_subject_assignments SOT.
+        if (configs.isEmpty() && !applicabilities.isEmpty()) {
+            ExamSetup setup = examSetupRepository.findByIdAndSchoolId(examSetupId, schoolId).orElse(null);
+            if (setup != null) {
+                autoSyncSubjectsAndStudentsFromAllotments(schoolId, setup, applicabilities);
+                configs = examSubjectConfigRepository.findBySchoolIdAndExamSetupId(schoolId, examSetupId);
+            }
+        }
+
+        List<ClassSubjectAssignment> allAssignments = classSubjectAssignmentRepository.findBySchoolId(schoolId);
+
+        return configs.stream()
+                .map(c -> {
+                    Long subId = c.getSubject().getId();
+                    List<ClassSubjectAssignment> matchingAssignments = allAssignments.stream()
+                            .filter(csa -> csa.getSubject() != null && csa.getSubject().getId().equals(subId))
+                            .filter(csa -> applicabilities.isEmpty() || applicabilities.stream().anyMatch(app ->
+                                    csa.getSchoolClass() != null &&
+                                    csa.getSchoolClass().getId().equals(app.getSchoolClass().getId()) &&
+                                    (app.getSection() == null || csa.getSection() == null || csa.getSection().getId().equals(app.getSection().getId()))
+                            ))
+                            .collect(Collectors.toList());
+
+                    String resolvedType = matchingAssignments.stream()
+                            .map(ClassSubjectAssignment::getSubjectType)
+                            .filter(t -> t != null && !t.isBlank())
+                            .findFirst()
+                            .orElse(c.getSubject().getType() != null ? c.getSubject().getType() : "CORE");
+
+                    List<String> assignedClasses = matchingAssignments.stream()
+                            .map(csa -> {
+                                String clsName = csa.getSchoolClass() != null ? csa.getSchoolClass().getName() : "Class";
+                                String secName = csa.getSection() != null ? " (" + csa.getSection().getName() + ")" : "";
+                                return clsName + secName;
+                            })
+                            .distinct()
+                            .collect(Collectors.toList());
+
+                    return ExamSubjectConfigDto.builder()
+                            .id(c.getId())
+                            .subjectId(subId)
+                            .subjectName(c.getSubject().getName())
+                            .subjectCode(c.getSubject().getCode())
+                            .subjectType(resolvedType)
+                            .assignedClasses(assignedClasses)
+                            .maxMarks(c.getMaxMarks())
+                            .passingMarks(c.getPassingMarks())
+                            .theoryMarks(c.getTheoryMarks())
+                            .practicalMarks(c.getPracticalMarks())
+                            .internalMarks(c.getInternalMarks())
+                            .build();
+                })
                 .collect(Collectors.toList());
     }
 
@@ -242,78 +301,179 @@ public class ExamWorkspaceService {
         ExamSetup setup = examSetupRepository.findByIdAndSchoolId(examSetupId, schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Exam setup not found"));
 
-        // For simplicity, we remove existing and re-add to sync. 
-        // Note: CASCADE constraints on exam_student_eligibility might drop eligibility if we delete applicabilities.
-        // A better approach is to compute diff.
-        
         List<ExamApplicability> existing = examApplicabilityRepository.findBySchoolIdAndExamSetupId(schoolId, examSetupId);
-        
-        // Find what to add
+        List<ExamApplicability> activeApplicabilities = new ArrayList<>();
+
+        // 1. Add or retain requested class/section pairs
         for (ExamApplicabilitySyncRequest.ClassSectionPair pair : request.getApplicabilities()) {
-            boolean found = existing.stream().anyMatch(e -> 
-                e.getSchoolClass().getId().equals(pair.getClassId()) && 
-                ((e.getSection() == null && pair.getSectionId() == null) || (e.getSection() != null && e.getSection().getId().equals(pair.getSectionId())))
-            );
-            
-            if (!found) {
-                // Add new applicability
+            ExamApplicability match = existing.stream().filter(e ->
+                e.getSchoolClass().getId().equals(pair.getClassId()) &&
+                ((e.getSection() == null && pair.getSectionId() == null) ||
+                 (e.getSection() != null && e.getSection().getId().equals(pair.getSectionId())))
+            ).findFirst().orElse(null);
+
+            if (match != null) {
+                activeApplicabilities.add(match);
+            } else {
                 SchoolClass schoolClass = schoolClassRepository.findById(pair.getClassId()).orElse(null);
                 Section section = pair.getSectionId() != null ? sectionRepository.findById(pair.getSectionId()).orElse(null) : null;
-                
+
                 if (schoolClass != null) {
                     ExamApplicability newApp = new ExamApplicability();
                     newApp.setSchool(setup.getSchool());
                     newApp.setExamSetup(setup);
                     newApp.setSchoolClass(schoolClass);
                     newApp.setSection(section);
-                    examApplicabilityRepository.save(newApp);
-                    
-                    // Automatically enroll active students from this class/section
-                    List<Student> students;
-                    if (section != null) {
-                        students = studentRepository.findBySchoolIdAndSchoolClassIdAndSectionId(schoolId, schoolClass.getId(), section.getId());
-                    } else {
-                        students = studentRepository.findBySchoolIdAndSchoolClassId(schoolId, schoolClass.getId());
-                    }
-                    
-                    List<ExamStudentEligibility> existingEligibilities = examStudentEligibilityRepository.findBySchoolIdAndExamSetupId(schoolId, examSetupId);
-                    List<ExamSubjectConfig> configs = examSubjectConfigRepository.findBySchoolIdAndExamSetupId(schoolId, examSetupId);
-                    
-                    for (Student s : students) {
-                        for (ExamSubjectConfig config : configs) {
-                            boolean alreadyEnrolled = existingEligibilities.stream()
-                                .anyMatch(ee -> ee.getStudent().getId().equals(s.getId()) && ee.getExamSubjectConfig().getId().equals(config.getId()));
-                            if (!alreadyEnrolled) {
-                                ExamStudentEligibility eligibility = new ExamStudentEligibility();
-                                eligibility.setSchool(setup.getSchool());
-                                eligibility.setExamSubjectConfig(config);
-                                eligibility.setStudent(s);
-                                eligibility.setStatus("ELIGIBLE");
-                                examStudentEligibilityRepository.save(eligibility);
-                            }
-                        }
-                    }
+                    ExamApplicability savedApp = examApplicabilityRepository.save(newApp);
+                    activeApplicabilities.add(savedApp);
                 }
             }
         }
-        
-        // Find what to remove
+
+        // 2. Remove deselected class/section pairs and their students' eligibility rows
         for (ExamApplicability ext : existing) {
-            boolean keep = request.getApplicabilities().stream().anyMatch(pair -> 
-                ext.getSchoolClass().getId().equals(pair.getClassId()) && 
-                ((ext.getSection() == null && pair.getSectionId() == null) || (ext.getSection() != null && ext.getSection().getId().equals(pair.getSectionId())))
+            boolean keep = request.getApplicabilities().stream().anyMatch(pair ->
+                ext.getSchoolClass().getId().equals(pair.getClassId()) &&
+                ((ext.getSection() == null && pair.getSectionId() == null) ||
+                 (ext.getSection() != null && ext.getSection().getId().equals(pair.getSectionId())))
             );
             if (!keep) {
                 examApplicabilityRepository.delete(ext);
-                
+
                 List<ExamStudentEligibility> existingEligibilities = examStudentEligibilityRepository.findBySchoolIdAndExamSetupId(schoolId, examSetupId);
-                
                 for (ExamStudentEligibility ee : existingEligibilities) {
                     Student s = ee.getStudent();
                     if (s.getSchoolClass() != null && s.getSchoolClass().getId().equals(ext.getSchoolClass().getId())) {
                         if (ext.getSection() == null || (s.getSectionId() != null && s.getSectionId().equals(ext.getSection().getId()))) {
                             examStudentEligibilityRepository.delete(ee);
                         }
+                    }
+                }
+            }
+        }
+
+        // 3. Automatically discover allotted subjects from class_subject_assignments SOT
+        //    and auto-enroll eligible students for the active class/section pairs
+        autoSyncSubjectsAndStudentsFromAllotments(schoolId, setup, activeApplicabilities);
+    }
+
+    private void autoSyncSubjectsAndStudentsFromAllotments(
+            Long schoolId,
+            ExamSetup setup,
+            List<ExamApplicability> activeApplicabilities
+    ) {
+        if (activeApplicabilities == null || activeApplicabilities.isEmpty()) {
+            return;
+        }
+
+        Long examSetupId = setup.getId();
+        List<ClassSubjectAssignment> allSchoolAssignments = classSubjectAssignmentRepository.findBySchoolId(schoolId);
+        List<ExamSubjectConfig> existingConfigs = new ArrayList<>(
+                examSubjectConfigRepository.findBySchoolIdAndExamSetupId(schoolId, examSetupId)
+        );
+
+        // Map (classId, sectionId) -> list of allotted ClassSubjectAssignment
+        Map<ExamApplicability, List<ClassSubjectAssignment>> assignmentsByApp = new LinkedHashMap<>();
+        Set<Long> allottedSubjectIds = new LinkedHashSet<>();
+
+        for (ExamApplicability app : activeApplicabilities) {
+            Long classId = app.getSchoolClass().getId();
+            Long sectionId = app.getSection() != null ? app.getSection().getId() : null;
+
+            List<ClassSubjectAssignment> matched = allSchoolAssignments.stream()
+                    .filter(csa -> csa.getStatus() == null || !"INACTIVE".equalsIgnoreCase(csa.getStatus()))
+                    .filter(csa -> csa.getSchoolClass() != null && csa.getSchoolClass().getId().equals(classId))
+                    .filter(csa -> sectionId == null || csa.getSection() == null || csa.getSection().getId().equals(sectionId))
+                    .filter(csa -> csa.getSubject() != null)
+                    .collect(Collectors.toList());
+
+            assignmentsByApp.put(app, matched);
+            for (ClassSubjectAssignment csa : matched) {
+                allottedSubjectIds.add(csa.getSubject().getId());
+            }
+        }
+
+        // Auto-create ExamSubjectConfig for every allotted subject not yet configured on this exam
+        for (Long subjectId : allottedSubjectIds) {
+            boolean alreadyConfigured = existingConfigs.stream()
+                    .anyMatch(c -> c.getSubject() != null && c.getSubject().getId().equals(subjectId));
+            if (!alreadyConfigured) {
+                Subject subject = allSchoolAssignments.stream()
+                        .map(ClassSubjectAssignment::getSubject)
+                        .filter(sub -> sub != null && sub.getId().equals(subjectId))
+                        .findFirst()
+                        .orElseGet(() -> subjectRepository.findById(subjectId).orElse(null));
+
+                if (subject != null) {
+                    ExamSubjectConfig config = new ExamSubjectConfig();
+                    config.setSchool(setup.getSchool());
+                    config.setExamSetup(setup);
+                    config.setSubject(subject);
+                    config.setMaxMarks(new BigDecimal("100.00"));
+                    config.setPassingMarks(new BigDecimal("35.00"));
+                    ExamSubjectConfig savedConfig = examSubjectConfigRepository.save(config);
+                    existingConfigs.add(savedConfig);
+                }
+            }
+        }
+
+        // Auto-enroll active students of each applicable class/section into their allotted subjects
+        List<ExamStudentEligibility> existingEligibilities = new ArrayList<>(
+                examStudentEligibilityRepository.findBySchoolIdAndExamSetupId(schoolId, examSetupId)
+        );
+
+        for (ExamApplicability app : activeApplicabilities) {
+            Long classId = app.getSchoolClass().getId();
+            Long sectionId = app.getSection() != null ? app.getSection().getId() : null;
+
+            List<Student> students = sectionId != null
+                    ? studentRepository.findBySchoolIdAndSchoolClassIdAndSectionId(schoolId, classId, sectionId)
+                    : studentRepository.findBySchoolIdAndSchoolClassId(schoolId, classId);
+
+            List<ClassSubjectAssignment> appAssignments = assignmentsByApp.getOrDefault(app, List.of());
+            Set<Long> appSubjectIds = appAssignments.stream()
+                    .map(csa -> csa.getSubject().getId())
+                    .collect(Collectors.toSet());
+            Set<Long> electiveSubjectIds = appAssignments.stream()
+                    .filter(csa -> "ELECTIVE".equalsIgnoreCase(csa.getSubjectType()))
+                    .map(csa -> csa.getSubject().getId())
+                    .collect(Collectors.toSet());
+
+            // Fallback: if no class_subject_assignments exist for this class yet, use all existingConfigs
+            List<ExamSubjectConfig> targetConfigs = appSubjectIds.isEmpty()
+                    ? existingConfigs
+                    : existingConfigs.stream()
+                            .filter(c -> c.getSubject() != null && appSubjectIds.contains(c.getSubject().getId()))
+                            .collect(Collectors.toList());
+
+            for (Student s : students) {
+                List<StudentSubjectEnrollment> studentEnrollments = electiveSubjectIds.isEmpty()
+                        ? List.of()
+                        : studentSubjectEnrollmentRepository.findBySchoolIdAndStudentId(schoolId, s.getId());
+
+                for (ExamSubjectConfig config : targetConfigs) {
+                    Long subId = config.getSubject().getId();
+                    if (electiveSubjectIds.contains(subId) && !studentEnrollments.isEmpty()) {
+                        boolean enrolledInElective = studentEnrollments.stream()
+                                .anyMatch(se -> se.getSubject() != null
+                                        && se.getSubject().getId().equals(subId)
+                                        && !"INACTIVE".equalsIgnoreCase(se.getStatus()));
+                        if (!enrolledInElective) {
+                            continue;
+                        }
+                    }
+
+                    boolean alreadyEnrolled = existingEligibilities.stream()
+                            .anyMatch(ee -> ee.getStudent().getId().equals(s.getId())
+                                    && ee.getExamSubjectConfig().getId().equals(config.getId()));
+                    if (!alreadyEnrolled) {
+                        ExamStudentEligibility eligibility = new ExamStudentEligibility();
+                        eligibility.setSchool(setup.getSchool());
+                        eligibility.setExamSubjectConfig(config);
+                        eligibility.setStudent(s);
+                        eligibility.setStatus("ELIGIBLE");
+                        ExamStudentEligibility savedElig = examStudentEligibilityRepository.save(eligibility);
+                        existingEligibilities.add(savedElig);
                     }
                 }
             }

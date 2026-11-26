@@ -6,16 +6,20 @@ import com.school.erp.dto.exam.ExamMarkEntryRequest;
 import com.school.erp.dto.exam.ExamMarkItemResponse;
 import com.school.erp.entity.superadmin.School;
 import com.school.erp.entity.student.Student;
+import com.school.erp.entity.academic.ClassSubjectAssignment;
 import com.school.erp.entity.academic.Subject;
 import com.school.erp.entity.exam.ExamMark;
 import com.school.erp.entity.exam.ExamSetup;
 import com.school.erp.entity.notification.NotificationPriority;
 import com.school.erp.entity.notification.NotificationType;
+import com.school.erp.entity.student.StudentSubjectEnrollment;
 import com.school.erp.exception.ResourceNotFoundException;
+import com.school.erp.repository.academic.ClassSubjectAssignmentRepository;
 import com.school.erp.repository.academic.SchoolClassRepository;
 import com.school.erp.repository.superadmin.SchoolRepository;
 import com.school.erp.repository.academic.SectionRepository;
 import com.school.erp.repository.student.StudentRepository;
+import com.school.erp.repository.student.StudentSubjectEnrollmentRepository;
 import com.school.erp.repository.academic.SubjectRepository;
 import com.school.erp.repository.exam.ExamMarkRepository;
 import com.school.erp.repository.exam.ExamSetupRepository;
@@ -51,6 +55,8 @@ public class ExamMarkService {
     private final SubjectRepository subjectRepository;
     private final StudentRepository studentRepository;
     private final ExamSubjectConfigRepository examSubjectConfigRepository;
+    private final ClassSubjectAssignmentRepository classSubjectAssignmentRepository;
+    private final StudentSubjectEnrollmentRepository studentSubjectEnrollmentRepository;
 
     @Autowired(required = false)
     private NotificationService notificationService;
@@ -65,8 +71,27 @@ public class ExamMarkService {
             Pageable pageable) {
         Long schoolId = authContextService.resolveSchoolId(rawSchoolId);
 
+        boolean isElectiveSubject = isElectiveForClassAndSubject(schoolId, classId, sectionId, subjectId);
+        boolean isSubjectAllottedToClass = isSubjectAllottedOrCore(schoolId, classId, sectionId, subjectId);
+        List<Long> optedStudentIds = isElectiveSubject
+                ? resolveOptedStudentIds(schoolId, subjectId)
+                : List.of();
+
+        if (!isElectiveSubject && !isSubjectAllottedToClass) {
+            return Page.empty(pageable);
+        }
+
         if (examSetupId != null && classId != null && subjectId != null) {
-            syncStudentMarksRoster(schoolId, examSetupId, classId, sectionId, subjectId);
+            syncStudentMarksRoster(schoolId, examSetupId, classId, sectionId, subjectId, isElectiveSubject, optedStudentIds);
+        }
+
+        if (isElectiveSubject) {
+            if (optedStudentIds.isEmpty()) {
+                return Page.empty(pageable);
+            }
+            Page<ExamMark> page = examMarkRepository.filterMarksForStudents(
+                    schoolId, examSetupId, classId, sectionId, subjectId, optedStudentIds, pageable);
+            return page.map(this::mapToResponse);
         }
 
         Page<ExamMark> page = examMarkRepository.filterMarks(
@@ -207,19 +232,90 @@ public class ExamMarkService {
                 .build();
     }
 
-    private void syncStudentMarksRoster(Long schoolId, Long examSetupId, Long classId, Long sectionId, Long subjectId) {
+    private boolean isElectiveForClassAndSubject(Long schoolId, Long classId, Long sectionId, Long subjectId) {
+        if (classId == null || subjectId == null) return false;
+        List<ClassSubjectAssignment> matchingAssignments = classSubjectAssignmentRepository.findBySchoolId(schoolId).stream()
+                .filter(a -> a.getSchoolClass() != null && classId.equals(a.getSchoolClass().getId())
+                        && a.getSubject() != null && subjectId.equals(a.getSubject().getId())
+                        && (sectionId == null || a.getSection() == null || sectionId.equals(a.getSection().getId())))
+                .collect(Collectors.toList());
+
+        if (matchingAssignments.stream().anyMatch(a -> "ELECTIVE".equalsIgnoreCase(a.getSubjectType()))) {
+            return true;
+        }
+
+        boolean explicitlyCore = matchingAssignments.stream()
+                .anyMatch(a -> "CORE".equalsIgnoreCase(a.getSubjectType()));
+        if (!explicitlyCore && !resolveOptedStudentIds(schoolId, subjectId).isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isSubjectAllottedOrCore(Long schoolId, Long classId, Long sectionId, Long subjectId) {
+        if (classId == null || subjectId == null) return true;
+        List<ClassSubjectAssignment> classAssignments = classSubjectAssignmentRepository.findBySchoolId(schoolId).stream()
+                .filter(a -> a.getSchoolClass() != null && classId.equals(a.getSchoolClass().getId())
+                        && (sectionId == null || a.getSection() == null || sectionId.equals(a.getSection().getId())))
+                .collect(Collectors.toList());
+        // If this class has no curriculum configured yet, allow fallback
+        if (classAssignments.isEmpty()) return true;
+        return classAssignments.stream()
+                .anyMatch(a -> a.getSubject() != null && subjectId.equals(a.getSubject().getId()));
+    }
+
+    private List<Long> resolveOptedStudentIds(Long schoolId, Long subjectId) {
+        if (subjectId == null) return List.of();
+        return studentSubjectEnrollmentRepository.findAll().stream()
+                .filter(e -> e.getSchool() != null && schoolId.equals(e.getSchool().getId())
+                        && e.getSubject() != null && subjectId.equals(e.getSubject().getId())
+                        && e.getStudent() != null
+                        && "ELECTIVE".equalsIgnoreCase(e.getEnrollmentType())
+                        && !"INACTIVE".equalsIgnoreCase(e.getStatus()))
+                .map(e -> e.getStudent().getId())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private void syncStudentMarksRoster(
+            Long schoolId,
+            Long examSetupId,
+            Long classId,
+            Long sectionId,
+            Long subjectId,
+            boolean isElectiveSubject,
+            List<Long> optedStudentIds) {
         ExamSetup setup = examSetupRepository.findByIdAndSchoolId(examSetupId, schoolId).orElse(null);
         Subject subject = subjectRepository.findById(subjectId).orElse(null);
         if (setup == null || subject == null) return;
+
+        if (isElectiveSubject && optedStudentIds.isEmpty()) {
+            return;
+        }
 
         List<Student> students = (sectionId != null)
                 ? studentRepository.findBySchoolIdAndSchoolClassIdAndSectionId(schoolId, classId, sectionId)
                 : studentRepository.findBySchoolIdAndSchoolClassId(schoolId, classId);
 
+        if (isElectiveSubject) {
+            Set<Long> optedSet = Set.copyOf(optedStudentIds);
+            students = students.stream()
+                    .filter(s -> optedSet.contains(s.getId()))
+                    .collect(Collectors.toList());
+        }
+
         if (students.isEmpty()) return;
 
-        ExamSubjectConfig config = examSubjectConfigRepository.findBySchoolIdAndExamSetupIdAndSubjectId(schoolId, examSetupId, subjectId).orElse(null);
-        if (config == null) return;
+        ExamSubjectConfig config = examSubjectConfigRepository.findBySchoolIdAndExamSetupIdAndSubjectId(schoolId, examSetupId, subjectId)
+                .orElseGet(() -> {
+                    ExamSubjectConfig newCfg = new ExamSubjectConfig();
+                    newCfg.setSchool(setup.getSchool());
+                    newCfg.setExamSetup(setup);
+                    newCfg.setSubject(subject);
+                    newCfg.setMaxMarks(new BigDecimal("100.00"));
+                    newCfg.setPassingMarks(new BigDecimal("35.00"));
+                    return examSubjectConfigRepository.save(newCfg);
+                });
 
         List<ExamMark> existingMarks = examMarkRepository.findBySchoolIdAndExamSetupIdAndSubjectIdAndClassId(
                 schoolId, examSetupId, subjectId, classId);

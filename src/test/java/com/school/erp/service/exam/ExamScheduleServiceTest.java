@@ -203,4 +203,43 @@ class ExamScheduleServiceTest {
 
         assertThrows(ResourceNotFoundException.class, () -> examScheduleService.createSchedule(4L, request));
     }
+
+    @Test
+    void createSchedule_WhenDuplicateKeyExists_UpdatesExistingScheduleWithoutConstraintViolation() {
+        when(authContextService.resolveSchoolId(1000L)).thenReturn(1000L);
+        school.setId(1000L);
+        when(schoolRepository.findById(1000L)).thenReturn(Optional.of(school));
+        when(examSetupRepository.findByIdAndSchoolId(4L, 1000L)).thenReturn(Optional.of(examSetup));
+        schoolClass.setId(2L);
+        when(schoolClassRepository.findByIdAndSchoolId(2L, 1000L)).thenReturn(Optional.of(schoolClass));
+        subject.setId(9L);
+        when(subjectRepository.findByIdAndSchoolId(9L, 1000L)).thenReturn(Optional.of(subject));
+
+        ExamSchedule existing = new ExamSchedule();
+        existing.setId(777L);
+        existing.setSchool(school);
+        existing.setExamSetup(examSetup);
+        existing.setSchoolClass(schoolClass);
+        existing.setSubject(subject);
+
+        when(examScheduleRepository.findMatchingSchedules(1000L, 4L, 2L, null, 9L))
+                .thenReturn(List.of(existing));
+        when(examSubjectConfigRepository.findBySchoolIdAndExamSetupIdAndSubjectId(1000L, 4L, 9L))
+                .thenReturn(Optional.of(new com.school.erp.entity.exam.ExamSubjectConfig()));
+        when(examScheduleRepository.save(any(ExamSchedule.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        ExamScheduleRequest request = new ExamScheduleRequest();
+        request.setExamSetupId(4L);
+        request.setClassId(2L);
+        request.setSubjectId(9L);
+        request.setExamDate(LocalDate.of(2026, 10, 12));
+        request.setStartTime(LocalTime.of(10, 0));
+        request.setEndTime(LocalTime.of(13, 0));
+        request.setRoomNumber("Room 204");
+
+        ExamScheduleResponse response = examScheduleService.createSchedule(1000L, request);
+
+        assertEquals(777L, response.getId());
+        assertEquals("Room 204", response.getRoomNumber());
+    }
 }

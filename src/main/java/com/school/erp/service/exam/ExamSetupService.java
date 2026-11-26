@@ -9,8 +9,11 @@ import com.school.erp.entity.exam.ExamTerm;
 import com.school.erp.exception.BadRequestException;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.superadmin.SchoolRepository;
+import com.school.erp.repository.exam.ExamApplicabilityRepository;
 import com.school.erp.repository.exam.ExamScheduleRepository;
 import com.school.erp.repository.exam.ExamSetupRepository;
+import com.school.erp.repository.exam.ExamStudentEligibilityRepository;
+import com.school.erp.repository.exam.ExamSubjectConfigRepository;
 import com.school.erp.repository.exam.ExamTermRepository;
 import com.school.erp.security.AuthContextService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,9 @@ public class ExamSetupService {
     private final ExamSetupRepository examSetupRepository;
     private final ExamTermRepository examTermRepository;
     private final ExamScheduleRepository examScheduleRepository;
+    private final ExamApplicabilityRepository examApplicabilityRepository;
+    private final ExamSubjectConfigRepository examSubjectConfigRepository;
+    private final ExamStudentEligibilityRepository examStudentEligibilityRepository;
     private final SchoolRepository schoolRepository;
 
     @Transactional(readOnly = true)
@@ -152,10 +158,20 @@ public class ExamSetupService {
     }
 
     private ExamSetupResponse mapToResponse(ExamSetup setup) {
-        long scheduleCount = examSetupRepository.countSchedulesByExamSetupId(setup.getId());
+        Long schoolId = setup.getSchool().getId();
+        Long setupId = setup.getId();
+        long scheduleCount = examSetupRepository.countSchedulesByExamSetupId(setupId);
+        int classCount = examApplicabilityRepository.countBySchoolIdAndExamSetupId(schoolId, setupId);
+        int subjectCount = examSubjectConfigRepository.findBySchoolIdAndExamSetupId(schoolId, setupId).size();
+        int studentCount = (int) examStudentEligibilityRepository.findBySchoolIdAndExamSetupId(schoolId, setupId)
+                .stream()
+                .filter(e -> !"EXEMPTED".equalsIgnoreCase(e.getStatus()))
+                .map(e -> e.getStudent().getId())
+                .distinct()
+                .count();
         return ExamSetupResponse.builder()
-                .id(setup.getId())
-                .schoolId(setup.getSchool().getId())
+                .id(setupId)
+                .schoolId(schoolId)
                 .termId(setup.getTerm().getId())
                 .termName(setup.getTerm().getName())
                 .orderNo(setup.getOrderNo())
@@ -168,6 +184,9 @@ public class ExamSetupService {
                 .internalNote(setup.getInternalNote())
                 .status(setup.getStatus())
                 .scheduleCount(scheduleCount)
+                .classCount(classCount)
+                .subjectCount(subjectCount)
+                .studentCount(studentCount)
                 .createdAt(setup.getCreatedAt())
                 .updatedAt(setup.getUpdatedAt())
                 .build();
