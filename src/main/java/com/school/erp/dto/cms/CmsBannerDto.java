@@ -14,6 +14,7 @@ public class CmsBannerDto {
     private Long schoolId;
     private String fileName;
     private String url;
+    private String targetLink;
     private String fileType;
     private String dimensions;
     private String size;

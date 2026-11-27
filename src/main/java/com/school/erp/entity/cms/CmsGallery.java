@@ -39,6 +39,9 @@ public class CmsGallery {
     @Column(name = "gallery_images", columnDefinition = "TEXT")
     private String galleryImages; // JSON or comma-separated list of image URLs
 
+    @Column(name = "photo_metadata", columnDefinition = "TEXT")
+    private String photoMetadata;
+
     private String url;
 
     @Builder.Default

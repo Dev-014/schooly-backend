@@ -32,6 +32,9 @@ public class CmsBanner {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String url;
 
+    @Column(name = "target_link", columnDefinition = "TEXT")
+    private String targetLink;
+
     @Column(name = "file_type")
     private String fileType;
 

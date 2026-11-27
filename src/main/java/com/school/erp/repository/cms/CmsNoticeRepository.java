@@ -11,9 +11,11 @@ import java.util.List;
 @Repository
 public interface CmsNoticeRepository extends JpaRepository<CmsNotice, Long> {
 
+    List<CmsNotice> findBySchoolIdOrderByIdDesc(Long schoolId);
+    List<CmsNotice> findAllByOrderByIdDesc();
+
     @Query("SELECT n FROM CmsNotice n WHERE (:schoolId IS NULL OR n.schoolId = :schoolId) " +
-           "AND (:search IS NULL OR LOWER(n.title) LIKE LOWER(CONCAT('%', :search, '%')) " +
-           "OR LOWER(n.description) LIKE LOWER(CONCAT('%', :search, '%'))) ORDER BY n.id DESC")
+           "AND (LOWER(n.title) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+           "OR LOWER(COALESCE(n.description, '')) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) ORDER BY n.id DESC")
     List<CmsNotice> searchNotices(@Param("schoolId") Long schoolId, @Param("search") String search);
 }
-

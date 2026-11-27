@@ -11,10 +11,12 @@ import java.util.List;
 @Repository
 public interface CmsTestimonialRepository extends JpaRepository<CmsTestimonial, Long> {
 
+    List<CmsTestimonial> findBySchoolIdOrderByIdDesc(Long schoolId);
+    List<CmsTestimonial> findAllByOrderByIdDesc();
+
     @Query("SELECT t FROM CmsTestimonial t WHERE (:schoolId IS NULL OR t.schoolId = :schoolId) " +
-           "AND (:search IS NULL OR LOWER(t.name) LIKE LOWER(CONCAT('%', :search, '%')) " +
-           "OR LOWER(t.designation) LIKE LOWER(CONCAT('%', :search, '%')) " +
-           "OR LOWER(t.testimonial) LIKE LOWER(CONCAT('%', :search, '%'))) ORDER BY t.id DESC")
+           "AND (LOWER(t.name) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+           "OR LOWER(COALESCE(t.designation, '')) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+           "OR LOWER(COALESCE(t.testimonial, '')) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) ORDER BY t.id DESC")
     List<CmsTestimonial> searchTestimonials(@Param("schoolId") Long schoolId, @Param("search") String search);
 }
-

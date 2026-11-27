@@ -25,6 +25,7 @@ import com.school.erp.repository.student.StudentParentRepository;
 import com.school.erp.repository.student.StudentRepository;
 import com.school.erp.security.AuthContextHolder;
 import com.school.erp.security.AuthenticatedUser;
+import com.school.erp.service.notification.FcmPushService;
 import com.school.erp.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +51,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final StudentParentRepository studentParentRepository;
     private final ClassTeacherAssignmentRepository classTeacherAssignmentRepository;
     private final UserAssignmentRepository userAssignmentRepository;
+    private final FcmPushService fcmPushService;
 
     @Override
     @Transactional(readOnly = true)
@@ -292,6 +294,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .build();
 
         Notification saved = notificationRepository.save(notification);
+        fcmPushService.sendPushNotifications(List.of(saved));
         log.info("Dispatched notification [{}] to user [{}] ({}) for school [{}]",
                 notificationType, recipientUserId, notification.getTargetRole(), schoolId);
         return saved;
@@ -368,6 +371,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .collect(Collectors.toList());
 
         List<Notification> saved = notificationRepository.saveAll(toSave);
+        fcmPushService.sendPushNotifications(saved);
         log.info("Broadcasted notification [{}] to {} users in role [{}] for school [{}]",
                 notificationType, saved.size(), roleStr, schoolId);
         return saved;
@@ -448,7 +452,8 @@ public class NotificationServiceImpl implements NotificationService {
             }
 
             if (!toSave.isEmpty()) {
-                notificationRepository.saveAll(toSave);
+                List<Notification> saved = notificationRepository.saveAll(toSave);
+                fcmPushService.sendPushNotifications(saved);
             }
         } catch (Exception e) {
             log.warn("Failed to notify student/parents for studentId={}: {}", student.getId(), e.getMessage());
@@ -540,7 +545,8 @@ public class NotificationServiceImpl implements NotificationService {
             }
 
             if (!toSave.isEmpty()) {
-                notificationRepository.saveAll(toSave);
+                List<Notification> saved = notificationRepository.saveAll(toSave);
+                fcmPushService.sendPushNotifications(saved);
             }
         } catch (Exception e) {
             log.warn("Failed to notify class/section classId={} sectionId={}: {}", classId, sectionId, e.getMessage());
@@ -579,7 +585,8 @@ public class NotificationServiceImpl implements NotificationService {
                     .map(tid -> buildNotification(schoolId, tid, "TEACHER", notificationType, category, prio,
                             title, message, actor, actionUrl, entityType, entityId, metadata))
                     .toList();
-            notificationRepository.saveAll(toSave);
+            List<Notification> saved = notificationRepository.saveAll(toSave);
+            fcmPushService.sendPushNotifications(saved);
         } catch (Exception e) {
             log.warn("Failed to notify class teachers for studentId={}: {}", student.getId(), e.getMessage());
         }

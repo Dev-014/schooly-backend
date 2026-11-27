@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -77,5 +78,21 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Something failed", response.getBody().message());
+    }
+
+    @Test
+    void handleDataAccess_shouldSanitizeRawSqlExceptions() {
+        InvalidDataAccessResourceUsageException exception = new InvalidDataAccessResourceUsageException(
+                "JDBC exception executing SQL [ERROR: function lower(bytea) does not exist] [select cn1_0.id from cms_notices cn1_0]"
+        );
+
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURI()).thenReturn("/api/v1/cms/notices");
+
+        ResponseEntity<ApiResponse<Void>> response = handler.handleDataAccess(exception, request);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("A database error occurred while processing your request.", response.getBody().message());
     }
 }

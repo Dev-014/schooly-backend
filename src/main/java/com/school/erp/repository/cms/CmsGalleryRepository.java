@@ -11,9 +11,11 @@ import java.util.List;
 @Repository
 public interface CmsGalleryRepository extends JpaRepository<CmsGallery, Long> {
 
+    List<CmsGallery> findBySchoolIdOrderByIdDesc(Long schoolId);
+    List<CmsGallery> findAllByOrderByIdDesc();
+
     @Query("SELECT g FROM CmsGallery g WHERE (:schoolId IS NULL OR g.schoolId = :schoolId) " +
-           "AND (:search IS NULL OR LOWER(g.title) LIKE LOWER(CONCAT('%', :search, '%')) " +
-           "OR LOWER(g.description) LIKE LOWER(CONCAT('%', :search, '%'))) ORDER BY g.id DESC")
+           "AND (LOWER(g.title) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+           "OR LOWER(COALESCE(g.description, '')) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) ORDER BY g.id DESC")
     List<CmsGallery> searchGalleries(@Param("schoolId") Long schoolId, @Param("search") String search);
 }
-

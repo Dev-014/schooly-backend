@@ -13,6 +13,7 @@ import com.school.erp.security.AuthContextService;
 import com.school.erp.security.AuthFilterConfig;
 import com.school.erp.security.AuthenticatedUser;
 import com.school.erp.security.JwtAuthenticationFilter;
+import com.school.erp.service.notification.FcmPushService;
 import com.school.erp.service.notification.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,6 +53,9 @@ class NotificationControllerTest {
 
         @MockitoBean
         private AuthContextService authContextService;
+
+        @MockitoBean
+        private FcmPushService fcmPushService;
 
         private AuthenticatedUser mockUser;
         private NotificationResponse mockNotificationResponse;

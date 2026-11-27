@@ -18,6 +18,7 @@ public class CmsGalleryDto {
     private String description;
     private String featuredImage;
     private List<String> galleryImages;
+    private List<CmsGalleryPhotoDto> photos;
     private String url;
     private Boolean isInternalOnly;
     private String seoTitle;

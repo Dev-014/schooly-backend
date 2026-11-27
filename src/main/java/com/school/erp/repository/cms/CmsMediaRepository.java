@@ -11,9 +11,13 @@ import java.util.List;
 @Repository
 public interface CmsMediaRepository extends JpaRepository<CmsMedia, Long> {
 
+    List<CmsMedia> findBySchoolIdOrderByIdDesc(Long schoolId);
+    List<CmsMedia> findAllByOrderByIdDesc();
+    List<CmsMedia> findBySchoolIdAndFileTypeIgnoreCaseOrderByIdDesc(Long schoolId, String fileType);
+    List<CmsMedia> findByFileTypeIgnoreCaseOrderByIdDesc(String fileType);
+
     @Query("SELECT m FROM CmsMedia m WHERE (:schoolId IS NULL OR m.schoolId = :schoolId) " +
-           "AND (:search IS NULL OR LOWER(m.fileName) LIKE LOWER(CONCAT('%', :search, '%'))) " +
-           "AND (:fileType IS NULL OR :fileType = 'all' OR LOWER(m.fileType) = LOWER(:fileType)) ORDER BY m.id DESC")
+           "AND LOWER(m.fileName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+           "AND (:fileType IS NULL OR LOWER(COALESCE(m.fileType, '')) = LOWER(CAST(:fileType AS string))) ORDER BY m.id DESC")
     List<CmsMedia> searchMedia(@Param("schoolId") Long schoolId, @Param("search") String search, @Param("fileType") String fileType);
 }
-

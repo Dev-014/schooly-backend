@@ -4,13 +4,17 @@ import com.school.erp.api.ApiResponse;
 import com.school.erp.api.PaginationMeta;
 import com.school.erp.dto.notification.BatchNotificationActionRequest;
 import com.school.erp.dto.notification.CreateNotificationRequest;
+import com.school.erp.dto.notification.DeviceTokenRegistrationRequest;
+import com.school.erp.dto.notification.DeviceTokenUnregisterRequest;
 import com.school.erp.dto.notification.NotificationCountResponse;
 import com.school.erp.dto.notification.NotificationResponse;
 import com.school.erp.entity.notification.NotificationCategory;
+import com.school.erp.entity.notification.NotificationDeviceToken;
 import com.school.erp.entity.notification.NotificationPriority;
 import com.school.erp.entity.notification.NotificationType;
 import com.school.erp.security.AuthContextService;
 import com.school.erp.security.AuthenticatedUser;
+import com.school.erp.service.notification.FcmPushService;
 import com.school.erp.service.notification.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,6 +38,7 @@ public class NotificationController {
 
     private final NotificationService notificationService;
     private final AuthContextService authContextService;
+    private final FcmPushService fcmPushService;
 
     @GetMapping
     @Operation(summary = "Get user notifications with filtering and pagination")
@@ -174,6 +179,44 @@ public class NotificationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(
                 responses,
                 "Notification(s) dispatched successfully"
+        ));
+    }
+
+    @PostMapping("/device-tokens")
+    @Operation(summary = "Register or refresh an FCM device token for push notifications")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> registerDeviceToken(
+            @Valid @RequestBody DeviceTokenRegistrationRequest request,
+            @RequestParam(required = false) Long schoolId
+    ) {
+        AuthenticatedUser user = authContextService.requireCurrentUser();
+        Long resolvedSchoolId = authContextService.resolveSchoolId(schoolId);
+        String resolvedRole = (request.targetRole() != null && !request.targetRole().isBlank())
+                ? request.targetRole()
+                : (user.role() != null ? user.role().name() : "GENERAL");
+
+        NotificationDeviceToken saved = fcmPushService.registerDeviceToken(
+                resolvedSchoolId,
+                user.userId(),
+                resolvedRole,
+                request.token(),
+                request.platform()
+        );
+        return ResponseEntity.ok(ApiResponse.success(
+                Map.of("id", saved.getId(), "active", saved.getActive()),
+                "Device token registered successfully"
+        ));
+    }
+
+    @DeleteMapping("/device-tokens")
+    @Operation(summary = "Unregister an FCM device token on logout")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> unregisterDeviceToken(
+            @Valid @RequestBody DeviceTokenUnregisterRequest request
+    ) {
+        AuthenticatedUser user = authContextService.requireCurrentUser();
+        int deactivated = fcmPushService.unregisterDeviceToken(user.userId(), request.token());
+        return ResponseEntity.ok(ApiResponse.success(
+                Map.of("deactivatedCount", deactivated),
+                "Device token unregistered successfully"
         ));
     }
 }

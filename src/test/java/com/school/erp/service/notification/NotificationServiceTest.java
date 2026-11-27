@@ -47,6 +47,9 @@ class NotificationServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private FcmPushService fcmPushService;
+
     @InjectMocks
     private NotificationServiceImpl notificationService;
 

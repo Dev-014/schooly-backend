@@ -107,6 +107,10 @@
     {
       "key": "students",
       "name": "Students & Admission"
+    },
+    {
+      "key": "front_cms",
+      "name": "Front CMS"
     }
   ],
   "scopes": [
@@ -2765,6 +2769,294 @@
         "school"
       ],
       "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.events.view",
+      "module": "front_cms",
+      "resource": "events",
+      "action": "view",
+      "name": "View Events",
+      "description": "Allows viewing Events",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.events.edit",
+      "module": "front_cms",
+      "resource": "events",
+      "action": "edit",
+      "name": "Manage Events",
+      "description": "Allows managing Events",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.gallery.view",
+      "module": "front_cms",
+      "resource": "gallery",
+      "action": "view",
+      "name": "View Gallery",
+      "description": "Allows viewing Gallery",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.gallery.edit",
+      "module": "front_cms",
+      "resource": "gallery",
+      "action": "edit",
+      "name": "Manage Gallery",
+      "description": "Allows managing Gallery",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.notice.view",
+      "module": "front_cms",
+      "resource": "notice",
+      "action": "view",
+      "name": "View Notices",
+      "description": "Allows viewing Notices",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.notice.edit",
+      "module": "front_cms",
+      "resource": "notice",
+      "action": "edit",
+      "name": "Manage Notices",
+      "description": "Allows managing Notices",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.media_manager.view",
+      "module": "front_cms",
+      "resource": "media_manager",
+      "action": "view",
+      "name": "View Media Manager",
+      "description": "Allows viewing Media Manager",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.media_manager.edit",
+      "module": "front_cms",
+      "resource": "media_manager",
+      "action": "edit",
+      "name": "Manage Media Manager",
+      "description": "Allows managing Media Manager",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.pages.view",
+      "module": "front_cms",
+      "resource": "pages",
+      "action": "view",
+      "name": "View Pages",
+      "description": "Allows viewing Pages",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.pages.edit",
+      "module": "front_cms",
+      "resource": "pages",
+      "action": "edit",
+      "name": "Manage Pages",
+      "description": "Allows managing Pages",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.menus.view",
+      "module": "front_cms",
+      "resource": "menus",
+      "action": "view",
+      "name": "View Menus",
+      "description": "Allows viewing Menus",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.menus.edit",
+      "module": "front_cms",
+      "resource": "menus",
+      "action": "edit",
+      "name": "Manage Menus",
+      "description": "Allows managing Menus",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.banner_image.view",
+      "module": "front_cms",
+      "resource": "banner_image",
+      "action": "view",
+      "name": "View Banner Images",
+      "description": "Allows viewing Banner Images",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.banner_image.edit",
+      "module": "front_cms",
+      "resource": "banner_image",
+      "action": "edit",
+      "name": "Manage Banner Images",
+      "description": "Allows managing Banner Images",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.testimonials.view",
+      "module": "front_cms",
+      "resource": "testimonials",
+      "action": "view",
+      "name": "View Testimonials",
+      "description": "Allows viewing Testimonials",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.testimonials.edit",
+      "module": "front_cms",
+      "resource": "testimonials",
+      "action": "edit",
+      "name": "Manage Testimonials",
+      "description": "Allows managing Testimonials",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.setting.view",
+      "module": "front_cms",
+      "resource": "setting",
+      "action": "view",
+      "name": "View Front CMS Settings",
+      "description": "Allows viewing Front CMS Settings",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": false,
+      "status": "active",
+      "audience": [
+        "staff"
+      ]
+    },
+    {
+      "key": "front_cms.setting.edit",
+      "module": "front_cms",
+      "resource": "setting",
+      "action": "edit",
+      "name": "Manage Front CMS Settings",
+      "description": "Allows managing Front CMS Settings",
+      "supportedScopes": [
+        "school"
+      ],
+      "sensitive": true,
       "status": "active",
       "audience": [
         "staff"

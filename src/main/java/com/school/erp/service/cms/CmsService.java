@@ -6,6 +6,8 @@ import com.school.erp.dto.cms.*;
 import com.school.erp.entity.cms.*;
 import com.school.erp.exception.ResourceNotFoundException;
 import com.school.erp.repository.cms.*;
+import com.school.erp.security.AuthContextHolder;
+import com.school.erp.security.AuthenticatedUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -33,13 +35,44 @@ public class CmsService {
     private final CmsSettingRepository settingRepository;
     private final ObjectMapper objectMapper;
 
+    private Long resolveSchoolId(Long schoolId) {
+        if (schoolId != null) return schoolId;
+        AuthenticatedUser currentUser = AuthContextHolder.get();
+        return currentUser != null ? currentUser.schoolId() : null;
+    }
+
+    private String normalizeSearch(String search) {
+        if (search == null) return null;
+        String trimmed = search.trim();
+        return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private String normalizeFileType(String fileType) {
+        if (fileType == null) return null;
+        String trimmed = fileType.trim();
+        if (trimmed.isEmpty() || "all".equalsIgnoreCase(trimmed) || "select".equalsIgnoreCase(trimmed)) {
+            return null;
+        }
+        return trimmed;
+    }
+
     // ─────────────────────────────────────────────────────────────────────────────
     // 1. EVENTS
     // ─────────────────────────────────────────────────────────────────────────────
 
     @Transactional(readOnly = true)
     public List<CmsEventDto> getAllEvents(Long schoolId, String search) {
-        return eventRepository.searchEvents(schoolId, search).stream()
+        Long resolvedSchoolId = resolveSchoolId(schoolId);
+        String query = normalizeSearch(search);
+        List<CmsEvent> events;
+        if (query == null) {
+            events = (resolvedSchoolId == null)
+                    ? eventRepository.findAllByOrderByIdDesc()
+                    : eventRepository.findBySchoolIdOrderByIdDesc(resolvedSchoolId);
+        } else {
+            events = eventRepository.searchEvents(resolvedSchoolId, query);
+        }
+        return events.stream()
                 .map(this::toEventDto)
                 .collect(Collectors.toList());
     }
@@ -54,7 +87,7 @@ public class CmsService {
     @Transactional
     public CmsEventDto createEvent(CmsEventDto dto) {
         CmsEvent event = CmsEvent.builder()
-                .schoolId(dto.getSchoolId())
+                .schoolId(resolveSchoolId(dto.getSchoolId()))
                 .title(dto.getTitle())
                 .venue(dto.getVenue())
                 .startDate(dto.getStartDate())
@@ -122,7 +155,17 @@ public class CmsService {
 
     @Transactional(readOnly = true)
     public List<CmsGalleryDto> getAllGalleries(Long schoolId, String search) {
-        return galleryRepository.searchGalleries(schoolId, search).stream()
+        Long resolvedSchoolId = resolveSchoolId(schoolId);
+        String query = normalizeSearch(search);
+        List<CmsGallery> galleries;
+        if (query == null) {
+            galleries = (resolvedSchoolId == null)
+                    ? galleryRepository.findAllByOrderByIdDesc()
+                    : galleryRepository.findBySchoolIdOrderByIdDesc(resolvedSchoolId);
+        } else {
+            galleries = galleryRepository.searchGalleries(resolvedSchoolId, query);
+        }
+        return galleries.stream()
                 .map(this::toGalleryDto)
                 .collect(Collectors.toList());
     }
@@ -136,18 +179,21 @@ public class CmsService {
 
     @Transactional
     public CmsGalleryDto createGallery(CmsGalleryDto dto) {
-        String imagesJson = serializeImages(dto.getGalleryImages());
+        String imagesJson = serializeImages(dto.getPhotos() != null
+                ? dto.getPhotos().stream().map(CmsGalleryPhotoDto::getUrl).toList()
+                : dto.getGalleryImages());
         String url = dto.getUrl();
         if (url == null || url.trim().isEmpty()) {
             url = "https://erp.schooly.com/gallery/" + slugify(dto.getTitle());
         }
 
         CmsGallery gallery = CmsGallery.builder()
-                .schoolId(dto.getSchoolId())
+                .schoolId(resolveSchoolId(dto.getSchoolId()))
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .featuredImage(dto.getFeaturedImage())
                 .galleryImages(imagesJson)
+                .photoMetadata(dto.getPhotos() == null ? null : serializePhotos(dto.getPhotos()))
                 .url(url)
                 .isInternalOnly(dto.getIsInternalOnly() != null ? dto.getIsInternalOnly() : false)
                 .seoTitle(dto.getSeoTitle())
@@ -166,7 +212,13 @@ public class CmsService {
         gallery.setTitle(dto.getTitle());
         gallery.setDescription(dto.getDescription());
         if (dto.getFeaturedImage() != null) gallery.setFeaturedImage(dto.getFeaturedImage());
-        if (dto.getGalleryImages() != null) gallery.setGalleryImages(serializeImages(dto.getGalleryImages()));
+        if (dto.getPhotos() != null) {
+            gallery.setPhotoMetadata(serializePhotos(dto.getPhotos()));
+            gallery.setGalleryImages(serializeImages(dto.getPhotos().stream().map(CmsGalleryPhotoDto::getUrl).toList()));
+        } else if (dto.getGalleryImages() != null) {
+            gallery.setGalleryImages(serializeImages(dto.getGalleryImages()));
+            gallery.setPhotoMetadata(null);
+        }
         if (dto.getUrl() != null) gallery.setUrl(dto.getUrl());
         if (dto.getIsInternalOnly() != null) gallery.setIsInternalOnly(dto.getIsInternalOnly());
         gallery.setSeoTitle(dto.getSeoTitle());
@@ -193,6 +245,7 @@ public class CmsService {
                 .description(entity.getDescription())
                 .featuredImage(entity.getFeaturedImage())
                 .galleryImages(deserializeImages(entity.getGalleryImages()))
+                .photos(deserializePhotos(entity.getPhotoMetadata(), entity.getGalleryImages()))
                 .url(entity.getUrl())
                 .isInternalOnly(entity.getIsInternalOnly())
                 .seoTitle(entity.getSeoTitle())
@@ -208,7 +261,17 @@ public class CmsService {
 
     @Transactional(readOnly = true)
     public List<CmsNoticeDto> getAllNotices(Long schoolId, String search) {
-        return noticeRepository.searchNotices(schoolId, search).stream()
+        Long resolvedSchoolId = resolveSchoolId(schoolId);
+        String query = normalizeSearch(search);
+        List<CmsNotice> notices;
+        if (query == null) {
+            notices = (resolvedSchoolId == null)
+                    ? noticeRepository.findAllByOrderByIdDesc()
+                    : noticeRepository.findBySchoolIdOrderByIdDesc(resolvedSchoolId);
+        } else {
+            notices = noticeRepository.searchNotices(resolvedSchoolId, query);
+        }
+        return notices.stream()
                 .map(this::toNoticeDto)
                 .collect(Collectors.toList());
     }
@@ -228,7 +291,7 @@ public class CmsService {
         }
 
         CmsNotice notice = CmsNotice.builder()
-                .schoolId(dto.getSchoolId())
+                .schoolId(resolveSchoolId(dto.getSchoolId()))
                 .title(dto.getTitle())
                 .date(dto.getDate())
                 .featuredImage(dto.getFeaturedImage())
@@ -290,15 +353,17 @@ public class CmsService {
 
     @Transactional(readOnly = true)
     public List<CmsPageDto> getAllPages(Long schoolId, String search) {
+        Long resolvedSchoolId = resolveSchoolId(schoolId);
+        String query = normalizeSearch(search);
         List<CmsPage> pages;
-        if (search == null || search.trim().isEmpty()) {
-            if (schoolId == null) {
+        if (query == null) {
+            if (resolvedSchoolId == null) {
                 pages = pageRepository.findAllByOrderByIdDesc();
             } else {
-                pages = pageRepository.findBySchoolIdOrderByIdDesc(schoolId);
+                pages = pageRepository.findBySchoolIdOrderByIdDesc(resolvedSchoolId);
             }
         } else {
-            pages = pageRepository.searchPages(schoolId, search.trim());
+            pages = pageRepository.searchPages(resolvedSchoolId, query);
         }
         return pages.stream()
                 .map(this::toPageDto)
@@ -320,7 +385,7 @@ public class CmsService {
         }
 
         CmsPage page = CmsPage.builder()
-                .schoolId(dto.getSchoolId())
+                .schoolId(resolveSchoolId(dto.getSchoolId()))
                 .title(dto.getTitle())
                 .pageType(dto.getPageType() != null ? dto.getPageType() : "Standard")
                 .url(url)
@@ -382,7 +447,16 @@ public class CmsService {
 
     @Transactional(readOnly = true)
     public List<CmsMenuDto.MenuGroupDto> getAllMenus(Long schoolId, String search) {
-        List<CmsMenuGroup> groups = menuGroupRepository.searchMenuGroups(schoolId, search);
+        Long resolvedSchoolId = resolveSchoolId(schoolId);
+        String query = normalizeSearch(search);
+        List<CmsMenuGroup> groups;
+        if (query == null) {
+            groups = (resolvedSchoolId == null)
+                    ? menuGroupRepository.findAllByOrderByIdAsc()
+                    : menuGroupRepository.findBySchoolIdOrderByIdAsc(resolvedSchoolId);
+        } else {
+            groups = menuGroupRepository.searchMenuGroups(resolvedSchoolId, query);
+        }
         return groups.stream().map(this::toMenuGroupDto).collect(Collectors.toList());
     }
 
@@ -396,7 +470,7 @@ public class CmsService {
     @Transactional
     public CmsMenuDto.MenuGroupDto createMenuGroup(CmsMenuDto.MenuGroupDto dto) {
         CmsMenuGroup group = CmsMenuGroup.builder()
-                .schoolId(dto.getSchoolId())
+                .schoolId(resolveSchoolId(dto.getSchoolId()))
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .openInNewTab(dto.getOpenInNewTab() != null ? dto.getOpenInNewTab() : false)
@@ -513,7 +587,24 @@ public class CmsService {
 
     @Transactional(readOnly = true)
     public List<CmsBannerDto> getAllBanners(Long schoolId, String search, String fileType) {
-        return bannerRepository.searchBanners(schoolId, search, fileType).stream()
+        Long resolvedSchoolId = resolveSchoolId(schoolId);
+        String query = normalizeSearch(search);
+        String normalizedType = normalizeFileType(fileType);
+        List<CmsBanner> banners;
+        if (query == null) {
+            if (normalizedType == null) {
+                banners = (resolvedSchoolId == null)
+                        ? bannerRepository.findAllByOrderByIdDesc()
+                        : bannerRepository.findBySchoolIdOrderByIdDesc(resolvedSchoolId);
+            } else {
+                banners = (resolvedSchoolId == null)
+                        ? bannerRepository.findByFileTypeIgnoreCaseOrderByIdDesc(normalizedType)
+                        : bannerRepository.findBySchoolIdAndFileTypeIgnoreCaseOrderByIdDesc(resolvedSchoolId, normalizedType);
+            }
+        } else {
+            banners = bannerRepository.searchBanners(resolvedSchoolId, query, normalizedType);
+        }
+        return banners.stream()
                 .map(this::toBannerDto)
                 .collect(Collectors.toList());
     }
@@ -521,9 +612,10 @@ public class CmsService {
     @Transactional
     public CmsBannerDto createBanner(CmsBannerDto dto) {
         CmsBanner banner = CmsBanner.builder()
-                .schoolId(dto.getSchoolId())
+                .schoolId(resolveSchoolId(dto.getSchoolId()))
                 .fileName(dto.getFileName())
                 .url(dto.getUrl())
+                .targetLink(dto.getTargetLink())
                 .fileType(dto.getFileType() != null ? dto.getFileType() : "image")
                 .dimensions(dto.getDimensions() != null ? dto.getDimensions() : "1920 x 800")
                 .size(dto.getSize() != null ? dto.getSize() : "1.2 MB")
@@ -553,6 +645,7 @@ public class CmsService {
                 .schoolId(entity.getSchoolId())
                 .fileName(entity.getFileName())
                 .url(entity.getUrl())
+                .targetLink(entity.getTargetLink())
                 .fileType(entity.getFileType())
                 .dimensions(entity.getDimensions())
                 .size(entity.getSize())
@@ -566,7 +659,24 @@ public class CmsService {
 
     @Transactional(readOnly = true)
     public List<CmsMediaDto> getAllMedia(Long schoolId, String search, String fileType) {
-        return mediaRepository.searchMedia(schoolId, search, fileType).stream()
+        Long resolvedSchoolId = resolveSchoolId(schoolId);
+        String query = normalizeSearch(search);
+        String normalizedType = normalizeFileType(fileType);
+        List<CmsMedia> mediaItems;
+        if (query == null) {
+            if (normalizedType == null) {
+                mediaItems = (resolvedSchoolId == null)
+                        ? mediaRepository.findAllByOrderByIdDesc()
+                        : mediaRepository.findBySchoolIdOrderByIdDesc(resolvedSchoolId);
+            } else {
+                mediaItems = (resolvedSchoolId == null)
+                        ? mediaRepository.findByFileTypeIgnoreCaseOrderByIdDesc(normalizedType)
+                        : mediaRepository.findBySchoolIdAndFileTypeIgnoreCaseOrderByIdDesc(resolvedSchoolId, normalizedType);
+            }
+        } else {
+            mediaItems = mediaRepository.searchMedia(resolvedSchoolId, query, normalizedType);
+        }
+        return mediaItems.stream()
                 .map(this::toMediaDto)
                 .collect(Collectors.toList());
     }
@@ -574,7 +684,7 @@ public class CmsService {
     @Transactional
     public CmsMediaDto createMedia(CmsMediaDto dto) {
         CmsMedia media = CmsMedia.builder()
-                .schoolId(dto.getSchoolId())
+                .schoolId(resolveSchoolId(dto.getSchoolId()))
                 .fileName(dto.getFileName())
                 .fileType(dto.getFileType() != null ? dto.getFileType() : "image")
                 .url(dto.getUrl())
@@ -621,7 +731,17 @@ public class CmsService {
 
     @Transactional(readOnly = true)
     public List<CmsTestimonialDto> getAllTestimonials(Long schoolId, String search) {
-        return testimonialRepository.searchTestimonials(schoolId, search).stream()
+        Long resolvedSchoolId = resolveSchoolId(schoolId);
+        String query = normalizeSearch(search);
+        List<CmsTestimonial> testimonials;
+        if (query == null) {
+            testimonials = (resolvedSchoolId == null)
+                    ? testimonialRepository.findAllByOrderByIdDesc()
+                    : testimonialRepository.findBySchoolIdOrderByIdDesc(resolvedSchoolId);
+        } else {
+            testimonials = testimonialRepository.searchTestimonials(resolvedSchoolId, query);
+        }
+        return testimonials.stream()
                 .map(this::toTestimonialDto)
                 .collect(Collectors.toList());
     }
@@ -636,7 +756,7 @@ public class CmsService {
     @Transactional
     public CmsTestimonialDto createTestimonial(CmsTestimonialDto dto) {
         CmsTestimonial item = CmsTestimonial.builder()
-                .schoolId(dto.getSchoolId())
+                .schoolId(resolveSchoolId(dto.getSchoolId()))
                 .name(dto.getName())
                 .designation(dto.getDesignation())
                 .testimonial(dto.getTestimonial())
@@ -689,6 +809,42 @@ public class CmsService {
     // ─────────────────────────────────────────────────────────────────────────────
     // HELPERS & INITIAL DATA SEEDER
     // ─────────────────────────────────────────────────────────────────────────────
+
+    private String serializePhotos(List<CmsGalleryPhotoDto> photos) {
+        try {
+            return objectMapper.writeValueAsString(photos);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Unable to save gallery photos", e);
+        }
+    }
+
+    private List<CmsGalleryPhotoDto> deserializePhotos(String metadata, String legacyImages) {
+        if (metadata != null && !metadata.isBlank()) {
+            try {
+                List<CmsGalleryPhotoDto> photos = objectMapper.readValue(metadata,
+                        new TypeReference<List<CmsGalleryPhotoDto>>() {});
+                Set<Long> ids = photos.stream().map(CmsGalleryPhotoDto::getId)
+                        .filter(Objects::nonNull).collect(Collectors.toSet());
+                long nextId = 1;
+                for (CmsGalleryPhotoDto photo : photos) {
+                    if (photo.getId() == null) {
+                        while (ids.contains(nextId)) nextId++;
+                        photo.setId(nextId);
+                        ids.add(nextId++);
+                    }
+                }
+                return photos;
+            } catch (Exception e) {
+                log.warn("Unable to read gallery photo metadata; using legacy URLs", e);
+            }
+        }
+        List<String> urls = deserializeImages(legacyImages);
+        List<CmsGalleryPhotoDto> photos = new ArrayList<>();
+        for (int i = 0; i < urls.size(); i++) {
+            photos.add(new CmsGalleryPhotoDto((long) i + 1, urls.get(i), ""));
+        }
+        return photos;
+    }
 
     private String serializeImages(List<String> list) {
         if (list == null || list.isEmpty()) return "[]";
@@ -958,23 +1114,30 @@ public class CmsService {
 
     @Transactional(readOnly = true)
     public CmsSettingDto getSettings(Long schoolId) {
-        Optional<CmsSetting> opt = (schoolId != null)
-                ? settingRepository.findFirstBySchoolIdOrderByIdAsc(schoolId)
-                : settingRepository.findFirstByOrderByIdAsc();
+        Long resolvedSchoolId = resolveSchoolId(schoolId);
+        Optional<CmsSetting> opt = (resolvedSchoolId != null)
+                ? settingRepository.findFirstBySchoolIdOrderByIdAsc(resolvedSchoolId)
+                : settingRepository.findFirstBySchoolIdIsNullOrderByIdAsc();
 
         if (opt.isEmpty()) {
-            opt = settingRepository.findFirstByOrderByIdAsc();
+            opt = settingRepository.findFirstBySchoolIdIsNullOrderByIdAsc();
         }
 
-        return opt.map(this::toSettingDto).orElseGet(() -> getDefaultSettingDto(schoolId));
+        return opt.map(entity -> {
+            CmsSettingDto dto = toSettingDto(entity);
+            if (resolvedSchoolId != null && dto.getSchoolId() == null) {
+                dto.setSchoolId(resolvedSchoolId);
+            }
+            return dto;
+        }).orElseGet(() -> getDefaultSettingDto(resolvedSchoolId));
     }
 
     @Transactional
     public CmsSettingDto updateSettings(Long schoolId, CmsSettingDto dto) {
-        Long targetSchoolId = (dto.getSchoolId() != null) ? dto.getSchoolId() : schoolId;
+        Long targetSchoolId = resolveSchoolId((dto.getSchoolId() != null) ? dto.getSchoolId() : schoolId);
         Optional<CmsSetting> opt = (targetSchoolId != null)
                 ? settingRepository.findFirstBySchoolIdOrderByIdAsc(targetSchoolId)
-                : settingRepository.findFirstByOrderByIdAsc();
+                : settingRepository.findFirstBySchoolIdIsNullOrderByIdAsc();
 
         CmsSetting setting = opt.orElseGet(() -> CmsSetting.builder().schoolId(targetSchoolId).build());
 

@@ -11,6 +11,7 @@ public interface CmsSettingRepository extends JpaRepository<CmsSetting, Long> {
 
     Optional<CmsSetting> findFirstBySchoolIdOrderByIdAsc(Long schoolId);
 
+    Optional<CmsSetting> findFirstBySchoolIdIsNullOrderByIdAsc();
+
     Optional<CmsSetting> findFirstByOrderByIdAsc();
 }
-

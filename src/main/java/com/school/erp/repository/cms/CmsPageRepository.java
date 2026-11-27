@@ -16,9 +16,8 @@ public interface CmsPageRepository extends JpaRepository<CmsPage, Long> {
 
     @Query("SELECT p FROM CmsPage p WHERE (:schoolId IS NULL OR p.schoolId = :schoolId) " +
            "AND (LOWER(p.title) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
-           "OR LOWER(p.description) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) ORDER BY p.id DESC")
+           "OR LOWER(COALESCE(p.description, '')) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) ORDER BY p.id DESC")
     List<CmsPage> searchPages(@Param("schoolId") Long schoolId, @Param("search") String search);
 
     boolean existsByTitleIgnoreCase(String title);
 }
-

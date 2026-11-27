@@ -11,9 +11,13 @@ import java.util.List;
 @Repository
 public interface CmsBannerRepository extends JpaRepository<CmsBanner, Long> {
 
+    List<CmsBanner> findBySchoolIdOrderByIdDesc(Long schoolId);
+    List<CmsBanner> findAllByOrderByIdDesc();
+    List<CmsBanner> findBySchoolIdAndFileTypeIgnoreCaseOrderByIdDesc(Long schoolId, String fileType);
+    List<CmsBanner> findByFileTypeIgnoreCaseOrderByIdDesc(String fileType);
+
     @Query("SELECT b FROM CmsBanner b WHERE (:schoolId IS NULL OR b.schoolId = :schoolId) " +
-           "AND (:search IS NULL OR LOWER(b.fileName) LIKE LOWER(CONCAT('%', :search, '%'))) " +
-           "AND (:fileType IS NULL OR :fileType = 'all' OR LOWER(b.fileType) = LOWER(:fileType)) ORDER BY b.id DESC")
+           "AND LOWER(b.fileName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+           "AND (:fileType IS NULL OR LOWER(COALESCE(b.fileType, '')) = LOWER(CAST(:fileType AS string))) ORDER BY b.id DESC")
     List<CmsBanner> searchBanners(@Param("schoolId") Long schoolId, @Param("search") String search, @Param("fileType") String fileType);
 }
-
